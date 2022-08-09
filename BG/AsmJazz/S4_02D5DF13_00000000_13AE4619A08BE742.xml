@@ -1,0 +1,254 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="Baby_GiveBirth" dcc="sage">
+  <Actor name="x" type="Sim" master="true" virtual="false" />
+  <Actor name="baby" type="Prop" virtual="false" object_def_resource_key="c0db5ae7:00000000:00000000000051f8#babyGEN_01" />
+  <Actor name="bassinet" type="Object" virtual="false" />
+  <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
+  <IkConfiguration name="a2o_baby_giveBirth_x.ma">
+    <SourceFile name="a2o_baby_giveBirth_x.ma">
+      <MapNamespace namespace="baby" actor="baby" />
+      <MapNamespace namespace="bassinet" actor="bassinet" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_baby_giveBirth_KissNCry_x.ma">
+    <SourceFile name="a2o_baby_giveBirth_KissNCry_x.ma">
+      <MapNamespace namespace="baby" actor="baby" />
+      <MapNamespace namespace="bassinet" actor="bassinet" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_baby_pickUp_x.ma">
+    <SourceFile name="a2o_baby_pickUp_x.ma">
+      <MapNamespace namespace="baby" actor="baby" />
+      <MapNamespace namespace="bassinet" actor="bassinet" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_baby_idle_labor_x.ma">
+    <SourceFile name="a2o_baby_idle_labor_x.ma">
+      <MapNamespace namespace="bassinet" actor="bassinet" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a_pregnancy_panic.ma">
+    <SourceFile name="a_pregnancy_panic.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_alien_idle_pregnancy_Labor.ma">
+    <SourceFile name="a2o_alien_idle_pregnancy_Labor.ma">
+      <MapNamespace namespace="bassinet" actor="bassinet" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_alien_giveBirth.ma">
+    <SourceFile name="a2o_alien_giveBirth.ma">
+      <MapNamespace namespace="baby" actor="baby" />
+      <MapNamespace namespace="bassinet" actor="bassinet" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <PostureManifest actors="" />
+  <PostureManifest actors="x">
+    <Support name="stand" family="none" compatibility="FullBody" carry_left="-" carry_right="-" surface="*" />
+  </PostureManifest>
+  <State type="private" skippable="false" interrupt_this="false" name="Cuddle" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="GiveBirth" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" name="Labor" focus="body only" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="Labor_React" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="PutDown" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="Start" focus="body only" facialoverlays="false" tailoverlays="true" />
+  <Connection from="Cuddle" to="PutDown" />
+  <Connection from="GiveBirth" to="Cuddle" />
+  <Connection from="Labor" to="GiveBirth" />
+  <Connection from="Labor_React" to="exit" />
+  <Connection from="PutDown" to="exit" />
+  <Connection from="Start" to="Labor" />
+  <Connection from="entry" to="Labor_React" />
+  <Connection from="entry" to="Start" />
+  <State name="Cuddle" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="4">
+      <Choice value="stand--FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2o_baby_giveBirth_kissNCry_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_baby_giveBirth_KissNCry_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="1">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+        <Controller target="baby" controller="@ClipController(clip=a2o_baby_giveBirth_kissNCry_baby, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_baby_giveBirth_KissNCry_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="2">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+        <Controller target="bassinet" controller="@ClipController(clip=o_baby_giveBirth_kissNCry_bassinet, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_baby_giveBirth_KissNCry_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="3">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="GiveBirth" type="public" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="12">
+      <Choice value="stand--FullBody" track="normal" mask="">
+        <ParameterSelector parameter="x:sex" unique_id="11">
+          <Choice value="male">
+            <Controller target="baby" controller="@ClipController(clip=a2o_alien_giveBirth_baby, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_alien_giveBirth.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="5">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+            <Controller target="bassinet" controller="@ClipController(clip=o_alien_giveBirth_bassinet, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_alien_giveBirth.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="6">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+            <Controller target="x" controller="@ClipController(clip=a2o_alien_giveBirth_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_alien_giveBirth.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="7">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice value="female">
+            <Controller target="baby" controller="@ClipController(clip=a2o_baby_giveBirth_baby, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_baby_giveBirth_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="8">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+            <Controller target="x" controller="@ClipController(clip=a2o_baby_giveBirth_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_baby_giveBirth_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="9">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+            <Controller target="bassinet" controller="@ClipController(clip=o_baby_giveBirth_bassinet, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_baby_giveBirth_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="10">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="Labor" type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" focus="body only" facialoverlays="false" tailoverlays="true">
+    <description />
+    <MakeController>
+      <PostureSelector parameter="x:posture" unique_id="22">
+        <Choice value="stand--FullBody" track="normal" mask="">
+          <ParameterSelector parameter="x:sex" unique_id="21">
+            <Choice value="male">
+              <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="16">
+                <Choice weight="100" avoidRepeat="False">
+                  <Controller target="x" controller="@ClipController(clip=a2o_alien_idle_labor_moan_loop_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_alien_idle_pregnancy_Labor.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="13">
+                    <TransitionClassList>
+                      <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                    </TransitionClassList>
+                  </Controller>
+                </Choice>
+                <Choice weight="100" avoidRepeat="False">
+                  <Controller target="x" controller="@ClipController(clip=a2o_alien_idle_labor_breatheHeavy_loop_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_alien_idle_pregnancy_Labor.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="14">
+                    <TransitionClassList>
+                      <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                    </TransitionClassList>
+                  </Controller>
+                </Choice>
+                <Choice weight="100" avoidRepeat="False">
+                  <Controller target="x" controller="@ClipController(clip=a2o_alien_idle_labor_groan_loop_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_alien_idle_pregnancy_Labor.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="15">
+                    <TransitionClassList>
+                      <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                    </TransitionClassList>
+                  </Controller>
+                </Choice>
+              </RandomSelector>
+            </Choice>
+            <Choice value="female">
+              <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="20">
+                <Choice weight="100" avoidRepeat="True">
+                  <Controller target="x" controller="@ClipController(clip=a2o_baby_idle_labor_moan_loop_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_baby_idle_labor_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="17">
+                    <TransitionClassList>
+                      <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                    </TransitionClassList>
+                  </Controller>
+                </Choice>
+                <Choice weight="100" avoidRepeat="True">
+                  <Controller target="x" controller="@ClipController(clip=a2o_baby_idle_labor_breatheHeavy_loop_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_baby_idle_labor_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="18">
+                    <TransitionClassList>
+                      <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                    </TransitionClassList>
+                  </Controller>
+                </Choice>
+                <Choice weight="100" avoidRepeat="True">
+                  <Controller target="x" controller="@ClipController(clip=a2o_baby_idle_labor_groan_loop_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_baby_idle_labor_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="19">
+                    <TransitionClassList>
+                      <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                    </TransitionClassList>
+                  </Controller>
+                </Choice>
+              </RandomSelector>
+            </Choice>
+          </ParameterSelector>
+        </Choice>
+      </PostureSelector>
+    </MakeController>
+  </State>
+  <State name="Labor_React" type="public" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="24">
+      <Choice value="stand--FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a_pregnancy_panic_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_pregnancy_panic.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="23">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="PutDown" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="28">
+      <Choice value="stand--FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2o_baby_putDown_crib_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_baby_pickUp_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="25">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+        <Controller target="baby" controller="@ClipController(clip=a2o_baby_putDown_crib_baby, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_baby_pickUp_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="26">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+        <Controller target="bassinet" controller="@ClipController(clip=o_baby_putDown_crib_bassinet, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_baby_pickUp_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="27">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="Start" type="private" skippable="false" interrupt_this="false" focus="body only" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="32">
+      <Choice value="stand--FullBody" track="normal" mask="">
+        <ParameterSelector parameter="x:sex" unique_id="31">
+          <Choice value="male">
+            <Controller target="x" controller="@ClipController(clip=a2o_alien_idle_labor_start_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_alien_idle_pregnancy_Labor.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="29">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice value="female">
+            <Controller target="x" controller="@ClipController(clip=a2o_baby_idle_labor_start_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_baby_idle_labor_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="30">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+    </PostureSelector>
+  </State>
+</ASM>

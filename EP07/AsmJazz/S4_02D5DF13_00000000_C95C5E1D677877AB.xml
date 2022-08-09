@@ -1,0 +1,81 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="LifeguardFlavor_NT_Flex" dcc="sage">
+  <Actor name="x" type="Sim" master="true" virtual="false" />
+  <Actor name="sitTemplate" type="Object" virtual="true" />
+  <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
+  <Parameter name="x:species" type="enum" labels="human,dog,smalldog,cat" default="human" />
+  <IkConfiguration name="a_lifeguard_flex.ma">
+    <SourceFile name="a_lifeguard_flex.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a_lifeguard_flex_seated.ma">
+    <SourceFile name="a_lifeguard_flex_seated.ma">
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="sitTemplate" actor="sitTemplate" />
+    </SourceFile>
+  </IkConfiguration>
+  <PostureManifest actors="" />
+  <PostureManifest actors="x">
+    <Support family="stand" compatibility="FullBody" carry_left="*" carry_right="*" surface="*" />
+    <Support family="stand" compatibility="UpperBody" carry_left="*" carry_right="*" surface="*" />
+    <Support family="sit" compatibility="FullBody" carry_left="*" carry_right="*" surface="*" />
+    <Support family="sit" compatibility="UpperBody" carry_left="*" carry_right="*" surface="*" />
+    <Support family="movingStand" compatibility="UpperBody" carry_left="*" carry_right="*" surface="*" />
+  </PostureManifest>
+  <State type="public" skippable="false" interrupt_this="false" name="One_Shot_Flex" focus="upper body" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="Reactionlet_Flex" focus="upper body" facialoverlays="false" tailoverlays="true" />
+  <Connection from="One_Shot_Flex" to="exit" />
+  <Connection from="Reactionlet_Flex" to="exit" />
+  <Connection from="entry" to="One_Shot_Flex" />
+  <Connection from="entry" to="Reactionlet_Flex" />
+  <State name="One_Shot_Flex" type="public" skippable="false" interrupt_this="false" focus="upper body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="3">
+      <Choice value="-movingStand-UpperBody" track="normalplus" mask="Trackmask_SoftArms">
+        <Controller target="x" controller="@ClipController(clip=a_lifeguard_flex_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_lifeguard_flex.ma" focus="upper body" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="1">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+      <Choice value="-sit-FullBody" track="normalplus" mask="">
+        <Controller target="x" controller="@ClipController(clip=a_lifeguard_flex_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_lifeguard_flex_seated.ma" focus="head" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="2">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+      <Choice value="-sit-UpperBody" track="normalplus" mask="Trackmask_UpperBody">
+        <Reference target="2" />
+      </Choice>
+      <Choice value="-stand-FullBody" track="normalplus" mask="">
+        <Reference target="1" />
+      </Choice>
+      <Choice value="-stand-UpperBody" track="normalplus" mask="Trackmask_UpperBody">
+        <Reference target="1" />
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="Reactionlet_Flex" type="public" skippable="false" interrupt_this="false" focus="upper body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="6">
+      <Choice value="-movingStand-UpperBody" track="normalplus" mask="Trackmask_UpperBody_NoArms">
+        <Controller target="x" controller="@ClipController(clip=a_lifeguard_flex_x, loop_count=#1)" overridePosture="true" mask="" track="normalplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_lifeguard_flex.ma" focus="upper body" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="4">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+      <Choice value="-sit-FullBody" track="normalplus" mask="">
+        <Controller target="x" controller="@ClipController(clip=a_lifeguard_flex_seated_x, loop_count=#1)" overridePosture="true" mask="" track="normalplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_lifeguard_flex_seated.ma" focus="head" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="5">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+      <Choice value="-sit-UpperBody" track="normalplus" mask="Trackmask_UpperBody">
+        <Reference target="5" />
+      </Choice>
+      <Choice value="-stand-FullBody" track="normalplus" mask="">
+        <Reference target="4" />
+      </Choice>
+      <Choice value="-stand-UpperBody" track="normalplus" mask="Trackmask_UpperBody">
+        <Reference target="4" />
+      </Choice>
+    </PostureSelector>
+  </State>
+</ASM>

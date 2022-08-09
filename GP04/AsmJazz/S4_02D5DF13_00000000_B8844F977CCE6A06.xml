@@ -1,0 +1,523 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="Soc_Vampire_T_fight_SimToVampire" dcc="sage">
+  <Actor name="x" type="Sim" virtual="false" />
+  <Actor name="y" type="Sim" master="true" virtual="false" />
+  <Actor name="garlic" type="Prop" virtual="false" object_def_resource_key="c0db5ae7:00000000:0000000000023a9f#toolGarlicBraid_GP04GEN" />
+  <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
+  <Parameter name="y:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="y:sex" type="enum" labels="male,female" default="male" />
+  <Parameter name="y:hasOccultForm" type="bool" labels="" default="True" />
+  <Parameter name="y:trait_InDarkForm" type="bool" labels="" default="False" />
+  <IkConfiguration name="a2a_mischief_T_fisticuffs.ma">
+    <SourceFile name="a2a_mischief_T_fisticuffs.ma">
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="y" actor="y" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2a_mischief_T_fisticuffs_headLock.ma">
+    <SourceFile name="a2a_mischief_T_fisticuffs_headLock.ma">
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="y" actor="y" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2a_mischief_T_fisticuffs_slapFight.ma">
+    <SourceFile name="a2a_mischief_T_fisticuffs_slapFight.ma">
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="y" actor="y" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2a_mischief_T_fisticuffs_tackle.ma">
+    <SourceFile name="a2a_mischief_T_fisticuffs_tackle.ma">
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="y" actor="y" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2a_vampireFight_T_vampireToVampire.ma">
+    <SourceFile name="a2a_vampireFight_T_vampireToVampire.ma">
+      <MapNamespace namespace="y" actor="y" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a_vampire_crazyVampireFace_showDarkForm.ma">
+    <SourceFile name="a_vampire_crazyVampireFace_showDarkForm.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2a_vampireFight_T_SimToVampire_succeed.ma">
+    <SourceFile name="a2a_vampireFight_T_SimToVampire_succeed.ma">
+      <MapNamespace namespace="y" actor="y" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2a_vampireFight_T_SimToVampire_start.ma">
+    <SourceFile name="a2a_vampireFight_T_SimToVampire_start.ma">
+      <MapNamespace namespace="y" actor="y" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2a_vampireFight_T_SimToVampire_garlic.ma">
+    <SourceFile name="a2a_vampireFight_T_SimToVampire_garlic.ma">
+      <MapNamespace namespace="garlicBraid" actor="garlic" />
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="y" actor="y" />
+    </SourceFile>
+  </IkConfiguration>
+  <PostureManifest actors="" />
+  <PostureManifest actors="x,y">
+    <Support family="stand" compatibility="FullBody" carry_left="-" carry_right="-" surface="*" />
+  </PostureManifest>
+  <State type="public" skippable="false" interrupt_this="false" name="Fail" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="GetIn" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="Succeed" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="With Garlic" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" name="Without Garlic" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="changetoDarkForm" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <Connection from="Fail" to="exit" />
+  <Connection from="GetIn" to="With Garlic" />
+  <Connection from="GetIn" to="Without Garlic" />
+  <Connection from="Succeed" to="exit" />
+  <Connection from="With Garlic" to="Fail" />
+  <Connection from="With Garlic" to="Succeed" />
+  <Connection from="Without Garlic" to="Fail" />
+  <Connection from="Without Garlic" to="Succeed" />
+  <Connection from="changetoDarkForm" to="GetIn" />
+  <Connection from="entry" to="changetoDarkForm" />
+  <State name="Fail" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="y:posture" unique_id="2">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <Controller target="y" controller="@ClipController(clip=a2a_vampireFight_T_vampireToVampire_fail_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_vampireFight_T_vampireToVampire.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="1">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
+    </PostureSelector>
+    <PostureSelector parameter="x:posture" unique_id="4">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2a_vampireFight_T_vampireToVampire_fail_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_vampireFight_T_vampireToVampire.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="3">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="GetIn" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="y:posture" unique_id="6">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <Controller target="y" controller="@ClipController(clip=a2a_vampireFight_T_SimToVampire_start_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_vampireFight_T_SimToVampire_start.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="5">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
+    </PostureSelector>
+    <PostureSelector parameter="x:posture" unique_id="8">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2a_vampireFight_T_SimToVampire_start_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_vampireFight_T_SimToVampire_start.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="7">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="Succeed" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="y:posture" unique_id="10">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <Controller target="y" controller="@ClipController(clip=a2a_vampireFight_T_SimToVampire_succeed_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_vampireFight_T_SimToVampire_succeed.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="9">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
+    </PostureSelector>
+    <PostureSelector parameter="x:posture" unique_id="12">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2a_vampireFight_T_SimToVampire_succeed_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_vampireFight_T_SimToVampire_succeed.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="11">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="With Garlic" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="50">
+      <Choice weight="48" avoidRepeat="True">
+        <PostureSelector parameter="x:posture" unique_id="14">
+          <Choice value="-stand-FullBody" track="normal" mask="">
+            <Controller target="x" controller="@ClipController(clip=a2a_mischief_T_fisticuffs_headLock_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_mischief_T_fisticuffs_headLock.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="13">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+        </PostureSelector>
+        <PostureSelector parameter="y:posture" unique_id="16">
+          <Choice value="-stand-FullBody" track="normal" mask="">
+            <Controller target="y" controller="@ClipController(clip=a2a_mischief_T_fisticuffs_headLock_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_mischief_T_fisticuffs_headLock.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="15">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+        </PostureSelector>
+      </Choice>
+      <Choice weight="47" avoidRepeat="True">
+        <PostureSelector parameter="y:posture" unique_id="18">
+          <Choice value="-stand-FullBody" track="normal" mask="">
+            <Controller target="y" controller="@ClipController(clip=a2a_mischief_T_fisticuffs_legSpin_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_mischief_T_fisticuffs.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="17">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+        </PostureSelector>
+        <PostureSelector parameter="x:posture" unique_id="20">
+          <Choice value="-stand-FullBody" track="normal" mask="">
+            <Controller target="x" controller="@ClipController(clip=a2a_mischief_T_fisticuffs_legSpin_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_mischief_T_fisticuffs.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="19">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+        </PostureSelector>
+      </Choice>
+      <Choice weight="51" avoidRepeat="True">
+        <PostureSelector parameter="x:posture" unique_id="22">
+          <Choice value="-stand-FullBody" track="normal" mask="">
+            <Controller target="x" controller="@ClipController(clip=a2a_mischief_T_fisticuffs_tackle_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_mischief_T_fisticuffs_tackle.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="21">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+        </PostureSelector>
+        <PostureSelector parameter="y:posture" unique_id="24">
+          <Choice value="-stand-FullBody" track="normal" mask="">
+            <Controller target="y" controller="@ClipController(clip=a2a_mischief_T_fisticuffs_tackle_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_mischief_T_fisticuffs_tackle.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="23">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+        </PostureSelector>
+      </Choice>
+      <Choice weight="51" avoidRepeat="True">
+        <PostureSelector parameter="x:posture" unique_id="26">
+          <Choice value="-stand-FullBody" track="normal" mask="">
+            <Controller target="x" controller="@ClipController(clip=a2a_mischief_T_fisticuffs_slapFight_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_mischief_T_fisticuffs_slapFight.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="25">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+        </PostureSelector>
+        <PostureSelector parameter="y:posture" unique_id="28">
+          <Choice value="-stand-FullBody" track="normal" mask="">
+            <Controller target="y" controller="@ClipController(clip=a2a_mischief_T_fisticuffs_slapFight_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_mischief_T_fisticuffs_slapFight.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="27">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+        </PostureSelector>
+      </Choice>
+      <Choice weight="54" avoidRepeat="True">
+        <PostureSelector parameter="x:posture" unique_id="30">
+          <Choice value="-stand-FullBody" track="normal" mask="">
+            <Controller target="x" controller="@ClipController(clip=a2a_mischief_T_fisticuffs_SpinSlap_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_mischief_T_fisticuffs.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="29">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+        </PostureSelector>
+        <PostureSelector parameter="y:posture" unique_id="32">
+          <Choice value="-stand-FullBody" track="normal" mask="">
+            <Controller target="y" controller="@ClipController(clip=a2a_mischief_T_fisticuffs_SpinSlap_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_mischief_T_fisticuffs.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="31">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+        </PostureSelector>
+      </Choice>
+      <Choice weight="55" avoidRepeat="True">
+        <PostureSelector parameter="x:posture" unique_id="34">
+          <Choice value="-stand-FullBody" track="normal" mask="">
+            <Controller target="x" controller="@ClipController(clip=a2a_mischief_T_fisticuffs_spinArms_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_mischief_T_fisticuffs.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="33">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+        </PostureSelector>
+        <PostureSelector parameter="x:posture" unique_id="36">
+          <Choice value="-stand-FullBody" track="normal" mask="">
+            <Controller target="y" controller="@ClipController(clip=a2a_mischief_T_fisticuffs_spinArms_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_mischief_T_fisticuffs.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="35">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+        </PostureSelector>
+      </Choice>
+      <Choice weight="56" avoidRepeat="True">
+        <PostureSelector parameter="x:posture" unique_id="38">
+          <Choice value="-stand-FullBody" track="normal" mask="">
+            <Controller target="x" controller="@ClipController(clip=a2a_mischief_T_fisticuffs_flyUp_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_mischief_T_fisticuffs.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="37">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+        </PostureSelector>
+        <PostureSelector parameter="x:posture" unique_id="40">
+          <Choice value="-stand-FullBody" track="normal" mask="">
+            <Controller target="y" controller="@ClipController(clip=a2a_mischief_T_fisticuffs_flyUp_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_mischief_T_fisticuffs.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="39">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+        </PostureSelector>
+      </Choice>
+      <Choice weight="24" avoidRepeat="True">
+        <PostureSelector parameter="x:posture" unique_id="42">
+          <Choice value="-stand-FullBody" track="normal" mask="">
+            <Controller target="y" controller="@ClipController(clip=a2a_mischief_T_fisticuffs_spinNoSim_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_mischief_T_fisticuffs.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="41">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+        </PostureSelector>
+        <PostureSelector parameter="x:posture" unique_id="44">
+          <Choice value="-stand-FullBody" track="normal" mask="">
+            <Controller target="x" controller="@ClipController(clip=a2a_mischief_T_fisticuffs_spinNoSim_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_mischief_T_fisticuffs.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="43">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+        </PostureSelector>
+      </Choice>
+      <Choice weight="100" avoidRepeat="True">
+        <PostureSelector parameter="x:posture" unique_id="47">
+          <Choice value="-stand-FullBody" track="normal" mask="">
+            <Controller target="x" controller="@ClipController(clip=a2a_vampireFight_T_simToVampire_loop_garlic_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_vampireFight_T_SimToVampire_garlic.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="45">
+              <TransitionClassList />
+            </Controller>
+            <Controller target="garlic" controller="@ClipController(clip=a2a_vampireFight_T_simToVampire_loop_garlic_braid, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_vampireFight_T_SimToVampire_garlic.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="46">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
+        </PostureSelector>
+        <PostureSelector parameter="y:posture" unique_id="49">
+          <Choice value="-stand-FullBody" track="normal" mask="">
+            <Controller target="y" controller="@ClipController(clip=a2a_vampireFight_T_simToVampire_loop_garlic_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_vampireFight_T_SimToVampire_garlic.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="48">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
+        </PostureSelector>
+      </Choice>
+    </RandomSelector>
+  </State>
+  <State name="Without Garlic" type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <MakeController>
+      <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="83">
+        <Choice weight="100" avoidRepeat="True">
+          <PostureSelector parameter="x:posture" unique_id="52">
+            <Choice value="-stand-FullBody" track="normal" mask="">
+              <Controller target="x" controller="@ClipController(clip=a2a_mischief_T_fisticuffs_headLock_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_mischief_T_fisticuffs_headLock.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="51">
+                <TransitionClassList>
+                  <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                </TransitionClassList>
+              </Controller>
+            </Choice>
+          </PostureSelector>
+          <PostureSelector parameter="y:posture" unique_id="54">
+            <Choice value="-stand-FullBody" track="normal" mask="">
+              <Controller target="y" controller="@ClipController(clip=a2a_mischief_T_fisticuffs_headLock_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_mischief_T_fisticuffs_headLock.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="53">
+                <TransitionClassList>
+                  <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                </TransitionClassList>
+              </Controller>
+            </Choice>
+          </PostureSelector>
+        </Choice>
+        <Choice weight="100" avoidRepeat="True">
+          <PostureSelector parameter="y:posture" unique_id="56">
+            <Choice value="-stand-FullBody" track="normal" mask="">
+              <Controller target="y" controller="@ClipController(clip=a2a_mischief_T_fisticuffs_legSpin_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_mischief_T_fisticuffs.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="55">
+                <TransitionClassList>
+                  <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                </TransitionClassList>
+              </Controller>
+            </Choice>
+          </PostureSelector>
+          <PostureSelector parameter="x:posture" unique_id="58">
+            <Choice value="-stand-FullBody" track="normal" mask="">
+              <Controller target="x" controller="@ClipController(clip=a2a_mischief_T_fisticuffs_legSpin_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_mischief_T_fisticuffs.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="57">
+                <TransitionClassList>
+                  <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                </TransitionClassList>
+              </Controller>
+            </Choice>
+          </PostureSelector>
+        </Choice>
+        <Choice weight="100" avoidRepeat="True">
+          <PostureSelector parameter="x:posture" unique_id="60">
+            <Choice value="-stand-FullBody" track="normal" mask="">
+              <Controller target="x" controller="@ClipController(clip=a2a_mischief_T_fisticuffs_tackle_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_mischief_T_fisticuffs_tackle.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="59">
+                <TransitionClassList>
+                  <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                </TransitionClassList>
+              </Controller>
+            </Choice>
+          </PostureSelector>
+          <PostureSelector parameter="y:posture" unique_id="62">
+            <Choice value="-stand-FullBody" track="normal" mask="">
+              <Controller target="y" controller="@ClipController(clip=a2a_mischief_T_fisticuffs_tackle_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_mischief_T_fisticuffs_tackle.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="61">
+                <TransitionClassList>
+                  <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                </TransitionClassList>
+              </Controller>
+            </Choice>
+          </PostureSelector>
+        </Choice>
+        <Choice weight="100" avoidRepeat="True">
+          <PostureSelector parameter="y:posture" unique_id="64">
+            <Choice value="-stand-FullBody" track="normal" mask="">
+              <Controller target="y" controller="@ClipController(clip=a2a_mischief_T_fisticuffs_slapFight_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_mischief_T_fisticuffs_slapFight.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="63">
+                <TransitionClassList>
+                  <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                </TransitionClassList>
+              </Controller>
+            </Choice>
+          </PostureSelector>
+          <PostureSelector parameter="x:posture" unique_id="66">
+            <Choice value="-stand-FullBody" track="normal" mask="">
+              <Controller target="x" controller="@ClipController(clip=a2a_mischief_T_fisticuffs_slapFight_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_mischief_T_fisticuffs_slapFight.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="65">
+                <TransitionClassList>
+                  <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                </TransitionClassList>
+              </Controller>
+            </Choice>
+          </PostureSelector>
+        </Choice>
+        <Choice weight="100" avoidRepeat="True">
+          <PostureSelector parameter="x:posture" unique_id="68">
+            <Choice value="-stand-FullBody" track="normal" mask="">
+              <Controller target="x" controller="@ClipController(clip=a2a_mischief_T_fisticuffs_SpinSlap_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_mischief_T_fisticuffs.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="67">
+                <TransitionClassList>
+                  <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                </TransitionClassList>
+              </Controller>
+            </Choice>
+          </PostureSelector>
+          <PostureSelector parameter="y:posture" unique_id="70">
+            <Choice value="-stand-FullBody" track="normal" mask="">
+              <Controller target="y" controller="@ClipController(clip=a2a_mischief_T_fisticuffs_SpinSlap_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_mischief_T_fisticuffs.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="69">
+                <TransitionClassList>
+                  <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                </TransitionClassList>
+              </Controller>
+            </Choice>
+          </PostureSelector>
+        </Choice>
+        <Choice weight="100" avoidRepeat="True">
+          <PostureSelector parameter="x:posture" unique_id="72">
+            <Choice value="-stand-FullBody" track="normal" mask="">
+              <Controller target="x" controller="@ClipController(clip=a2a_mischief_T_fisticuffs_spinArms_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_mischief_T_fisticuffs.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="71">
+                <TransitionClassList>
+                  <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                </TransitionClassList>
+              </Controller>
+            </Choice>
+          </PostureSelector>
+          <PostureSelector parameter="x:posture" unique_id="74">
+            <Choice value="-stand-FullBody" track="normal" mask="">
+              <Controller target="y" controller="@ClipController(clip=a2a_mischief_T_fisticuffs_spinArms_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_mischief_T_fisticuffs.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="73">
+                <TransitionClassList>
+                  <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                </TransitionClassList>
+              </Controller>
+            </Choice>
+          </PostureSelector>
+        </Choice>
+        <Choice weight="100" avoidRepeat="True">
+          <PostureSelector parameter="x:posture" unique_id="76">
+            <Choice value="-stand-FullBody" track="normal" mask="">
+              <Controller target="x" controller="@ClipController(clip=a2a_mischief_T_fisticuffs_flyUp_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_mischief_T_fisticuffs.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="75">
+                <TransitionClassList>
+                  <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                </TransitionClassList>
+              </Controller>
+            </Choice>
+          </PostureSelector>
+          <PostureSelector parameter="x:posture" unique_id="78">
+            <Choice value="-stand-FullBody" track="normal" mask="">
+              <Controller target="y" controller="@ClipController(clip=a2a_mischief_T_fisticuffs_flyUp_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_mischief_T_fisticuffs.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="77">
+                <TransitionClassList>
+                  <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                </TransitionClassList>
+              </Controller>
+            </Choice>
+          </PostureSelector>
+        </Choice>
+        <Choice weight="50" avoidRepeat="True">
+          <PostureSelector parameter="x:posture" unique_id="80">
+            <Choice value="-stand-FullBody" track="normal" mask="">
+              <Controller target="y" controller="@ClipController(clip=a2a_mischief_T_fisticuffs_spinNoSim_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_mischief_T_fisticuffs.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="79">
+                <TransitionClassList>
+                  <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                </TransitionClassList>
+              </Controller>
+            </Choice>
+          </PostureSelector>
+          <PostureSelector parameter="x:posture" unique_id="82">
+            <Choice value="-stand-FullBody" track="normal" mask="">
+              <Controller target="x" controller="@ClipController(clip=a2a_mischief_T_fisticuffs_spinNoSim_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_mischief_T_fisticuffs.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="81">
+                <TransitionClassList>
+                  <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                </TransitionClassList>
+              </Controller>
+            </Choice>
+          </PostureSelector>
+        </Choice>
+      </RandomSelector>
+    </MakeController>
+  </State>
+  <State name="changetoDarkForm" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="84">
+      <Choice value="-stand-FullBody" track="normal" mask="" />
+    </PostureSelector>
+    <PostureSelector parameter="y:posture" unique_id="88">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <ParameterSelector parameter="y:hasOccultForm" unique_id="87">
+          <Choice value="false" />
+          <Choice value="true">
+            <ParameterSelector parameter="y:trait_InDarkForm" unique_id="86">
+              <Choice value="false">
+                <Controller target="y" controller="@ClipController(clip=a_vampire_crazyVampireFace_showDarkForm_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_vampire_crazyVampireFace_showDarkForm.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="85">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+              <Choice value="true" />
+            </ParameterSelector>
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+    </PostureSelector>
+  </State>
+</ASM>

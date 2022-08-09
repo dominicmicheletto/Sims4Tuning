@@ -1,0 +1,1004 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="Carry_GenericObject" dcc="sage">
+  <Actor name="x" type="Sim" master="true" virtual="false" />
+  <Actor name="carryObject" type="Object" virtual="false" />
+  <Actor name="sitTemplate" type="Object" virtual="true" />
+  <Actor name="surface" type="Object" virtual="false" />
+  <Actor name="bathtub" type="Object" virtual="true" />
+  <Actor name="floatLounger" type="Object" virtual="true" />
+  <Parameter name="surfaceHeight" type="enum" labels="low,high,discard,inventory,from_xevt,highPlus,chefStation" default="low" />
+  <Parameter name="pickupDirection" type="enum" labels="N,NE,E,W" default="N" />
+  <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
+  <Parameter name="x:species" type="enum" labels="human,dog,smalldog,cat" default="human" />
+  <Parameter name="x:isMermaid" type="bool" labels="" default="False" />
+  <Parameter name="carryObject:carryTrack" type="enum" labels="left,right" default="right" />
+  <Parameter name="carryObject:carryObject" type="string" labels="" default="drinkTumbler" />
+  <Parameter name="carryObject:carryObjectAnimates" type="bool" labels="" default="False" />
+  <Parameter name="carryObject:carryObjectAllowMirror" type="bool" labels="" default="True" />
+  <IkConfiguration name="a2o_pizzaBox_carry.ma">
+    <SourceFile name="a2o_pizzaBox_carry.ma">
+      <MapNamespace namespace="carryObject" actor="carryObject" />
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="surface" actor="surface" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="ad2o_swim_carry.ma">
+    <SourceFile name="ad2o_swim_carry.ma">
+      <MapNamespace namespace="carryObject" actor="carryObject" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <PostureManifest actors="" />
+  <PostureManifest actors="x">
+    <Support family="stand" compatibility="UpperBody" carry_left="*" carry_right="-" surface="*" />
+    <Support family="stand" compatibility="UpperBody" carry_left="-" carry_right="*" surface="*" />
+    <Support family="stand" compatibility="FullBody" carry_left="*" carry_right="-" surface="*" />
+    <Support family="stand" compatibility="FullBody" carry_left="-" carry_right="*" surface="*" />
+    <Support family="sit" compatibility="UpperBody" carry_left="*" carry_right="-" surface="*" />
+    <Support family="sit" compatibility="UpperBody" carry_left="-" carry_right="*" surface="*" />
+    <Support family="sit" compatibility="FullBody" carry_left="*" carry_right="-" surface="*" />
+    <Support family="sit" compatibility="FullBody" carry_left="-" carry_right="*" surface="*" />
+    <Support name="standExclusive" family="none" compatibility="FullBody" carry_left="*" carry_right="-" surface="*" />
+    <Support name="standExclusive" family="none" compatibility="FullBody" carry_left="-" carry_right="*" surface="*" />
+    <Support name="bathTub_TakeBath" family="none" compatibility="FullBody" carry_left="*" carry_right="-" surface="*" />
+    <Support name="bathTub_TakeBath" family="none" compatibility="FullBody" carry_left="-" carry_right="*" surface="*" />
+    <Support name="Bathtub_Bubblebath" family="none" compatibility="FullBody" carry_left="*" carry_right="-" surface="*" />
+    <Support name="Bathtub_Bubblebath" family="none" compatibility="FullBody" carry_left="-" carry_right="*" surface="*" />
+    <Support name="hotTub_sit" family="none" compatibility="FullBody" carry_left="*" carry_right="-" surface="*" />
+    <Support name="hotTub_sit" family="none" compatibility="FullBody" carry_left="-" carry_right="*" surface="*" />
+    <Support name="sitOnGround" family="none" compatibility="FullBody" carry_left="-" carry_right="*" surface="*" />
+    <Support name="sitOnGround" family="none" compatibility="FullBody" carry_left="*" carry_right="-" surface="*" />
+    <Support name="swim" family="none" compatibility="FullBody" carry_left="-" carry_right="-" surface="*" />
+    <Support family="movingStand" compatibility="UpperBody" carry_left="*" carry_right="-" surface="*" />
+    <Support family="movingStand" compatibility="UpperBody" carry_left="-" carry_right="*" surface="*" />
+    <Support name="Float_LoungeChair" family="none" compatibility="FullBody" carry_left="*" carry_right="-" surface="*" />
+    <Support name="Float_LoungeChair" family="none" compatibility="FullBody" carry_left="-" carry_right="*" surface="*" />
+    <Support name="loungeChair_Lounging" family="none" compatibility="FullBody" carry_left="*" carry_right="-" surface="*" />
+    <Support name="loungeChair_Lounging" family="none" compatibility="FullBody" carry_left="-" carry_right="*" surface="*" />
+    <Support name="Kotatsu_Sit_Posture" family="none" compatibility="FullBody" carry_left="*" carry_right="*" surface="*" />
+  </PostureManifest>
+  <State type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" name="Carry" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="mirror" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="pickup" focus="body only" facialoverlays="true" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="putDown" focus="none" facialoverlays="true" tailoverlays="true" />
+  <Connection from="Carry" to="putDown" />
+  <Connection from="entry" to="mirror" />
+  <Connection from="mirror" to="pickup" />
+  <Connection from="pickup" to="Carry" />
+  <Connection from="putDown" to="exit" />
+  <State name="Carry" type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <MakeController>
+      <ParameterSelector parameter="carryObject:carryTrack" unique_id="16">
+        <Choice value="left">
+          <ParameterSelector parameter="carryObject:carryObjectAllowMirror" unique_id="12">
+            <Choice value="false">
+              <PostureSelector parameter="x:posture" unique_id="10">
+                <Choice value="Bathtub_Bubblebath--FullBody" track="carryleft" mask="Trackmask_Carry_Left">
+                  <ParameterSelector parameter="x:species" unique_id="5">
+                    <Choice value="human">
+                      <Controller target="x" controller="@ClipController(clip=a2o_{carryObject:carryObject}_carry_x, loop_count=#1)" overridePosture="false" mask="Trackmask_Carry_Right" track="carryleft" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="" focus="full body" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="3">
+                        <TransitionClassList>
+                          <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                        </TransitionClassList>
+                      </Controller>
+                      <ParameterSelector parameter="carryObject:carryObjectAnimates" unique_id="2">
+                        <Choice value="false" />
+                        <Choice value="true">
+                          <Controller target="carryObject" controller="@ClipController(clip=a2o_{carryObject:carryObject}_carry_{carryObject:carryObject}, loop_count=#1)" overridePosture="false" mask="" track="carryright" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="" focus="full body" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="1">
+                            <TransitionClassList>
+                              <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                            </TransitionClassList>
+                          </Controller>
+                        </Choice>
+                      </ParameterSelector>
+                    </Choice>
+                    <Choice value="dog">
+                      <Controller target="x" controller="@ClipController(clip=ad2o_{carryObject:carryObject}_carry_x, loop_count=#1)" overridePosture="true" mask="Trackmask_Pet_Carry" track="carryright" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="" focus="full body" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="4">
+                        <TransitionClassList>
+                          <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                        </TransitionClassList>
+                      </Controller>
+                      <Reference target="2" />
+                    </Choice>
+                    <Choice value="smalldog">
+                      <Reference target="4" />
+                      <Reference target="2" />
+                    </Choice>
+                    <Choice value="cat">
+                      <Reference target="4" />
+                      <Reference target="2" />
+                    </Choice>
+                  </ParameterSelector>
+                </Choice>
+                <Choice value="bathTub_TakeBath--FullBody" track="carryleft" mask="Trackmask_Carry_Left">
+                  <Reference target="5" />
+                </Choice>
+                <Choice value="Float_LoungeChair--FullBody" track="carryleft" mask="Trackmask_Carry_Left">
+                  <Reference target="5" />
+                </Choice>
+                <Choice value="hotTub_sit--FullBody" track="carryleft" mask="Trackmask_Carry_Left">
+                  <ParameterSelector parameter="x:age" unique_id="9">
+                    <Choice value="baby" />
+                    <Choice value="toddler" />
+                    <Choice value="child">
+                      <Controller target="x" controller="@ClipController(clip=c2o_hotTub_{carryObject:carryObject}_carry_x, loop_count=#1)" overridePosture="false" mask="Trackmask_Carry_Right" track="carryleft" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="" focus="full body" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="8">
+                        <TransitionClassList>
+                          <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                        </TransitionClassList>
+                      </Controller>
+                      <ParameterSelector parameter="carryObject:carryObjectAnimates" unique_id="7">
+                        <Choice value="false" />
+                        <Choice value="true">
+                          <Controller target="carryObject" controller="@ClipController(clip=c2o_hotTub_{carryObject:carryObject}_carry_{carryObject:carryObject}, loop_count=#1)" overridePosture="false" mask="" track="carryright" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="" focus="full body" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="6">
+                            <TransitionClassList>
+                              <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                            </TransitionClassList>
+                          </Controller>
+                        </Choice>
+                      </ParameterSelector>
+                    </Choice>
+                    <Choice value="teen">
+                      <Reference target="3" />
+                      <Reference target="2" />
+                    </Choice>
+                    <Choice value="youngadult">
+                      <Reference target="3" />
+                      <Reference target="2" />
+                    </Choice>
+                    <Choice value="adult">
+                      <Reference target="3" />
+                      <Reference target="2" />
+                    </Choice>
+                    <Choice value="elder">
+                      <Reference target="3" />
+                      <Reference target="2" />
+                    </Choice>
+                  </ParameterSelector>
+                </Choice>
+                <Choice value="Kotatsu_Sit_Posture--FullBody" track="carryleft" mask="Trackmask_Carry_Left">
+                  <Reference target="5" />
+                </Choice>
+                <Choice value="loungeChair_Lounging--FullBody" track="carryleft" mask="Trackmask_Carry_Left">
+                  <Reference target="5" />
+                </Choice>
+                <Choice value="-movingStand-UpperBody" track="carryleft" mask="Trackmask_UpperBody" />
+                <Choice value="-sit-FullBody" track="carryleft" mask="Trackmask_Carry_Left">
+                  <Reference target="5" />
+                </Choice>
+                <Choice value="sitOnGround--FullBody" track="carryleft" mask="Trackmask_Carry_Left">
+                  <Reference target="5" />
+                </Choice>
+                <Choice value="-sit-UpperBody" track="carryleft" mask="Trackmask_Carry_Left">
+                  <Reference target="5" />
+                </Choice>
+                <Choice value="standExclusive--FullBody" track="carryleft" mask="Trackmask_Carry_Left">
+                  <Reference target="5" />
+                </Choice>
+                <Choice value="-stand-FullBody" track="carryleft" mask="Trackmask_Carry_Left">
+                  <Reference target="5" />
+                </Choice>
+                <Choice value="-stand-UpperBody" track="carryleft" mask="Trackmask_Carry_Left">
+                  <Reference target="5" />
+                </Choice>
+                <Choice value="swim--FullBody" track="normal" mask="" />
+              </PostureSelector>
+            </Choice>
+            <Choice value="true">
+              <PostureSelector parameter="x:posture" unique_id="11">
+                <Choice value="Bathtub_Bubblebath--FullBody" track="carryleft" mask="Trackmask_Carry_Right">
+                  <Reference target="5" />
+                </Choice>
+                <Choice value="bathTub_TakeBath--FullBody" track="carryleft" mask="Trackmask_Carry_Right">
+                  <Reference target="5" />
+                </Choice>
+                <Choice value="Float_LoungeChair--FullBody" track="carryleft" mask="Trackmask_Carry_Right">
+                  <Reference target="5" />
+                </Choice>
+                <Choice value="hotTub_sit--FullBody" track="carryleft" mask="Trackmask_Carry_Right">
+                  <Reference target="9" />
+                </Choice>
+                <Choice value="Kotatsu_Sit_Posture--FullBody" track="carryleft" mask="Trackmask_Carry_Right">
+                  <Reference target="5" />
+                </Choice>
+                <Choice value="loungeChair_Lounging--FullBody" track="carryleft" mask="Trackmask_Carry_Right">
+                  <Reference target="5" />
+                </Choice>
+                <Choice value="-movingStand-UpperBody" track="carryleft" mask="Trackmask_UpperBody">
+                  <Reference target="5" />
+                </Choice>
+                <Choice value="-sit-FullBody" track="carryleft" mask="Trackmask_Carry_Right">
+                  <Reference target="5" />
+                </Choice>
+                <Choice value="sitOnGround--FullBody" track="carryleft" mask="Trackmask_Carry_Right">
+                  <Reference target="5" />
+                </Choice>
+                <Choice value="-sit-UpperBody" track="carryleft" mask="Trackmask_Carry_Right">
+                  <Reference target="5" />
+                </Choice>
+                <Choice value="standExclusive--FullBody" track="carryleft" mask="Trackmask_Carry_Right">
+                  <Reference target="5" />
+                </Choice>
+                <Choice value="-stand-FullBody" track="carryleft" mask="Trackmask_Carry_Right">
+                  <Reference target="5" />
+                </Choice>
+                <Choice value="-stand-UpperBody" track="carryleft" mask="Trackmask_Carry_Right">
+                  <Reference target="5" />
+                </Choice>
+                <Choice value="swim--FullBody" track="normal" mask="" />
+              </PostureSelector>
+            </Choice>
+          </ParameterSelector>
+        </Choice>
+        <Choice value="right">
+          <ParameterSelector parameter="carryObject:carryObjectAllowMirror" unique_id="15">
+            <Choice value="false">
+              <PostureSelector parameter="x:posture" unique_id="13">
+                <Choice value="Bathtub_Bubblebath--FullBody" track="carryright" mask="Trackmask_Carry_Left">
+                  <Reference target="5" />
+                </Choice>
+                <Choice value="bathTub_TakeBath--FullBody" track="carryright" mask="Trackmask_Carry_Left">
+                  <Reference target="5" />
+                </Choice>
+                <Choice value="Float_LoungeChair--FullBody" track="carryright" mask="Trackmask_Carry_Left">
+                  <Reference target="5" />
+                </Choice>
+                <Choice value="hotTub_sit--FullBody" track="carryright" mask="Trackmask_Carry_Left">
+                  <Reference target="9" />
+                </Choice>
+                <Choice value="Kotatsu_Sit_Posture--FullBody" track="carryright" mask="Trackmask_Carry_Left">
+                  <Reference target="5" />
+                </Choice>
+                <Choice value="loungeChair_Lounging--FullBody" track="carryright" mask="Trackmask_Carry_Left">
+                  <Reference target="5" />
+                </Choice>
+                <Choice value="-movingStand-UpperBody" track="carryright" mask="Trackmask_UpperBody">
+                  <Reference target="5" />
+                </Choice>
+                <Choice value="-sit-FullBody" track="carryright" mask="Trackmask_Carry_Left">
+                  <Reference target="5" />
+                </Choice>
+                <Choice value="sitOnGround--FullBody" track="carryright" mask="Trackmask_Carry_Left">
+                  <Reference target="5" />
+                </Choice>
+                <Choice value="-sit-UpperBody" track="carryright" mask="Trackmask_Carry_Left">
+                  <Reference target="5" />
+                </Choice>
+                <Choice value="standExclusive--FullBody" track="carryright" mask="Trackmask_Carry_Left">
+                  <Reference target="5" />
+                </Choice>
+                <Choice value="-stand-FullBody" track="carryright" mask="Trackmask_Carry_Left">
+                  <Reference target="5" />
+                </Choice>
+                <Choice value="-stand-UpperBody" track="carryright" mask="Trackmask_Carry_Left">
+                  <Reference target="5" />
+                </Choice>
+                <Choice value="swim--FullBody" track="normal" mask="">
+                  <Reference target="5" />
+                </Choice>
+              </PostureSelector>
+            </Choice>
+            <Choice value="true">
+              <PostureSelector parameter="x:posture" unique_id="14">
+                <Choice value="Bathtub_Bubblebath--FullBody" track="carryright" mask="Trackmask_Carry_Right">
+                  <Reference target="5" />
+                </Choice>
+                <Choice value="bathTub_TakeBath--FullBody" track="carryright" mask="Trackmask_Carry_Right">
+                  <Reference target="5" />
+                </Choice>
+                <Choice value="Float_LoungeChair--FullBody" track="carryright" mask="Trackmask_Carry_Right">
+                  <Reference target="5" />
+                </Choice>
+                <Choice value="hotTub_sit--FullBody" track="carryright" mask="Trackmask_Carry_Right">
+                  <Reference target="9" />
+                </Choice>
+                <Choice value="Kotatsu_Sit_Posture--FullBody" track="carryright" mask="Trackmask_Carry_Right">
+                  <Reference target="5" />
+                </Choice>
+                <Choice value="loungeChair_Lounging--FullBody" track="carryright" mask="Trackmask_Carry_Right">
+                  <Reference target="5" />
+                </Choice>
+                <Choice value="-movingStand-UpperBody" track="carryright" mask="Trackmask_UpperBody">
+                  <Reference target="5" />
+                </Choice>
+                <Choice value="-sit-FullBody" track="carryright" mask="Trackmask_Carry_Right">
+                  <Reference target="5" />
+                </Choice>
+                <Choice value="sitOnGround--FullBody" track="carryright" mask="Trackmask_Carry_Right">
+                  <Reference target="5" />
+                </Choice>
+                <Choice value="-sit-UpperBody" track="carryright" mask="Trackmask_Carry_Right">
+                  <Reference target="5" />
+                </Choice>
+                <Choice value="standExclusive--FullBody" track="carryright" mask="Trackmask_Carry_Right">
+                  <Reference target="5" />
+                </Choice>
+                <Choice value="-stand-FullBody" track="carryright" mask="Trackmask_Carry_Right">
+                  <Reference target="5" />
+                </Choice>
+                <Choice value="-stand-UpperBody" track="carryright" mask="Trackmask_Carry_Right">
+                  <Reference target="5" />
+                </Choice>
+                <Choice value="swim--FullBody" track="normal" mask="">
+                  <Reference target="5" />
+                </Choice>
+              </PostureSelector>
+            </Choice>
+          </ParameterSelector>
+        </Choice>
+      </ParameterSelector>
+    </MakeController>
+  </State>
+  <State name="mirror" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <ParameterSelector parameter="carryObject:carryTrack" unique_id="22">
+      <Choice value="left">
+        <ParameterSelector parameter="carryObject:carryObjectAnimates" unique_id="19">
+          <Choice value="false" />
+          <Choice value="true">
+            <ParameterSelector parameter="carryObject:carryObjectAllowMirror" unique_id="18">
+              <Choice value="false" />
+              <Choice value="true">
+                <SetMirror target="carryObject" mirror="true" unique_id="17" />
+              </Choice>
+            </ParameterSelector>
+          </Choice>
+        </ParameterSelector>
+        <ParameterSelector parameter="carryObject:carryObjectAllowMirror" unique_id="21">
+          <Choice value="false" />
+          <Choice value="true">
+            <SetMirror target="x" mirror="true" unique_id="20" />
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+      <Choice value="right" />
+    </ParameterSelector>
+  </State>
+  <State name="pickup" type="public" skippable="false" interrupt_this="false" focus="body only" facialoverlays="true" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="62">
+      <Choice value="Bathtub_Bubblebath--FullBody" track="carryinteraction" mask="">
+        <ParameterSelector parameter="x:age" unique_id="29">
+          <Choice value="baby">
+            <Controller target="x" controller="@ClipController(clip=a2o_bathTub_{carryObject:carryObject}_start_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="23">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+            <Controller target="bathtub" controller="@ClipController(clip=a2o_bathTub_{carryObject:carryObject}_start_bathtub, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="24">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice value="toddler">
+            <Reference target="23" />
+            <Reference target="24" />
+          </Choice>
+          <Choice value="child">
+            <Reference target="23" />
+            <Reference target="24" />
+          </Choice>
+          <Choice value="teen">
+            <ParameterSelector parameter="x:isMermaid" unique_id="28">
+              <Choice value="false">
+                <Reference target="23" />
+                <Reference target="24" />
+              </Choice>
+              <Choice value="true">
+                <Controller target="bathtub" controller="@ClipController(clip=a2o_bathTub_{carryObject:carryObject}_start_bathtub, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="25">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <ActorMask target="x" mask="Trackmask_UpperBody" unique_id="27" />
+                <Controller target="x" controller="@ClipController(clip=a2o_bathTub_mermaid_{carryObject:carryObject}_start_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="carryinteraction" mirror_conditional="False" suppress_footsteps="True" transition_class_in="Default" transition_class_out="Default" ik_configuration="" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="26">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+              </Choice>
+            </ParameterSelector>
+          </Choice>
+          <Choice value="youngadult">
+            <Reference target="28" />
+          </Choice>
+          <Choice value="adult">
+            <Reference target="28" />
+          </Choice>
+          <Choice value="elder">
+            <Reference target="28" />
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+      <Choice value="bathTub_TakeBath--FullBody" track="carryinteraction" mask="">
+        <Reference target="29" />
+      </Choice>
+      <Choice value="Float_LoungeChair--FullBody" track="carryinteraction" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2o_floatLounger_{carryObject:carryObject}_start_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="30">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+      <Choice value="hotTub_sit--FullBody" track="carryinteraction" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2o_hotTub_{carryObject:carryObject}_start_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="31">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
+      <Choice value="Kotatsu_Sit_Posture--FullBody" track="normal" mask="Trackmask_UpperBody">
+        <ParameterSelector parameter="x:age" unique_id="35">
+          <Choice value="baby" />
+          <Choice value="toddler" />
+          <Choice value="child">
+            <Controller target="x" controller="@ClipController(clip=a2o_{carryObject:carryObject}_carry_pickUp_high_seated_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="" focus="full body" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="34">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.5333334" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.5333334" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+            <ParameterSelector parameter="carryObject:carryObjectAnimates" unique_id="33">
+              <Choice value="false" />
+              <Choice value="true">
+                <Controller target="carryObject" controller="@ClipController(clip=a2o_{carryObject:carryObject}_carry_pickUp_high_seated_{carryObject:carryObject}, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="" focus="full body" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="32">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+              </Choice>
+            </ParameterSelector>
+          </Choice>
+          <Choice value="teen">
+            <Reference target="34" />
+            <Reference target="33" />
+          </Choice>
+          <Choice value="youngadult">
+            <Reference target="34" />
+            <Reference target="33" />
+          </Choice>
+          <Choice value="adult">
+            <Reference target="34" />
+            <Reference target="33" />
+          </Choice>
+          <Choice value="elder">
+            <Reference target="34" />
+            <Reference target="33" />
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+      <Choice value="loungeChair_Lounging--FullBody" track="carryinteraction" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2o_loungeChair_{carryObject:carryObject}_start_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="36">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+      <Choice value="-movingStand-UpperBody" track="normalplus" mask="Trackmask_UpperBody">
+        <ParameterSelector parameter="surfaceHeight" unique_id="48">
+          <Choice value="low">
+            <Controller target="x" controller="@ClipController(clip=a2o_{carryObject:carryObject}_carry_pickUp_low_x, loop_count=#1)" overridePosture="true" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="" focus="full body" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="39">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+            <ParameterSelector parameter="carryObject:carryObjectAnimates" unique_id="38">
+              <Choice value="false" />
+              <Choice value="true">
+                <Controller target="carryObject" controller="@ClipController(clip=a2o_{carryObject:carryObject}_carry_pickUp_low_{carryObject:carryObject}, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="" focus="full body" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="37">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+              </Choice>
+            </ParameterSelector>
+          </Choice>
+          <Choice value="high">
+            <Controller target="x" controller="@ClipController(clip=a2o_{carryObject:carryObject}_carry_pickUp_high_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="" focus="full body" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="42">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+            <ParameterSelector parameter="carryObject:carryObjectAnimates" unique_id="41">
+              <Choice value="false" />
+              <Choice value="true">
+                <Controller target="carryObject" controller="@ClipController(clip=a2o_{carryObject:carryObject}_carry_pickUp_high_{carryObject:carryObject}, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="" focus="full body" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="40">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+              </Choice>
+            </ParameterSelector>
+          </Choice>
+          <Choice value="discard">
+            <ParameterSelector parameter="x:species" unique_id="46">
+              <Choice value="human">
+                <Controller target="x" controller="@ClipController(clip=a2o_{carryObject:carryObject}_carry_pickUp_inventory_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="" focus="full body" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="45">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <ParameterSelector parameter="carryObject:carryObjectAnimates" unique_id="44">
+                  <Choice value="false" />
+                  <Choice value="true">
+                    <Controller target="carryObject" controller="@ClipController(clip=a2o_{carryObject:carryObject}_carry_pickUp_inventory_{carryObject:carryObject}, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="" focus="full body" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="43">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                  </Choice>
+                </ParameterSelector>
+              </Choice>
+              <Choice value="dog">
+                <Reference target="39" />
+                <Reference target="38" />
+              </Choice>
+              <Choice value="smalldog">
+                <Reference target="39" />
+                <Reference target="38" />
+              </Choice>
+              <Choice value="cat">
+                <Reference target="39" />
+                <Reference target="38" />
+              </Choice>
+            </ParameterSelector>
+          </Choice>
+          <Choice value="inventory">
+            <Reference target="46" />
+          </Choice>
+          <Choice value="from_xevt" />
+          <Choice value="highPlus">
+            <Reference target="42" />
+            <Reference target="41" />
+          </Choice>
+          <Choice value="chefStation">
+            <Controller target="x" controller="@ClipController(clip=a2o_pizzaBox_carry_pickUp_chefStation_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_pizzaBox_carry.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="47">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+      <Choice value="-sit-FullBody" track="carryinteraction" mask="">
+        <ParameterSelector parameter="surfaceHeight" unique_id="60">
+          <Choice value="low">
+            <Controller target="x" controller="@ClipController(clip=a2o_{carryObject:carryObject}_carry_pickUp_low_seated_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="" focus="full body" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="51">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+            <ParameterSelector parameter="carryObject:carryObjectAnimates" unique_id="50">
+              <Choice value="false" />
+              <Choice value="true">
+                <Controller target="carryObject" controller="@ClipController(clip=a2o_{carryObject:carryObject}_carry_pickUp_low_seated_{carryObject:carryObject}, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="" focus="full body" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="49">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+              </Choice>
+            </ParameterSelector>
+          </Choice>
+          <Choice value="high">
+            <ParameterSelector parameter="x:species" unique_id="55">
+              <Choice value="human">
+                <Controller target="x" controller="@ClipController(clip=a2o_{carryObject:carryObject}_carry_pickUp_high_seated_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="" focus="full body" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="54">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.5333334" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.5333334" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <ParameterSelector parameter="carryObject:carryObjectAnimates" unique_id="53">
+                  <Choice value="false" />
+                  <Choice value="true">
+                    <Controller target="carryObject" controller="@ClipController(clip=a2o_{carryObject:carryObject}_carry_pickUp_high_seated_{carryObject:carryObject}, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="" focus="full body" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="52">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                  </Choice>
+                </ParameterSelector>
+              </Choice>
+              <Choice value="dog">
+                <Reference target="51" />
+                <Reference target="50" />
+              </Choice>
+              <Choice value="smalldog">
+                <Reference target="51" />
+                <Reference target="50" />
+              </Choice>
+              <Choice value="cat">
+                <Reference target="51" />
+                <Reference target="50" />
+              </Choice>
+            </ParameterSelector>
+          </Choice>
+          <Choice value="discard">
+            <ParameterSelector parameter="x:species" unique_id="59">
+              <Choice value="human">
+                <Controller target="x" controller="@ClipController(clip=a2o_{carryObject:carryObject}_carry_pickUp_inventory_seated_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="" focus="full body" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="58">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <ParameterSelector parameter="carryObject:carryObjectAnimates" unique_id="57">
+                  <Choice value="false" />
+                  <Choice value="true">
+                    <Controller target="carryObject" controller="@ClipController(clip=a2o_{carryObject:carryObject}_carry_pickUp_inventory_seated_{carryObject:carryObject}, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="" focus="full body" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="56">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                  </Choice>
+                </ParameterSelector>
+              </Choice>
+              <Choice value="dog">
+                <Reference target="51" />
+                <Reference target="50" />
+              </Choice>
+              <Choice value="smalldog">
+                <Reference target="51" />
+                <Reference target="50" />
+              </Choice>
+              <Choice value="cat">
+                <Reference target="51" />
+                <Reference target="50" />
+              </Choice>
+            </ParameterSelector>
+          </Choice>
+          <Choice value="inventory">
+            <Reference target="59" />
+          </Choice>
+          <Choice value="from_xevt" />
+          <Choice value="highPlus">
+            <Reference target="55" />
+          </Choice>
+          <Choice value="chefStation" />
+        </ParameterSelector>
+      </Choice>
+      <Choice value="sitOnGround--FullBody" track="carryinteraction" mask="">
+        <Reference target="60" />
+      </Choice>
+      <Choice value="-sit-UpperBody" track="carryinteraction" mask="Trackmask_UpperBody">
+        <Reference target="60" />
+      </Choice>
+      <Choice value="standExclusive--FullBody" track="carryinteraction" mask="Trackmask_UpperBody">
+        <Reference target="48" />
+      </Choice>
+      <Choice value="-stand-FullBody" track="carryinteraction" mask="">
+        <Reference target="48" />
+      </Choice>
+      <Choice value="-stand-UpperBody" track="carryinteraction" mask="Trackmask_UpperBody">
+        <Reference target="48" />
+      </Choice>
+      <Choice value="swim--FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=ad2o_swim_carry_pickUp_low_x, loop_count=#1)" overridePosture="true" mask="Trackmask_Dog_HeadNeckFace_Feathered" track="ultra" mirror_conditional="False" suppress_footsteps="True" transition_class_in="Default" transition_class_out="Default" ik_configuration="ad2o_swim_carry.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="61">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="putDown" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="true" tailoverlays="true">
+    <description />
+    <Stop target="carryObject" track="carryright" blend_in="-1" unique_id="63" />
+    <PostureSelector parameter="x:posture" unique_id="102">
+      <Choice value="Bathtub_Bubblebath--FullBody" track="carryinteraction" mask="">
+        <ParameterSelector parameter="x:age" unique_id="70">
+          <Choice value="baby">
+            <Controller target="bathtub" controller="@ClipController(clip=a2o_bathTub_{carryObject:carryObject}_stop_bathtub, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="64">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+            <Controller target="x" controller="@ClipController(clip=a2o_bathTub_{carryObject:carryObject}_stop_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="65">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice value="toddler">
+            <Reference target="64" />
+            <Reference target="65" />
+          </Choice>
+          <Choice value="child">
+            <Reference target="64" />
+            <Reference target="65" />
+          </Choice>
+          <Choice value="teen">
+            <ParameterSelector parameter="x:isMermaid" unique_id="69">
+              <Choice value="false">
+                <Reference target="64" />
+                <Reference target="65" />
+              </Choice>
+              <Choice value="true">
+                <ActorMask target="x" mask="Trackmask_UpperBody" unique_id="67" />
+                <Controller target="x" controller="@ClipController(clip=a2o_bathtub_mermaid_{carryObject:carryObject}_stop_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="carryinteraction" mirror_conditional="False" suppress_footsteps="True" transition_class_in="Default" transition_class_out="Default" ik_configuration="" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="66">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <Controller target="bathtub" controller="@ClipController(clip=a2o_bathTub_{carryObject:carryObject}_stop_bathtub, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="68">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+              </Choice>
+            </ParameterSelector>
+          </Choice>
+          <Choice value="youngadult">
+            <Reference target="69" />
+          </Choice>
+          <Choice value="adult">
+            <Reference target="69" />
+          </Choice>
+          <Choice value="elder">
+            <Reference target="69" />
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+      <Choice value="bathTub_TakeBath--FullBody" track="carryinteraction" mask="">
+        <Reference target="70" />
+      </Choice>
+      <Choice value="Float_LoungeChair--FullBody" track="carryinteraction" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2o_floatLounger_{carryObject:carryObject}_stop_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="71">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+      <Choice value="hotTub_sit--FullBody" track="carryinteraction" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2o_hotTub_{carryObject:carryObject}_stop_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="72">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
+      <Choice value="Kotatsu_Sit_Posture--FullBody" track="normal" mask="Trackmask_UpperBody">
+        <ParameterSelector parameter="x:age" unique_id="76">
+          <Choice value="baby" />
+          <Choice value="toddler" />
+          <Choice value="child">
+            <Controller target="x" controller="@ClipController(clip=a2o_{carryObject:carryObject}_carry_putDown_high_seated_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="" focus="full body" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="75">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.5333334" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.5333334" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+            <ParameterSelector parameter="carryObject:carryObjectAnimates" unique_id="74">
+              <Choice value="false" />
+              <Choice value="true">
+                <Controller target="carryObject" controller="@ClipController(clip=a2o_{carryObject:carryObject}_carry_putDown_high_seated_{carryObject:carryObject}, loop_count=#1)" overridePosture="true" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="" focus="full body" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="73">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+              </Choice>
+            </ParameterSelector>
+          </Choice>
+          <Choice value="teen">
+            <Reference target="75" />
+            <Reference target="74" />
+          </Choice>
+          <Choice value="youngadult">
+            <Reference target="75" />
+            <Reference target="74" />
+          </Choice>
+          <Choice value="adult">
+            <Reference target="75" />
+            <Reference target="74" />
+          </Choice>
+          <Choice value="elder">
+            <Reference target="75" />
+            <Reference target="74" />
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+      <Choice value="loungeChair_Lounging--FullBody" track="carryinteraction" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2o_loungeChair_{carryObject:carryObject}_stop_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="77">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+      <Choice value="-movingStand-UpperBody" track="normalplus" mask="Trackmask_UpperBody">
+        <ParameterSelector parameter="surfaceHeight" unique_id="89">
+          <Choice value="low">
+            <Controller target="x" controller="@ClipController(clip=a2o_{carryObject:carryObject}_carry_putDown_low_x, loop_count=#1)" overridePosture="true" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="" focus="full body" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="80">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+            <ParameterSelector parameter="carryObject:carryObjectAnimates" unique_id="79">
+              <Choice value="false" />
+              <Choice value="true">
+                <Controller target="carryObject" controller="@ClipController(clip=a2o_{carryObject:carryObject}_carry_putDown_low_{carryObject:carryObject}, loop_count=#1)" overridePosture="true" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="" focus="full body" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="78">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+              </Choice>
+            </ParameterSelector>
+          </Choice>
+          <Choice value="high">
+            <ParameterSelector parameter="x:species" unique_id="84">
+              <Choice value="human">
+                <Controller target="x" controller="@ClipController(clip=a2o_{carryObject:carryObject}_carry_putDown_high_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="" focus="full body" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="83">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <ParameterSelector parameter="carryObject:carryObjectAnimates" unique_id="82">
+                  <Choice value="false" />
+                  <Choice value="true">
+                    <Controller target="carryObject" controller="@ClipController(clip=a2o_{carryObject:carryObject}_carry_putDown_high_{carryObject:carryObject}, loop_count=#1)" overridePosture="true" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="" focus="full body" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="81">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                  </Choice>
+                </ParameterSelector>
+              </Choice>
+              <Choice value="dog">
+                <Reference target="80" />
+                <Reference target="79" />
+              </Choice>
+              <Choice value="smalldog">
+                <Reference target="80" />
+                <Reference target="79" />
+              </Choice>
+              <Choice value="cat">
+                <Reference target="80" />
+                <Reference target="79" />
+              </Choice>
+            </ParameterSelector>
+          </Choice>
+          <Choice value="discard">
+            <ParameterSelector parameter="x:species" unique_id="88">
+              <Choice value="human">
+                <Controller target="x" controller="@ClipController(clip=a2o_{carryObject:carryObject}_carry_putDown_inventory_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="" focus="full body" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="87">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <ParameterSelector parameter="carryObject:carryObjectAnimates" unique_id="86">
+                  <Choice value="false" />
+                  <Choice value="true">
+                    <Controller target="carryObject" controller="@ClipController(clip=a2o_{carryObject:carryObject}_carry_putDown_inventory_{carryObject:carryObject}, loop_count=#1)" overridePosture="true" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="" focus="full body" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="85">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                  </Choice>
+                </ParameterSelector>
+              </Choice>
+              <Choice value="dog">
+                <Reference target="80" />
+                <Reference target="79" />
+              </Choice>
+              <Choice value="smalldog">
+                <Reference target="80" />
+                <Reference target="79" />
+              </Choice>
+              <Choice value="cat">
+                <Reference target="80" />
+                <Reference target="79" />
+              </Choice>
+            </ParameterSelector>
+          </Choice>
+          <Choice value="inventory">
+            <Reference target="88" />
+          </Choice>
+          <Choice value="from_xevt" />
+          <Choice value="highPlus">
+            <Reference target="84" />
+          </Choice>
+          <Choice value="chefStation" />
+        </ParameterSelector>
+      </Choice>
+      <Choice value="-sit-FullBody" track="carryinteraction" mask="">
+        <ParameterSelector parameter="surfaceHeight" unique_id="101">
+          <Choice value="low">
+            <Controller target="x" controller="@ClipController(clip=a2o_{carryObject:carryObject}_carry_putDown_low_seated_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="" focus="full body" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="92">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+            <ParameterSelector parameter="carryObject:carryObjectAnimates" unique_id="91">
+              <Choice value="false" />
+              <Choice value="true">
+                <Controller target="carryObject" controller="@ClipController(clip=a2o_{carryObject:carryObject}_carry_putDown_low_seated_{carryObject:carryObject}, loop_count=#1)" overridePosture="true" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="" focus="full body" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="90">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+              </Choice>
+            </ParameterSelector>
+          </Choice>
+          <Choice value="high">
+            <ParameterSelector parameter="x:species" unique_id="96">
+              <Choice value="human">
+                <Controller target="x" controller="@ClipController(clip=a2o_{carryObject:carryObject}_carry_putDown_high_seated_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="" focus="full body" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="95">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.5333334" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.5333334" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <ParameterSelector parameter="carryObject:carryObjectAnimates" unique_id="94">
+                  <Choice value="false" />
+                  <Choice value="true">
+                    <Controller target="carryObject" controller="@ClipController(clip=a2o_{carryObject:carryObject}_carry_putDown_high_seated_{carryObject:carryObject}, loop_count=#1)" overridePosture="true" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="" focus="full body" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="93">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                  </Choice>
+                </ParameterSelector>
+              </Choice>
+              <Choice value="dog">
+                <Reference target="92" />
+                <Reference target="91" />
+              </Choice>
+              <Choice value="smalldog">
+                <Reference target="92" />
+                <Reference target="91" />
+              </Choice>
+              <Choice value="cat">
+                <Reference target="92" />
+                <Reference target="91" />
+              </Choice>
+            </ParameterSelector>
+          </Choice>
+          <Choice value="discard">
+            <ParameterSelector parameter="x:species" unique_id="100">
+              <Choice value="human">
+                <Controller target="x" controller="@ClipController(clip=a2o_{carryObject:carryObject}_carry_putDown_inventory_seated_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="" focus="full body" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="99">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <ParameterSelector parameter="carryObject:carryObjectAnimates" unique_id="98">
+                  <Choice value="false" />
+                  <Choice value="true">
+                    <Controller target="carryObject" controller="@ClipController(clip=a2o_{carryObject:carryObject}_carry_putDown_inventory_seated_{carryObject:carryObject}, loop_count=#1)" overridePosture="true" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="" focus="full body" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="97">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                  </Choice>
+                </ParameterSelector>
+              </Choice>
+              <Choice value="dog">
+                <Reference target="92" />
+                <Reference target="91" />
+              </Choice>
+              <Choice value="smalldog">
+                <Reference target="92" />
+                <Reference target="91" />
+              </Choice>
+              <Choice value="cat">
+                <Reference target="92" />
+                <Reference target="91" />
+              </Choice>
+            </ParameterSelector>
+          </Choice>
+          <Choice value="inventory">
+            <Reference target="100" />
+          </Choice>
+          <Choice value="from_xevt" />
+          <Choice value="highPlus">
+            <Reference target="96" />
+          </Choice>
+          <Choice value="chefStation" />
+        </ParameterSelector>
+      </Choice>
+      <Choice value="sitOnGround--FullBody" track="carryinteraction" mask="">
+        <Reference target="101" />
+      </Choice>
+      <Choice value="-sit-UpperBody" track="carryinteraction" mask="Trackmask_UpperBody">
+        <Reference target="101" />
+      </Choice>
+      <Choice value="standExclusive--FullBody" track="carryinteraction" mask="Trackmask_UpperBody">
+        <Reference target="89" />
+      </Choice>
+      <Choice value="-stand-FullBody" track="carryinteraction" mask="">
+        <Reference target="89" />
+      </Choice>
+      <Choice value="-stand-UpperBody" track="carryinteraction" mask="Trackmask_UpperBody">
+        <Reference target="89" />
+      </Choice>
+      <Choice value="swim--FullBody" track="normal" mask="">
+        <Reference target="89" />
+      </Choice>
+    </PostureSelector>
+  </State>
+</ASM>

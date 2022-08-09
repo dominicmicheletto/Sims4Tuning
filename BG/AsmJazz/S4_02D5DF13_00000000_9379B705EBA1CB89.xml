@@ -1,0 +1,199 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="Cowplant_Idles" dcc="sage">
+  <Actor name="cowplant" type="Object" master="true" virtual="false" />
+  <Parameter name="cowplant:UdderState" type="enum" labels="Full,Empty" default="Empty" />
+  <Parameter name="cowplant:pullTongueIn" type="bool" labels="" default="False" />
+  <IkConfiguration name="o_cowplant_idles.ma">
+    <SourceFile name="o_cowplant_idles.ma">
+      <MapNamespace namespace="cowPlant" actor="cowplant" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="o_cowplant_idles_UdderFull.ma">
+    <SourceFile name="o_cowplant_idles_UdderFull.ma">
+      <MapNamespace namespace="cowPlant" actor="cowplant" />
+    </SourceFile>
+  </IkConfiguration>
+  <PostureManifest actors="" />
+  <State type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" name="Cowplant_Idle_Hungry" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" name="Cowplant_Idles" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" name="Dance" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="Hub" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="No Idle" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="danceTransIn" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="danceTransOut" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="trans" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <Connection from="Cowplant_Idle_Hungry" to="Hub" />
+  <Connection from="Cowplant_Idles" to="Hub" />
+  <Connection from="Dance" to="danceTransOut" />
+  <Connection from="Hub" to="Cowplant_Idles" />
+  <Connection from="Hub" to="No Idle" />
+  <Connection from="Hub" to="danceTransIn" />
+  <Connection from="Hub" to="exit" />
+  <Connection from="Hub" to="trans" />
+  <Connection from="No Idle" to="Hub" />
+  <Connection from="danceTransIn" to="Dance" />
+  <Connection from="danceTransOut" to="Hub" />
+  <Connection from="entry" to="Hub" />
+  <Connection from="trans" to="Cowplant_Idle_Hungry" />
+  <State name="Cowplant_Idle_Hungry" type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <MakeController>
+      <ParameterSelector parameter="cowplant:UdderState" unique_id="3">
+        <Choice value="Full">
+          <Controller target="cowplant" controller="@ClipController(clip=o_cowplant_idle_hungry_udderFull_cowplant, loop_count=#1)" overridePosture="false" mask="" track="low" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="o_cowplant_idles_UdderFull.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="1">
+            <TransitionClassList>
+              <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+            </TransitionClassList>
+          </Controller>
+        </Choice>
+        <Choice value="Empty">
+          <Controller target="cowplant" controller="@ClipController(clip=o_cowplant_idle_hungry_cowplant, loop_count=#1)" overridePosture="false" mask="" track="low" mirror_conditional="False" suppress_footsteps="False" transition_class_in="NoBlendLoop" transition_class_out="NoBlendLoop" ik_configuration="o_cowplant_idles.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="2">
+            <TransitionClassList>
+              <Transition transition_class_name="Default" transition_duration_in="0.03333334" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+              <Transition transition_class_name="NoBlendLoop" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+            </TransitionClassList>
+          </Controller>
+        </Choice>
+      </ParameterSelector>
+    </MakeController>
+  </State>
+  <State name="Cowplant_Idles" type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <MakeController>
+      <ParameterSelector parameter="cowplant:UdderState" unique_id="10">
+        <Choice value="Full">
+          <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="6">
+            <Choice weight="50" avoidRepeat="True">
+              <Controller target="cowplant" controller="@ClipController(clip=o_cowplant_idle_udderFull_cowplant, loop_count=#1)" overridePosture="false" mask="" track="low" mirror_conditional="False" suppress_footsteps="False" transition_class_in="NoBlendLoop" transition_class_out="NoBlendLoop" ik_configuration="o_cowplant_idles_UdderFull.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="4">
+                <TransitionClassList>
+                  <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                  <Transition transition_class_name="NoBlendLoop" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                </TransitionClassList>
+              </Controller>
+            </Choice>
+            <Choice weight="100" avoidRepeat="False">
+              <Controller target="cowplant" controller="@ClipController(clip=o_cowplant_idle_subtle_udderFull_cowplant, loop_count=#1)" overridePosture="false" mask="" track="low" mirror_conditional="False" suppress_footsteps="False" transition_class_in="NoBlendLoop" transition_class_out="NoBlendLoop" ik_configuration="o_cowplant_idles_UdderFull.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="5">
+                <TransitionClassList>
+                  <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                  <Transition transition_class_name="NoBlendLoop" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                </TransitionClassList>
+              </Controller>
+            </Choice>
+          </RandomSelector>
+        </Choice>
+        <Choice value="Empty">
+          <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="9">
+            <Choice weight="50" avoidRepeat="True">
+              <Controller target="cowplant" controller="@ClipController(clip=o_cowplant_idle_cowplant, loop_count=#1)" overridePosture="false" mask="" track="low" mirror_conditional="False" suppress_footsteps="False" transition_class_in="NoBlendLoop" transition_class_out="NoBlendLoop" ik_configuration="o_cowplant_idles.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="7">
+                <TransitionClassList>
+                  <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                  <Transition transition_class_name="NoBlendLoop" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                </TransitionClassList>
+              </Controller>
+            </Choice>
+            <Choice weight="100" avoidRepeat="False">
+              <Controller target="cowplant" controller="@ClipController(clip=o_cowplant_idle_subtle_cowplant, loop_count=#1)" overridePosture="false" mask="" track="low" mirror_conditional="False" suppress_footsteps="False" transition_class_in="NoBlendLoop" transition_class_out="NoBlendLoop" ik_configuration="o_cowplant_idles.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="8">
+                <TransitionClassList>
+                  <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                  <Transition transition_class_name="NoBlendLoop" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                </TransitionClassList>
+              </Controller>
+            </Choice>
+          </RandomSelector>
+        </Choice>
+      </ParameterSelector>
+    </MakeController>
+  </State>
+  <State name="Dance" type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <MakeController>
+      <ParameterSelector parameter="cowplant:UdderState" unique_id="13">
+        <Choice value="Full">
+          <Controller target="cowplant" controller="@ClipController(clip=o_cowplant_dance_loop_udderFull_cowplant, loop_count=#1)" overridePosture="false" mask="" track="low" mirror_conditional="False" suppress_footsteps="False" transition_class_in="NoBlendLoop" transition_class_out="NoBlendLoop" ik_configuration="o_cowplant_idles_UdderFull.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="11">
+            <TransitionClassList>
+              <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+              <Transition transition_class_name="NoBlendLoop" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+            </TransitionClassList>
+          </Controller>
+        </Choice>
+        <Choice value="Empty">
+          <Controller target="cowplant" controller="@ClipController(clip=o_cowplant_dance_loop_cowplant, loop_count=#1)" overridePosture="false" mask="" track="low" mirror_conditional="False" suppress_footsteps="False" transition_class_in="NoBlendLoop" transition_class_out="NoBlendLoop" ik_configuration="o_cowplant_idles.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="12">
+            <TransitionClassList>
+              <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+              <Transition transition_class_name="NoBlendLoop" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+            </TransitionClassList>
+          </Controller>
+        </Choice>
+      </ParameterSelector>
+    </MakeController>
+  </State>
+  <State name="Hub" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+  </State>
+  <State name="No Idle" type="public" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <Stop target="cowplant" track="low" blend_in="-1" unique_id="14" />
+  </State>
+  <State name="danceTransIn" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <ParameterSelector parameter="cowplant:UdderState" unique_id="17">
+      <Choice value="Full">
+        <Controller target="cowplant" controller="@ClipController(clip=o_cowplant_dance_start_udderFull_cowplant, loop_count=#1)" overridePosture="false" mask="" track="low" mirror_conditional="False" suppress_footsteps="False" transition_class_in="NoBlendLoop" transition_class_out="Default" ik_configuration="o_cowplant_idles_UdderFull.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="15">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+            <Transition transition_class_name="NoBlendLoop" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
+      <Choice value="Empty">
+        <Controller target="cowplant" controller="@ClipController(clip=o_cowplant_dance_start_cowplant, loop_count=#1)" overridePosture="false" mask="" track="low" mirror_conditional="False" suppress_footsteps="False" transition_class_in="NoBlendLoop" transition_class_out="Default" ik_configuration="o_cowplant_idles.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="16">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+            <Transition transition_class_name="NoBlendLoop" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
+    </ParameterSelector>
+  </State>
+  <State name="danceTransOut" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <ParameterSelector parameter="cowplant:UdderState" unique_id="20">
+      <Choice value="Full">
+        <Controller target="cowplant" controller="@ClipController(clip=o_cowplant_dance_stop_udderFull_cowplant, loop_count=#1)" overridePosture="false" mask="" track="low" mirror_conditional="False" suppress_footsteps="False" transition_class_in="NoBlendLoop" transition_class_out="Default" ik_configuration="o_cowplant_idles_UdderFull.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="18">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+            <Transition transition_class_name="NoBlendLoop" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
+      <Choice value="Empty">
+        <Controller target="cowplant" controller="@ClipController(clip=o_cowplant_dance_stop_cowplant, loop_count=#1)" overridePosture="false" mask="" track="low" mirror_conditional="False" suppress_footsteps="False" transition_class_in="NoBlendLoop" transition_class_out="NoBlendLoop" ik_configuration="o_cowplant_idles.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="19">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+            <Transition transition_class_name="NoBlendLoop" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
+    </ParameterSelector>
+  </State>
+  <State name="trans" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <ParameterSelector parameter="cowplant:UdderState" unique_id="23">
+      <Choice value="Full">
+        <Controller target="cowplant" controller="@ClipController(clip=o_cowplant_trans_full2hungry_udderFull_cowplant, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="o_cowplant_idles_UdderFull.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="21">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
+      <Choice value="Empty">
+        <Controller target="cowplant" controller="@ClipController(clip=o_cowplant_trans_full2hungry_cowplant, loop_count=#1)" overridePosture="false" mask="" track="low" mirror_conditional="False" suppress_footsteps="False" transition_class_in="NoBlendLoop" transition_class_out="NoBlendLoop" ik_configuration="o_cowplant_idles.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="22">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+            <Transition transition_class_name="NoBlendLoop" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
+    </ParameterSelector>
+  </State>
+</ASM>

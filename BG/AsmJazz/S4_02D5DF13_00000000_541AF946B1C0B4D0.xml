@@ -1,0 +1,158 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="Death_Seated_Surface" dcc="sage">
+  <Actor name="x" type="Sim" master="true" virtual="false" />
+  <Actor name="sitTemplate" type="Object" virtual="true" />
+  <Actor name="surface" type="Object" virtual="false" />
+  <Actor name="computer" type="Object" virtual="false" />
+  <Parameter name="deathSeatedType" type="enum" labels="HeadOnSurface,HeadOnShoulder" default="HeadOnShoulder" />
+  <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
+  <IkConfiguration name="a2o_death_eat_deadInChair_resurrect_seated.ma">
+    <SourceFile name="a2o_death_eat_deadInChair_resurrect_seated.ma">
+      <MapNamespace namespace="sitTemplate" actor="sitTemplate" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_death_deadAtTable_resurrect_seatedTable.ma">
+    <SourceFile name="a2o_death_deadAtTable_resurrect_seatedTable.ma">
+      <MapNamespace namespace="sitTemplate" actor="sitTemplate" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_researchMachine_contributeKnowledge.ma">
+    <SourceFile name="a2o_researchMachine_contributeKnowledge.ma">
+      <MapNamespace namespace="computer" actor="computer" />
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="surface" actor="surface" />
+      <MapNamespace namespace="sitTemplate" actor="sitTemplate" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_researchMachine_death.ma">
+    <SourceFile name="a2o_researchMachine_death.ma">
+      <MapNamespace namespace="computer" actor="computer" />
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="surface" actor="surface" />
+      <MapNamespace namespace="sitTemplate" actor="sitTemplate" />
+    </SourceFile>
+  </IkConfiguration>
+  <PostureManifest actors="" />
+  <PostureManifest actors="x">
+    <Support name="sit" family="none" compatibility="UpperBody" carry_left="-" carry_right="-" surface="surface" />
+    <Support name="sit" family="none" compatibility="FullBody" carry_left="-" carry_right="-" surface="surface" />
+  </PostureManifest>
+  <State type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" name="DeathLoop" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="Doom" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="ResearchMachine_Death" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="ResearchMachine_Start" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="Resurrect" focus="none" facialoverlays="false" tailoverlays="true" />
+  <Connection from="DeathLoop" to="Doom" />
+  <Connection from="DeathLoop" to="Resurrect" />
+  <Connection from="Doom" to="exit" />
+  <Connection from="ResearchMachine_Death" to="DeathLoop" />
+  <Connection from="ResearchMachine_Start" to="ResearchMachine_Death" />
+  <Connection from="Resurrect" to="exit" />
+  <Connection from="entry" to="ResearchMachine_Start" />
+  <State name="DeathLoop" type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <MakeController>
+      <PostureSelector parameter="x:posture" unique_id="4">
+        <Choice value="sit--FullBody" track="normal" mask="">
+          <ParameterSelector parameter="deathSeatedType" unique_id="3">
+            <Choice value="HeadOnSurface">
+              <Controller target="x" controller="@ClipController(clip=a2o_death_deadAtTable_loop_seatedTable_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_death_deadAtTable_resurrect_seatedTable.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="1">
+                <TransitionClassList />
+              </Controller>
+            </Choice>
+            <Choice value="HeadOnShoulder">
+              <Controller target="x" controller="@ClipController(clip=a2o_death_deadInChair_loop_seated_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_death_eat_deadInChair_resurrect_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="2">
+                <TransitionClassList>
+                  <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                </TransitionClassList>
+              </Controller>
+            </Choice>
+          </ParameterSelector>
+        </Choice>
+        <Choice value="sit--UpperBody" track="normal" mask="Trackmask_UpperBody">
+          <Reference target="3" />
+        </Choice>
+      </PostureSelector>
+    </MakeController>
+  </State>
+  <State name="Doom" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="8">
+      <Choice value="sit--FullBody" track="normal" mask="">
+        <ParameterSelector parameter="deathSeatedType" unique_id="7">
+          <Choice value="HeadOnSurface">
+            <Controller target="x" controller="@ClipController(clip=a2o_death_deadAtTable_urnStone_seatedTable_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_death_deadAtTable_resurrect_seatedTable.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="5">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
+          <Choice value="HeadOnShoulder">
+            <Controller target="x" controller="@ClipController(clip=a2o_death_deadInChair_urnStone_seated_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_death_eat_deadInChair_resurrect_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="6">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+      <Choice value="sit--UpperBody" track="normal" mask="Trackmask_UpperBody">
+        <Reference target="7" />
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="ResearchMachine_Death" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="10">
+      <Choice value="sit--FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2o_researchMachine_contribute_death_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_researchMachine_death.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="9">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+      <Choice value="sit--UpperBody" track="normal" mask="Trackmask_UpperBody">
+        <Reference target="9" />
+      </Choice>
+    </PostureSelector>
+    <Controller target="computer" controller="@ClipController(clip=a2o_researchMachine_contribute_death_computer, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_researchMachine_death.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="11">
+      <TransitionClassList />
+    </Controller>
+  </State>
+  <State name="ResearchMachine_Start" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="13">
+      <Choice value="sit--FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2o_researchMachine_contribute_death_start_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_researchMachine_contributeKnowledge.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="12">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+      <Choice value="sit--UpperBody" track="normal" mask="Trackmask_UpperBody">
+        <Reference target="12" />
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="Resurrect" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="17">
+      <Choice value="sit--FullBody" track="normal" mask="">
+        <ParameterSelector parameter="deathSeatedType" unique_id="16">
+          <Choice value="HeadOnSurface">
+            <Controller target="x" controller="@ClipController(clip=a2o_death_deadAtTable_resurrect_seatedTable_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_death_deadAtTable_resurrect_seatedTable.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="14">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
+          <Choice value="HeadOnShoulder">
+            <Controller target="x" controller="@ClipController(clip=a2o_death_deadInChair_resurrect_seated_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_death_eat_deadInChair_resurrect_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="15">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+      <Choice value="sit--UpperBody" track="normal" mask="Trackmask_UpperBody">
+        <Reference target="16" />
+      </Choice>
+    </PostureSelector>
+  </State>
+</ASM>

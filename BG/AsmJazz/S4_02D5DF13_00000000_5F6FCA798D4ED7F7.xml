@@ -1,0 +1,326 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="Motive_Fail_Toddler" dcc="sage">
+  <Actor name="x" type="Sim" master="true" virtual="false" />
+  <Actor name="sitTemplate" type="Object" virtual="true" />
+  <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
+  <Parameter name="x:species" type="enum" labels="human,dog,smalldog,cat" default="human" />
+  <IkConfiguration name="p_motive_cry.ma">
+    <SourceFile name="p_motive_cry.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="p_motive_tantrum.ma">
+    <SourceFile name="p_motive_tantrum.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="p_motive_cry_seatedHighChair.ma">
+    <SourceFile name="p_motive_cry_seatedHighChair.ma">
+      <MapNamespace namespace="sitTemplate" actor="sitTemplate" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="p_motive_cry_seated.ma">
+    <SourceFile name="p_motive_cry_seated.ma">
+      <MapNamespace namespace="sitTemplate" actor="sitTemplate" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="p_motive_tantrum_seatedHighChair.ma">
+    <SourceFile name="p_motive_tantrum_seatedHighChair.ma">
+      <MapNamespace namespace="sitTemplate" actor="sitTemplate" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="p_motive_tantrum_seated.ma">
+    <SourceFile name="p_motive_tantrum_seated.ma">
+      <MapNamespace namespace="sitTemplate" actor="sitTemplate" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <PostureManifest actors="" />
+  <PostureManifest actors="x">
+    <Support family="stand" compatibility="FullBody" carry_left="-" carry_right="-" surface="*" />
+    <Support family="stand" compatibility="UpperBody" carry_left="-" carry_right="-" surface="*" />
+    <Support family="sit" compatibility="FullBody" carry_left="-" carry_right="-" surface="*" />
+    <Support family="sit" compatibility="UpperBody" carry_left="-" carry_right="-" surface="*" />
+    <Support name="sitInHighChair" family="none" compatibility="FullBody" carry_left="-" carry_right="-" surface="*" />
+  </PostureManifest>
+  <State type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" name="Cry" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="Cry_Start" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="Cry_Stop" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" name="Tantrum" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="Tantrum_Start" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="Tantrum_Stop" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <Connection from="Cry" to="Cry_Stop" />
+  <Connection from="Cry_Start" to="Cry" />
+  <Connection from="Cry_Stop" to="exit" />
+  <Connection from="Tantrum" to="Tantrum_Stop" />
+  <Connection from="Tantrum_Start" to="Tantrum" />
+  <Connection from="Tantrum_Stop" to="exit" />
+  <Connection from="entry" to="Cry_Start" />
+  <Connection from="entry" to="Tantrum_Start" />
+  <State name="Cry" type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <MakeController>
+      <PostureSelector parameter="x:posture" unique_id="10">
+        <Choice value="-sit-FullBody" track="normal" mask="">
+          <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="3">
+            <Choice weight="100" avoidRepeat="False">
+              <Controller target="x" controller="@ClipController(clip=p_motive_cry_loop01_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_motive_cry_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="1">
+                <TransitionClassList>
+                  <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                </TransitionClassList>
+              </Controller>
+            </Choice>
+            <Choice weight="50" avoidRepeat="True">
+              <Controller target="x" controller="@ClipController(clip=p_motive_cry_loop02_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_motive_cry_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="2">
+                <TransitionClassList>
+                  <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                </TransitionClassList>
+              </Controller>
+            </Choice>
+          </RandomSelector>
+        </Choice>
+        <Choice value="sitInHighChair--FullBody" track="normal" mask="">
+          <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="6">
+            <Choice weight="100" avoidRepeat="False">
+              <Controller target="x" controller="@ClipController(clip=p_motive_cry_loop01_seatedHighChair_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_motive_cry_seatedHighChair.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="4">
+                <TransitionClassList>
+                  <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                </TransitionClassList>
+              </Controller>
+            </Choice>
+            <Choice weight="50" avoidRepeat="True">
+              <Controller target="x" controller="@ClipController(clip=p_motive_cry_loop02_seatedHighChair_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_motive_cry_seatedHighChair.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="5">
+                <TransitionClassList>
+                  <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                </TransitionClassList>
+              </Controller>
+            </Choice>
+          </RandomSelector>
+        </Choice>
+        <Choice value="-sit-UpperBody" track="normal" mask="Trackmask_UpperBody">
+          <Reference target="3" />
+        </Choice>
+        <Choice value="-stand-FullBody" track="normal" mask="">
+          <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="9">
+            <Choice weight="50" avoidRepeat="True">
+              <Controller target="x" controller="@ClipController(clip=p_motive_cry_loop02_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_motive_cry.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="7">
+                <TransitionClassList>
+                  <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                </TransitionClassList>
+              </Controller>
+            </Choice>
+            <Choice weight="100" avoidRepeat="False">
+              <Controller target="x" controller="@ClipController(clip=p_motive_cry_loop01_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_motive_cry.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="8">
+                <TransitionClassList>
+                  <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                </TransitionClassList>
+              </Controller>
+            </Choice>
+          </RandomSelector>
+        </Choice>
+        <Choice value="-stand-UpperBody" track="normal" mask="Trackmask_UpperBody">
+          <Reference target="9" />
+        </Choice>
+      </PostureSelector>
+    </MakeController>
+  </State>
+  <State name="Cry_Start" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="14">
+      <Choice value="-sit-FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=p_motive_cry_start_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_motive_cry_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="11">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
+      <Choice value="sitInHighChair--FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=p_motive_cry_start_seatedHighChair_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_motive_cry_seatedHighChair.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="12">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
+      <Choice value="-sit-UpperBody" track="normal" mask="Trackmask_UpperBody">
+        <Reference target="11" />
+      </Choice>
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=p_motive_cry_start_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_motive_cry.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="13">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
+      <Choice value="-stand-UpperBody" track="normal" mask="Trackmask_UpperBody">
+        <Reference target="13" />
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="Cry_Stop" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="18">
+      <Choice value="-sit-FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=p_motive_cry_stop_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_motive_cry_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="15">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
+      <Choice value="sitInHighChair--FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=p_motive_cry_stop_seatedHighChair_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_motive_cry_seatedHighChair.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="16">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
+      <Choice value="-sit-UpperBody" track="normal" mask="Trackmask_UpperBody">
+        <Reference target="15" />
+      </Choice>
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=p_motive_cry_stop_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_motive_cry.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="17">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
+      <Choice value="-stand-UpperBody" track="normal" mask="Trackmask_UpperBody">
+        <Reference target="17" />
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="Tantrum" type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <MakeController>
+      <PostureSelector parameter="x:posture" unique_id="28">
+        <Choice value="-sit-FullBody" track="normal" mask="">
+          <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="21">
+            <Choice weight="100" avoidRepeat="False">
+              <Controller target="x" controller="@ClipController(clip=p_motive_tantrum_loop01_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_motive_tantrum_seated.ma" focus="head" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="19">
+                <TransitionClassList>
+                  <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                </TransitionClassList>
+              </Controller>
+            </Choice>
+            <Choice weight="50" avoidRepeat="True">
+              <Controller target="x" controller="@ClipController(clip=p_motive_tantrum_loop02_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_motive_tantrum_seated.ma" focus="head" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="20">
+                <TransitionClassList>
+                  <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                </TransitionClassList>
+              </Controller>
+            </Choice>
+          </RandomSelector>
+        </Choice>
+        <Choice value="sitInHighChair--FullBody" track="normal" mask="">
+          <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="24">
+            <Choice weight="100" avoidRepeat="False">
+              <Controller target="x" controller="@ClipController(clip=p_motive_tantrum_loop01_seatedHighChair_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_motive_tantrum_seatedHighChair.ma" focus="head" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="22">
+                <TransitionClassList>
+                  <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                </TransitionClassList>
+              </Controller>
+            </Choice>
+            <Choice weight="50" avoidRepeat="True">
+              <Controller target="x" controller="@ClipController(clip=p_motive_tantrum_loop02_seatedHighChair_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_motive_tantrum_seatedHighChair.ma" focus="head" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="23">
+                <TransitionClassList>
+                  <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                </TransitionClassList>
+              </Controller>
+            </Choice>
+          </RandomSelector>
+        </Choice>
+        <Choice value="-sit-UpperBody" track="normal" mask="Trackmask_UpperBody">
+          <Reference target="21" />
+        </Choice>
+        <Choice value="-stand-FullBody" track="normal" mask="">
+          <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="27">
+            <Choice weight="100" avoidRepeat="False">
+              <Controller target="x" controller="@ClipController(clip=p_motive_tantrum_loop01_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_motive_tantrum.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="25">
+                <TransitionClassList>
+                  <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                </TransitionClassList>
+              </Controller>
+            </Choice>
+            <Choice weight="50" avoidRepeat="True">
+              <Controller target="x" controller="@ClipController(clip=p_motive_tantrum_loop02_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_motive_tantrum.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="26">
+                <TransitionClassList>
+                  <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                </TransitionClassList>
+              </Controller>
+            </Choice>
+          </RandomSelector>
+        </Choice>
+        <Choice value="-stand-UpperBody" track="normal" mask="Trackmask_UpperBody">
+          <Reference target="27" />
+        </Choice>
+      </PostureSelector>
+    </MakeController>
+  </State>
+  <State name="Tantrum_Start" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="32">
+      <Choice value="-sit-FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=p_motive_tantrum_start_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_motive_tantrum_seated.ma" focus="head" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="29">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
+      <Choice value="sitInHighChair--FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=p_motive_tantrum_start_seatedHighChair_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_motive_tantrum_seatedHighChair.ma" focus="head" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="30">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
+      <Choice value="-sit-UpperBody" track="normal" mask="Trackmask_UpperBody">
+        <Reference target="29" />
+      </Choice>
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=p_motive_tantrum_start_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_motive_tantrum.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="31">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
+      <Choice value="-stand-UpperBody" track="normal" mask="Trackmask_UpperBody">
+        <Reference target="31" />
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="Tantrum_Stop" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="36">
+      <Choice value="-sit-FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=p_motive_tantrum_stop_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_motive_tantrum_seated.ma" focus="head" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="33">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
+      <Choice value="sitInHighChair--FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=p_motive_tantrum_stop_seatedHighChair_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_motive_tantrum_seatedHighChair.ma" focus="head" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="34">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
+      <Choice value="-sit-UpperBody" track="normal" mask="Trackmask_UpperBody">
+        <Reference target="33" />
+      </Choice>
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=p_motive_tantrum_stop_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_motive_tantrum.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="35">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
+      <Choice value="-stand-UpperBody" track="normal" mask="Trackmask_UpperBody">
+        <Reference target="35" />
+      </Choice>
+    </PostureSelector>
+  </State>
+</ASM>

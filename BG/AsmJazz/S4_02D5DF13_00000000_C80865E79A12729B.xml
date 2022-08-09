@@ -1,0 +1,99 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="Grill_Clean_Ico" dcc="sage">
+  <Actor name="x" type="Sim" master="true" virtual="false" />
+  <Actor name="surface" type="Object" virtual="false" />
+  <Actor name="carryObject" type="Object" virtual="false" />
+  <Actor name="ico" type="Object" virtual="false" />
+  <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
+  <Parameter name="surface:lid" type="bool" labels="" default="False" />
+  <IkConfiguration name="a2o_plate_carry.ma">
+    <SourceFile name="a2o_plate_carry.ma">
+      <MapNamespace namespace="carryObject" actor="carryObject" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_grill_posture.ma">
+    <SourceFile name="a2o_grill_posture.ma">
+      <MapNamespace namespace="surface" actor="surface" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <PostureManifest actors="" />
+  <PostureManifest actors="x">
+    <Support name="stand" family="none" compatibility="FullBody" carry_left="-" carry_right="carryObject" surface="surface" />
+  </PostureManifest>
+  <State type="public" skippable="false" interrupt_this="false" name="Swipe" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="lid_close" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="open_lid" focus="none" facialoverlays="true" tailoverlays="true" />
+  <Connection from="Swipe" to="lid_close" />
+  <Connection from="entry" to="open_lid" />
+  <Connection from="lid_close" to="exit" />
+  <Connection from="open_lid" to="Swipe" />
+  <State name="Swipe" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="5">
+      <Choice value="stand--FullBody" track="normal" mask="">
+        <ParameterSelector parameter="surface:lid" unique_id="4">
+          <Choice value="false">
+            <Controller target="x" controller="@ClipController(clip=a2o_plate_carry_pickUp_high_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_plate_carry.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="1">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice value="true">
+            <Reference target="1" />
+            <MakeController unique_id="3">
+              <Controller target="surface" controller="@ClipController(clip=a2o_grill_cook_posture_lid_grill, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_grill_posture.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="2">
+                <TransitionClassList>
+                  <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                </TransitionClassList>
+              </Controller>
+            </MakeController>
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="lid_close" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <ParameterSelector parameter="surface:lid" unique_id="9">
+      <Choice value="false" />
+      <Choice value="true">
+        <PostureSelector parameter="x:posture" unique_id="8">
+          <Choice value="stand--FullBody" track="normal" mask="">
+            <Controller target="surface" controller="@ClipController(clip=a2o_grill_clean_closeLid_grill, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_grill_posture.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="6">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+            <Controller target="x" controller="@ClipController(clip=a2o_grill_clean_closeLid_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_grill_posture.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="7">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+        </PostureSelector>
+      </Choice>
+    </ParameterSelector>
+  </State>
+  <State name="open_lid" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="true" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="13">
+      <Choice value="stand--FullBody" track="normal" mask="">
+        <ParameterSelector parameter="surface:lid" unique_id="12">
+          <Choice value="false" />
+          <Choice value="true">
+            <Controller target="x" controller="@ClipController(clip=a2o_grill_clean_openLid_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_grill_posture.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="10">
+              <TransitionClassList />
+            </Controller>
+            <Controller target="surface" controller="@ClipController(clip=a2o_grill_clean_openLid_grill, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_grill_posture.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="11">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+    </PostureSelector>
+  </State>
+</ASM>

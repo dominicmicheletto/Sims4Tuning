@@ -1,0 +1,807 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="Swim_Posture" dcc="sage">
+  <Actor name="x" type="Sim" master="true" virtual="false" />
+  <Actor name="portalObject" type="Object" virtual="true" />
+  <Actor name="carryObject" type="Object" virtual="false" />
+  <Parameter name="transitionPosture" type="enum" labels="stand,sitPoolEdge,swim" default="swim" />
+  <Parameter name="onFire" type="bool" labels="" default="False" />
+  <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
+  <Parameter name="x:species" type="enum" labels="human,dog,smalldog,cat" default="human" />
+  <Parameter name="x:isMermaid" type="bool" labels="" default="False" />
+  <Parameter name="x:JumpHeight" type="float" labels="" default="0" />
+  <Parameter name="x:InitialTranslation" type="vector3" labels="" default="0,0,0" />
+  <Parameter name="x:InitialOrientation" type="quaternion" labels="" default="0,0,0,1" />
+  <Parameter name="x:TargetTranslation" type="vector3" labels="" default="0,0,0" />
+  <Parameter name="x:TargetOrientation" type="quaternion" labels="" default="0,0,0,1" />
+  <Parameter name="x:JumpType" type="enum" labels="SwanDive,CannonBall,Default,Random" default="Random" />
+  <Parameter name="portalObject:isLadder" type="bool" labels="" default="False" />
+  <Parameter name="portalObject:isOcean" type="bool" labels="" default="False" />
+  <Parameter name="portalObject:isDock" type="bool" labels="" default="False" />
+  <IkConfiguration name="a2o_pool_ladder_getIn.ma">
+    <SourceFile name="a2o_pool_ladder_getIn.ma">
+      <MapNamespace namespace="portalObject" actor="portalObject" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_pool_trans_standToSwim_x.ma">
+    <SourceFile name="a2o_pool_trans_standToSwim_x.ma">
+      <MapNamespace namespace="portalObject" actor="portalObject" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_pool_trans_swimToStand_x.ma">
+    <SourceFile name="a2o_pool_trans_swimToStand_x.ma">
+      <MapNamespace namespace="portalObject" actor="portalObject" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_pool_ladder_getOut.ma">
+    <SourceFile name="a2o_pool_ladder_getOut.ma">
+      <MapNamespace namespace="portalObject" actor="portalObject" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_pool_ladder_getIn_onFire_x.ma">
+    <SourceFile name="a2o_pool_ladder_getIn_onFire_x.ma">
+      <MapNamespace namespace="portalObject" actor="portalObject" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="ad_swim_posture.ma">
+    <SourceFile name="ad_swim_posture.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="ad2o_swim_trans_standToSwim.ma">
+    <SourceFile name="ad2o_swim_trans_standToSwim.ma">
+      <MapNamespace namespace="portalObject" actor="portalObject" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="ad2o_swim_trans_swimToStand.ma">
+    <SourceFile name="ad2o_swim_trans_swimToStand.ma">
+      <MapNamespace namespace="portalObject" actor="portalObject" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="al_swim_posture.ma">
+    <SourceFile name="al_swim_posture.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="al2o_swim_trans_standToSwim.ma">
+    <SourceFile name="al2o_swim_trans_standToSwim.ma">
+      <MapNamespace namespace="portalObject" actor="portalObject" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="al2o_swim_trans_swimToStand.ma">
+    <SourceFile name="al2o_swim_trans_swimToStand.ma">
+      <MapNamespace namespace="portalObject" actor="portalObject" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a_mermaid_swim_transForms.ma">
+    <SourceFile name="a_mermaid_swim_transForms.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a_mermaid_surface_idle.ma">
+    <SourceFile name="a_mermaid_surface_idle.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a_oceanSwimming_standToSwim_transitions.ma">
+    <SourceFile name="a_oceanSwimming_standToSwim_transitions.ma">
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="portalObject" actor="portalObject" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="ad_oceanSwimming_standToSwim_transitions.ma">
+    <SourceFile name="ad_oceanSwimming_standToSwim_transitions.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_oceanLadder_jump_high.ma">
+    <SourceFile name="a2o_oceanLadder_jump_high.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_oceanLadder_jump_low.ma">
+    <SourceFile name="a2o_oceanLadder_jump_low.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a_mermaid_standToSwim_ocean.ma">
+    <SourceFile name="a_mermaid_standToSwim_ocean.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a_mermaid_swimToStand_ocean.ma">
+    <SourceFile name="a_mermaid_swimToStand_ocean.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a_swim_posture_x.ma">
+    <SourceFile name="a_swim_posture_x.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="al_oceanSwimming_standToSwim_transitions.ma">
+    <SourceFile name="al_oceanSwimming_standToSwim_transitions.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_oceanLadder_swanDive_high.ma">
+    <SourceFile name="a2o_oceanLadder_swanDive_high.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_oceanLadder_swanDive_low.ma">
+    <SourceFile name="a2o_oceanLadder_swanDive_low.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_oceanLadder_cannonBall_low.ma">
+    <SourceFile name="a2o_oceanLadder_cannonBall_low.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_oceanLadder_cannonBall_high.ma">
+    <SourceFile name="a2o_oceanLadder_cannonBall_high.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <PostureManifest>
+    <Provide name="swim" family="movingStand" compatibility="FullBody" carry_left="-" carry_right="*" surface="*" />
+    <Provide name="swim" family="movingStand" compatibility="UpperBody" carry_left="-" carry_right="*" surface="*" />
+  </PostureManifest>
+  <State type="public" skippable="false" interrupt_this="false" name="GetIn" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="GetOut" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" countlooptime="false" disableautostop="false" skippable="true" interrupt_this="true" name="Swim_Posture" focus="upper body" facialoverlays="false" tailoverlays="true" />
+  <Connection from="GetIn" to="Swim_Posture" />
+  <Connection from="GetOut" to="exit" />
+  <Connection from="Swim_Posture" to="GetOut" />
+  <Connection from="entry" to="GetIn" />
+  <State name="GetIn" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <ParameterSelector parameter="transitionPosture" unique_id="124">
+      <Choice value="stand">
+        <ParameterSelector parameter="x:species" unique_id="123">
+          <Choice value="human">
+            <ParameterSelector parameter="portalObject:isOcean" unique_id="112">
+              <Choice value="false">
+                <ParameterSelector parameter="portalObject:isLadder" unique_id="19">
+                  <Choice value="false">
+                    <ParameterSelector parameter="onFire" unique_id="9">
+                      <Choice value="false">
+                        <ParameterSelector parameter="x:isMermaid" unique_id="4">
+                          <Choice value="false">
+                            <Controller target="x" controller="@ClipController(clip=a2o_pool_trans_standToSwim_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_pool_trans_standToSwim_x.ma" focus="none" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="1">
+                              <TransitionClassList>
+                                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                              </TransitionClassList>
+                            </Controller>
+                          </Choice>
+                          <Choice value="true">
+                            <Controller target="x" controller="@ClipController(clip=a2o_pool_trans_standToSwim_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_pool_trans_standToSwim_x.ma" focus="none" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="3">
+                              <TransitionClassList>
+                                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                              </TransitionClassList>
+                            </Controller>
+                            <Controller target="x" controller="@ClipController(clip=a_mermaid_surfaceSwim_formChangeToMermaid_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_mermaid_swim_transForms.ma" ik_override="disable_feet" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="2">
+                              <TransitionClassList />
+                            </Controller>
+                          </Choice>
+                        </ParameterSelector>
+                      </Choice>
+                      <Choice value="true">
+                        <ParameterSelector parameter="x:isMermaid" unique_id="8">
+                          <Choice value="false">
+                            <Controller target="x" controller="@ClipController(clip=a2o_pool_trans_standToSwim_onFire_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_pool_trans_standToSwim_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="5">
+                              <TransitionClassList>
+                                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                              </TransitionClassList>
+                            </Controller>
+                          </Choice>
+                          <Choice value="true">
+                            <Controller target="x" controller="@ClipController(clip=a2o_pool_trans_standToSwim_onFire_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_pool_trans_standToSwim_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="7">
+                              <TransitionClassList>
+                                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                              </TransitionClassList>
+                            </Controller>
+                            <Controller target="x" controller="@ClipController(clip=a_mermaid_surfaceSwim_formChangeToMermaid_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_mermaid_swim_transForms.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="6">
+                              <TransitionClassList />
+                            </Controller>
+                          </Choice>
+                        </ParameterSelector>
+                      </Choice>
+                    </ParameterSelector>
+                  </Choice>
+                  <Choice value="true">
+                    <ParameterSelector parameter="onFire" unique_id="18">
+                      <Choice value="false">
+                        <ParameterSelector parameter="x:isMermaid" unique_id="13">
+                          <Choice value="false">
+                            <Controller target="x" controller="@ClipController(clip=a2o_pool_ladder_getIn_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_pool_ladder_getIn.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="10">
+                              <TransitionClassList>
+                                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                              </TransitionClassList>
+                            </Controller>
+                          </Choice>
+                          <Choice value="true">
+                            <Controller target="x" controller="@ClipController(clip=a2o_pool_ladder_getIn_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_pool_ladder_getIn.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="12">
+                              <TransitionClassList>
+                                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                              </TransitionClassList>
+                            </Controller>
+                            <Controller target="x" controller="@ClipController(clip=a_mermaid_surfaceSwim_formChangeToMermaid_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_mermaid_swim_transForms.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="11">
+                              <TransitionClassList />
+                            </Controller>
+                          </Choice>
+                        </ParameterSelector>
+                      </Choice>
+                      <Choice value="true">
+                        <ParameterSelector parameter="x:isMermaid" unique_id="17">
+                          <Choice value="false">
+                            <Controller target="x" controller="@ClipController(clip=a2o_pool_ladder_getIn_onFire_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_pool_ladder_getIn_onFire_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="14">
+                              <TransitionClassList>
+                                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                              </TransitionClassList>
+                            </Controller>
+                          </Choice>
+                          <Choice value="true">
+                            <Controller target="x" controller="@ClipController(clip=a2o_pool_ladder_getIn_onFire_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_pool_ladder_getIn_onFire_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="16">
+                              <TransitionClassList>
+                                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                              </TransitionClassList>
+                            </Controller>
+                            <Controller target="x" controller="@ClipController(clip=a_mermaid_surfaceSwim_formChangeToMermaid_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_mermaid_swim_transForms.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="15">
+                              <TransitionClassList />
+                            </Controller>
+                          </Choice>
+                        </ParameterSelector>
+                      </Choice>
+                    </ParameterSelector>
+                  </Choice>
+                </ParameterSelector>
+              </Choice>
+              <Choice value="true">
+                <ParameterSelector parameter="portalObject:isDock" unique_id="111">
+                  <Choice value="false">
+                    <ParameterSelector parameter="x:isMermaid" unique_id="27">
+                      <Choice value="false">
+                        <ParameterSelector parameter="x:age" unique_id="23">
+                          <Choice value="baby" />
+                          <Choice value="toddler" />
+                          <Choice value="child">
+                            <CustomController name="Adult SwimOcean Blend Tree " target="x" overridePosture="false" track="normal" transition_class_in="Default" transition_class_out="Default" unique_id="22">
+                              <TransitionClassList />
+                              <ControllerTree>
+                                <VariableJump preserve_initial_orientation="True" reference_actor="x" initial_translation_parameter="x:InitialTranslation" initial_orientation_parameter="x:InitialOrientation" target_translation_parameter="x:TargetTranslation" target_orientation_parameter="x:TargetOrientation" unique_id="21">
+                                  <Clip clip="a_oceanSwimming_standToSwim_x" ik_configuration="a_oceanSwimming_standToSwim_transitions.ma" focus="none" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="20" />
+                                </VariableJump>
+                              </ControllerTree>
+                            </CustomController>
+                          </Choice>
+                          <Choice value="teen">
+                            <Reference target="22" />
+                          </Choice>
+                          <Choice value="youngadult">
+                            <Reference target="22" />
+                          </Choice>
+                          <Choice value="adult">
+                            <Reference target="22" />
+                          </Choice>
+                          <Choice value="elder">
+                            <Reference target="22" />
+                          </Choice>
+                        </ParameterSelector>
+                      </Choice>
+                      <Choice value="true">
+                        <CustomController name="Mermaid SwimOcean Blend Tree " target="x" overridePosture="false" track="normal" transition_class_in="Default" transition_class_out="Default" unique_id="26">
+                          <TransitionClassList />
+                          <ControllerTree>
+                            <VariableJump preserve_initial_orientation="True" reference_actor="x" initial_translation_parameter="x:InitialTranslation" initial_orientation_parameter="x:InitialOrientation" target_translation_parameter="x:TargetTranslation" target_orientation_parameter="x:TargetOrientation" unique_id="25">
+                              <Clip clip="a_mermaid_standToswim_ocean_x" ik_configuration="a_mermaid_standToSwim_ocean.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="24" />
+                            </VariableJump>
+                          </ControllerTree>
+                        </CustomController>
+                      </Choice>
+                    </ParameterSelector>
+                  </Choice>
+                  <Choice value="true">
+                    <ParameterSelector parameter="x:isMermaid" unique_id="110">
+                      <Choice value="false">
+                        <ParameterSelector parameter="x:JumpType" unique_id="65">
+                          <Choice value="SwanDive">
+                            <CustomController name="Dock Swan Dive Blend Tree Selected" target="x" overridePosture="false" track="normal" transition_class_in="Default" transition_class_out="Default" unique_id="33">
+                              <TransitionClassList />
+                              <ControllerTree>
+                                <BoundaryConditions pre_reference_actor="x" pre_mode="pass" post_reference_actor="x" post_mode="pass" unique_id="32">
+                                  <VariableJump preserve_initial_orientation="True" reference_actor="x" initial_translation_parameter="x:InitialTranslation" initial_orientation_parameter="x:InitialOrientation" target_translation_parameter="x:TargetTranslation" target_orientation_parameter="x:TargetOrientation" unique_id="31">
+                                    <Blend1D mode="blend" type="static" transition_velocity="-1" syncpoint_schema="ladder_jump" parameter="x:JumpHeight" unique_id="30">
+                                      <Choice value="-20">
+                                        <Clip clip="a2o_oceanLadder_swanDive_high_x" ik_configuration="a2o_oceanLadder_swanDive_high.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="28" />
+                                      </Choice>
+                                      <Choice value="-0.5">
+                                        <Clip clip="a2o_oceanLadder_swanDive_low_x" ik_configuration="a2o_oceanLadder_swanDive_low.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="29" />
+                                      </Choice>
+                                    </Blend1D>
+                                  </VariableJump>
+                                </BoundaryConditions>
+                              </ControllerTree>
+                            </CustomController>
+                          </Choice>
+                          <Choice value="CannonBall">
+                            <CustomController name="Dock Cannon Ball Blend Tree Selected" target="x" overridePosture="false" track="normal" transition_class_in="Default" transition_class_out="Default" unique_id="39">
+                              <TransitionClassList />
+                              <ControllerTree>
+                                <BoundaryConditions pre_reference_actor="x" pre_mode="pass" post_reference_actor="x" post_mode="pass" unique_id="38">
+                                  <VariableJump preserve_initial_orientation="True" reference_actor="x" initial_translation_parameter="x:InitialTranslation" initial_orientation_parameter="x:InitialOrientation" target_translation_parameter="x:TargetTranslation" target_orientation_parameter="x:TargetOrientation" unique_id="37">
+                                    <Blend1D mode="blend" type="static" transition_velocity="-1" syncpoint_schema="ladder_jump" parameter="x:JumpHeight" unique_id="36">
+                                      <Choice value="-20">
+                                        <Clip clip="a2o_oceanLadder_cannonBall_high_x" ik_configuration="a2o_oceanLadder_cannonBall_high.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="34" />
+                                      </Choice>
+                                      <Choice value="-0.5">
+                                        <Clip clip="a2o_oceanLadder_cannonBall_low_x" ik_configuration="a2o_oceanLadder_cannonBall_low.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="35" />
+                                      </Choice>
+                                    </Blend1D>
+                                  </VariableJump>
+                                </BoundaryConditions>
+                              </ControllerTree>
+                            </CustomController>
+                          </Choice>
+                          <Choice value="Default">
+                            <CustomController name="Dock Jump Blend Tree Selected" target="x" overridePosture="false" track="normal" transition_class_in="Default" transition_class_out="Default" unique_id="45">
+                              <TransitionClassList />
+                              <ControllerTree>
+                                <BoundaryConditions pre_reference_actor="x" pre_mode="pass" post_reference_actor="x" post_mode="pass" unique_id="44">
+                                  <VariableJump preserve_initial_orientation="True" reference_actor="x" initial_translation_parameter="x:InitialTranslation" initial_orientation_parameter="x:InitialOrientation" target_translation_parameter="x:TargetTranslation" target_orientation_parameter="x:TargetOrientation" unique_id="43">
+                                    <Blend1D mode="blend" type="static" transition_velocity="-1" syncpoint_schema="ladder_jump" parameter="x:JumpHeight" unique_id="42">
+                                      <Choice value="-20">
+                                        <Clip clip="a2o_oceanLadder_jump_high_x" ik_configuration="a2o_oceanLadder_jump_high.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="40" />
+                                      </Choice>
+                                      <Choice value="-0.5">
+                                        <Clip clip="a2o_oceanLadder_jump_low_x" ik_configuration="a2o_oceanLadder_jump_low.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="41" />
+                                      </Choice>
+                                    </Blend1D>
+                                  </VariableJump>
+                                </BoundaryConditions>
+                              </ControllerTree>
+                            </CustomController>
+                          </Choice>
+                          <Choice value="Random">
+                            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="64">
+                              <Choice weight="50" avoidRepeat="False">
+                                <CustomController name="Dock Jump Blend Tree" target="x" overridePosture="false" track="normal" transition_class_in="Default" transition_class_out="Default" unique_id="51">
+                                  <TransitionClassList />
+                                  <ControllerTree>
+                                    <BoundaryConditions pre_reference_actor="x" pre_mode="pass" post_reference_actor="x" post_mode="pass" unique_id="50">
+                                      <VariableJump preserve_initial_orientation="True" reference_actor="x" initial_translation_parameter="x:InitialTranslation" initial_orientation_parameter="x:InitialOrientation" target_translation_parameter="x:TargetTranslation" target_orientation_parameter="x:TargetOrientation" unique_id="49">
+                                        <Blend1D mode="blend" type="static" transition_velocity="-1" syncpoint_schema="ladder_jump" parameter="x:JumpHeight" unique_id="48">
+                                          <Choice value="-20">
+                                            <Clip clip="a2o_oceanLadder_jump_high_x" ik_configuration="a2o_oceanLadder_jump_high.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="46" />
+                                          </Choice>
+                                          <Choice value="-0.5">
+                                            <Clip clip="a2o_oceanLadder_jump_low_x" ik_configuration="a2o_oceanLadder_jump_low.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="47" />
+                                          </Choice>
+                                        </Blend1D>
+                                      </VariableJump>
+                                    </BoundaryConditions>
+                                  </ControllerTree>
+                                </CustomController>
+                              </Choice>
+                              <Choice weight="50" avoidRepeat="False">
+                                <CustomController name="Dock Swan Dive Blend Tree" target="x" overridePosture="false" track="normal" transition_class_in="Default" transition_class_out="Default" unique_id="57">
+                                  <TransitionClassList />
+                                  <ControllerTree>
+                                    <BoundaryConditions pre_reference_actor="x" pre_mode="pass" post_reference_actor="x" post_mode="pass" unique_id="56">
+                                      <VariableJump preserve_initial_orientation="True" reference_actor="x" initial_translation_parameter="x:InitialTranslation" initial_orientation_parameter="x:InitialOrientation" target_translation_parameter="x:TargetTranslation" target_orientation_parameter="x:TargetOrientation" unique_id="55">
+                                        <Blend1D mode="blend" type="static" transition_velocity="-1" syncpoint_schema="ladder_jump" parameter="x:JumpHeight" unique_id="54">
+                                          <Choice value="-20">
+                                            <Clip clip="a2o_oceanLadder_swanDive_high_x" ik_configuration="a2o_oceanLadder_swanDive_high.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="52" />
+                                          </Choice>
+                                          <Choice value="-0.5">
+                                            <Clip clip="a2o_oceanLadder_swanDive_low_x" ik_configuration="a2o_oceanLadder_swanDive_low.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="53" />
+                                          </Choice>
+                                        </Blend1D>
+                                      </VariableJump>
+                                    </BoundaryConditions>
+                                  </ControllerTree>
+                                </CustomController>
+                              </Choice>
+                              <Choice weight="50" avoidRepeat="False">
+                                <CustomController name="Dock Cannon Ball Blend Tree" target="x" overridePosture="false" track="normal" transition_class_in="Default" transition_class_out="Default" unique_id="63">
+                                  <TransitionClassList />
+                                  <ControllerTree>
+                                    <BoundaryConditions pre_reference_actor="x" pre_mode="pass" post_reference_actor="x" post_mode="pass" unique_id="62">
+                                      <VariableJump preserve_initial_orientation="True" reference_actor="x" initial_translation_parameter="x:InitialTranslation" initial_orientation_parameter="x:InitialOrientation" target_translation_parameter="x:TargetTranslation" target_orientation_parameter="x:TargetOrientation" unique_id="61">
+                                        <Blend1D mode="blend" type="static" transition_velocity="-1" syncpoint_schema="ladder_jump" parameter="x:JumpHeight" unique_id="60">
+                                          <Choice value="-20">
+                                            <Clip clip="a2o_oceanLadder_cannonBall_high_x" ik_configuration="a2o_oceanLadder_cannonBall_high.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="58" />
+                                          </Choice>
+                                          <Choice value="-0.5">
+                                            <Clip clip="a2o_oceanLadder_cannonBall_low_x" ik_configuration="a2o_oceanLadder_cannonBall_low.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="59" />
+                                          </Choice>
+                                        </Blend1D>
+                                      </VariableJump>
+                                    </BoundaryConditions>
+                                  </ControllerTree>
+                                </CustomController>
+                              </Choice>
+                            </RandomSelector>
+                          </Choice>
+                        </ParameterSelector>
+                      </Choice>
+                      <Choice value="true">
+                        <ParameterSelector parameter="x:JumpType" unique_id="109">
+                          <Choice value="SwanDive">
+                            <CustomController name="Mermaid Swan Dive Jump Blend Tree Selected" target="x" overridePosture="false" track="normal" transition_class_in="Default" transition_class_out="Default" unique_id="72">
+                              <TransitionClassList />
+                              <ControllerTree>
+                                <BoundaryConditions pre_reference_actor="x" pre_mode="pass" post_reference_actor="x" post_mode="pass" unique_id="70">
+                                  <VariableJump preserve_initial_orientation="True" reference_actor="x" initial_translation_parameter="x:InitialTranslation" initial_orientation_parameter="x:InitialOrientation" target_translation_parameter="x:TargetTranslation" target_orientation_parameter="x:TargetOrientation" unique_id="69">
+                                    <Blend1D mode="blend" type="static" transition_velocity="-1" syncpoint_schema="ladder_jump" parameter="x:JumpHeight" unique_id="68">
+                                      <Choice value="-20">
+                                        <Clip clip="a2o_oceanLadder_swanDive_high_x" ik_configuration="a2o_oceanLadder_swanDive_high.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="66" />
+                                      </Choice>
+                                      <Choice value="-0.5">
+                                        <Clip clip="a2o_oceanLadder_swanDive_low_x" ik_configuration="a2o_oceanLadder_swanDive_low.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="67" />
+                                      </Choice>
+                                    </Blend1D>
+                                  </VariableJump>
+                                </BoundaryConditions>
+                              </ControllerTree>
+                            </CustomController>
+                            <Controller target="x" controller="@ClipController(clip=a_mermaid_surfaceSwim_formChangeToMermaid_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_mermaid_swim_transForms.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="71">
+                              <TransitionClassList />
+                            </Controller>
+                          </Choice>
+                          <Choice value="CannonBall">
+                            <CustomController name="Mermaid Cannon Ball Jump Blend Tree Selected" target="x" overridePosture="false" track="normal" transition_class_in="Default" transition_class_out="Default" unique_id="79">
+                              <TransitionClassList />
+                              <ControllerTree>
+                                <BoundaryConditions pre_reference_actor="x" pre_mode="pass" post_reference_actor="x" post_mode="pass" unique_id="77">
+                                  <VariableJump preserve_initial_orientation="True" reference_actor="x" initial_translation_parameter="x:InitialTranslation" initial_orientation_parameter="x:InitialOrientation" target_translation_parameter="x:TargetTranslation" target_orientation_parameter="x:TargetOrientation" unique_id="76">
+                                    <Blend1D mode="blend" type="static" transition_velocity="-1" syncpoint_schema="ladder_jump" parameter="x:JumpHeight" unique_id="75">
+                                      <Choice value="-20">
+                                        <Clip clip="a2o_oceanLadder_cannonBall_high_x" ik_configuration="a2o_oceanLadder_cannonBall_high.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="73" />
+                                      </Choice>
+                                      <Choice value="-0.5">
+                                        <Clip clip="a2o_oceanLadder_cannonBall_low_x" ik_configuration="a2o_oceanLadder_cannonBall_low.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="74" />
+                                      </Choice>
+                                    </Blend1D>
+                                  </VariableJump>
+                                </BoundaryConditions>
+                              </ControllerTree>
+                            </CustomController>
+                            <Controller target="x" controller="@ClipController(clip=a_mermaid_surfaceSwim_formChangeToMermaid_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_mermaid_swim_transForms.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="78">
+                              <TransitionClassList />
+                            </Controller>
+                          </Choice>
+                          <Choice value="Default">
+                            <CustomController name="Mermaid Dock Jump Blend Tree Selected" target="x" overridePosture="false" track="normal" transition_class_in="Default" transition_class_out="Default" unique_id="86">
+                              <TransitionClassList />
+                              <ControllerTree>
+                                <BoundaryConditions pre_reference_actor="x" pre_mode="pass" post_reference_actor="x" post_mode="pass" unique_id="84">
+                                  <VariableJump preserve_initial_orientation="True" reference_actor="x" initial_translation_parameter="x:InitialTranslation" initial_orientation_parameter="x:InitialOrientation" target_translation_parameter="x:TargetTranslation" target_orientation_parameter="x:TargetOrientation" unique_id="83">
+                                    <Blend1D mode="blend" type="static" transition_velocity="-1" syncpoint_schema="ladder_jump" parameter="x:JumpHeight" unique_id="82">
+                                      <Choice value="-20">
+                                        <Clip clip="a2o_oceanLadder_jump_high_x" ik_configuration="a2o_oceanLadder_jump_high.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="80" />
+                                      </Choice>
+                                      <Choice value="-0.5">
+                                        <Clip clip="a2o_oceanLadder_jump_low_x" ik_configuration="a2o_oceanLadder_jump_low.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="81" />
+                                      </Choice>
+                                    </Blend1D>
+                                  </VariableJump>
+                                </BoundaryConditions>
+                              </ControllerTree>
+                            </CustomController>
+                            <Controller target="x" controller="@ClipController(clip=a_mermaid_surfaceSwim_formChangeToMermaid_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_mermaid_swim_transForms.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="85">
+                              <TransitionClassList />
+                            </Controller>
+                          </Choice>
+                          <Choice value="Random">
+                            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="108">
+                              <Choice weight="50" avoidRepeat="False">
+                                <CustomController name="Mermaid Dock Jump Blend Tree" target="x" overridePosture="false" track="normal" transition_class_in="Default" transition_class_out="Default" unique_id="93">
+                                  <TransitionClassList />
+                                  <ControllerTree>
+                                    <BoundaryConditions pre_reference_actor="x" pre_mode="pass" post_reference_actor="x" post_mode="pass" unique_id="91">
+                                      <VariableJump preserve_initial_orientation="True" reference_actor="x" initial_translation_parameter="x:InitialTranslation" initial_orientation_parameter="x:InitialOrientation" target_translation_parameter="x:TargetTranslation" target_orientation_parameter="x:TargetOrientation" unique_id="90">
+                                        <Blend1D mode="blend" type="static" transition_velocity="-1" syncpoint_schema="ladder_jump" parameter="x:JumpHeight" unique_id="89">
+                                          <Choice value="-20">
+                                            <Clip clip="a2o_oceanLadder_jump_high_x" ik_configuration="a2o_oceanLadder_jump_high.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="87" />
+                                          </Choice>
+                                          <Choice value="-0.5">
+                                            <Clip clip="a2o_oceanLadder_jump_low_x" ik_configuration="a2o_oceanLadder_jump_low.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="88" />
+                                          </Choice>
+                                        </Blend1D>
+                                      </VariableJump>
+                                    </BoundaryConditions>
+                                  </ControllerTree>
+                                </CustomController>
+                                <Controller target="x" controller="@ClipController(clip=a_mermaid_surfaceSwim_formChangeToMermaid_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_mermaid_swim_transForms.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="92">
+                                  <TransitionClassList />
+                                </Controller>
+                              </Choice>
+                              <Choice weight="50" avoidRepeat="False">
+                                <CustomController name="Mermaid Swan Dive Jump Blend Tree" target="x" overridePosture="false" track="normal" transition_class_in="Default" transition_class_out="Default" unique_id="100">
+                                  <TransitionClassList />
+                                  <ControllerTree>
+                                    <BoundaryConditions pre_reference_actor="x" pre_mode="pass" post_reference_actor="x" post_mode="pass" unique_id="98">
+                                      <VariableJump preserve_initial_orientation="True" reference_actor="x" initial_translation_parameter="x:InitialTranslation" initial_orientation_parameter="x:InitialOrientation" target_translation_parameter="x:TargetTranslation" target_orientation_parameter="x:TargetOrientation" unique_id="97">
+                                        <Blend1D mode="blend" type="static" transition_velocity="-1" syncpoint_schema="ladder_jump" parameter="x:JumpHeight" unique_id="96">
+                                          <Choice value="-20">
+                                            <Clip clip="a2o_oceanLadder_swanDive_high_x" ik_configuration="a2o_oceanLadder_swanDive_high.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="94" />
+                                          </Choice>
+                                          <Choice value="-0.5">
+                                            <Clip clip="a2o_oceanLadder_swanDive_low_x" ik_configuration="a2o_oceanLadder_swanDive_low.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="95" />
+                                          </Choice>
+                                        </Blend1D>
+                                      </VariableJump>
+                                    </BoundaryConditions>
+                                  </ControllerTree>
+                                </CustomController>
+                                <Controller target="x" controller="@ClipController(clip=a_mermaid_surfaceSwim_formChangeToMermaid_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_mermaid_swim_transForms.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="99">
+                                  <TransitionClassList />
+                                </Controller>
+                              </Choice>
+                              <Choice weight="50" avoidRepeat="False">
+                                <CustomController name="Mermaid Cannon Ball Jump Blend Tree" target="x" overridePosture="false" track="normal" transition_class_in="Default" transition_class_out="Default" unique_id="107">
+                                  <TransitionClassList />
+                                  <ControllerTree>
+                                    <BoundaryConditions pre_reference_actor="x" pre_mode="pass" post_reference_actor="x" post_mode="pass" unique_id="105">
+                                      <VariableJump preserve_initial_orientation="True" reference_actor="x" initial_translation_parameter="x:InitialTranslation" initial_orientation_parameter="x:InitialOrientation" target_translation_parameter="x:TargetTranslation" target_orientation_parameter="x:TargetOrientation" unique_id="104">
+                                        <Blend1D mode="blend" type="static" transition_velocity="-1" syncpoint_schema="ladder_jump" parameter="x:JumpHeight" unique_id="103">
+                                          <Choice value="-20">
+                                            <Clip clip="a2o_oceanLadder_cannonBall_high_x" ik_configuration="a2o_oceanLadder_cannonBall_high.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="101" />
+                                          </Choice>
+                                          <Choice value="-0.5">
+                                            <Clip clip="a2o_oceanLadder_cannonBall_low_x" ik_configuration="a2o_oceanLadder_cannonBall_low.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="102" />
+                                          </Choice>
+                                        </Blend1D>
+                                      </VariableJump>
+                                    </BoundaryConditions>
+                                  </ControllerTree>
+                                </CustomController>
+                                <Controller target="x" controller="@ClipController(clip=a_mermaid_surfaceSwim_formChangeToMermaid_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_mermaid_swim_transForms.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="106">
+                                  <TransitionClassList />
+                                </Controller>
+                              </Choice>
+                            </RandomSelector>
+                          </Choice>
+                        </ParameterSelector>
+                      </Choice>
+                    </ParameterSelector>
+                  </Choice>
+                </ParameterSelector>
+              </Choice>
+            </ParameterSelector>
+          </Choice>
+          <Choice value="dog">
+            <ParameterSelector parameter="portalObject:isOcean" unique_id="117">
+              <Choice value="false">
+                <Controller target="x" controller="@ClipController(clip=ad2o_swim_trans_standToSwim_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ad2o_swim_trans_standToSwim.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="113">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+              <Choice value="true">
+                <CustomController name="Dog SwimOcean Blend Tree" target="x" overridePosture="false" track="normal" transition_class_in="Default" transition_class_out="Default" unique_id="116">
+                  <TransitionClassList />
+                  <ControllerTree>
+                    <VariableJump preserve_initial_orientation="True" reference_actor="x" initial_translation_parameter="x:InitialTranslation" initial_orientation_parameter="x:InitialOrientation" target_translation_parameter="x:TargetTranslation" target_orientation_parameter="x:TargetOrientation" unique_id="115">
+                      <Clip clip="ad_oceanSwimming_standToSwim_x" ik_configuration="ad_oceanSwimming_standToSwim_transitions.ma" focus="none" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="114" />
+                    </VariableJump>
+                  </ControllerTree>
+                </CustomController>
+              </Choice>
+            </ParameterSelector>
+          </Choice>
+          <Choice value="smalldog">
+            <ParameterSelector parameter="portalObject:isOcean" unique_id="122">
+              <Choice value="false">
+                <Controller target="x" controller="@ClipController(clip=al2o_swim_trans_standToSwim_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="al2o_swim_trans_standToSwim.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="118">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+              <Choice value="true">
+                <CustomController name="SmallDog SwimOcean Blend Tree" target="x" overridePosture="false" track="normal" transition_class_in="Default" transition_class_out="Default" unique_id="121">
+                  <TransitionClassList />
+                  <ControllerTree>
+                    <VariableJump preserve_initial_orientation="True" reference_actor="x" initial_translation_parameter="x:InitialTranslation" initial_orientation_parameter="x:InitialOrientation" target_translation_parameter="x:TargetTranslation" target_orientation_parameter="x:TargetOrientation" unique_id="120">
+                      <Clip clip="al_oceanSwimming_standToSwim_x" ik_configuration="al_oceanSwimming_standToSwim_transitions.ma" focus="none" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="119" />
+                    </VariableJump>
+                  </ControllerTree>
+                </CustomController>
+              </Choice>
+            </ParameterSelector>
+          </Choice>
+          <Choice value="cat" />
+        </ParameterSelector>
+      </Choice>
+      <Choice value="sitPoolEdge" />
+      <Choice value="swim" />
+    </ParameterSelector>
+  </State>
+  <State name="GetOut" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <ParameterSelector parameter="transitionPosture" unique_id="154">
+      <Choice value="stand">
+        <ParameterSelector parameter="x:species" unique_id="153">
+          <Choice value="human">
+            <ParameterSelector parameter="portalObject:isOcean" unique_id="142">
+              <Choice value="false">
+                <ParameterSelector parameter="portalObject:isLadder" unique_id="133">
+                  <Choice value="false">
+                    <ParameterSelector parameter="x:isMermaid" unique_id="128">
+                      <Choice value="false">
+                        <Controller target="x" controller="@ClipController(clip=a2o_pool_trans_swimToStand_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_pool_trans_swimToStand_x.ma" focus="none" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="125">
+                          <TransitionClassList>
+                            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                          </TransitionClassList>
+                        </Controller>
+                      </Choice>
+                      <Choice value="true">
+                        <Controller target="x" controller="@ClipController(clip=a_mermaid_surfaceSwim_formChangeToSim_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_mermaid_swim_transForms.ma" ik_override="disable_feet" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="127">
+                          <TransitionClassList />
+                        </Controller>
+                        <Controller target="x" controller="@ClipController(clip=a2o_pool_trans_swimToStand_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_pool_trans_swimToStand_x.ma" focus="none" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="126">
+                          <TransitionClassList>
+                            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                          </TransitionClassList>
+                        </Controller>
+                      </Choice>
+                    </ParameterSelector>
+                  </Choice>
+                  <Choice value="true">
+                    <ParameterSelector parameter="x:isMermaid" unique_id="132">
+                      <Choice value="false">
+                        <Controller target="x" controller="@ClipController(clip=a2o_pool_ladder_getOut_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_pool_ladder_getOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="129">
+                          <TransitionClassList>
+                            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                          </TransitionClassList>
+                        </Controller>
+                      </Choice>
+                      <Choice value="true">
+                        <Controller target="x" controller="@ClipController(clip=a_mermaid_surfaceSwim_formChangeToSim_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_mermaid_swim_transForms.ma" ik_override="disable_feet" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="131">
+                          <TransitionClassList />
+                        </Controller>
+                        <Controller target="x" controller="@ClipController(clip=a2o_pool_ladder_getOut_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_pool_ladder_getOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="130">
+                          <TransitionClassList>
+                            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                          </TransitionClassList>
+                        </Controller>
+                      </Choice>
+                    </ParameterSelector>
+                  </Choice>
+                </ParameterSelector>
+              </Choice>
+              <Choice value="true">
+                <ParameterSelector parameter="x:isMermaid" unique_id="141">
+                  <Choice value="false">
+                    <ParameterSelector parameter="x:age" unique_id="137">
+                      <Choice value="baby" />
+                      <Choice value="toddler" />
+                      <Choice value="child">
+                        <CustomController name="Adult SwimOcean Blend Tree GetOut" target="x" overridePosture="false" track="normal" transition_class_in="Default" transition_class_out="Default" unique_id="136">
+                          <TransitionClassList />
+                          <ControllerTree>
+                            <VariableJump preserve_initial_orientation="False" reference_actor="x" initial_translation_parameter="x:InitialTranslation" initial_orientation_parameter="x:InitialOrientation" target_translation_parameter="x:TargetTranslation" target_orientation_parameter="x:TargetOrientation" unique_id="135">
+                              <Clip clip="a_oceanSwimming_swimToStand_x" ik_configuration="a_oceanSwimming_standToSwim_transitions.ma" focus="none" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="134" />
+                            </VariableJump>
+                          </ControllerTree>
+                        </CustomController>
+                      </Choice>
+                      <Choice value="teen">
+                        <Reference target="136" />
+                      </Choice>
+                      <Choice value="youngadult">
+                        <Reference target="136" />
+                      </Choice>
+                      <Choice value="adult">
+                        <Reference target="136" />
+                      </Choice>
+                      <Choice value="elder">
+                        <Reference target="136" />
+                      </Choice>
+                    </ParameterSelector>
+                  </Choice>
+                  <Choice value="true">
+                    <CustomController name="Mermaid SwimOcean Blend Tree GetOut" target="x" overridePosture="false" track="normal" transition_class_in="Default" transition_class_out="Default" unique_id="140">
+                      <TransitionClassList />
+                      <ControllerTree>
+                        <VariableJump preserve_initial_orientation="True" reference_actor="x" initial_translation_parameter="x:InitialTranslation" initial_orientation_parameter="x:InitialOrientation" target_translation_parameter="x:TargetTranslation" target_orientation_parameter="x:TargetOrientation" unique_id="139">
+                          <Clip clip="a_mermaid_swimToStand_ocean_x" ik_configuration="a_mermaid_swimToStand_ocean.ma" focus="none" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="138" />
+                        </VariableJump>
+                      </ControllerTree>
+                    </CustomController>
+                  </Choice>
+                </ParameterSelector>
+              </Choice>
+            </ParameterSelector>
+          </Choice>
+          <Choice value="dog">
+            <ParameterSelector parameter="portalObject:isOcean" unique_id="147">
+              <Choice value="false">
+                <Controller target="x" controller="@ClipController(clip=ad2o_swim_trans_swimToStand_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ad2o_swim_trans_swimToStand.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="143">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+              <Choice value="true">
+                <CustomController name="Dog SwimOcean Blend Tree GetOut" target="x" overridePosture="false" track="normal" transition_class_in="Default" transition_class_out="Default" unique_id="146">
+                  <TransitionClassList />
+                  <ControllerTree>
+                    <VariableJump preserve_initial_orientation="True" reference_actor="x" initial_translation_parameter="x:InitialTranslation" initial_orientation_parameter="x:InitialOrientation" target_translation_parameter="x:TargetTranslation" target_orientation_parameter="x:TargetOrientation" unique_id="145">
+                      <Clip clip="ad_oceanSwimming_swimToStand_x" ik_configuration="ad_oceanSwimming_standToSwim_transitions.ma" focus="none" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="144" />
+                    </VariableJump>
+                  </ControllerTree>
+                </CustomController>
+              </Choice>
+            </ParameterSelector>
+          </Choice>
+          <Choice value="smalldog">
+            <ParameterSelector parameter="portalObject:isOcean" unique_id="152">
+              <Choice value="false">
+                <Controller target="x" controller="@ClipController(clip=al2o_swim_trans_swimToStand_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="al2o_swim_trans_swimToStand.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="148">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+              <Choice value="true">
+                <CustomController name="SmallDog SwimOcean Blend Tree GetOut" target="x" overridePosture="false" track="normal" transition_class_in="Default" transition_class_out="Default" unique_id="151">
+                  <TransitionClassList />
+                  <ControllerTree>
+                    <VariableJump preserve_initial_orientation="True" reference_actor="x" initial_translation_parameter="x:InitialTranslation" initial_orientation_parameter="x:InitialOrientation" target_translation_parameter="x:TargetTranslation" target_orientation_parameter="x:TargetOrientation" unique_id="150">
+                      <Clip clip="al_oceanSwimming_swimToStand_x" ik_configuration="al_oceanSwimming_standToSwim_transitions.ma" focus="none" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="149" />
+                    </VariableJump>
+                  </ControllerTree>
+                </CustomController>
+              </Choice>
+            </ParameterSelector>
+          </Choice>
+          <Choice value="cat" />
+        </ParameterSelector>
+      </Choice>
+      <Choice value="sitPoolEdge" />
+      <Choice value="swim" />
+    </ParameterSelector>
+  </State>
+  <State name="Swim_Posture" type="public" countlooptime="false" disableautostop="false" skippable="true" interrupt_this="true" focus="upper body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <MakeController>
+      <ParameterSelector parameter="x:species" unique_id="160">
+        <Choice value="human">
+          <ParameterSelector parameter="x:isMermaid" unique_id="157">
+            <Choice value="false">
+              <Controller target="x" controller="@ClipController(clip=a_swim_posture_x, loop_count=#1)" overridePosture="false" mask="" track="low" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_swim_posture_x.ma" focus="upper body" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="155">
+                <TransitionClassList>
+                  <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                </TransitionClassList>
+              </Controller>
+            </Choice>
+            <Choice value="true">
+              <Controller target="x" controller="@ClipController(clip=a_mermaid_surfaceSwim_posture_x, loop_count=#1)" overridePosture="false" mask="" track="low" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_mermaid_surface_idle.ma" ik_override="disable_feet" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="156">
+                <TransitionClassList>
+                  <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                </TransitionClassList>
+              </Controller>
+            </Choice>
+          </ParameterSelector>
+        </Choice>
+        <Choice value="dog">
+          <Controller target="x" controller="@ClipController(clip=ad_swim_posture_x, loop_count=#1)" overridePosture="false" mask="" track="low" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ad_swim_posture.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="158">
+            <TransitionClassList />
+          </Controller>
+        </Choice>
+        <Choice value="smalldog">
+          <Controller target="x" controller="@ClipController(clip=al_swim_posture_x, loop_count=#1)" overridePosture="true" mask="" track="low" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="al_swim_posture.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="159">
+            <TransitionClassList />
+          </Controller>
+        </Choice>
+        <Choice value="cat" />
+      </ParameterSelector>
+    </MakeController>
+  </State>
+</ASM>

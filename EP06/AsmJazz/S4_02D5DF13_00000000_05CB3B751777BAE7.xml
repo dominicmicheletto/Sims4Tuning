@@ -1,0 +1,135 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="CelebrityInteractions_TakePicture" dcc="sage">
+  <Actor name="x" type="Sim" master="true" virtual="false" />
+  <Actor name="cellphone" type="Prop" virtual="false" object_def_resource_key="c0db5ae7:00000000:0000000000023819#gadgetSmlPhoneCellGEN_01" />
+  <Actor name="camera" type="Prop" virtual="false" object_def_resource_key="c0db5ae7:00000000:0000000000012c80#photoCamera_EP01GENExpensive_set1" />
+  <Parameter name="cameraType" type="enum" labels="cellPhone,camera" default="cellPhone" />
+  <Parameter name="x:age" type="enum" labels="child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
+  <IkConfiguration name="a2o_celebrityInteractions_takePicture_selfie_camera.ma">
+    <SourceFile name="a2o_celebrityInteractions_takePicture_selfie_camera.ma">
+      <MapNamespace namespace="camera" actor="camera" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_celebrityInteractions_takePicture_selfie_phone.ma">
+    <SourceFile name="a2o_celebrityInteractions_takePicture_selfie_phone.ma">
+      <MapNamespace namespace="cellphone" actor="cellphone" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_celebrityInteractions_takePicture_oneShot_camera.ma">
+    <SourceFile name="a2o_celebrityInteractions_takePicture_oneShot_camera.ma">
+      <MapNamespace namespace="camera" actor="camera" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_celebrityInteractions_takePicture_oneShot_phone.ma">
+    <SourceFile name="a2o_celebrityInteractions_takePicture_oneShot_phone.ma">
+      <MapNamespace namespace="cellphone" actor="cellphone" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_celebrityInteractions_takePicture_multipleShots_camera.ma">
+    <SourceFile name="a2o_celebrityInteractions_takePicture_multipleShots_camera.ma">
+      <MapNamespace namespace="camera" actor="camera" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_celebrityInteractions_takePicture_multipleShots_phone.ma">
+    <SourceFile name="a2o_celebrityInteractions_takePicture_multipleShots_phone.ma">
+      <MapNamespace namespace="cellphone" actor="cellphone" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <PostureManifest actors="" />
+  <PostureManifest actors="x">
+    <Support family="stand" compatibility="FullBody" carry_left="-" carry_right="-" surface="*" />
+    <Support family="stand" compatibility="UpperBody" carry_left="-" carry_right="-" surface="*" />
+  </PostureManifest>
+  <State type="private" skippable="false" interrupt_this="false" name="Hub" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="MultipleShot" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="One_Shot" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="Selfie" focus="none" facialoverlays="false" tailoverlays="true" />
+  <Connection from="Hub" to="MultipleShot" />
+  <Connection from="Hub" to="One_Shot" />
+  <Connection from="Hub" to="Selfie" />
+  <Connection from="Hub" to="exit" />
+  <Connection from="MultipleShot" to="Hub" />
+  <Connection from="One_Shot" to="Hub" />
+  <Connection from="Selfie" to="Hub" />
+  <Connection from="entry" to="Hub" />
+  <State name="Hub" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="1">
+      <Choice value="-stand-FullBody" track="normal" mask="" />
+      <Choice value="-stand-UpperBody" track="normal" mask="Trackmask_UpperBody" />
+    </PostureSelector>
+  </State>
+  <State name="MultipleShot" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="5">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <ParameterSelector parameter="cameraType" unique_id="4">
+          <Choice value="cellPhone">
+            <Controller target="x" controller="@ClipController(clip=a2o_celebrityInteractions_takePicture_multipleShots_phone_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_celebrityInteractions_takePicture_multipleShots_phone.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="2">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
+          <Choice value="camera">
+            <Controller target="x" controller="@ClipController(clip=a2o_celebrityInteractions_takePicture_multipleShots_camera_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_celebrityInteractions_takePicture_multipleShots_camera.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="3">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+      <Choice value="-stand-UpperBody" track="normal" mask="Trackmask_UpperBody">
+        <Reference target="4" />
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="One_Shot" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="9">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <ParameterSelector parameter="cameraType" unique_id="8">
+          <Choice value="cellPhone">
+            <Controller target="x" controller="@ClipController(clip=a2o_celebrityInteractions_takePicture_oneShot_phone_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_celebrityInteractions_takePicture_oneShot_phone.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="6">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
+          <Choice value="camera">
+            <Controller target="x" controller="@ClipController(clip=a2o_celebrityInteractions_takePicture_oneShot_camera_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_celebrityInteractions_takePicture_oneShot_camera.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="7">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+      <Choice value="-stand-UpperBody" track="normal" mask="Trackmask_UpperBody">
+        <Reference target="8" />
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="Selfie" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="13">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <ParameterSelector parameter="cameraType" unique_id="12">
+          <Choice value="cellPhone">
+            <Controller target="x" controller="@ClipController(clip=a2o_celebrityInteractions_takePicture_selfie_phone_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_celebrityInteractions_takePicture_selfie_phone.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="10">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
+          <Choice value="camera">
+            <Controller target="x" controller="@ClipController(clip=a2o_celebrityInteractions_takePicture_selfie_camera_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_celebrityInteractions_takePicture_selfie_camera.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="11">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+      <Choice value="-stand-UpperBody" track="normal" mask="Trackmask_UpperBody">
+        <Reference target="12" />
+      </Choice>
+    </PostureSelector>
+  </State>
+</ASM>

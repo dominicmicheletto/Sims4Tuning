@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="WashingMachine_Vibrate" dcc="sage">
+  <Actor name="laundryMachine" type="Object" master="true" virtual="false" />
+  <Parameter name="laundryMachine:isParented" type="bool" labels="" default="False" />
+  <Parameter name="laundryMachine:hasChildren" type="bool" labels="" default="False" />
+  <IkConfiguration name="o_washingMachine_vibrate.ma">
+    <SourceFile name="o_washingMachine_vibrate.ma" />
+  </IkConfiguration>
+  <PostureManifest actors="" />
+  <State type="public" skippable="false" interrupt_this="false" name="Off" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" name="Vibrate" focus="none" facialoverlays="false" tailoverlays="true" />
+  <Connection from="Off" to="Vibrate" />
+  <Connection from="Off" to="exit" />
+  <Connection from="Vibrate" to="Off" />
+  <Connection from="Vibrate" to="exit" />
+  <Connection from="entry" to="Off" />
+  <Connection from="entry" to="Vibrate" />
+  <State name="Off" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <Stop target="laundryMachine" track="normal" blend_in="0" unique_id="1" />
+  </State>
+  <State name="Vibrate" type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <MakeController>
+      <ParameterSelector parameter="laundryMachine:isParented" unique_id="5">
+        <Choice value="false">
+          <ParameterSelector parameter="laundryMachine:hasChildren" unique_id="4">
+            <Choice value="false">
+              <Controller target="laundryMachine" controller="@ClipController(clip=o_washingMachine_vibrate_laundryMachine, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="o_washingMachine_vibrate.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="2">
+                <TransitionClassList />
+              </Controller>
+            </Choice>
+            <Choice value="true">
+              <Stop target="laundryMachine" track="normal" blend_in="0" unique_id="3" />
+            </Choice>
+          </ParameterSelector>
+        </Choice>
+        <Choice value="true">
+          <Reference target="3" />
+        </Choice>
+      </ParameterSelector>
+    </MakeController>
+  </State>
+</ASM>

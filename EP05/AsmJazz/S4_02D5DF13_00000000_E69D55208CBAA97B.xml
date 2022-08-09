@@ -1,0 +1,91 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="KiddiePool_Lounge_idle" dcc="sage">
+  <Actor name="x" type="Sim" master="true" virtual="false" />
+  <Actor name="poolKiddie" type="Object" virtual="true" />
+  <Actor name="toy" type="Prop" virtual="false" object_def_resource_key="c0db5ae7:00000000:0000000000021fc5#toolDucky_EF04GEN" />
+  <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
+  <Parameter name="x:species" type="enum" labels="human,dog,smalldog,cat" default="human" />
+  <IkConfiguration name="a2o_kiddiePool_lounge_breathIdle.ma">
+    <SourceFile name="a2o_kiddiePool_lounge_breathIdle.ma">
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="poolKiddie" actor="poolKiddie" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_kiddiePool_lounge_coolOff.ma">
+    <SourceFile name="a2o_kiddiePool_lounge_coolOff.ma">
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="poolKiddie" actor="poolKiddie" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_kiddiePool_lounge_playWithToy.ma">
+    <SourceFile name="a2o_kiddiePool_lounge_playWithToy.ma">
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="poolKiddie" actor="poolKiddie" />
+      <MapNamespace namespace="toy" actor="toy" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_kiddiePool_lounge_foundStrangeToy.ma">
+    <SourceFile name="a2o_kiddiePool_lounge_foundStrangeToy.ma">
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="poolKiddie" actor="poolKiddie" />
+      <MapNamespace namespace="toy" actor="toy" />
+    </SourceFile>
+  </IkConfiguration>
+  <PostureManifest actors="" />
+  <PostureManifest actors="x">
+    <Support name="KiddiePool_Lounge" family="none" compatibility="FullBody" carry_left="-" carry_right="-" surface="*" />
+  </PostureManifest>
+  <State type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" name="Breathe_Idle" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="Cool_Off" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="Play_With_Toy" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="hub" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <Connection from="Breathe_Idle" to="hub" />
+  <Connection from="Cool_Off" to="hub" />
+  <Connection from="Play_With_Toy" to="hub" />
+  <Connection from="entry" to="hub" />
+  <Connection from="hub" to="Breathe_Idle" />
+  <Connection from="hub" to="Cool_Off" />
+  <Connection from="hub" to="Play_With_Toy" />
+  <Connection from="hub" to="exit" />
+  <State name="Breathe_Idle" type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <MakeController>
+      <PostureSelector parameter="x:posture" unique_id="2">
+        <Choice value="KiddiePool_Lounge--FullBody" track="normal" mask="">
+          <Controller target="x" controller="@ClipController(clip=a2o_kiddiePool_lounge_breathIdle_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_kiddiePool_lounge_breathIdle.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="1">
+            <TransitionClassList />
+          </Controller>
+        </Choice>
+      </PostureSelector>
+    </MakeController>
+  </State>
+  <State name="Cool_Off" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="4">
+      <Choice value="KiddiePool_Lounge--FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2o_kiddiePool_lounge_coolOff_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_kiddiePool_lounge_coolOff.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="3">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="Play_With_Toy" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="7">
+      <Choice weight="54" avoidRepeat="True">
+        <Controller target="x" controller="@ClipController(clip=a2o_kiddiePool_lounge_foundStrangeToy_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_kiddiePool_lounge_foundStrangeToy.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="5">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+      <Choice weight="64" avoidRepeat="True">
+        <Controller target="x" controller="@ClipController(clip=a2o_kiddiePool_lounge_playWithToy_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_kiddiePool_lounge_playWithToy.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="6">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+    </RandomSelector>
+  </State>
+  <State name="hub" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+  </State>
+</ASM>

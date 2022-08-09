@@ -1,0 +1,63 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="PetBall_throw_idle" dcc="sage">
+  <Actor name="x" type="Sim" master="true" virtual="false" />
+  <Actor name="carryObject" type="Object" virtual="false" />
+  <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
+  <Parameter name="x:carryState" type="enum" labels="none,left,right,both" default="right" />
+  <Parameter name="x:trait_LeftHanded" type="bool" labels="" default="False" />
+  <Parameter name="carryObject:carryTrack" type="enum" labels="left,right" default="right" />
+  <IkConfiguration name="a2o_petball_shakeBall_idle.ma">
+    <SourceFile name="a2o_petball_shakeBall_idle.ma">
+      <MapNamespace namespace="carryObject" actor="carryObject" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <PostureManifest actors="">
+    <Support family="stand" compatibility="FullBody" carry_left="carryObject" carry_right="-" surface="*" />
+    <Support family="stand" compatibility="FullBody" carry_left="-" carry_right="carryObject" surface="*" />
+    <Support family="stand" compatibility="UpperBody" carry_left="carryObject" carry_right="-" surface="*" />
+    <Support family="stand" compatibility="UpperBody" carry_left="-" carry_right="carryObject" surface="*" />
+  </PostureManifest>
+  <State type="private" skippable="false" interrupt_this="false" name="hub" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" name="idle" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="mirror" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="toss_ball" focus="none" facialoverlays="false" tailoverlays="true" />
+  <Connection from="entry" to="mirror" />
+  <Connection from="hub" to="exit" />
+  <Connection from="hub" to="idle" />
+  <Connection from="hub" to="toss_ball" />
+  <Connection from="idle" to="hub" />
+  <Connection from="mirror" to="hub" />
+  <Connection from="toss_ball" to="hub" />
+  <State name="hub" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="1">
+      <Choice value="-stand-FullBody" track="normal" mask="" />
+      <Choice value="-stand-UpperBody" track="normal" mask="Trackmask_UpperBody" />
+    </PostureSelector>
+  </State>
+  <State name="idle" type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <MakeController>
+      <Controller target="x" controller="@ClipController(clip=a2o_toyBall_shakeBall_x, loop_count=#1)" overridePosture="true" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_petball_shakeBall_idle.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="2">
+        <TransitionClassList />
+      </Controller>
+    </MakeController>
+  </State>
+  <State name="mirror" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <ParameterSelector parameter="carryObject:carryTrack" unique_id="4">
+      <Choice value="left">
+        <SetMirror target="x" mirror="true" unique_id="3" />
+      </Choice>
+      <Choice value="right" />
+    </ParameterSelector>
+  </State>
+  <State name="toss_ball" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <Controller target="x" controller="@ClipController(clip=a2o_toyBall_wiggleBall_x, loop_count=#1)" overridePosture="true" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_petball_shakeBall_idle.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="5">
+      <TransitionClassList />
+    </Controller>
+  </State>
+</ASM>

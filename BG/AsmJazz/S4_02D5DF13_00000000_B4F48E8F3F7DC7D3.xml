@@ -1,0 +1,440 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="hotTub_splash" dcc="sage">
+  <Actor name="x" type="Sim" master="true" virtual="false" />
+  <Actor name="y" type="Sim" virtual="false" />
+  <Actor name="sitTemplate" type="Object" virtual="true" />
+  <Parameter name="subroot" type="enum" labels="0,1,2,3,4,5,6,7,8,9,10,11" default="0" />
+  <Parameter name="distance" type="enum" labels="low,mid,high" default="low" />
+  <Parameter name="isMirrored" type="bool" labels="" default="False" />
+  <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
+  <Parameter name="y:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="y:sex" type="enum" labels="male,female" default="male" />
+  <IkConfiguration name="a2a_hotTub_social_splash.ma">
+    <SourceFile name="a2a_hotTub_social_splash.ma">
+      <MapNamespace namespace="sitTemplate" actor="sitTemplate" />
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="y" actor="y" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2a_hotTub_social_splashAdjacent.ma">
+    <SourceFile name="a2a_hotTub_social_splashAdjacent.ma">
+      <MapNamespace namespace="sitTemplate" actor="sitTemplate" />
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="y" actor="y" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2a_hotTub_social_splashCorner.ma">
+    <SourceFile name="a2a_hotTub_social_splashCorner.ma">
+      <MapNamespace namespace="sitTemplate" actor="sitTemplate" />
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="y" actor="y" />
+    </SourceFile>
+  </IkConfiguration>
+  <PostureManifest actors="" />
+  <PostureManifest actors="x,y">
+    <Support name="hotTub_sit" family="none" compatibility="FullBody" carry_left="-" carry_right="-" surface="*" />
+    <Support name="hotSprings_sit" family="none" compatibility="FullBody" carry_left="-" carry_right="-" surface="*" />
+  </PostureManifest>
+  <State type="public" skippable="false" interrupt_this="false" name="Splash_Fail" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="Splash_Succeed" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <Connection from="Splash_Fail" to="exit" />
+  <Connection from="Splash_Succeed" to="exit" />
+  <Connection from="entry" to="Splash_Fail" />
+  <Connection from="entry" to="Splash_Succeed" />
+  <State name="Splash_Fail" type="public" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="20">
+      <Choice value="hotSprings_sit--FullBody" track="normal" mask="">
+        <ParameterSelector parameter="subroot" unique_id="18">
+          <Choice value="0" />
+          <Choice value="1" />
+          <Choice value="2" />
+          <Choice value="3" />
+          <Choice value="4">
+            <ParameterSelector parameter="distance" unique_id="10">
+              <Choice value="low">
+                <SetMirror target="x" mirror="true" unique_id="4" />
+                <SetMirror target="y" mirror="true" unique_id="3" />
+                <Controller target="y" controller="@ClipController(clip=a2a_hotTub_splashAdjacent_fail_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_hotTub_social_splashAdjacent.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="1">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=a2a_hotTub_splashAdjacent_fail_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_hotTub_social_splashAdjacent.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="2">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+              </Choice>
+              <Choice value="mid">
+                <ParameterSelector parameter="x:age" unique_id="9">
+                  <Choice value="baby" />
+                  <Choice value="toddler" />
+                  <Choice value="child">
+                    <Controller target="y" controller="@ClipController(clip=a2a_hotTub_splash_fail_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_hotTub_social_splash.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="5">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                    <Controller target="x" controller="@ClipController(clip=a2a_hotTub_splash_fail_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_hotTub_social_splash.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="6">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                  </Choice>
+                  <Choice value="teen">
+                    <Controller target="y" controller="@ClipController(clip=a2a_hotTub_splashCorner_fail_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_hotTub_social_splashCorner.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="7">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                    <Controller target="x" controller="@ClipController(clip=a2a_hotTub_splashCorner_fail_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_hotTub_social_splashCorner.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="8">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                  </Choice>
+                  <Choice value="youngadult">
+                    <Reference target="7" />
+                    <Reference target="8" />
+                  </Choice>
+                  <Choice value="adult">
+                    <Reference target="7" />
+                    <Reference target="8" />
+                  </Choice>
+                  <Choice value="elder">
+                    <Reference target="7" />
+                    <Reference target="8" />
+                  </Choice>
+                </ParameterSelector>
+              </Choice>
+              <Choice value="high">
+                <Reference target="5" />
+                <Reference target="6" />
+              </Choice>
+            </ParameterSelector>
+          </Choice>
+          <Choice value="5">
+            <ParameterSelector parameter="distance" unique_id="11">
+              <Choice value="low">
+                <Reference target="1" />
+                <Reference target="2" />
+              </Choice>
+              <Choice value="mid">
+                <Reference target="9" />
+              </Choice>
+              <Choice value="high">
+                <Reference target="5" />
+                <Reference target="6" />
+              </Choice>
+            </ParameterSelector>
+          </Choice>
+          <Choice value="6">
+            <ParameterSelector parameter="distance" unique_id="12">
+              <Choice value="low">
+                <Reference target="4" />
+                <Reference target="3" />
+                <Reference target="1" />
+                <Reference target="2" />
+              </Choice>
+              <Choice value="mid">
+                <Reference target="9" />
+              </Choice>
+              <Choice value="high">
+                <Reference target="5" />
+                <Reference target="6" />
+              </Choice>
+            </ParameterSelector>
+          </Choice>
+          <Choice value="7">
+            <ParameterSelector parameter="distance" unique_id="13">
+              <Choice value="low">
+                <Reference target="1" />
+                <Reference target="2" />
+              </Choice>
+              <Choice value="mid">
+                <Reference target="9" />
+              </Choice>
+              <Choice value="high">
+                <Reference target="5" />
+                <Reference target="6" />
+              </Choice>
+            </ParameterSelector>
+          </Choice>
+          <Choice value="8">
+            <ParameterSelector parameter="distance" unique_id="14">
+              <Choice value="low">
+                <Reference target="4" />
+                <Reference target="3" />
+                <Reference target="1" />
+                <Reference target="2" />
+              </Choice>
+              <Choice value="mid">
+                <Reference target="9" />
+              </Choice>
+              <Choice value="high">
+                <Reference target="5" />
+                <Reference target="6" />
+              </Choice>
+            </ParameterSelector>
+          </Choice>
+          <Choice value="9">
+            <ParameterSelector parameter="distance" unique_id="15">
+              <Choice value="low">
+                <Reference target="1" />
+                <Reference target="2" />
+              </Choice>
+              <Choice value="mid">
+                <Reference target="9" />
+              </Choice>
+              <Choice value="high">
+                <Reference target="5" />
+                <Reference target="6" />
+              </Choice>
+            </ParameterSelector>
+          </Choice>
+          <Choice value="10">
+            <ParameterSelector parameter="distance" unique_id="16">
+              <Choice value="low">
+                <Reference target="4" />
+                <Reference target="3" />
+                <Reference target="1" />
+                <Reference target="2" />
+              </Choice>
+              <Choice value="mid">
+                <Reference target="9" />
+              </Choice>
+              <Choice value="high">
+                <Reference target="5" />
+                <Reference target="6" />
+              </Choice>
+            </ParameterSelector>
+          </Choice>
+          <Choice value="11">
+            <ParameterSelector parameter="distance" unique_id="17">
+              <Choice value="low">
+                <Reference target="1" />
+                <Reference target="2" />
+              </Choice>
+              <Choice value="mid">
+                <Reference target="9" />
+              </Choice>
+              <Choice value="high">
+                <Reference target="5" />
+                <Reference target="6" />
+              </Choice>
+            </ParameterSelector>
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+      <Choice value="hotTub_sit--FullBody" track="normal" mask="">
+        <Reference target="18" />
+        <PostureSelector parameter="y:posture" unique_id="19">
+          <Choice value="hotSprings_sit--FullBody" track="normal" mask="">
+            <Reference target="18" />
+          </Choice>
+          <Choice value="hotTub_sit--FullBody" track="normal" mask="">
+            <Reference target="18" />
+          </Choice>
+        </PostureSelector>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="Splash_Succeed" type="public" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="40">
+      <Choice value="hotSprings_sit--FullBody" track="normal" mask="">
+        <PostureSelector parameter="y:posture" unique_id="39">
+          <Choice value="hotSprings_sit--FullBody" track="normal" mask="">
+            <ParameterSelector parameter="subroot" unique_id="38">
+              <Choice value="0" />
+              <Choice value="1" />
+              <Choice value="2" />
+              <Choice value="3" />
+              <Choice value="4">
+                <ParameterSelector parameter="distance" unique_id="30">
+                  <Choice value="low">
+                    <SetMirror target="x" mirror="true" unique_id="24" />
+                    <SetMirror target="y" mirror="true" unique_id="23" />
+                    <Controller target="y" controller="@ClipController(clip=a2a_hotTub_splashAdjacent_succeed_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_hotTub_social_splashAdjacent.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="21">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                    <Controller target="x" controller="@ClipController(clip=a2a_hotTub_splashAdjacent_succeed_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_hotTub_social_splashAdjacent.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="22">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                  </Choice>
+                  <Choice value="mid">
+                    <ParameterSelector parameter="x:age" unique_id="29">
+                      <Choice value="baby" />
+                      <Choice value="toddler" />
+                      <Choice value="child">
+                        <Controller target="x" controller="@ClipController(clip=a2a_hotTub_splash_succeed_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_hotTub_social_splash.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="25">
+                          <TransitionClassList>
+                            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                          </TransitionClassList>
+                        </Controller>
+                        <Controller target="y" controller="@ClipController(clip=a2a_hotTub_splash_succeed_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_hotTub_social_splash.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="26">
+                          <TransitionClassList>
+                            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                          </TransitionClassList>
+                        </Controller>
+                      </Choice>
+                      <Choice value="teen">
+                        <Controller target="x" controller="@ClipController(clip=a2a_hotTub_splashCorner_succeed_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_hotTub_social_splashCorner.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="27">
+                          <TransitionClassList>
+                            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                          </TransitionClassList>
+                        </Controller>
+                        <Controller target="y" controller="@ClipController(clip=a2a_hotTub_splashCorner_succeed_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_hotTub_social_splashCorner.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="28">
+                          <TransitionClassList>
+                            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                          </TransitionClassList>
+                        </Controller>
+                      </Choice>
+                      <Choice value="youngadult">
+                        <Reference target="27" />
+                        <Reference target="28" />
+                      </Choice>
+                      <Choice value="adult">
+                        <Reference target="27" />
+                        <Reference target="28" />
+                      </Choice>
+                      <Choice value="elder">
+                        <Reference target="27" />
+                        <Reference target="28" />
+                      </Choice>
+                    </ParameterSelector>
+                  </Choice>
+                  <Choice value="high">
+                    <Reference target="25" />
+                    <Reference target="26" />
+                  </Choice>
+                </ParameterSelector>
+              </Choice>
+              <Choice value="5">
+                <ParameterSelector parameter="distance" unique_id="31">
+                  <Choice value="low">
+                    <Reference target="21" />
+                    <Reference target="22" />
+                  </Choice>
+                  <Choice value="mid">
+                    <Reference target="29" />
+                  </Choice>
+                  <Choice value="high">
+                    <Reference target="25" />
+                    <Reference target="26" />
+                  </Choice>
+                </ParameterSelector>
+              </Choice>
+              <Choice value="6">
+                <ParameterSelector parameter="distance" unique_id="32">
+                  <Choice value="low">
+                    <Reference target="24" />
+                    <Reference target="23" />
+                    <Reference target="21" />
+                    <Reference target="22" />
+                  </Choice>
+                  <Choice value="mid">
+                    <Reference target="29" />
+                  </Choice>
+                  <Choice value="high">
+                    <Reference target="25" />
+                    <Reference target="26" />
+                  </Choice>
+                </ParameterSelector>
+              </Choice>
+              <Choice value="7">
+                <ParameterSelector parameter="distance" unique_id="33">
+                  <Choice value="low">
+                    <Reference target="21" />
+                    <Reference target="22" />
+                  </Choice>
+                  <Choice value="mid">
+                    <Reference target="29" />
+                  </Choice>
+                  <Choice value="high">
+                    <Reference target="25" />
+                    <Reference target="26" />
+                  </Choice>
+                </ParameterSelector>
+              </Choice>
+              <Choice value="8">
+                <ParameterSelector parameter="distance" unique_id="34">
+                  <Choice value="low">
+                    <Reference target="24" />
+                    <Reference target="23" />
+                    <Reference target="21" />
+                    <Reference target="22" />
+                  </Choice>
+                  <Choice value="mid">
+                    <Reference target="29" />
+                  </Choice>
+                  <Choice value="high">
+                    <Reference target="26" />
+                  </Choice>
+                </ParameterSelector>
+              </Choice>
+              <Choice value="9">
+                <ParameterSelector parameter="distance" unique_id="35">
+                  <Choice value="low">
+                    <Reference target="21" />
+                    <Reference target="22" />
+                  </Choice>
+                  <Choice value="mid">
+                    <Reference target="29" />
+                  </Choice>
+                  <Choice value="high">
+                    <Reference target="25" />
+                    <Reference target="26" />
+                  </Choice>
+                </ParameterSelector>
+              </Choice>
+              <Choice value="10">
+                <ParameterSelector parameter="distance" unique_id="36">
+                  <Choice value="low">
+                    <Reference target="24" />
+                    <Reference target="23" />
+                    <Reference target="21" />
+                    <Reference target="22" />
+                  </Choice>
+                  <Choice value="mid">
+                    <Reference target="29" />
+                  </Choice>
+                  <Choice value="high">
+                    <Reference target="25" />
+                  </Choice>
+                </ParameterSelector>
+              </Choice>
+              <Choice value="11">
+                <ParameterSelector parameter="distance" unique_id="37">
+                  <Choice value="low">
+                    <Reference target="21" />
+                    <Reference target="22" />
+                  </Choice>
+                  <Choice value="mid">
+                    <Reference target="29" />
+                  </Choice>
+                  <Choice value="high">
+                    <Reference target="25" />
+                    <Reference target="26" />
+                  </Choice>
+                </ParameterSelector>
+              </Choice>
+            </ParameterSelector>
+          </Choice>
+          <Choice value="hotTub_sit--FullBody" track="normal" mask="">
+            <Reference target="38" />
+          </Choice>
+        </PostureSelector>
+      </Choice>
+      <Choice value="hotTub_sit--FullBody" track="normal" mask="">
+        <Reference target="39" />
+      </Choice>
+    </PostureSelector>
+  </State>
+</ASM>

@@ -1,0 +1,186 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="Bed_Hospital_soc_ReclinedActions" dcc="sage">
+  <Actor name="x" type="Sim" master="true" virtual="false" />
+  <Actor name="y" type="Sim" virtual="false" />
+  <Actor name="hospitalBed" type="Object" virtual="true" />
+  <Actor name="injector" type="Prop" virtual="false" object_def_resource_key="c0db5ae7:00000000:0000000000010527#toolInjector_EP01GEN" />
+  <Actor name="PillsMeds" type="Prop" virtual="false" object_def_resource_key="c0db5ae7:00000000:000000000001051d#cupSmall_EP01GENmedicine" />
+  <Actor name="PillsMeds2" type="Prop" virtual="false" object_def_resource_key="c0db5ae7:00000000:000000000001051d#cupSmall_EP01GENmedicine" />
+  <Actor name="food2" type="Prop" virtual="false" object_def_resource_key="c0db5ae7:00000000:000000000001051f#plateHospital_EP01GEN" />
+  <Actor name="food" type="Prop" virtual="false" object_def_resource_key="c0db5ae7:00000000:000000000001051f#plateHospital_EP01GEN" />
+  <Actor name="spoon" type="Prop" virtual="false" object_def_resource_key="c0db5ae7:00000000:0000000000001c1f#toolSpoonGEN_01_prop" />
+  <Parameter name="isMirrored" type="bool" labels="" default="False" />
+  <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
+  <Parameter name="y:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="y:sex" type="enum" labels="male,female" default="male" />
+  <IkConfiguration name="a2a_hospitalBed_giveShot_fail.ma">
+    <SourceFile name="a2a_hospitalBed_giveShot_fail.ma">
+      <MapNamespace namespace="hospitalBed" actor="hospitalBed" />
+      <MapNamespace namespace="injector" actor="injector" />
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="y" actor="y" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2a_hospitalBed_giveShot_succeed.ma">
+    <SourceFile name="a2a_hospitalBed_giveShot_succeed.ma">
+      <MapNamespace namespace="hospitalBed" actor="hospitalBed" />
+      <MapNamespace namespace="injector" actor="injector" />
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="y" actor="y" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2a_hospitalBed_takeMeds.ma">
+    <SourceFile name="a2a_hospitalBed_takeMeds.ma">
+      <MapNamespace namespace="hospitalBed" actor="hospitalBed" />
+      <MapNamespace namespace="PillsMeds" actor="PillsMeds" />
+      <MapNamespace namespace="PillsMeds2" actor="PillsMeds2" />
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="y" actor="y" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2a_hospitalBed_eatFood.ma">
+    <SourceFile name="a2a_hospitalBed_eatFood.ma">
+      <MapNamespace namespace="food" actor="food" />
+      <MapNamespace namespace="food2" actor="food2" />
+      <MapNamespace namespace="hospitalBed" actor="hospitalBed" />
+      <MapNamespace namespace="toolSpoon" actor="spoon" />
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="y" actor="y" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2a_hospitalBed_discussHealth_reclined.ma">
+    <SourceFile name="a2a_hospitalBed_discussHealth_reclined.ma">
+      <MapNamespace namespace="hospitalBed" actor="hospitalBed" />
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="y" actor="y" />
+    </SourceFile>
+  </IkConfiguration>
+  <PostureManifest actors="" />
+  <PostureManifest actors="x">
+    <Support name="hospitalBed_stand" family="none" compatibility="FullBody" carry_left="-" carry_right="-" surface="*" />
+  </PostureManifest>
+  <PostureManifest actors="y">
+    <Support name="hospitalBed_reclined" family="none" compatibility="FullBody" carry_left="-" carry_right="-" surface="*" />
+  </PostureManifest>
+  <State type="public" skippable="false" interrupt_this="false" name="DiscussHealth" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="EatFood" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="EatMeds" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="Shot_Failure" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="Shot_Success" focus="none" facialoverlays="false" tailoverlays="true" />
+  <Connection from="DiscussHealth" to="exit" />
+  <Connection from="EatFood" to="exit" />
+  <Connection from="EatMeds" to="exit" />
+  <Connection from="Shot_Failure" to="exit" />
+  <Connection from="Shot_Success" to="exit" />
+  <Connection from="entry" to="DiscussHealth" />
+  <Connection from="entry" to="EatFood" />
+  <Connection from="entry" to="EatMeds" />
+  <Connection from="entry" to="Shot_Failure" />
+  <Connection from="entry" to="Shot_Success" />
+  <State name="DiscussHealth" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="y:posture" unique_id="2">
+      <Choice value="hospitalBed_reclined--FullBody" track="normal" mask="">
+        <Controller target="y" controller="@ClipController(clip=a2a_hospitalBed_discussHealth_reclined_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_hospitalBed_discussHealth_reclined.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="1">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
+    </PostureSelector>
+    <PostureSelector parameter="x:posture" unique_id="4">
+      <Choice value="hospitalBed_stand--FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2a_hospitalBed_discussHealth_reclined_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_hospitalBed_discussHealth_reclined.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="3">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="EatFood" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="y:posture" unique_id="6">
+      <Choice value="hospitalBed_reclined--FullBody" track="normal" mask="">
+        <Controller target="y" controller="@ClipController(clip=a2a_hospitalBed_eatFood_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_hospitalBed_eatFood.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="5">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
+    </PostureSelector>
+    <PostureSelector parameter="x:posture" unique_id="8">
+      <Choice value="hospitalBed_stand--FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2a_hospitalBed_eatFood_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_hospitalBed_eatFood.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="7">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="EatMeds" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="10">
+      <Choice value="hospitalBed_stand--FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2a_hospitalBed_takeMeds_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_hospitalBed_takeMeds.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="9">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
+    </PostureSelector>
+    <PostureSelector parameter="y:posture" unique_id="12">
+      <Choice value="hospitalBed_reclined--FullBody" track="normal" mask="">
+        <Controller target="y" controller="@ClipController(clip=a2a_hospitalBed_takeMeds_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_hospitalBed_takeMeds.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="11">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="Shot_Failure" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="y:posture" unique_id="14">
+      <Choice value="hospitalBed_reclined--FullBody" track="normal" mask="">
+        <Controller target="y" controller="@ClipController(clip=a2a_hospitalBed_giveShot_fail_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_hospitalBed_giveShot_fail.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="13">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
+    </PostureSelector>
+    <PostureSelector parameter="x:posture" unique_id="16">
+      <Choice value="hospitalBed_stand--FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2a_hospitalBed_giveShot_fail_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_hospitalBed_giveShot_fail.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="15">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="Shot_Success" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="18">
+      <Choice value="hospitalBed_stand--FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2a_hospitalBed_giveShot_succeed_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_hospitalBed_giveShot_succeed.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="17">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
+    </PostureSelector>
+    <PostureSelector parameter="y:posture" unique_id="20">
+      <Choice value="hospitalBed_reclined--FullBody" track="normal" mask="">
+        <Controller target="y" controller="@ClipController(clip=a2a_hospitalBed_giveShot_succeed_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_hospitalBed_giveShot_succeed.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="19">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
+    </PostureSelector>
+  </State>
+</ASM>

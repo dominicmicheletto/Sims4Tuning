@@ -1,0 +1,63 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="Trash_Chute_Empty">
+  <Actor name="x" type="Sim" master="true" virtual="false" />
+  <Actor name="trashChute" type="Object" virtual="false" />
+  <Actor name="carryObject" type="Object" virtual="false" />
+  <Parameter name="x:age" template="age" type="enum" labels="baby,unsupported_age,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="x:sex" template="sex" type="enum" labels="male,female" default="male" />
+  <Parameter name="carryObject:carryTrack" type="enum" labels="left,right" default="left" />
+  <PostureManifest actors="x">
+    <Support family="stand" compatibility="FullBody" carry_left="carryObject" carry_right="-" surface="*" />
+    <Support family="stand" compatibility="FullBody" carry_left="-" carry_right="carryObject" surface="*" />
+  </PostureManifest>
+  <State type="public" skippable="false" interrupt_this="false" name="Trash_Chute_Succeed" focus="none" facialoverlays="false" />
+  <State type="public" skippable="false" interrupt_this="false" name="Trash_Chute_Fail" focus="none" facialoverlays="false" />
+  <State type="private" skippable="false" interrupt_this="false" name="mirror" focus="full body" facialoverlays="false" />
+  <Connection from="entry" to="mirror" />
+  <Connection from="mirror" to="Trash_Chute_Fail" />
+  <Connection from="mirror" to="Trash_Chute_Succeed" />
+  <Connection from="Trash_Chute_Fail" to="exit" />
+  <Connection from="Trash_Chute_Succeed" to="exit" />
+  <State name="Trash_Chute_Succeed">
+    <description />
+    <PostureSelector parameter="x:posture">
+      <Choice value="-stand-FullBody">
+        <Controller target="x" controller="@ClipController(clip=a2o_trashChute_putTrash_succeed_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_trashChute_putTrash.ma" focus="undefined" id="8b94df3d-8a2e-42ef-8d90-8129ffa5fdb6">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+        <Controller target="trashChute" controller="@ClipController(clip=a2o_trashChute_putTrash_succeed_trashChute, loop_count=#1)" overridePosture="false" mask="" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_trashChute_putTrash.ma" focus="undefined" id="a3a95fc9-83d5-4ac0-a79d-a4b4c0e8feb9">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="Trash_Chute_Fail">
+    <description />
+    <PostureSelector parameter="x:posture">
+      <Choice value="-stand-FullBody">
+        <Controller target="x" controller="@ClipController(clip=a2o_trashChute_putTrash_fail_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_trashChute_putTrash_fail.ma" focus="undefined" id="521cc660-446a-412a-a016-f5cf7860cee3">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+        <Controller target="trashChute" controller="@ClipController(clip=a2o_trashChute_putTrash_fail_trashChute, loop_count=#1)" overridePosture="false" mask="" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_trashChute_putTrash_fail.ma" focus="undefined" id="e234d9ec-a5ef-4831-b2fc-798cf1306eaa">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="mirror">
+    <description />
+    <ParameterSelector parameter="carryObject:carryTrack">
+      <Choice value="left">
+        <SetMirror target="x" mirror="true" />
+      </Choice>
+    </ParameterSelector>
+  </State>
+</ASM>

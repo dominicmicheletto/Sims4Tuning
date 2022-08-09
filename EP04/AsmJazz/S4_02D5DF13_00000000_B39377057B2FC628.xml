@@ -1,0 +1,81 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="Pet_Pregnancy_Vomit" dcc="sage">
+  <Actor name="x" type="Sim" master="true" virtual="false" />
+  <Actor name="sitTemplate" type="Object" virtual="true" />
+  <Actor name="postureObject" type="Object" virtual="true" />
+  <Parameter name="x:species" type="enum" labels="dog,smalldog,cat" default="dog" />
+  <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
+  <Parameter name="sitTemplate:isMirroredPart" type="bool" labels="" default="False" />
+  <Parameter name="postureObject:isMirroredPart" type="bool" labels="" default="False" />
+  <IkConfiguration name="ad_vomit.ma">
+    <SourceFile name="ad_vomit.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="ad_vomit_sitOnGround.ma">
+    <SourceFile name="ad_vomit_sitOnGround.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="ad_vomit_layDown.ma">
+    <SourceFile name="ad_vomit_layDown.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <PostureManifest actors="">
+    <Support family="stand" compatibility="FullBody" carry_left="*" carry_right="-" surface="*" />
+    <Support family="sit" compatibility="FullBody" carry_left="*" carry_right="-" surface="*" />
+    <Support family="layDown" compatibility="FullBody" carry_left="*" carry_right="-" surface="*" />
+  </PostureManifest>
+  <State type="private" skippable="false" interrupt_this="false" name="mirror" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="pregnant_vomit" focus="none" facialoverlays="false" tailoverlays="false" />
+  <Connection from="entry" to="mirror" />
+  <Connection from="mirror" to="pregnant_vomit" />
+  <Connection from="pregnant_vomit" to="exit" />
+  <State name="mirror" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <ParameterSelector parameter="postureObject:isMirroredPart" unique_id="2">
+      <Choice value="false" />
+      <Choice value="true">
+        <SetMirror target="x" mirror="true" unique_id="1" />
+      </Choice>
+    </ParameterSelector>
+    <ParameterSelector parameter="sitTemplate:isMirroredPart" unique_id="3">
+      <Choice value="false" />
+      <Choice value="true">
+        <Reference target="1" />
+      </Choice>
+    </ParameterSelector>
+  </State>
+  <State name="pregnant_vomit" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="false">
+    <description />
+    <ParameterSelector parameter="x:species" unique_id="8">
+      <Choice value="dog">
+        <PostureSelector parameter="x:posture" unique_id="7">
+          <Choice value="-layDown-FullBody" track="normal" mask="">
+            <Controller target="x" controller="@ClipController(clip=ad_vomit_layDown_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ad_vomit_layDown.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="4">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
+          <Choice value="-sit-FullBody" track="normal" mask="">
+            <Controller target="x" controller="@ClipController(clip=ad_vomit_sitOnGround_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ad_vomit_sitOnGround.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="5">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
+          <Choice value="-stand-FullBody" track="normal" mask="">
+            <Controller target="x" controller="@ClipController(clip=ad_vomit_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ad_vomit.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="6">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
+        </PostureSelector>
+      </Choice>
+      <Choice value="smalldog">
+        <Reference target="7" />
+      </Choice>
+      <Choice value="cat">
+        <Reference target="7" />
+      </Choice>
+    </ParameterSelector>
+  </State>
+</ASM>

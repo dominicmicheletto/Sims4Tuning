@@ -1,0 +1,515 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="Trash_OutdoorCan" dcc="sage">
+  <Actor name="x" type="Sim" master="true" virtual="false" />
+  <Actor name="trashCanOutdoor" type="Object" virtual="false" />
+  <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
+  <Parameter name="x:mood" type="enum" labels="happy,confident,angry,sad,bored,embarrassed,uncomfortable,playful,tense,focused,energized,flirty,fine,inspired,dazed" default="happy" />
+  <Parameter name="trashCanOutdoor:lid" type="bool" labels="" default="True" />
+  <IkConfiguration name="a2o_trashCanOutdoor_rummage.ma">
+    <SourceFile name="a2o_trashCanOutdoor_rummage.ma">
+      <MapNamespace namespace="trashCanOutdoor" actor="trashCanOutdoor" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_trashCanOutdoor_kickOverPickUp.ma">
+    <SourceFile name="a2o_trashCanOutdoor_kickOverPickUp.ma">
+      <MapNamespace namespace="trashCanOutdoor" actor="trashCanOutdoor" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="c2o_trashCanOutdoor_getIn.ma">
+    <SourceFile name="c2o_trashCanOutdoor_getIn.ma">
+      <MapNamespace namespace="trashCanOutdoor" actor="trashCanOutdoor" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="c2o_trashCanOutdoor_getOut.ma">
+    <SourceFile name="c2o_trashCanOutdoor_getOut.ma">
+      <MapNamespace namespace="trashCanOutdoor" actor="trashCanOutdoor" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <PostureManifest actors="" />
+  <PostureManifest actors="x">
+    <Support family="stand" compatibility="FullBody" carry_left="-" carry_right="-" surface="*" />
+  </PostureManifest>
+  <State type="private" skippable="false" interrupt_this="false" name="GetInRummage" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="GetOutRummage" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" name="Hide" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="KickOver" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="PickUp" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" name="Rummage" focus="none" facialoverlays="false" tailoverlays="true" />
+  <Connection from="GetInRummage" to="Hide" />
+  <Connection from="GetInRummage" to="Rummage" />
+  <Connection from="GetOutRummage" to="exit" />
+  <Connection from="Hide" to="GetOutRummage" />
+  <Connection from="KickOver" to="exit" />
+  <Connection from="PickUp" to="exit" />
+  <Connection from="Rummage" to="GetOutRummage" />
+  <Connection from="entry" to="GetInRummage" />
+  <Connection from="entry" to="KickOver" />
+  <Connection from="entry" to="PickUp" />
+  <State name="GetInRummage" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="11">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <ParameterSelector parameter="x:age" unique_id="10">
+          <Choice value="baby" />
+          <Choice value="toddler" />
+          <Choice value="child">
+            <ParameterSelector parameter="trashCanOutdoor:lid" unique_id="5">
+              <Choice value="false">
+                <Controller target="x" controller="@ClipController(clip=c2o_trashCanOutdoor_getIn_noLid_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c2o_trashCanOutdoor_getIn.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="1">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <Controller target="trashCanOutdoor" controller="@ClipController(clip=c2o_trashCanOutdoor_getIn_noLid_trashCanOutdoor, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c2o_trashCanOutdoor_getIn.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="2">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+              </Choice>
+              <Choice value="true">
+                <Controller target="trashCanOutdoor" controller="@ClipController(clip=c2o_trashCanOutdoor_getIn_trashCanOutdoor, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c2o_trashCanOutdoor_getIn.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="3">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=c2o_trashCanOutdoor_getIn_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c2o_trashCanOutdoor_getIn.ma" focus="none" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="4">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+              </Choice>
+            </ParameterSelector>
+          </Choice>
+          <Choice value="teen">
+            <ParameterSelector parameter="trashCanOutdoor:lid" unique_id="9">
+              <Choice value="false">
+                <Controller target="x" controller="@ClipController(clip=a2o_trashCanOutdoor_rummage_start_noLid_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_trashCanOutdoor_rummage.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="6">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+              </Choice>
+              <Choice value="true">
+                <Controller target="trashCanOutdoor" controller="@ClipController(clip=a2o_trashCanOutdoor_rummage_start_trashCanOutdoor, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_trashCanOutdoor_rummage.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="7">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=a2o_trashCanOutdoor_rummage_start_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_trashCanOutdoor_rummage.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="8">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+              </Choice>
+            </ParameterSelector>
+          </Choice>
+          <Choice value="youngadult">
+            <Reference target="9" />
+          </Choice>
+          <Choice value="adult">
+            <Reference target="9" />
+          </Choice>
+          <Choice value="elder">
+            <Reference target="9" />
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="GetOutRummage" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="22">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <ParameterSelector parameter="x:age" unique_id="21">
+          <Choice value="baby" />
+          <Choice value="toddler" />
+          <Choice value="child">
+            <ParameterSelector parameter="trashCanOutdoor:lid" unique_id="16">
+              <Choice value="false">
+                <Controller target="trashCanOutdoor" controller="@ClipController(clip=c2o_trashCanOutdoor_getOut_noLid_trashCanOutdoor, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c2o_trashCanOutdoor_getOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="12">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=c2o_trashCanOutdoor_getOut_noLid_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c2o_trashCanOutdoor_getOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="13">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+              </Choice>
+              <Choice value="true">
+                <Controller target="trashCanOutdoor" controller="@ClipController(clip=c2o_trashCanOutdoor_getOut_trashCanOutdoor, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c2o_trashCanOutdoor_getOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="14">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="false" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=c2o_trashCanOutdoor_getOut_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c2o_trashCanOutdoor_getOut.ma" focus="none" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="15">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+              </Choice>
+            </ParameterSelector>
+          </Choice>
+          <Choice value="teen">
+            <ParameterSelector parameter="trashCanOutdoor:lid" unique_id="20">
+              <Choice value="false">
+                <Controller target="x" controller="@ClipController(clip=a2o_trashCanOutdoor_rummage_stop_noLid_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_trashCanOutdoor_rummage.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="17">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+              </Choice>
+              <Choice value="true">
+                <Controller target="x" controller="@ClipController(clip=a2o_trashCanOutdoor_rummage_stop_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_trashCanOutdoor_rummage.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="18">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <Controller target="trashCanOutdoor" controller="@ClipController(clip=a2o_trashCanOutdoor_rummage_stop_trashCanOutdoor, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_trashCanOutdoor_rummage.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="19">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+              </Choice>
+            </ParameterSelector>
+          </Choice>
+          <Choice value="youngadult">
+            <Reference target="20" />
+          </Choice>
+          <Choice value="adult">
+            <Reference target="20" />
+          </Choice>
+          <Choice value="elder">
+            <Reference target="20" />
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="Hide" type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <MakeController>
+      <PostureSelector parameter="x:posture" unique_id="25">
+        <Choice value="-stand-FullBody" track="normal" mask="">
+          <Controller target="trashCanOutdoor" controller="@ClipController(clip=c2o_trashCanOutdoor_embarrassed_loop_trashCanOutdoor, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c2o_trashCanOutdoor_getIn.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="23">
+            <TransitionClassList>
+              <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+            </TransitionClassList>
+          </Controller>
+          <Controller target="x" controller="@ClipController(clip=c2o_trashCanOutdoor_embarrassed_loop_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c2o_trashCanOutdoor_getIn.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="24">
+            <TransitionClassList>
+              <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+            </TransitionClassList>
+          </Controller>
+        </Choice>
+      </PostureSelector>
+    </MakeController>
+  </State>
+  <State name="KickOver" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="28">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2o_trashCanOutdoor_kickOver_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_trashCanOutdoor_kickOverPickUp.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="26">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+        <Controller target="trashCanOutdoor" controller="@ClipController(clip=a2o_trashCanOutdoor_kickOver_trashCanOutdoor, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_trashCanOutdoor_kickOverPickUp.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="27">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="PickUp" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="31">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2o_trashCanOutdoor_pickUp_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_trashCanOutdoor_kickOverPickUp.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="29">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+        <Controller target="trashCanOutdoor" controller="@ClipController(clip=a2o_trashCanOutdoor_pickUp_trashCanOutdoor, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_trashCanOutdoor_kickOverPickUp.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="30">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="Rummage" type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <MakeController>
+      <PostureSelector parameter="x:posture" unique_id="60">
+        <Choice value="-stand-FullBody" track="normal" mask="">
+          <ParameterSelector parameter="x:age" unique_id="59">
+            <Choice value="baby" />
+            <Choice value="toddler" />
+            <Choice value="child">
+              <ParameterSelector parameter="trashCanOutdoor:lid" unique_id="52">
+                <Choice value="false">
+                  <ParameterSelector parameter="x:mood" unique_id="41">
+                    <Choice value="happy">
+                      <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="36">
+                        <Choice weight="100" avoidRepeat="False">
+                          <Controller target="trashCanOutdoor" controller="@ClipController(clip=c2o_trashCanOutdoor_rummage_loop1_noLid_trashCanOutdoor, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c2o_trashCanOutdoor_getIn.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="32">
+                            <TransitionClassList>
+                              <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                            </TransitionClassList>
+                          </Controller>
+                          <Controller target="x" controller="@ClipController(clip=c2o_trashCanOutdoor_rummage_loop1_noLid_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c2o_trashCanOutdoor_getIn.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="33">
+                            <TransitionClassList>
+                              <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                            </TransitionClassList>
+                          </Controller>
+                        </Choice>
+                        <Choice weight="100" avoidRepeat="False">
+                          <Controller target="x" controller="@ClipController(clip=c2o_trashCanOutdoor_rummage_loop2_noLid_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c2o_trashCanOutdoor_getIn.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="34">
+                            <TransitionClassList>
+                              <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                            </TransitionClassList>
+                          </Controller>
+                          <Controller target="trashCanOutdoor" controller="@ClipController(clip=c2o_trashCanOutdoor_rummage_loop2_noLid_trashCanOutdoor, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c2o_trashCanOutdoor_getIn.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="35">
+                            <TransitionClassList>
+                              <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                            </TransitionClassList>
+                          </Controller>
+                        </Choice>
+                      </RandomSelector>
+                    </Choice>
+                    <Choice value="confident">
+                      <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="39">
+                        <Choice weight="100" avoidRepeat="True">
+                          <Reference target="32" />
+                          <Reference target="33" />
+                        </Choice>
+                        <Choice weight="100" avoidRepeat="True">
+                          <Reference target="34" />
+                          <Reference target="35" />
+                        </Choice>
+                        <Choice weight="100" avoidRepeat="True">
+                          <Controller target="x" controller="@ClipController(clip=c2o_trashCanOutdoor_rummage_loop3_noLid_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c2o_trashCanOutdoor_getIn.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="37">
+                            <TransitionClassList>
+                              <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                            </TransitionClassList>
+                          </Controller>
+                          <Controller target="trashCanOutdoor" controller="@ClipController(clip=c2o_trashCanOutdoor_rummage_loop3_noLid_trashCanOutdoor, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c2o_trashCanOutdoor_getIn.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="38">
+                            <TransitionClassList>
+                              <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                            </TransitionClassList>
+                          </Controller>
+                        </Choice>
+                      </RandomSelector>
+                    </Choice>
+                    <Choice value="angry">
+                      <Reference target="39" />
+                    </Choice>
+                    <Choice value="sad">
+                      <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="40">
+                        <Choice weight="50" avoidRepeat="False">
+                          <Reference target="32" />
+                          <Reference target="33" />
+                        </Choice>
+                        <Choice weight="100" avoidRepeat="False">
+                          <Reference target="37" />
+                          <Reference target="38" />
+                        </Choice>
+                      </RandomSelector>
+                    </Choice>
+                    <Choice value="bored">
+                      <Reference target="40" />
+                    </Choice>
+                    <Choice value="embarrassed">
+                      <Reference target="40" />
+                    </Choice>
+                    <Choice value="uncomfortable">
+                      <Reference target="39" />
+                    </Choice>
+                    <Choice value="playful">
+                      <Reference target="36" />
+                    </Choice>
+                    <Choice value="tense">
+                      <Reference target="39" />
+                    </Choice>
+                    <Choice value="focused">
+                      <Reference target="39" />
+                    </Choice>
+                    <Choice value="energized">
+                      <Reference target="36" />
+                    </Choice>
+                    <Choice value="flirty">
+                      <Reference target="39" />
+                    </Choice>
+                    <Choice value="fine">
+                      <Reference target="39" />
+                    </Choice>
+                    <Choice value="inspired">
+                      <Reference target="39" />
+                    </Choice>
+                    <Choice value="dazed">
+                      <Reference target="39" />
+                    </Choice>
+                  </ParameterSelector>
+                </Choice>
+                <Choice value="true">
+                  <ParameterSelector parameter="x:mood" unique_id="51">
+                    <Choice value="happy">
+                      <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="46">
+                        <Choice weight="100" avoidRepeat="False">
+                          <Controller target="trashCanOutdoor" controller="@ClipController(clip=c2o_trashCanOutdoor_rummage_loop1_trashCanOutdoor, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c2o_trashCanOutdoor_getIn.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="42">
+                            <TransitionClassList>
+                              <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                            </TransitionClassList>
+                          </Controller>
+                          <Controller target="x" controller="@ClipController(clip=c2o_trashCanOutdoor_rummage_loop1_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c2o_trashCanOutdoor_getIn.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="43">
+                            <TransitionClassList>
+                              <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                            </TransitionClassList>
+                          </Controller>
+                        </Choice>
+                        <Choice weight="100" avoidRepeat="False">
+                          <Controller target="trashCanOutdoor" controller="@ClipController(clip=c2o_trashCanOutdoor_rummage_loop2_trashCanOutdoor, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c2o_trashCanOutdoor_getIn.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="44">
+                            <TransitionClassList>
+                              <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                            </TransitionClassList>
+                          </Controller>
+                          <Controller target="x" controller="@ClipController(clip=c2o_trashCanOutdoor_rummage_loop2_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c2o_trashCanOutdoor_getIn.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="45">
+                            <TransitionClassList>
+                              <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                            </TransitionClassList>
+                          </Controller>
+                        </Choice>
+                      </RandomSelector>
+                    </Choice>
+                    <Choice value="confident">
+                      <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="49">
+                        <Choice weight="100" avoidRepeat="True">
+                          <Reference target="42" />
+                          <Reference target="43" />
+                        </Choice>
+                        <Choice weight="100" avoidRepeat="True">
+                          <Reference target="44" />
+                          <Reference target="45" />
+                        </Choice>
+                        <Choice weight="100" avoidRepeat="True">
+                          <Controller target="x" controller="@ClipController(clip=c2o_trashCanOutdoor_rummage_loop3_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c2o_trashCanOutdoor_getIn.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="47">
+                            <TransitionClassList>
+                              <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                            </TransitionClassList>
+                          </Controller>
+                          <Controller target="trashCanOutdoor" controller="@ClipController(clip=c2o_trashCanOutdoor_rummage_loop3_trashCanOutdoor, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c2o_trashCanOutdoor_getIn.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="48">
+                            <TransitionClassList>
+                              <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                            </TransitionClassList>
+                          </Controller>
+                        </Choice>
+                      </RandomSelector>
+                    </Choice>
+                    <Choice value="angry">
+                      <Reference target="49" />
+                    </Choice>
+                    <Choice value="sad">
+                      <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="50">
+                        <Choice weight="50" avoidRepeat="False">
+                          <Reference target="42" />
+                          <Reference target="43" />
+                        </Choice>
+                        <Choice weight="100" avoidRepeat="False">
+                          <Reference target="47" />
+                          <Reference target="48" />
+                        </Choice>
+                      </RandomSelector>
+                    </Choice>
+                    <Choice value="bored">
+                      <Reference target="50" />
+                    </Choice>
+                    <Choice value="embarrassed">
+                      <Reference target="50" />
+                    </Choice>
+                    <Choice value="uncomfortable">
+                      <Reference target="49" />
+                    </Choice>
+                    <Choice value="playful">
+                      <Reference target="46" />
+                    </Choice>
+                    <Choice value="tense">
+                      <Reference target="49" />
+                    </Choice>
+                    <Choice value="focused">
+                      <Reference target="49" />
+                    </Choice>
+                    <Choice value="energized">
+                      <Reference target="46" />
+                    </Choice>
+                    <Choice value="flirty">
+                      <Reference target="49" />
+                    </Choice>
+                    <Choice value="fine">
+                      <Reference target="49" />
+                    </Choice>
+                    <Choice value="inspired">
+                      <Reference target="49" />
+                    </Choice>
+                    <Choice value="dazed">
+                      <Reference target="49" />
+                    </Choice>
+                  </ParameterSelector>
+                </Choice>
+              </ParameterSelector>
+            </Choice>
+            <Choice value="teen">
+              <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="58">
+                <Choice weight="34" avoidRepeat="True">
+                  <Controller target="trashCanOutdoor" controller="@ClipController(clip=a2o_trashCanOutdoor_rummage_loop2_trashCanOutdoor, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_trashCanOutdoor_rummage.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="53">
+                    <TransitionClassList>
+                      <Transition transition_class_name="Default" transition_duration_in="0.1" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                    </TransitionClassList>
+                  </Controller>
+                  <Controller target="x" controller="@ClipController(clip=a2o_trashCanOutdoor_rummage_loop2_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_trashCanOutdoor_rummage.ma" focus="none" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="54">
+                    <TransitionClassList>
+                      <Transition transition_class_name="Default" transition_duration_in="0.1" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                    </TransitionClassList>
+                  </Controller>
+                </Choice>
+                <Choice weight="100" avoidRepeat="False">
+                  <Controller target="x" controller="@ClipController(clip=a2o_trashCanOutdoor_rummage_loop_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_trashCanOutdoor_rummage.ma" focus="none" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="55">
+                    <TransitionClassList>
+                      <Transition transition_class_name="Default" transition_duration_in="0.1" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                    </TransitionClassList>
+                  </Controller>
+                  <ParameterSelector parameter="trashCanOutdoor:lid" unique_id="57">
+                    <Choice value="false" />
+                    <Choice value="true">
+                      <Controller target="trashCanOutdoor" controller="@ClipController(clip=a2o_trashCanOutdoor_rummage_loop_trashCanOutdoor, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_trashCanOutdoor_rummage.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="56">
+                        <TransitionClassList>
+                          <Transition transition_class_name="Default" transition_duration_in="0.1" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                        </TransitionClassList>
+                      </Controller>
+                    </Choice>
+                  </ParameterSelector>
+                </Choice>
+              </RandomSelector>
+            </Choice>
+            <Choice value="youngadult">
+              <Reference target="58" />
+            </Choice>
+            <Choice value="adult">
+              <Reference target="58" />
+            </Choice>
+            <Choice value="elder">
+              <Reference target="58" />
+            </Choice>
+          </ParameterSelector>
+        </Choice>
+      </PostureSelector>
+    </MakeController>
+  </State>
+</ASM>

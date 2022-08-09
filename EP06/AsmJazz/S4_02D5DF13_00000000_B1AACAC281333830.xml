@@ -1,0 +1,56 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="WardrobeFittingPedestal_ClothesChange_spin" dcc="sage">
+  <Actor name="x" type="Sim" master="true" virtual="false" />
+  <Actor name="y" type="Sim" virtual="false" />
+  <Actor name="pedestalWardrobe" type="Object" virtual="true" />
+  <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
+  <Parameter name="x:species" type="enum" labels="human,dog,smalldog,cat" default="human" />
+  <Parameter name="y:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="y:sex" type="enum" labels="male,female" default="male" />
+  <Parameter name="y:species" type="enum" labels="human,dog,smalldog,cat" default="human" />
+  <Parameter name="pedestalWardrobe:isMirroredPart" type="bool" labels="" default="False" />
+  <IkConfiguration name="a2a_wardrobeFittingPedestal_clothesChange.ma">
+    <SourceFile name="a2a_wardrobeFittingPedestal_clothesChange.ma">
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="pedestalWardrobe" actor="pedestalWardrobe" />
+      <MapNamespace namespace="y" actor="y" />
+    </SourceFile>
+  </IkConfiguration>
+  <PostureManifest actors="" />
+  <PostureManifest actors="x,y">
+    <Support name="WardrobePedestal" family="none" compatibility="FullBody" carry_left="-" carry_right="-" surface="*" />
+  </PostureManifest>
+  <State type="private" skippable="false" interrupt_this="false" name="Mirror" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="Spin" focus="none" facialoverlays="false" tailoverlays="true" />
+  <Connection from="Mirror" to="Spin" />
+  <Connection from="Spin" to="exit" />
+  <Connection from="entry" to="Mirror" />
+  <State name="Mirror" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <ParameterSelector parameter="pedestalWardrobe:isMirroredPart" unique_id="3">
+      <Choice value="false" />
+      <Choice value="true">
+        <SetMirror target="x" mirror="true" unique_id="1" />
+        <SetMirror target="y" mirror="true" unique_id="2" />
+      </Choice>
+    </ParameterSelector>
+  </State>
+  <State name="Spin" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="y:posture" unique_id="5">
+      <Choice value="WardrobePedestal--FullBody" track="normal" mask="">
+        <Controller target="y" controller="@ClipController(clip=a2a_wardrobeFittingPedestal_clothesChange_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_wardrobeFittingPedestal_clothesChange.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="4">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+    </PostureSelector>
+    <PostureSelector parameter="x:posture" unique_id="7">
+      <Choice value="WardrobePedestal--FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2a_wardrobeFittingPedestal_clothesChange_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_wardrobeFittingPedestal_clothesChange.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="6">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+    </PostureSelector>
+  </State>
+</ASM>

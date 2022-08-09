@@ -1,0 +1,280 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="SledTogether_Tricks_Locomotion" dcc="sage">
+  <Actor name="x" type="Sim" virtual="false" />
+  <Actor name="sled" type="Object" master="true" virtual="true" />
+  <Actor name="y" type="Sim" virtual="false" />
+  <Actor name="slope" type="Object" virtual="false" />
+  <Parameter name="x:age" type="enum" labels="toddler,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
+  <Parameter name="x:species" type="enum" labels="human,dog,smalldog,cat" default="human" />
+  <Parameter name="x:Sled_Trick_isArmsUp" type="bool" labels="" default="False" />
+  <Parameter name="y:age" type="enum" labels="toddler,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="y:sex" type="enum" labels="male,female" default="male" />
+  <Parameter name="y:species" type="enum" labels="human,dog,smalldog,cat" default="human" />
+  <Parameter name="y:Sled_Trick_isArmsUp" type="bool" labels="" default="False" />
+  <IkConfiguration name="a2a_loco_sled_trick_jump_ArmsUp_landSucceed.ma">
+    <SourceFile name="a2a_loco_sled_trick_jump_ArmsUp_landSucceed.ma">
+      <MapNamespace namespace="sled" actor="sled" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2a_loco_sled_trick_jump_ArmsUp_landFail.ma">
+    <SourceFile name="a2a_loco_sled_trick_jump_ArmsUp_landFail.ma">
+      <MapNamespace namespace="sled" actor="sled" />
+      <MapNamespace namespace="y" actor="y" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2a_loco_sled_trick_jump_landSucceed.ma">
+    <SourceFile name="a2a_loco_sled_trick_jump_landSucceed.ma">
+      <MapNamespace namespace="sled" actor="sled" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2a_loco_sled_trick_jump_landFail.ma">
+    <SourceFile name="a2a_loco_sled_trick_jump_landFail.ma">
+      <MapNamespace namespace="sled" actor="sled" />
+    </SourceFile>
+  </IkConfiguration>
+  <PostureManifest actors="">
+    <Support name="SledTogether" family="none" compatibility="FullBody" carry_left="-" carry_right="-" surface="*" />
+  </PostureManifest>
+  <State type="public" skippable="false" interrupt_this="false" name="Fail_Landing" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="Jump" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="Succeed_Landing" focus="none" facialoverlays="false" tailoverlays="true" />
+  <Connection from="Fail_Landing" to="exit" />
+  <Connection from="Jump" to="Fail_Landing" />
+  <Connection from="Jump" to="Succeed_Landing" />
+  <Connection from="Succeed_Landing" to="exit" />
+  <Connection from="entry" to="Jump" />
+  <State name="Fail_Landing" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <Controller target="sled" controller="@ClipController(clip=a2a_loco_sled_trick_jump_landFail_ArmsUp_sled, loop_count=#1)" overridePosture="false" mask="SledDouble_Loco" track="locomotionoverlay" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_loco_sled_trick_jump_ArmsUp_landFail.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="2">
+      <TransitionClassList />
+    </Controller>
+    <Stop target="sled" track="locomotionoverlay" blend_in="8" unique_id="1" />
+    <PostureSelector parameter="y:posture" unique_id="8">
+      <Choice value="SledTogether--FullBody" track="locomotionoverlay" mask="">
+        <ParameterSelector parameter="y:Sled_Trick_isArmsUp" unique_id="7">
+          <Choice value="false">
+            <ParameterSelector parameter="y:age" unique_id="6">
+              <Choice value="toddler">
+                <Controller target="y" controller="@ClipController(clip=a2a_loco_sled_trick_jump_landFail_ArmsUp_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_loco_sled_trick_jump_ArmsUp_landFail.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="4">
+                  <TransitionClassList />
+                </Controller>
+                <Stop target="y" track="locomotionoverlay" blend_in="8" unique_id="3" />
+              </Choice>
+              <Choice value="child">
+                <Controller target="y" controller="@ClipController(clip=a2a_loco_sled_trick_jump_landFail_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_loco_sled_trick_jump_landFail.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="5">
+                  <TransitionClassList />
+                </Controller>
+                <Reference target="3" />
+              </Choice>
+              <Choice value="teen">
+                <Reference target="5" />
+                <Reference target="3" />
+              </Choice>
+              <Choice value="youngadult">
+                <Reference target="5" />
+                <Reference target="3" />
+              </Choice>
+              <Choice value="adult">
+                <Reference target="5" />
+                <Reference target="3" />
+              </Choice>
+              <Choice value="elder">
+                <Reference target="5" />
+                <Reference target="3" />
+              </Choice>
+            </ParameterSelector>
+          </Choice>
+          <Choice value="true">
+            <Reference target="4" />
+            <Reference target="3" />
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+    </PostureSelector>
+    <PostureSelector parameter="x:posture" unique_id="13">
+      <Choice value="SledTogether--FullBody" track="locomotionoverlay" mask="">
+        <ParameterSelector parameter="x:Sled_Trick_isArmsUp" unique_id="12">
+          <Choice value="false">
+            <Controller target="x" controller="@ClipController(clip=a2a_loco_sled_trick_jump_landFail_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_loco_sled_trick_jump_landFail.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="10">
+              <TransitionClassList />
+            </Controller>
+            <Stop target="x" track="locomotionoverlay" blend_in="8" unique_id="9" />
+          </Choice>
+          <Choice value="true">
+            <Controller target="x" controller="@ClipController(clip=a2a_loco_sled_trick_jump_landFail_ArmsUp_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_loco_sled_trick_jump_ArmsUp_landFail.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="11">
+              <TransitionClassList />
+            </Controller>
+            <Reference target="9" />
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="Jump" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <Controller target="sled" controller="@ClipController(clip=a2a_loco_sled_trick_jump_ArmsUp_sled, loop_count=#1)" overridePosture="false" mask="SledDouble_Loco" track="locomotionoverlay" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_loco_sled_trick_jump_ArmsUp_landSucceed.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="16">
+      <TransitionClassList />
+    </Controller>
+    <MakeController unique_id="15">
+      <Controller target="sled" controller="@ClipController(clip=a2a_loco_sled_trick_jump_ArmsUp_softPosture_sled, loop_count=#1)" overridePosture="false" mask="SledDouble_Loco" track="locomotionoverlay" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_loco_sled_trick_jump_ArmsUp_landSucceed.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="14">
+        <TransitionClassList>
+          <Transition transition_class_name="Default" transition_duration_in="0.1333333" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1333333" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+        </TransitionClassList>
+      </Controller>
+    </MakeController>
+    <PostureSelector parameter="y:posture" unique_id="25">
+      <Choice value="SledTogether--FullBody" track="locomotionoverlay" mask="">
+        <ParameterSelector parameter="y:Sled_Trick_isArmsUp" unique_id="24">
+          <Choice value="false">
+            <ParameterSelector parameter="y:age" unique_id="23">
+              <Choice value="toddler">
+                <Controller target="y" controller="@ClipController(clip=a2a_loco_sled_trick_jump_ArmsUp_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_loco_sled_trick_jump_ArmsUp_landSucceed.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="19">
+                  <TransitionClassList />
+                </Controller>
+                <MakeController unique_id="18">
+                  <Controller target="y" controller="@ClipController(clip=a2a_loco_sled_trick_jump_ArmsUp_softPosture_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_loco_sled_trick_jump_ArmsUp_landSucceed.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="17">
+                    <TransitionClassList>
+                      <Transition transition_class_name="Default" transition_duration_in="0.1333333" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1333333" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                    </TransitionClassList>
+                  </Controller>
+                </MakeController>
+              </Choice>
+              <Choice value="child">
+                <Controller target="y" controller="@ClipController(clip=a2a_loco_sled_trick_jump_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_loco_sled_trick_jump_landSucceed.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="22">
+                  <TransitionClassList />
+                </Controller>
+                <MakeController unique_id="21">
+                  <Controller target="y" controller="@ClipController(clip=a2a_loco_sled_trick_jump_softPosture_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_loco_sled_trick_jump_landSucceed.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="20">
+                    <TransitionClassList>
+                      <Transition transition_class_name="Default" transition_duration_in="0.1333333" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1333333" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                    </TransitionClassList>
+                  </Controller>
+                </MakeController>
+              </Choice>
+              <Choice value="teen">
+                <Reference target="22" />
+                <Reference target="21" />
+              </Choice>
+              <Choice value="youngadult">
+                <Reference target="22" />
+                <Reference target="21" />
+              </Choice>
+              <Choice value="adult">
+                <Reference target="22" />
+                <Reference target="21" />
+              </Choice>
+              <Choice value="elder">
+                <Reference target="22" />
+                <Reference target="21" />
+              </Choice>
+            </ParameterSelector>
+          </Choice>
+          <Choice value="true">
+            <Reference target="19" />
+            <Reference target="18" />
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+    </PostureSelector>
+    <PostureSelector parameter="x:posture" unique_id="33">
+      <Choice value="SledTogether--FullBody" track="locomotionoverlay" mask="">
+        <ParameterSelector parameter="x:Sled_Trick_isArmsUp" unique_id="32">
+          <Choice value="false">
+            <Controller target="x" controller="@ClipController(clip=a2a_loco_sled_trick_jump_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_loco_sled_trick_jump_landSucceed.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="28">
+              <TransitionClassList />
+            </Controller>
+            <MakeController unique_id="27">
+              <Controller target="x" controller="@ClipController(clip=a2a_loco_sled_trick_jump_softPosture_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_loco_sled_trick_jump_landSucceed.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="26">
+                <TransitionClassList>
+                  <Transition transition_class_name="Default" transition_duration_in="0.1333333" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1333333" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                </TransitionClassList>
+              </Controller>
+            </MakeController>
+          </Choice>
+          <Choice value="true">
+            <Controller target="x" controller="@ClipController(clip=a2a_loco_sled_trick_jump_ArmsUp_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_loco_sled_trick_jump_ArmsUp_landSucceed.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="31">
+              <TransitionClassList />
+            </Controller>
+            <MakeController unique_id="30">
+              <Controller target="x" controller="@ClipController(clip=a2a_loco_sled_trick_jump_ArmsUp_softPosture_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_loco_sled_trick_jump_ArmsUp_landSucceed.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="29">
+                <TransitionClassList>
+                  <Transition transition_class_name="Default" transition_duration_in="0.1333333" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1333333" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                </TransitionClassList>
+              </Controller>
+            </MakeController>
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="Succeed_Landing" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="y:posture" unique_id="39">
+      <Choice value="SledTogether--FullBody" track="locomotionoverlay" mask="">
+        <ParameterSelector parameter="y:Sled_Trick_isArmsUp" unique_id="38">
+          <Choice value="false">
+            <ParameterSelector parameter="y:age" unique_id="37">
+              <Choice value="toddler">
+                <Controller target="y" controller="@ClipController(clip=a2a_loco_sled_trick_jump_landSucceed_ArmsUp_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_loco_sled_trick_jump_ArmsUp_landSucceed.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="35">
+                  <TransitionClassList />
+                </Controller>
+                <Stop target="y" track="locomotionoverlay" blend_in="8" unique_id="34" />
+              </Choice>
+              <Choice value="child">
+                <Controller target="y" controller="@ClipController(clip=a2a_loco_sled_trick_jump_landSucceed_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_loco_sled_trick_jump_landSucceed.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="36">
+                  <TransitionClassList />
+                </Controller>
+                <Reference target="34" />
+              </Choice>
+              <Choice value="teen">
+                <Reference target="36" />
+                <Reference target="34" />
+              </Choice>
+              <Choice value="youngadult">
+                <Reference target="36" />
+                <Reference target="34" />
+              </Choice>
+              <Choice value="adult">
+                <Reference target="36" />
+                <Reference target="34" />
+              </Choice>
+              <Choice value="elder">
+                <Reference target="36" />
+                <Reference target="34" />
+              </Choice>
+            </ParameterSelector>
+          </Choice>
+          <Choice value="true">
+            <Reference target="35" />
+            <Reference target="34" />
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+    </PostureSelector>
+    <PostureSelector parameter="x:posture" unique_id="44">
+      <Choice value="SledTogether--FullBody" track="locomotionoverlay" mask="">
+        <ParameterSelector parameter="x:Sled_Trick_isArmsUp" unique_id="43">
+          <Choice value="false">
+            <Controller target="x" controller="@ClipController(clip=a2a_loco_sled_trick_jump_landSucceed_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_loco_sled_trick_jump_landSucceed.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="41">
+              <TransitionClassList />
+            </Controller>
+            <Stop target="x" track="locomotionoverlay" blend_in="8" unique_id="40" />
+          </Choice>
+          <Choice value="true">
+            <Controller target="x" controller="@ClipController(clip=a2a_loco_sled_trick_jump_landSucceed_ArmsUp_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_loco_sled_trick_jump_ArmsUp_landSucceed.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="42">
+              <TransitionClassList />
+            </Controller>
+            <Reference target="40" />
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+    </PostureSelector>
+    <Controller target="sled" controller="@ClipController(clip=a2a_loco_sled_trick_jump_landSucceed_ArmsUp_sled, loop_count=#1)" overridePosture="false" mask="SledDouble_Loco" track="locomotionoverlay" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_loco_sled_trick_jump_ArmsUp_landSucceed.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="46">
+      <TransitionClassList />
+    </Controller>
+    <Stop target="sled" track="locomotionoverlay" blend_in="8" unique_id="45" />
+  </State>
+</ASM>

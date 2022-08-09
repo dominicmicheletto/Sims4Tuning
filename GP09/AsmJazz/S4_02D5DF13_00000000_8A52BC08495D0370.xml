@@ -1,0 +1,112 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="CheckpointDoor_Slice" dcc="sage">
+  <Actor name="x" type="Sim" master="true" virtual="false" />
+  <Actor name="panelInteractiveDoor" type="Object" virtual="false" />
+  <Actor name="toolComputerSpike" type="Prop" virtual="false" object_def_resource_key="c0db5ae7:00000000:000000000003a9c0#toolComputerSpike_GP09GEN" />
+  <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
+  <Parameter name="x:statLevel" type="enum" labels="low,mediumLow,medium,mediumHigh,high" default="low" />
+  <IkConfiguration name="a2o_checkpointDoor_slice_start_stop.ma">
+    <SourceFile name="a2o_checkpointDoor_slice_start_stop.ma">
+      <MapNamespace namespace="toolComputerSpike" actor="toolComputerSpike" />
+      <MapNamespace namespace="panelInteractiveDoor" actor="panelInteractiveDoor" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_checkpointDoor_slice_loops_buttons.ma">
+    <SourceFile name="a2o_checkpointDoor_slice_loops_buttons.ma">
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="panelInteractiveDoor" actor="panelInteractiveDoor" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_checkpointDoor_slice_loops_think_shifty.ma">
+    <SourceFile name="a2o_checkpointDoor_slice_loops_think_shifty.ma">
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="panelInteractiveDoor" actor="panelInteractiveDoor" />
+    </SourceFile>
+  </IkConfiguration>
+  <PostureManifest actors="">
+    <Support family="stand" compatibility="FullBody" carry_left="-" carry_right="-" surface="*" />
+  </PostureManifest>
+  <State type="private" skippable="false" interrupt_this="false" name="GetIn" focus="none" facialoverlays="true" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="GetOut" focus="none" facialoverlays="true" tailoverlays="true" />
+  <State type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" name="Slice" focus="none" facialoverlays="true" tailoverlays="true" />
+  <Connection from="GetIn" to="Slice" />
+  <Connection from="GetOut" to="exit" />
+  <Connection from="Slice" to="GetOut" />
+  <Connection from="entry" to="GetIn" />
+  <State name="GetIn" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="true" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="2">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2o_checkpointDoor_slice_start_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_checkpointDoor_slice_start_stop.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="1">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="GetOut" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="true" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="4">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2o_checkpointDoor_slice_stop_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_checkpointDoor_slice_start_stop.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="3">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="Slice" type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" focus="none" facialoverlays="true" tailoverlays="true">
+    <description />
+    <MakeController>
+      <PostureSelector parameter="x:posture" unique_id="13">
+        <Choice value="-stand-FullBody" track="normal" mask="">
+          <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="12">
+            <Choice weight="73" avoidRepeat="True">
+              <Controller target="x" controller="@ClipController(clip=a2o_checkpointDoor_slice_loop_buttons01_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_checkpointDoor_slice_loops_buttons.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="5">
+                <TransitionClassList />
+              </Controller>
+            </Choice>
+            <Choice weight="72" avoidRepeat="True">
+              <Controller target="x" controller="@ClipController(clip=a2o_checkpointDoor_slice_loop_buttons02_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_checkpointDoor_slice_loops_buttons.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="6">
+                <TransitionClassList />
+              </Controller>
+            </Choice>
+            <Choice weight="50" avoidRepeat="True">
+              <Controller target="x" controller="@ClipController(clip=a2o_checkpointDoor_slice_loop_shiftyEyes_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_checkpointDoor_slice_loops_think_shifty.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="7">
+                <TransitionClassList />
+              </Controller>
+            </Choice>
+            <Choice weight="50" avoidRepeat="True">
+              <Controller target="x" controller="@ClipController(clip=a2o_checkpointDoor_slice_loop_shiftyMovement_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_checkpointDoor_slice_loops_think_shifty.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="8">
+                <TransitionClassList />
+              </Controller>
+            </Choice>
+            <Choice weight="51" avoidRepeat="True">
+              <ParameterSelector parameter="x:statLevel" unique_id="11">
+                <Choice value="low">
+                  <Controller target="x" controller="@ClipController(clip=a2o_checkpointDoor_slice_loop_think_lowSkill_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_checkpointDoor_slice_loops_think_shifty.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="9">
+                    <TransitionClassList />
+                  </Controller>
+                </Choice>
+                <Choice value="mediumLow">
+                  <Reference target="9" />
+                </Choice>
+                <Choice value="medium">
+                  <Controller target="x" controller="@ClipController(clip=a2o_checkpointDoor_slice_loop_think_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_checkpointDoor_slice_loops_think_shifty.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="10">
+                    <TransitionClassList />
+                  </Controller>
+                </Choice>
+                <Choice value="mediumHigh">
+                  <Reference target="10" />
+                </Choice>
+                <Choice value="high">
+                  <Reference target="10" />
+                </Choice>
+              </ParameterSelector>
+            </Choice>
+          </RandomSelector>
+        </Choice>
+      </PostureSelector>
+    </MakeController>
+  </State>
+</ASM>

@@ -1,0 +1,43 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="Sunbathing_Sunburnt_Route_Event" dcc="sage">
+  <Actor name="x" type="Sim" master="true" virtual="false" />
+  <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
+  <Parameter name="x:carryState" type="enum" labels="none,left,right,both" default="none" />
+  <IkConfiguration name="a_react_sunbathe_sunBurnt_routingEvent.ma">
+    <SourceFile name="a_react_sunbathe_sunBurnt_routingEvent.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <PostureManifest actors="" />
+  <PostureManifest actors="x">
+    <Support family="stand" compatibility="FullBody" carry_left="*" carry_right="-" surface="*" />
+    <Support family="stand" compatibility="FullBody" carry_left="-" carry_right="*" surface="*" />
+  </PostureManifest>
+  <State type="private" skippable="false" interrupt_this="false" name="Mirror" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="Sunburnt_Route_Event" focus="none" facialoverlays="false" tailoverlays="false" />
+  <Connection from="Mirror" to="Sunburnt_Route_Event" />
+  <Connection from="Sunburnt_Route_Event" to="exit" />
+  <Connection from="entry" to="Mirror" />
+  <State name="Mirror" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <ParameterSelector parameter="x:carryState" unique_id="2">
+      <Choice value="none" />
+      <Choice value="left">
+        <SetMirror target="x" mirror="true" unique_id="1" />
+      </Choice>
+      <Choice value="right" />
+      <Choice value="both" />
+    </ParameterSelector>
+  </State>
+  <State name="Sunburnt_Route_Event" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="false">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="4">
+      <Choice value="-stand-FullBody" track="locomotionoverlay" mask="Trackmask_UpperBody">
+        <Controller target="x" controller="@ClipController(clip=a_react_sunbathe_sunBurnt_routingEvent_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_sunbathe_sunBurnt_routingEvent.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="3">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+    </PostureSelector>
+  </State>
+</ASM>

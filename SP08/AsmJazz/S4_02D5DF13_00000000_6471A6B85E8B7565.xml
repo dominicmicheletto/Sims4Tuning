@@ -1,0 +1,61 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="DrinkTray" dcc="sage">
+  <Actor name="x" type="Sim" master="true" virtual="false" />
+  <Actor name="pitcherLrg" type="Prop" virtual="false" object_def_resource_key="c0db5ae7:00000000:00000000000204b9#pitcherLrg_SP08GEN" />
+  <Actor name="toolSpoonLarge" type="Prop" virtual="false" object_def_resource_key="c0db5ae7:00000000:0000000000001fc8#toolSpoonLargeGEN_01_prop" />
+  <Actor name="drinkJar" type="Prop" virtual="false" object_def_resource_key="c0db5ae7:00000000:00000000000204be#drinkJar_SP08GENdrinkMix" />
+  <Actor name="drinkTumbler" type="Prop" virtual="false" object_def_resource_key="c0db5ae7:00000000:0000000000000df4#drinkTumblerGEN_01_empty" />
+  <IkConfiguration name="a2o_backYardDrinkTray_mixDrink.ma">
+    <SourceFile name="a2o_backYardDrinkTray_mixDrink.ma">
+      <MapNamespace namespace="toolSpoonLarge" actor="toolSpoonLarge" />
+      <MapNamespace namespace="drinkJar" actor="drinkJar" />
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="pitcherSml" actor="pitcherLrg" />
+      <MapNamespace namespace="pitcherLrg" actor="pitcherLrg" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_backYardDrinkTray_restockDrinks.ma">
+    <SourceFile name="a2o_backYardDrinkTray_restockDrinks.ma">
+      <MapNamespace namespace="drinkTumbler" actor="drinkTumbler" />
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="pitcherSml" actor="pitcherLrg" />
+      <MapNamespace namespace="pitcherLrg" actor="pitcherLrg" />
+    </SourceFile>
+  </IkConfiguration>
+  <PostureManifest actors="">
+    <Support family="stand" compatibility="FullBody" carry_left="-" carry_right="-" surface="*" />
+    <Support family="stand" compatibility="UpperBody" carry_left="-" carry_right="-" surface="*" />
+  </PostureManifest>
+  <State type="public" skippable="false" interrupt_this="false" name="Mix" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="Restock" focus="none" facialoverlays="false" tailoverlays="true" />
+  <Connection from="Mix" to="exit" />
+  <Connection from="Restock" to="exit" />
+  <Connection from="entry" to="Mix" />
+  <Connection from="entry" to="Restock" />
+  <State name="Mix" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="2">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2o_backyardDrinkTray_mixDrink_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_backYardDrinkTray_mixDrink.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="1">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+      <Choice value="-stand-UpperBody" track="normal" mask="Trackmask_UpperBody">
+        <Reference target="1" />
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="Restock" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="4">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2o_backyardDrinkTray_restockDrinks_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_backYardDrinkTray_restockDrinks.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="3">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+      <Choice value="-stand-UpperBody" track="normal" mask="Trackmask_UpperBody">
+        <Reference target="3" />
+      </Choice>
+    </PostureSelector>
+  </State>
+</ASM>

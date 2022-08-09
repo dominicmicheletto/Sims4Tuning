@@ -1,0 +1,84 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="globeBar_Drinks" dcc="sage">
+  <Actor name="x" type="Sim" master="true" virtual="false" />
+  <Actor name="globeBar" type="Object" virtual="false" />
+  <Actor name="decanter" type="Prop" virtual="false" object_def_resource_key="c0db5ae7:00000000:00000000000224fb#drinkDecanter_SP09GEN_OldYorkFieldClassic16" />
+  <Actor name="drink" type="Prop" virtual="false" object_def_resource_key="c0db5ae7:00000000:000000000002250a#drinkTumblerShrt_SP09GEN_OldYorkfieldClassic16" />
+  <Actor name="carryObject" type="Object" virtual="false" />
+  <Parameter name="x:trait_LeftHanded" type="bool" labels="" default="False" />
+  <Parameter name="carryObject:carryTrack" type="enum" labels="left,right" default="right" />
+  <Parameter name="carryObject:carryObject" type="string" labels="" default="drinkTumbler" />
+  <IkConfiguration name="a2o_globeBar_makeDrink.ma">
+    <SourceFile name="a2o_globeBar_makeDrink.ma">
+      <MapNamespace namespace="drink" actor="drink" />
+      <MapNamespace namespace="decanter" actor="decanter" />
+      <MapNamespace namespace="globeBar" actor="globeBar" />
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="carryObject" actor="carryObject" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_globeBar_serveDrink.ma">
+    <SourceFile name="a2o_globeBar_serveDrink.ma">
+      <MapNamespace namespace="drink" actor="drink" />
+      <MapNamespace namespace="decanter" actor="decanter" />
+      <MapNamespace namespace="globeBar" actor="globeBar" />
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="carryObject" actor="carryObject" />
+    </SourceFile>
+  </IkConfiguration>
+  <PostureManifest actors="">
+    <Support family="stand" compatibility="FullBody" carry_left="-" carry_right="-" surface="*" />
+    <Support family="stand" compatibility="UpperBody" carry_left="-" carry_right="-" surface="*" />
+  </PostureManifest>
+  <State type="public" skippable="false" interrupt_this="false" name="MakeDrink" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="Mirror" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="ServeDrinks" focus="none" facialoverlays="false" tailoverlays="true" />
+  <Connection from="MakeDrink" to="exit" />
+  <Connection from="Mirror" to="MakeDrink" />
+  <Connection from="Mirror" to="ServeDrinks" />
+  <Connection from="ServeDrinks" to="exit" />
+  <Connection from="entry" to="Mirror" />
+  <State name="MakeDrink" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="3">
+      <Choice value="-stand-FullBody" track="carryinteraction" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2o_globeBar_makeDrink_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_globeBar_makeDrink.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="1">
+          <TransitionClassList />
+        </Controller>
+        <Controller target="globeBar" controller="@ClipController(clip=a2o_globeBar_makeDrink_globeBar, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_globeBar_makeDrink.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="2">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+      <Choice value="-stand-UpperBody" track="carryinteraction" mask="Trackmask_UpperBody">
+        <Reference target="1" />
+        <Reference target="2" />
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="Mirror" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <ParameterSelector parameter="carryObject:carryTrack" unique_id="5">
+      <Choice value="left">
+        <SetMirror target="x" mirror="true" unique_id="4" />
+      </Choice>
+      <Choice value="right" />
+    </ParameterSelector>
+  </State>
+  <State name="ServeDrinks" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="8">
+      <Choice value="-stand-FullBody" track="carryinteraction" mask="">
+        <Controller target="globeBar" controller="@ClipController(clip=a2o_globeBar_serveDrink_globeBar, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_globeBar_serveDrink.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="6">
+          <TransitionClassList />
+        </Controller>
+        <Controller target="x" controller="@ClipController(clip=a2o_globeBar_serveDrink_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_globeBar_serveDrink.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="7">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+      <Choice value="-stand-UpperBody" track="carryinteraction" mask="Trackmask_UpperBody">
+        <Reference target="6" />
+        <Reference target="7" />
+      </Choice>
+    </PostureSelector>
+  </State>
+</ASM>

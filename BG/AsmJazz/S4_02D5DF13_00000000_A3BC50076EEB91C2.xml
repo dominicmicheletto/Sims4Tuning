@@ -1,0 +1,166 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="RepoPerson_Repossess" dcc="sage">
+  <Actor name="x" type="Sim" master="true" virtual="false" />
+  <Actor name="toolRepo" type="Prop" virtual="false" object_def_resource_key="c0db5ae7:00000000:00000000000391ad#toolWeedVacuum_EP08GENrepo_set1" />
+  <Actor name="hauntible" type="Object" virtual="false" />
+  <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
+  <IkConfiguration name="a2o_repoPerson_start_stop.ma">
+    <SourceFile name="a2o_repoPerson_start_stop.ma">
+      <MapNamespace namespace="toolRepo" actor="toolRepo" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_repoPerson_loop1.ma">
+    <SourceFile name="a2o_repoPerson_loop1.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_repoPerson_loop2.ma">
+    <SourceFile name="a2o_repoPerson_loop2.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="o_repoPerson_objectHover.ma">
+    <SourceFile name="o_repoPerson_objectHover.ma">
+      <MapNamespace namespace="hauntible" actor="hauntible" />
+    </SourceFile>
+  </IkConfiguration>
+  <PostureManifest actors="" />
+  <PostureManifest actors="x">
+    <Support family="stand" compatibility="FullBody" carry_left="-" carry_right="-" surface="*" />
+  </PostureManifest>
+  <State type="private" skippable="false" interrupt_this="false" name="Object_Hover_Start" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" name="Repossess_No_Hover" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" name="Repossess_With_Hover" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="Sim_Start" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="Sim_Start_No_Hover" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="Stop_No_Hover" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="Stop_With_Hover" focus="none" facialoverlays="false" tailoverlays="true" />
+  <Connection from="Object_Hover_Start" to="Repossess_With_Hover" />
+  <Connection from="Repossess_No_Hover" to="Stop_No_Hover" />
+  <Connection from="Repossess_With_Hover" to="Stop_With_Hover" />
+  <Connection from="Sim_Start" to="Object_Hover_Start" />
+  <Connection from="Sim_Start_No_Hover" to="Repossess_No_Hover" />
+  <Connection from="Stop_No_Hover" to="exit" />
+  <Connection from="Stop_With_Hover" to="exit" />
+  <Connection from="entry" to="Sim_Start" />
+  <Connection from="entry" to="Sim_Start_No_Hover" />
+  <State name="Object_Hover_Start" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <Controller target="hauntible" controller="@ClipController(clip=o_repoPerson_hover_start_hauntible, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="o_repoPerson_objectHover.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="3">
+      <TransitionClassList>
+        <Transition transition_class_name="Default" transition_duration_in="0.5333334" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.5333334" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+      </TransitionClassList>
+    </Controller>
+    <MakeController unique_id="2">
+      <Controller target="hauntible" controller="@ClipController(clip=o_repoPerson_hover_loop_hauntible, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="o_repoPerson_objectHover.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="1">
+        <TransitionClassList>
+          <Transition transition_class_name="Default" transition_duration_in="0.5333334" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.5333334" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+        </TransitionClassList>
+      </Controller>
+    </MakeController>
+  </State>
+  <State name="Repossess_No_Hover" type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <MakeController>
+      <PostureSelector parameter="x:posture" unique_id="7">
+        <Choice value="-stand-FullBody" track="normal" mask="">
+          <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="6">
+            <Choice weight="50" avoidRepeat="False">
+              <Controller target="x" controller="@ClipController(clip=a2o_repoPerson_repoTool_loop_01_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_repoPerson_loop1.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="4">
+                <TransitionClassList />
+              </Controller>
+            </Choice>
+            <Choice weight="50" avoidRepeat="False">
+              <Controller target="x" controller="@ClipController(clip=a2o_repoPerson_repoTool_loop_02_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_repoPerson_loop2.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="5">
+                <TransitionClassList />
+              </Controller>
+            </Choice>
+          </RandomSelector>
+        </Choice>
+      </PostureSelector>
+    </MakeController>
+  </State>
+  <State name="Repossess_With_Hover" type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <MakeController>
+      <PostureSelector parameter="x:posture" unique_id="11">
+        <Choice value="-stand-FullBody" track="normal" mask="">
+          <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="10">
+            <Choice weight="50" avoidRepeat="False">
+              <Controller target="x" controller="@ClipController(clip=a2o_repoPerson_repoTool_loop_01_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_repoPerson_loop1.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="8">
+                <TransitionClassList />
+              </Controller>
+            </Choice>
+            <Choice weight="50" avoidRepeat="False">
+              <Controller target="x" controller="@ClipController(clip=a2o_repoPerson_repoTool_loop_02_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_repoPerson_loop2.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="9">
+                <TransitionClassList />
+              </Controller>
+            </Choice>
+          </RandomSelector>
+        </Choice>
+      </PostureSelector>
+    </MakeController>
+  </State>
+  <State name="Sim_Start" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="15">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2o_repoPerson_repoTool_start_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_repoPerson_start_stop.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="14">
+          <TransitionClassList />
+        </Controller>
+        <MakeController unique_id="13">
+          <Controller target="x" controller="@ClipController(clip=a2o_repoPerson_repoTool_loop_01_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_repoPerson_loop1.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="12">
+            <TransitionClassList />
+          </Controller>
+        </MakeController>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="Sim_Start_No_Hover" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <Controller target="hauntible" controller="@ClipController(clip=o_repoPerson_noHover_start_hauntable, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="o_repoPerson_objectHover.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="16">
+      <TransitionClassList />
+    </Controller>
+    <PostureSelector parameter="x:posture" unique_id="18">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2o_repoPerson_repoTool_start_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_repoPerson_start_stop.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="17">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="Stop_No_Hover" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <Controller target="hauntible" controller="@ClipController(clip=o_repoPerson_noHover_stop_hauntable, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="o_repoPerson_objectHover.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="19">
+      <TransitionClassList />
+    </Controller>
+    <PostureSelector parameter="x:posture" unique_id="22">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2o_repoPerson_repoTool_loop_02_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_repoPerson_loop2.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="21">
+          <TransitionClassList />
+        </Controller>
+        <Controller target="x" controller="@ClipController(clip=a2o_repoPerson_repoTool_stop_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_repoPerson_start_stop.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="20">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="Stop_With_Hover" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <Controller target="hauntible" controller="@ClipController(clip=o_repoPerson_hover_stop_hauntible, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="o_repoPerson_objectHover.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="23">
+      <TransitionClassList />
+    </Controller>
+    <PostureSelector parameter="x:posture" unique_id="26">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2o_repoPerson_repoTool_loop_02_stop_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_repoPerson_loop2.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="25">
+          <TransitionClassList />
+        </Controller>
+        <Controller target="x" controller="@ClipController(clip=a2o_repoPerson_repoTool_stop_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_repoPerson_start_stop.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="24">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+    </PostureSelector>
+  </State>
+</ASM>

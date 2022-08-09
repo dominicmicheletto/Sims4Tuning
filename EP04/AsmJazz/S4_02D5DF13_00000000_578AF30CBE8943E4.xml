@@ -1,0 +1,245 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="Pet_InHeat" dcc="sage">
+  <Actor name="x" type="Sim" master="true" virtual="false" />
+  <Actor name="sitTemplate" type="Object" virtual="true" />
+  <Parameter name="x:species" type="enum" labels="dog,smalldog,cat" default="dog" />
+  <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
+  <Parameter name="x:carryState" type="enum" labels="none,left,right,both" default="none" />
+  <IkConfiguration name="ad_pregnancy_inHeat_stand.ma">
+    <SourceFile name="ad_pregnancy_inHeat_stand.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="ad_pregnancy_inHeat_sitOnGround.ma">
+    <SourceFile name="ad_pregnancy_inHeat_sitOnGround.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="ad_pregnancy_inHeat_layDown.ma">
+    <SourceFile name="ad_pregnancy_inHeat_layDown.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="ac_pregnancy_inHeat_stand.ma">
+    <SourceFile name="ac_pregnancy_inHeat_stand.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="ac_pregnancy_inHeat_sitOnGround.ma">
+    <SourceFile name="ac_pregnancy_inHeat_sitOnGround.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="ac_pregnancy_inHeat_layDown.ma">
+    <SourceFile name="ac_pregnancy_inHeat_layDown.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <PostureManifest actors="">
+    <Support name="stand" family="none" compatibility="FullBody" carry_left="-" carry_right="*" surface="-" />
+    <Support name="sitOnGround" family="none" compatibility="FullBody" carry_left="-" carry_right="*" surface="-" />
+    <Support name="layDownOnGround" family="none" compatibility="FullBody" carry_left="-" carry_right="*" surface="-" />
+  </PostureManifest>
+  <State type="public" skippable="false" interrupt_this="false" name="Howl" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" name="Whine" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="hub" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="whineStart" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="whineStop" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <Connection from="Howl" to="hub" />
+  <Connection from="Whine" to="whineStop" />
+  <Connection from="entry" to="hub" />
+  <Connection from="hub" to="Howl" />
+  <Connection from="hub" to="exit" />
+  <Connection from="hub" to="whineStart" />
+  <Connection from="whineStart" to="Whine" />
+  <Connection from="whineStop" to="hub" />
+  <State name="Howl" type="public" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <ParameterSelector parameter="x:species" unique_id="15">
+      <Choice value="dog">
+        <PostureSelector parameter="x:posture" unique_id="4">
+          <Choice value="layDownOnGround--FullBody" track="normal" mask="">
+            <Controller target="x" controller="@ClipController(clip=ad_pregnancy_inHeat_howl_layDown_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ad_pregnancy_inHeat_layDown.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="1">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
+          <Choice value="sitOnGround--FullBody" track="normal" mask="">
+            <Controller target="x" controller="@ClipController(clip=ad_pregnancy_inHeat_howl_sitOnGround_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ad_pregnancy_inHeat_sitOnGround.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="2">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
+          <Choice value="stand--FullBody" track="normal" mask="">
+            <Controller target="x" controller="@ClipController(clip=ad_pregnancy_inHeat_howl_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ad_pregnancy_inHeat_stand.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="3">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
+        </PostureSelector>
+      </Choice>
+      <Choice value="smalldog">
+        <Reference target="4" />
+      </Choice>
+      <Choice value="cat">
+        <PostureSelector parameter="x:posture" unique_id="14">
+          <Choice value="layDownOnGround--FullBody" track="normal" mask="">
+            <ParameterSelector parameter="x:carryState" unique_id="7">
+              <Choice value="none">
+                <Controller target="x" controller="@ClipController(clip=ac_pregnancy_inHeat_howl_layDown_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ac_pregnancy_inHeat_layDown.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="5">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+              <Choice value="left">
+                <Reference target="5" />
+              </Choice>
+              <Choice value="right">
+                <Controller target="x" controller="@ClipController(clip=ac_pregnancy_inHeat_howl_carryAudio_layDown_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ac_pregnancy_inHeat_layDown.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="6">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+              <Choice value="both">
+                <Reference target="6" />
+              </Choice>
+            </ParameterSelector>
+          </Choice>
+          <Choice value="sitOnGround--FullBody" track="normal" mask="">
+            <ParameterSelector parameter="x:carryState" unique_id="10">
+              <Choice value="none">
+                <Controller target="x" controller="@ClipController(clip=ac_pregnancy_inHeat_howl_sitOnGround_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ac_pregnancy_inHeat_sitOnGround.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="8">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+              <Choice value="left">
+                <Reference target="8" />
+              </Choice>
+              <Choice value="right">
+                <Controller target="x" controller="@ClipController(clip=ac_pregnancy_inHeat_howl_carryAudio_sitOnGround_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ac_pregnancy_inHeat_sitOnGround.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="9">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+              <Choice value="both">
+                <Reference target="9" />
+              </Choice>
+            </ParameterSelector>
+          </Choice>
+          <Choice value="stand--FullBody" track="normal" mask="">
+            <ParameterSelector parameter="x:carryState" unique_id="13">
+              <Choice value="none">
+                <Controller target="x" controller="@ClipController(clip=ac_pregnancy_inHeat_howl_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ac_pregnancy_inHeat_stand.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="11">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+              <Choice value="left">
+                <Reference target="11" />
+              </Choice>
+              <Choice value="right">
+                <Controller target="x" controller="@ClipController(clip=ac_pregnancy_inHeat_howl_carryAudio_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ac_pregnancy_inHeat_stand.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="12">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+              <Choice value="both">
+                <Reference target="12" />
+              </Choice>
+            </ParameterSelector>
+          </Choice>
+        </PostureSelector>
+      </Choice>
+    </ParameterSelector>
+  </State>
+  <State name="Whine" type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <MakeController>
+      <PostureSelector parameter="x:posture" unique_id="25">
+        <Choice value="layDownOnGround--FullBody" track="normal" mask="">
+          <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="18">
+            <Choice weight="50" avoidRepeat="False">
+              <Controller target="x" controller="@ClipController(clip=ad_pregnancy_inHeat_whine_loop01_layDown_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ad_pregnancy_inHeat_layDown.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="16">
+                <TransitionClassList />
+              </Controller>
+            </Choice>
+            <Choice weight="50" avoidRepeat="False">
+              <Controller target="x" controller="@ClipController(clip=ad_pregnancy_inHeat_whine_loop02_layDown_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ad_pregnancy_inHeat_layDown.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="17">
+                <TransitionClassList />
+              </Controller>
+            </Choice>
+          </RandomSelector>
+        </Choice>
+        <Choice value="sitOnGround--FullBody" track="normal" mask="">
+          <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="21">
+            <Choice weight="50" avoidRepeat="False">
+              <Controller target="x" controller="@ClipController(clip=ad_pregnancy_inHeat_whine_loop01_sitOnGround_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ad_pregnancy_inHeat_sitOnGround.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="19">
+                <TransitionClassList />
+              </Controller>
+            </Choice>
+            <Choice weight="50" avoidRepeat="False">
+              <Controller target="x" controller="@ClipController(clip=ad_pregnancy_inHeat_whine_loop02_sitOnGround_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ad_pregnancy_inHeat_sitOnGround.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="20">
+                <TransitionClassList />
+              </Controller>
+            </Choice>
+          </RandomSelector>
+        </Choice>
+        <Choice value="stand--FullBody" track="normal" mask="">
+          <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="24">
+            <Choice weight="50" avoidRepeat="False">
+              <Controller target="x" controller="@ClipController(clip=ad_pregnancy_inHeat_whine_loop01_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ad_pregnancy_inHeat_stand.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="22">
+                <TransitionClassList />
+              </Controller>
+            </Choice>
+            <Choice weight="50" avoidRepeat="False">
+              <Controller target="x" controller="@ClipController(clip=ad_pregnancy_inHeat_whine_loop02_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ad_pregnancy_inHeat_stand.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="23">
+                <TransitionClassList />
+              </Controller>
+            </Choice>
+          </RandomSelector>
+        </Choice>
+      </PostureSelector>
+    </MakeController>
+  </State>
+  <State name="hub" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="26">
+      <Choice value="layDownOnGround--FullBody" track="normal" mask="" />
+      <Choice value="sitOnGround--FullBody" track="normal" mask="" />
+      <Choice value="stand--FullBody" track="normal" mask="" />
+    </PostureSelector>
+  </State>
+  <State name="whineStart" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="30">
+      <Choice value="layDownOnGround--FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=ad_pregnancy_inHeat_whine_start_layDown_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ad_pregnancy_inHeat_layDown.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="27">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+      <Choice value="sitOnGround--FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=ad_pregnancy_inHeat_whine_start_sitOnGround_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ad_pregnancy_inHeat_sitOnGround.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="28">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+      <Choice value="stand--FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=ad_pregnancy_inHeat_whine_start_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ad_pregnancy_inHeat_stand.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="29">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="whineStop" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="34">
+      <Choice value="layDownOnGround--FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=ad_pregnancy_inHeat_whine_stop_layDown_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ad_pregnancy_inHeat_layDown.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="31">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+      <Choice value="sitOnGround--FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=ad_pregnancy_inHeat_whine_stop_sitOnGround_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ad_pregnancy_inHeat_sitOnGround.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="32">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+      <Choice value="stand--FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=ad_pregnancy_inHeat_whine_stop_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ad_pregnancy_inHeat_stand.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="33">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+    </PostureSelector>
+  </State>
+</ASM>

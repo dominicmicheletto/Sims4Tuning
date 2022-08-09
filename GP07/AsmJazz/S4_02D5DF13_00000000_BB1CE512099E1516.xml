@@ -1,0 +1,598 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="ListeningDevice_Actions" dcc="sage">
+  <Actor name="x" type="Sim" master="true" virtual="false" />
+  <Actor name="listeningDevice" type="Object" virtual="false" />
+  <Actor name="sitTemplate" type="Object" virtual="true" />
+  <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
+  <Parameter name="x:species" type="enum" labels="human,dog,smalldog,cat" default="human" />
+  <Parameter name="x:mood" type="enum" labels="happy,confident,angry,sad,bored,embarrassed,uncomfortable,playful,tense,focused,energized,flirty,fine,inspired,dazed" default="happy" />
+  <Parameter name="x:trait_Evil" type="bool" labels="" default="False" />
+  <IkConfiguration name="a2o_listeningDevice_idle_type_all.ma">
+    <SourceFile name="a2o_listeningDevice_idle_type_all.ma">
+      <MapNamespace namespace="sitTemplate" actor="sitTemplate" />
+      <MapNamespace namespace="listeningDevice" actor="listeningDevice" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_listeningDevice_twiddleKnob_all.ma">
+    <SourceFile name="a2o_listeningDevice_twiddleKnob_all.ma">
+      <MapNamespace namespace="sitTemplate" actor="sitTemplate" />
+      <MapNamespace namespace="listeningDevice" actor="listeningDevice" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_listeningDevice_listenIn_all.ma">
+    <SourceFile name="a2o_listeningDevice_listenIn_all.ma">
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="sitTemplate" actor="sitTemplate" />
+      <MapNamespace namespace="listeningDevice" actor="listeningDevice" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_listeningDevice_reactions_part2.ma">
+    <SourceFile name="a2o_listeningDevice_reactions_part2.ma">
+      <MapNamespace namespace="listeningDevice" actor="listeningDevice" />
+      <MapNamespace namespace="sitTemplate" actor="sitTemplate" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_listeningDevice_reactions.ma">
+    <SourceFile name="a2o_listeningDevice_reactions.ma">
+      <MapNamespace namespace="listeningDevice" actor="listeningDevice" />
+      <MapNamespace namespace="sitTemplate" actor="sitTemplate" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <PostureManifest actors="">
+    <Support name="sit" family="none" compatibility="UpperBody" carry_left="-" carry_right="-" surface="listeningDevice" />
+    <Support name="sit" family="none" compatibility="FullBody" carry_left="-" carry_right="-" surface="listeningDevice" />
+  </PostureManifest>
+  <State type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" name="Idle" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" name="ListenIn" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="React" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="TwiddleKnobs" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="Type" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="getIn" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="getOut" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="hub" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="start" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="stop" focus="none" facialoverlays="false" tailoverlays="true" />
+  <Connection from="Idle" to="hub" />
+  <Connection from="ListenIn" to="stop" />
+  <Connection from="React" to="hub" />
+  <Connection from="TwiddleKnobs" to="hub" />
+  <Connection from="Type" to="hub" />
+  <Connection from="entry" to="getIn" />
+  <Connection from="getIn" to="hub" />
+  <Connection from="getOut" to="exit" />
+  <Connection from="hub" to="Idle" />
+  <Connection from="hub" to="React" />
+  <Connection from="hub" to="TwiddleKnobs" />
+  <Connection from="hub" to="Type" />
+  <Connection from="hub" to="getOut" />
+  <Connection from="hub" to="start" />
+  <Connection from="start" to="ListenIn" />
+  <Connection from="stop" to="hub" />
+  <State name="Idle" type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <MakeController>
+      <PostureSelector parameter="x:posture" unique_id="5">
+        <Choice value="sit--FullBody" track="normal" mask="">
+          <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="4">
+            <Choice weight="61" avoidRepeat="False">
+              <Controller target="x" controller="@ClipController(clip=a2o_listeningDevice_idle_read_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_listeningDevice_idle_type_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="1">
+                <TransitionClassList />
+              </Controller>
+            </Choice>
+            <Choice weight="16" avoidRepeat="False">
+              <Controller target="x" controller="@ClipController(clip=a2o_listeningDevice_idle_read_look_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_listeningDevice_idle_type_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="2">
+                <TransitionClassList />
+              </Controller>
+            </Choice>
+            <Choice weight="100" avoidRepeat="False">
+              <Controller target="x" controller="@ClipController(clip=a2o_listeningDevice_idle_breathLoop_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_listeningDevice_idle_type_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="3">
+                <TransitionClassList />
+              </Controller>
+            </Choice>
+          </RandomSelector>
+        </Choice>
+        <Choice value="sit--UpperBody" track="normal" mask="">
+          <Reference target="4" />
+        </Choice>
+      </PostureSelector>
+    </MakeController>
+  </State>
+  <State name="ListenIn" type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <MakeController>
+      <PostureSelector parameter="x:posture" unique_id="9">
+        <Choice value="sit--FullBody" track="normal" mask="">
+          <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="8">
+            <Choice weight="50" avoidRepeat="False">
+              <Controller target="x" controller="@ClipController(clip=a2o_listeningDevice_listenIn_loop1_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_listeningDevice_listenIn_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="6">
+                <TransitionClassList />
+              </Controller>
+            </Choice>
+            <Choice weight="50" avoidRepeat="False">
+              <Controller target="x" controller="@ClipController(clip=a2o_listeningDevice_listenIn_loop2_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_listeningDevice_listenIn_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="7">
+                <TransitionClassList />
+              </Controller>
+            </Choice>
+          </RandomSelector>
+        </Choice>
+        <Choice value="sit--UpperBody" track="normal" mask="">
+          <Reference target="8" />
+        </Choice>
+      </PostureSelector>
+    </MakeController>
+  </State>
+  <State name="React" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="51">
+      <Choice value="sit--FullBody" track="normal" mask="">
+        <ParameterSelector parameter="x:mood" unique_id="50">
+          <Choice value="happy">
+            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="18">
+              <Choice weight="100" avoidRepeat="False">
+                <Controller target="x" controller="@ClipController(clip=a2o_listeningDevice_react_intense_positve_giddy_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_listeningDevice_reactions.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="12">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <MakeController unique_id="11">
+                  <Controller target="x" controller="@ClipController(clip=a2o_listeningDevice_idle_read_look_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_listeningDevice_idle_type_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="10">
+                    <TransitionClassList>
+                      <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                    </TransitionClassList>
+                  </Controller>
+                </MakeController>
+              </Choice>
+              <Choice weight="100" avoidRepeat="False">
+                <Controller target="x" controller="@ClipController(clip=a2o_listeningDevice_react_mild_positve_chuckle_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_listeningDevice_reactions.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="13">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <Reference target="11" />
+              </Choice>
+              <Choice weight="100" avoidRepeat="False">
+                <Controller target="x" controller="@ClipController(clip=a2o_listeningDevice_react_mild_positve_nod_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_listeningDevice_reactions.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="14">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <Reference target="11" />
+              </Choice>
+              <Choice weight="50" avoidRepeat="False">
+                <ParameterSelector parameter="x:trait_Evil" unique_id="17">
+                  <Choice value="false">
+                    <Controller target="x" controller="@ClipController(clip=a2o_listeningDevice_react_mild_positve_nod_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_listeningDevice_reactions.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="15">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                    <Reference target="11" />
+                  </Choice>
+                  <Choice value="true">
+                    <Controller target="x" controller="@ClipController(clip=a2o_listeningDevice_react_intense_positve_maniacal_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_listeningDevice_reactions.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="16">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                    <Reference target="11" />
+                  </Choice>
+                </ParameterSelector>
+              </Choice>
+              <Choice weight="100" avoidRepeat="False">
+                <Reference target="15" />
+                <Reference target="11" />
+              </Choice>
+            </RandomSelector>
+          </Choice>
+          <Choice value="confident">
+            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="22">
+              <Choice weight="100" avoidRepeat="False">
+                <Controller target="x" controller="@ClipController(clip=a2o_listeningDevice_react_confident_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_listeningDevice_reactions_part2.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="19">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <Reference target="11" />
+                <Controller target="listeningDevice" controller="@ClipController(clip=a2o_listeningDevice_react_confident_listeningDevice, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_listeningDevice_reactions_part2.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="20">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+              </Choice>
+              <Choice weight="100" avoidRepeat="False">
+                <Controller target="x" controller="@ClipController(clip=a2o_listeningDevice_react_intense_positve_fistPump_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_listeningDevice_reactions.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="21">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <Reference target="11" />
+              </Choice>
+              <Choice weight="100" avoidRepeat="False">
+                <Reference target="14" />
+                <Reference target="11" />
+              </Choice>
+              <Choice weight="50" avoidRepeat="False">
+                <Reference target="17" />
+              </Choice>
+              <Choice weight="100" avoidRepeat="False">
+                <Reference target="15" />
+                <Reference target="11" />
+              </Choice>
+            </RandomSelector>
+          </Choice>
+          <Choice value="angry">
+            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="27">
+              <Choice weight="100" avoidRepeat="False">
+                <Controller target="x" controller="@ClipController(clip=a2o_listeningDevice_react_intense_negative_fistSlam_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_listeningDevice_reactions.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="23">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <Reference target="11" />
+              </Choice>
+              <Choice weight="50" avoidRepeat="False">
+                <Controller target="x" controller="@ClipController(clip=a2o_listeningDevice_react_intense_negative_waveOff_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_listeningDevice_reactions.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="24">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <Reference target="11" />
+              </Choice>
+              <Choice weight="25" avoidRepeat="False">
+                <Controller target="listeningDevice" controller="@ClipController(clip=a2o_listeningDevice_react_negative_fine_listeningDevice, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_listeningDevice_reactions_part2.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="25">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=a2o_listeningDevice_react_negative_fine_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_listeningDevice_reactions_part2.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="26">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <Reference target="11" />
+              </Choice>
+            </RandomSelector>
+          </Choice>
+          <Choice value="sad">
+            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="30">
+              <Choice weight="100" avoidRepeat="False">
+                <Controller target="x" controller="@ClipController(clip=a2o_listeningDevice_react_intense_negative_cry_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_listeningDevice_reactions.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="28">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <Reference target="11" />
+              </Choice>
+              <Choice weight="100" avoidRepeat="False">
+                <Controller target="x" controller="@ClipController(clip=a2o_listeningDevice_react_mild_negative_slump_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_listeningDevice_reactions.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="29">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <Reference target="11" />
+              </Choice>
+            </RandomSelector>
+          </Choice>
+          <Choice value="bored">
+            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="34">
+              <Choice weight="100" avoidRepeat="False">
+                <Controller target="x" controller="@ClipController(clip=a2o_listeningDevice_react_bored_shakeHead_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_listeningDevice_reactions_part2.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="31">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <Reference target="11" />
+                <Controller target="listeningDevice" controller="@ClipController(clip=a2o_listeningDevice_react_bored_shakeHead_listeningDevice, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_listeningDevice_reactions_part2.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="32">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+              </Choice>
+              <Choice weight="50" avoidRepeat="False">
+                <Controller target="x" controller="@ClipController(clip=a2o_listeningDevice_react_mild_negative_yawn_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_listeningDevice_reactions.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="33">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <Reference target="11" />
+              </Choice>
+            </RandomSelector>
+          </Choice>
+          <Choice value="embarrassed">
+            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="38">
+              <Choice weight="34" avoidRepeat="False">
+                <Reference target="25" />
+                <Reference target="26" />
+                <Reference target="11" />
+              </Choice>
+              <Choice weight="100" avoidRepeat="False">
+                <Controller target="x" controller="@ClipController(clip=a2o_listeningDevice_react_embarrassed_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_listeningDevice_reactions_part2.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="35">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <Reference target="11" />
+                <Controller target="listeningDevice" controller="@ClipController(clip=a2o_listeningDevice_react_embarrassed_listeningDevice, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_listeningDevice_reactions_part2.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="36">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+              </Choice>
+              <Choice weight="100" avoidRepeat="False">
+                <Controller target="x" controller="@ClipController(clip=a2o_listeningDevice_react_mild_negative_ignore_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_listeningDevice_reactions.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="37">
+                  <TransitionClassList />
+                </Controller>
+                <Reference target="11" />
+              </Choice>
+            </RandomSelector>
+          </Choice>
+          <Choice value="uncomfortable">
+            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="41">
+              <Choice weight="100" avoidRepeat="False">
+                <Controller target="x" controller="@ClipController(clip=a2o_listeningDevice_react_intense_negative_cringe_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_listeningDevice_reactions.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="39">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <Reference target="11" />
+              </Choice>
+              <Choice weight="100" avoidRepeat="False">
+                <Controller target="x" controller="@ClipController(clip=a2o_listeningDevice_react_intense_negative_waveOff_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_listeningDevice_reactions.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="40">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <Reference target="11" />
+              </Choice>
+              <Choice weight="50" avoidRepeat="False">
+                <Reference target="25" />
+                <Reference target="26" />
+                <Reference target="11" />
+              </Choice>
+            </RandomSelector>
+          </Choice>
+          <Choice value="playful">
+            <Reference target="18" />
+          </Choice>
+          <Choice value="tense">
+            <Reference target="41" />
+          </Choice>
+          <Choice value="focused">
+            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="43">
+              <Choice weight="100" avoidRepeat="False">
+                <Controller target="x" controller="@ClipController(clip=a2o_listeningDevice_react_intense_positve_flex_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_listeningDevice_reactions.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="42">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <Reference target="11" />
+              </Choice>
+              <Choice weight="100" avoidRepeat="False">
+                <Reference target="21" />
+                <Reference target="11" />
+              </Choice>
+              <Choice weight="100" avoidRepeat="False">
+                <Reference target="14" />
+                <Reference target="11" />
+              </Choice>
+              <Choice weight="50" avoidRepeat="False">
+                <Reference target="17" />
+              </Choice>
+              <Choice weight="100" avoidRepeat="False">
+                <Reference target="15" />
+                <Reference target="11" />
+              </Choice>
+            </RandomSelector>
+          </Choice>
+          <Choice value="energized">
+            <Reference target="43" />
+          </Choice>
+          <Choice value="flirty">
+            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="45">
+              <Choice weight="100" avoidRepeat="False">
+                <Reference target="42" />
+                <Reference target="11" />
+              </Choice>
+              <Choice weight="100" avoidRepeat="False">
+                <Reference target="14" />
+                <Reference target="11" />
+              </Choice>
+              <Choice weight="100" avoidRepeat="False">
+                <Controller target="x" controller="@ClipController(clip=a2o_listeningDevice_react_mild_positve_hand2Heart_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_listeningDevice_reactions.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="44">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <Reference target="11" />
+              </Choice>
+              <Choice weight="50" avoidRepeat="False">
+                <Reference target="17" />
+              </Choice>
+              <Choice weight="100" avoidRepeat="False">
+                <Reference target="15" />
+                <Reference target="11" />
+              </Choice>
+            </RandomSelector>
+          </Choice>
+          <Choice value="fine">
+            <Reference target="15" />
+            <Reference target="11" />
+          </Choice>
+          <Choice value="inspired">
+            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="47">
+              <Choice weight="100" avoidRepeat="False">
+                <Controller target="x" controller="@ClipController(clip=a2o_listeningDevice_react_mild_positve_hand2Chin_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_listeningDevice_reactions.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="46">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <Reference target="11" />
+              </Choice>
+              <Choice weight="100" avoidRepeat="False">
+                <Reference target="14" />
+                <Reference target="11" />
+              </Choice>
+              <Choice weight="100" avoidRepeat="False">
+                <Reference target="17" />
+              </Choice>
+              <Choice weight="50" avoidRepeat="False">
+                <Reference target="17" />
+              </Choice>
+              <Choice weight="100" avoidRepeat="False">
+                <Reference target="15" />
+                <Reference target="11" />
+              </Choice>
+            </RandomSelector>
+          </Choice>
+          <Choice value="dazed">
+            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="49">
+              <Choice weight="100" avoidRepeat="False">
+                <Controller target="x" controller="@ClipController(clip=a2o_listeningDevice_react_mild_negative_confused_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_listeningDevice_reactions.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="48">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <Reference target="11" />
+              </Choice>
+              <Choice weight="50" avoidRepeat="False">
+                <Reference target="15" />
+                <Reference target="11" />
+              </Choice>
+              <Choice weight="25" avoidRepeat="False">
+                <Reference target="17" />
+              </Choice>
+            </RandomSelector>
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+      <Choice value="sit--UpperBody" track="normal" mask="Trackmask_UpperBody">
+        <Reference target="50" />
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="TwiddleKnobs" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="57">
+      <Choice value="sit--FullBody" track="normal" mask="">
+        <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="56">
+          <Choice weight="50" avoidRepeat="False">
+            <Controller target="x" controller="@ClipController(clip=a2o_listeningDevice_twiddleKnob_loop1_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_listeningDevice_twiddleKnob_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="52">
+              <TransitionClassList />
+            </Controller>
+            <Controller target="listeningDevice" controller="@ClipController(clip=a2o_listeningDevice_twiddleKnob_loop1_listeningDevice, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_listeningDevice_twiddleKnob_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="53">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
+          <Choice weight="50" avoidRepeat="False">
+            <Controller target="x" controller="@ClipController(clip=a2o_listeningDevice_twiddleKnob_loop2_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_listeningDevice_twiddleKnob_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="54">
+              <TransitionClassList />
+            </Controller>
+            <Controller target="listeningDevice" controller="@ClipController(clip=a2o_listeningDevice_twiddleKnob_loop2_listeningDevice, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_listeningDevice_twiddleKnob_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="55">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
+        </RandomSelector>
+      </Choice>
+      <Choice value="sit--UpperBody" track="normal" mask="">
+        <Reference target="56" />
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="Type" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="65">
+      <Choice value="sit--FullBody" track="normal" mask="">
+        <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="64">
+          <Choice weight="50" avoidRepeat="False">
+            <Controller target="x" controller="@ClipController(clip=a2o_listeningDevice_type_mild_read_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_listeningDevice_idle_type_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="60">
+              <TransitionClassList />
+            </Controller>
+            <MakeController unique_id="59">
+              <Controller target="x" controller="@ClipController(clip=a2o_listeningDevice_idle_breathLoop_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_listeningDevice_idle_type_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="58">
+                <TransitionClassList />
+              </Controller>
+            </MakeController>
+          </Choice>
+          <Choice weight="50" avoidRepeat="False">
+            <Controller target="x" controller="@ClipController(clip=a2o_listeningDevice_type_mild_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_listeningDevice_idle_type_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="61">
+              <TransitionClassList />
+            </Controller>
+            <Reference target="59" />
+          </Choice>
+          <Choice weight="50" avoidRepeat="False">
+            <Controller target="x" controller="@ClipController(clip=a2o_listeningDevice_type_mouse_mild_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_listeningDevice_idle_type_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="62">
+              <TransitionClassList />
+            </Controller>
+            <Reference target="59" />
+            <Controller target="listeningDevice" controller="@ClipController(clip=a2o_listeningDevice_type_mouse_mild_listeningDevice, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_listeningDevice_idle_type_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="63">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
+        </RandomSelector>
+      </Choice>
+      <Choice value="sit--UpperBody" track="normal" mask="">
+        <Reference target="64" />
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="getIn" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="67">
+      <Choice value="sit--FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2o_listeningDevice_sit2Computer_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_listeningDevice_idle_type_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="66">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+      <Choice value="sit--UpperBody" track="normal" mask="">
+        <Reference target="66" />
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="getOut" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="69">
+      <Choice value="sit--FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2o_listeningDevice_computer2Sit_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_listeningDevice_idle_type_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="68">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+      <Choice value="sit--UpperBody" track="normal" mask="">
+        <Reference target="68" />
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="hub" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+  </State>
+  <State name="start" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="71">
+      <Choice value="sit--FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2o_listeningDevice_listenIn_start_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_listeningDevice_listenIn_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="70">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+      <Choice value="sit--UpperBody" track="normal" mask="">
+        <Reference target="70" />
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="stop" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="73">
+      <Choice value="sit--FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2o_listeningDevice_listenIn_stop_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_listeningDevice_listenIn_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="72">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+      <Choice value="sit--UpperBody" track="normal" mask="">
+        <Reference target="72" />
+      </Choice>
+    </PostureSelector>
+  </State>
+</ASM>

@@ -1,0 +1,123 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="MurphyBed_PutUp_PutDown" dcc="sage">
+  <Actor name="x" type="Sim" master="true" virtual="false" />
+  <Actor name="Murphy Bed" type="Object" virtual="false" />
+  <Actor name="Remote" type="Prop" virtual="false" object_def_resource_key="c0db5ae7:00000000:0000000000001d34#remoteTv_bm" />
+  <Parameter name="isMirrored" type="bool" labels="" default="False" />
+  <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
+  <IkConfiguration name="a2o_murphyBed_putUp.ma">
+    <SourceFile name="a2o_murphyBed_putUp.ma">
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="remote" actor="Remote" />
+      <MapNamespace namespace="bed" actor="Murphy Bed" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_murphyBed_putDown_succeed.ma">
+    <SourceFile name="a2o_murphyBed_putDown_succeed.ma">
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="remote" actor="Remote" />
+      <MapNamespace namespace="bed" actor="Murphy Bed" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_murphyBed_putDown_fail.ma">
+    <SourceFile name="a2o_murphyBed_putDown_fail.ma">
+      <MapNamespace namespace="remote" actor="Remote" />
+      <MapNamespace namespace="bed" actor="Murphy Bed" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_murphyBed_putDown_noLoveseat_fail.ma">
+    <SourceFile name="a2o_murphyBed_putDown_noLoveseat_fail.ma">
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="remote" actor="Remote" />
+      <MapNamespace namespace="bed" actor="Murphy Bed" />
+    </SourceFile>
+  </IkConfiguration>
+  <PostureManifest actors="" />
+  <PostureManifest actors="x">
+    <Support family="stand" compatibility="FullBody" carry_left="-" carry_right="-" surface="*" />
+  </PostureManifest>
+  <State type="private" skippable="false" interrupt_this="false" name="Mirror" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="PutDown_Fail" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="PutDown_Succeed" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="PutDown_noLoveseat_Fail" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="PutUp" focus="none" facialoverlays="false" tailoverlays="true" />
+  <Connection from="Mirror" to="PutDown_Fail" />
+  <Connection from="Mirror" to="PutDown_Succeed" />
+  <Connection from="Mirror" to="PutDown_noLoveseat_Fail" />
+  <Connection from="Mirror" to="PutUp" />
+  <Connection from="PutDown_Fail" to="exit" />
+  <Connection from="PutDown_Succeed" to="exit" />
+  <Connection from="PutDown_noLoveseat_Fail" to="exit" />
+  <Connection from="PutUp" to="exit" />
+  <Connection from="entry" to="Mirror" />
+  <State name="Mirror" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <ParameterSelector parameter="isMirrored" unique_id="2">
+      <Choice value="false" />
+      <Choice value="true">
+        <SetMirror target="x" mirror="true" unique_id="1" />
+      </Choice>
+    </ParameterSelector>
+  </State>
+  <State name="PutDown_Fail" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="5">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <Controller target="Murphy Bed" controller="@ClipController(clip=a2o_murphyBed_putDown_fail_bed, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_murphyBed_putDown_fail.ma" focus="none" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="3">
+          <TransitionClassList />
+        </Controller>
+        <Controller target="x" controller="@ClipController(clip=a2o_murphyBed_putDown_fail_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_murphyBed_putDown_fail.ma" focus="none" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="4">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="PutDown_Succeed" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="7">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2o_murphyBed_putDown_succeed_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_murphyBed_putDown_succeed.ma" focus="none" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="6">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+    </PostureSelector>
+    <TrackOffset target="Murphy Bed" offset="1000" unique_id="11" />
+    <Controller target="Murphy Bed" controller="@ClipController(clip=a2o_murphyBed_putDown_succeed_bed, loop_count=#1)" overridePosture="false" mask="" track="low" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_murphyBed_putDown_succeed.ma" focus="none" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="10">
+      <TransitionClassList />
+    </Controller>
+    <MakeController unique_id="9">
+      <Controller target="Murphy Bed" controller="@ClipController(clip=o_murphyBed_open_idle_bed, loop_count=#1)" overridePosture="false" mask="" track="low" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_murphyBed_putDown_succeed.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="8">
+        <TransitionClassList />
+      </Controller>
+    </MakeController>
+  </State>
+  <State name="PutDown_noLoveseat_Fail" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="14">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2o_murphyBed_putDown_noLoveseat_fail_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_murphyBed_putDown_noLoveseat_fail.ma" focus="none" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="12">
+          <TransitionClassList />
+        </Controller>
+        <Controller target="Murphy Bed" controller="@ClipController(clip=a2o_murphyBed_putDown_noLoveseat_fail_bed, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_murphyBed_putDown_noLoveseat_fail.ma" focus="none" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="13">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="PutUp" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <TrackOffset target="Murphy Bed" offset="1000" unique_id="16" />
+    <Controller target="Murphy Bed" controller="@ClipController(clip=a2o_murphyBed_putUp_bed, loop_count=#1)" overridePosture="false" mask="" track="low" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_murphyBed_putUp.ma" focus="none" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="15">
+      <TransitionClassList />
+    </Controller>
+    <PostureSelector parameter="x:posture" unique_id="18">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2o_murphyBed_putUp_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_murphyBed_putUp.ma" focus="none" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="17">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+    </PostureSelector>
+  </State>
+</ASM>

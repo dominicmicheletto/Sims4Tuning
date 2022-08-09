@@ -1,0 +1,537 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="VacuumCleaner_VacuumHand" dcc="sage">
+  <Actor name="x" type="Sim" master="true" virtual="false" />
+  <Actor name="vacuumHand" type="Prop" virtual="false" object_def_resource_key="c0db5ae7:00000000:000000000003ff18#vacuumHand_SP22GENhigh_set1" />
+  <Actor name="dustCritter" type="Object" virtual="false" />
+  <Parameter name="Height" type="enum" labels="High,Medium,Low" default="Medium" />
+  <Parameter name="isFloor" type="bool" labels="" default="False" />
+  <Parameter name="isWater" type="bool" labels="" default="False" />
+  <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
+  <IkConfiguration name="a2o_vacuumCleaner_vacuumHand_high_all.ma">
+    <SourceFile name="a2o_vacuumCleaner_vacuumHand_high_all.ma">
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="vacuumHand" actor="vacuumHand" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_vacuumCleaner_vacuumHand_low_all.ma">
+    <SourceFile name="a2o_vacuumCleaner_vacuumHand_low_all.ma">
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="vacuumHand" actor="vacuumHand" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_vacuumCleaner_vacuumHand_med_all.ma">
+    <SourceFile name="a2o_vacuumCleaner_vacuumHand_med_all.ma">
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="vacuumHand" actor="vacuumHand" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="c2o_vacuumCleaner_vacuumHand_floor_all.ma">
+    <SourceFile name="c2o_vacuumCleaner_vacuumHand_floor_all.ma">
+      <MapNamespace namespace="vacuumHand" actor="vacuumHand" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_vacuumCleaner_vacuumHand_low_break_overflow.ma">
+    <SourceFile name="a2o_vacuumCleaner_vacuumHand_low_break_overflow.ma">
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="vacuumHand" actor="vacuumHand" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_vacuumCleaner_vacuumHand_med_break_overflow.ma">
+    <SourceFile name="a2o_vacuumCleaner_vacuumHand_med_break_overflow.ma">
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="vacuumHand" actor="vacuumHand" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_vacuumCleaner_vacuumHand_high_break_overflow.ma">
+    <SourceFile name="a2o_vacuumCleaner_vacuumHand_high_break_overflow.ma">
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="vacuumHand" actor="vacuumHand" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="c2o_vacuumCleaner_vacuumHand_floor_break_overflow.ma">
+    <SourceFile name="c2o_vacuumCleaner_vacuumHand_floor_break_overflow.ma">
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="vacuumHand" actor="vacuumHand" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="c2o_dustBunny_vacuum.ma">
+    <SourceFile name="c2o_dustBunny_vacuum.ma">
+      <MapNamespace namespace="dustCritter" actor="dustCritter" />
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="vacuumHand" actor="vacuumHand" />
+    </SourceFile>
+  </IkConfiguration>
+  <PostureManifest actors="" />
+  <PostureManifest actors="x">
+    <Support family="stand" compatibility="FullBody" carry_left="-" carry_right="-" surface="*" />
+  </PostureManifest>
+  <State type="public" skippable="false" interrupt_this="false" name="Broken" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="Hub" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="Overflow" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="PickUpVacuum" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="PutDownVacuum" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" name="Vacuum" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="VacuumDustBunny_Child" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="VacuumDustFiend_Child" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <Connection from="Broken" to="exit" />
+  <Connection from="Hub" to="PutDownVacuum" />
+  <Connection from="Hub" to="Vacuum" />
+  <Connection from="Overflow" to="exit" />
+  <Connection from="PickUpVacuum" to="Hub" />
+  <Connection from="PutDownVacuum" to="exit" />
+  <Connection from="Vacuum" to="Broken" />
+  <Connection from="Vacuum" to="Hub" />
+  <Connection from="Vacuum" to="Overflow" />
+  <Connection from="VacuumDustBunny_Child" to="exit" />
+  <Connection from="VacuumDustFiend_Child" to="exit" />
+  <Connection from="entry" to="PickUpVacuum" />
+  <Connection from="entry" to="VacuumDustBunny_Child" />
+  <Connection from="entry" to="VacuumDustFiend_Child" />
+  <State name="Broken" type="public" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="13">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <ParameterSelector parameter="isFloor" unique_id="12">
+          <Choice value="false">
+            <ParameterSelector parameter="Height" unique_id="10">
+              <Choice value="High">
+                <ParameterSelector parameter="isWater" unique_id="3">
+                  <Choice value="false">
+                    <Controller target="x" controller="@ClipController(clip=a2o_vacuumCleaner_vacuumHand_high_break_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_vacuumCleaner_vacuumHand_high_break_overflow.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="1">
+                      <TransitionClassList />
+                    </Controller>
+                  </Choice>
+                  <Choice value="true">
+                    <Controller target="x" controller="@ClipController(clip=a2o_vacuumCleaner_vacuumHand_waterFx_high_break_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_vacuumCleaner_vacuumHand_high_break_overflow.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="2">
+                      <TransitionClassList />
+                    </Controller>
+                  </Choice>
+                </ParameterSelector>
+              </Choice>
+              <Choice value="Medium">
+                <ParameterSelector parameter="isWater" unique_id="6">
+                  <Choice value="false">
+                    <Controller target="x" controller="@ClipController(clip=a2o_vacuumCleaner_vacuumHand_med_break_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_vacuumCleaner_vacuumHand_med_break_overflow.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="4">
+                      <TransitionClassList />
+                    </Controller>
+                  </Choice>
+                  <Choice value="true">
+                    <Controller target="x" controller="@ClipController(clip=a2o_vacuumCleaner_vacuumHand_waterFx_med_break_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_vacuumCleaner_vacuumHand_med_break_overflow.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="5">
+                      <TransitionClassList />
+                    </Controller>
+                  </Choice>
+                </ParameterSelector>
+              </Choice>
+              <Choice value="Low">
+                <ParameterSelector parameter="isWater" unique_id="9">
+                  <Choice value="false">
+                    <Controller target="x" controller="@ClipController(clip=a2o_vacuumCleaner_vacuumHand_low_break_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_vacuumCleaner_vacuumHand_low_break_overflow.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="7">
+                      <TransitionClassList />
+                    </Controller>
+                  </Choice>
+                  <Choice value="true">
+                    <Controller target="x" controller="@ClipController(clip=a2o_vacuumCleaner_vacuumHand_waterFx_low_break_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_vacuumCleaner_vacuumHand_low_break_overflow.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="8">
+                      <TransitionClassList />
+                    </Controller>
+                  </Choice>
+                </ParameterSelector>
+              </Choice>
+            </ParameterSelector>
+          </Choice>
+          <Choice value="true">
+            <Controller target="x" controller="@ClipController(clip=c2o_vacuumCleaner_vacuumHand_floor_break_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c2o_vacuumCleaner_vacuumHand_floor_break_overflow.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="11">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="Hub" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="14">
+      <Choice value="-stand-FullBody" track="normal" mask="" />
+    </PostureSelector>
+  </State>
+  <State name="Overflow" type="public" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="27">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <ParameterSelector parameter="isFloor" unique_id="26">
+          <Choice value="false">
+            <ParameterSelector parameter="Height" unique_id="24">
+              <Choice value="High">
+                <ParameterSelector parameter="isWater" unique_id="17">
+                  <Choice value="false">
+                    <Controller target="x" controller="@ClipController(clip=a2o_vacuumCleaner_vacuumHand_high_overflow_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_vacuumCleaner_vacuumHand_high_break_overflow.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="15">
+                      <TransitionClassList />
+                    </Controller>
+                  </Choice>
+                  <Choice value="true">
+                    <Controller target="x" controller="@ClipController(clip=a2o_vacuumCleaner_vacuumHand_waterFx_high_overflow_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_vacuumCleaner_vacuumHand_high_break_overflow.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="16">
+                      <TransitionClassList />
+                    </Controller>
+                  </Choice>
+                </ParameterSelector>
+              </Choice>
+              <Choice value="Medium">
+                <ParameterSelector parameter="isWater" unique_id="20">
+                  <Choice value="false">
+                    <Controller target="x" controller="@ClipController(clip=a2o_vacuumCleaner_vacuumHand_med_overflow_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_vacuumCleaner_vacuumHand_med_break_overflow.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="18">
+                      <TransitionClassList />
+                    </Controller>
+                  </Choice>
+                  <Choice value="true">
+                    <Controller target="x" controller="@ClipController(clip=a2o_vacuumCleaner_vacuumHand_waterFx_med_overflow_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_vacuumCleaner_vacuumHand_med_break_overflow.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="19">
+                      <TransitionClassList />
+                    </Controller>
+                  </Choice>
+                </ParameterSelector>
+              </Choice>
+              <Choice value="Low">
+                <ParameterSelector parameter="isWater" unique_id="23">
+                  <Choice value="false">
+                    <Controller target="x" controller="@ClipController(clip=a2o_vacuumCleaner_vacuumHand_low_overflow_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_vacuumCleaner_vacuumHand_low_break_overflow.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="21">
+                      <TransitionClassList />
+                    </Controller>
+                  </Choice>
+                  <Choice value="true">
+                    <Controller target="x" controller="@ClipController(clip=a2o_vacuumCleaner_vacuumHand_waterFx_low_overflow_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_vacuumCleaner_vacuumHand_low_break_overflow.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="22">
+                      <TransitionClassList />
+                    </Controller>
+                  </Choice>
+                </ParameterSelector>
+              </Choice>
+            </ParameterSelector>
+          </Choice>
+          <Choice value="true">
+            <Controller target="x" controller="@ClipController(clip=c2o_vacuumCleaner_vacuumHand_floor_overflow_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c2o_vacuumCleaner_vacuumHand_floor_break_overflow.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="25">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="PickUpVacuum" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="40">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <ParameterSelector parameter="isFloor" unique_id="39">
+          <Choice value="false">
+            <ParameterSelector parameter="Height" unique_id="37">
+              <Choice value="High">
+                <ParameterSelector parameter="isWater" unique_id="30">
+                  <Choice value="false">
+                    <Controller target="x" controller="@ClipController(clip=a2o_vacuumCleaner_vacuumHand_high_start_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_vacuumCleaner_vacuumHand_high_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="28">
+                      <TransitionClassList />
+                    </Controller>
+                  </Choice>
+                  <Choice value="true">
+                    <Controller target="x" controller="@ClipController(clip=a2o_vacuumCleaner_vacuumHand_waterFx_high_start_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_vacuumCleaner_vacuumHand_high_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="29">
+                      <TransitionClassList />
+                    </Controller>
+                  </Choice>
+                </ParameterSelector>
+              </Choice>
+              <Choice value="Medium">
+                <ParameterSelector parameter="isWater" unique_id="33">
+                  <Choice value="false">
+                    <Controller target="x" controller="@ClipController(clip=a2o_vacuumCleaner_vacuumHand_med_start_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_vacuumCleaner_vacuumHand_med_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="31">
+                      <TransitionClassList />
+                    </Controller>
+                  </Choice>
+                  <Choice value="true">
+                    <Controller target="x" controller="@ClipController(clip=a2o_vacuumCleaner_vacuumHand_waterFx_med_start_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_vacuumCleaner_vacuumHand_med_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="32">
+                      <TransitionClassList />
+                    </Controller>
+                  </Choice>
+                </ParameterSelector>
+              </Choice>
+              <Choice value="Low">
+                <ParameterSelector parameter="isWater" unique_id="36">
+                  <Choice value="false">
+                    <Controller target="x" controller="@ClipController(clip=a2o_vacuumCleaner_vacuumHand_low_start_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_vacuumCleaner_vacuumHand_low_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="34">
+                      <TransitionClassList />
+                    </Controller>
+                  </Choice>
+                  <Choice value="true">
+                    <Controller target="x" controller="@ClipController(clip=a2o_vacuumCleaner_vacuumHand_waterFx_low_start_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_vacuumCleaner_vacuumHand_low_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="35">
+                      <TransitionClassList />
+                    </Controller>
+                  </Choice>
+                </ParameterSelector>
+              </Choice>
+            </ParameterSelector>
+          </Choice>
+          <Choice value="true">
+            <Controller target="x" controller="@ClipController(clip=c2o_vacuumCleaner_vacuumHand_floor_start_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c2o_vacuumCleaner_vacuumHand_floor_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="38">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="PutDownVacuum" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="53">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <ParameterSelector parameter="isFloor" unique_id="52">
+          <Choice value="false">
+            <ParameterSelector parameter="Height" unique_id="50">
+              <Choice value="High">
+                <ParameterSelector parameter="isWater" unique_id="43">
+                  <Choice value="false">
+                    <Controller target="x" controller="@ClipController(clip=a2o_vacuumCleaner_vacuumHand_high_stop_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_vacuumCleaner_vacuumHand_high_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="41">
+                      <TransitionClassList />
+                    </Controller>
+                  </Choice>
+                  <Choice value="true">
+                    <Controller target="x" controller="@ClipController(clip=a2o_vacuumCleaner_vacuumHand_waterFx_high_stop_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_vacuumCleaner_vacuumHand_high_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="42">
+                      <TransitionClassList />
+                    </Controller>
+                  </Choice>
+                </ParameterSelector>
+              </Choice>
+              <Choice value="Medium">
+                <ParameterSelector parameter="isWater" unique_id="46">
+                  <Choice value="false">
+                    <Controller target="x" controller="@ClipController(clip=a2o_vacuumCleaner_vacuumHand_med_stop_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_vacuumCleaner_vacuumHand_med_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="44">
+                      <TransitionClassList />
+                    </Controller>
+                  </Choice>
+                  <Choice value="true">
+                    <Controller target="x" controller="@ClipController(clip=a2o_vacuumCleaner_vacuumHand_waterFx_med_stop_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_vacuumCleaner_vacuumHand_med_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="45">
+                      <TransitionClassList />
+                    </Controller>
+                  </Choice>
+                </ParameterSelector>
+              </Choice>
+              <Choice value="Low">
+                <ParameterSelector parameter="isWater" unique_id="49">
+                  <Choice value="false">
+                    <Controller target="x" controller="@ClipController(clip=a2o_vacuumCleaner_vacuumHand_low_stop_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_vacuumCleaner_vacuumHand_low_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="47">
+                      <TransitionClassList />
+                    </Controller>
+                  </Choice>
+                  <Choice value="true">
+                    <Controller target="x" controller="@ClipController(clip=a2o_vacuumCleaner_vacuumHand_waterFx_low_stop_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_vacuumCleaner_vacuumHand_low_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="48">
+                      <TransitionClassList />
+                    </Controller>
+                  </Choice>
+                </ParameterSelector>
+              </Choice>
+            </ParameterSelector>
+          </Choice>
+          <Choice value="true">
+            <Controller target="x" controller="@ClipController(clip=c2o_vacuumCleaner_vacuumHand_floor_stop_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c2o_vacuumCleaner_vacuumHand_floor_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="51">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="Vacuum" type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <MakeController>
+      <PostureSelector parameter="x:posture" unique_id="80">
+        <Choice value="-stand-FullBody" track="normal" mask="">
+          <ParameterSelector parameter="isFloor" unique_id="79">
+            <Choice value="false">
+              <ParameterSelector parameter="Height" unique_id="75">
+                <Choice value="High">
+                  <ParameterSelector parameter="isWater" unique_id="60">
+                    <Choice value="false">
+                      <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="56">
+                        <Choice weight="50" avoidRepeat="False">
+                          <Controller target="x" controller="@ClipController(clip=a2o_vacuumCleaner_vacuumHand_high_loop01_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_vacuumCleaner_vacuumHand_high_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="54">
+                            <TransitionClassList>
+                              <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                            </TransitionClassList>
+                          </Controller>
+                        </Choice>
+                        <Choice weight="50" avoidRepeat="False">
+                          <Controller target="x" controller="@ClipController(clip=a2o_vacuumCleaner_vacuumHand_high_loop02_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_vacuumCleaner_vacuumHand_high_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="55">
+                            <TransitionClassList>
+                              <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                            </TransitionClassList>
+                          </Controller>
+                        </Choice>
+                      </RandomSelector>
+                    </Choice>
+                    <Choice value="true">
+                      <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="59">
+                        <Choice weight="50" avoidRepeat="False">
+                          <Controller target="x" controller="@ClipController(clip=a2o_vacuumCleaner_vacuumHand_waterFx_high_loop01_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_vacuumCleaner_vacuumHand_high_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="57">
+                            <TransitionClassList>
+                              <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                            </TransitionClassList>
+                          </Controller>
+                        </Choice>
+                        <Choice weight="50" avoidRepeat="False">
+                          <Controller target="x" controller="@ClipController(clip=a2o_vacuumCleaner_vacuumHand_waterFx_high_loop02_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_vacuumCleaner_vacuumHand_high_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="58">
+                            <TransitionClassList>
+                              <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                            </TransitionClassList>
+                          </Controller>
+                        </Choice>
+                      </RandomSelector>
+                    </Choice>
+                  </ParameterSelector>
+                </Choice>
+                <Choice value="Medium">
+                  <ParameterSelector parameter="isWater" unique_id="67">
+                    <Choice value="false">
+                      <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="63">
+                        <Choice weight="50" avoidRepeat="False">
+                          <Controller target="x" controller="@ClipController(clip=a2o_vacuumCleaner_vacuumHand_med_loop01_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_vacuumCleaner_vacuumHand_med_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="61">
+                            <TransitionClassList>
+                              <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                            </TransitionClassList>
+                          </Controller>
+                        </Choice>
+                        <Choice weight="50" avoidRepeat="False">
+                          <Controller target="x" controller="@ClipController(clip=a2o_vacuumCleaner_vacuumHand_med_loop02_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_vacuumCleaner_vacuumHand_med_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="62">
+                            <TransitionClassList>
+                              <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                            </TransitionClassList>
+                          </Controller>
+                        </Choice>
+                      </RandomSelector>
+                    </Choice>
+                    <Choice value="true">
+                      <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="66">
+                        <Choice weight="50" avoidRepeat="False">
+                          <Controller target="x" controller="@ClipController(clip=a2o_vacuumCleaner_vacuumHand_waterFx_med_loop01_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_vacuumCleaner_vacuumHand_med_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="64">
+                            <TransitionClassList>
+                              <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                            </TransitionClassList>
+                          </Controller>
+                        </Choice>
+                        <Choice weight="50" avoidRepeat="False">
+                          <Controller target="x" controller="@ClipController(clip=a2o_vacuumCleaner_vacuumHand_waterFx_med_loop02_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_vacuumCleaner_vacuumHand_med_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="65">
+                            <TransitionClassList>
+                              <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                            </TransitionClassList>
+                          </Controller>
+                        </Choice>
+                      </RandomSelector>
+                    </Choice>
+                  </ParameterSelector>
+                </Choice>
+                <Choice value="Low">
+                  <ParameterSelector parameter="isWater" unique_id="74">
+                    <Choice value="false">
+                      <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="70">
+                        <Choice weight="50" avoidRepeat="False">
+                          <Controller target="x" controller="@ClipController(clip=a2o_vacuumCleaner_vacuumHand_low_loop01_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_vacuumCleaner_vacuumHand_low_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="68">
+                            <TransitionClassList>
+                              <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                            </TransitionClassList>
+                          </Controller>
+                        </Choice>
+                        <Choice weight="50" avoidRepeat="False">
+                          <Controller target="x" controller="@ClipController(clip=a2o_vacuumCleaner_vacuumHand_low_loop02_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_vacuumCleaner_vacuumHand_low_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="69">
+                            <TransitionClassList>
+                              <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                            </TransitionClassList>
+                          </Controller>
+                        </Choice>
+                      </RandomSelector>
+                    </Choice>
+                    <Choice value="true">
+                      <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="73">
+                        <Choice weight="50" avoidRepeat="False">
+                          <Controller target="x" controller="@ClipController(clip=a2o_vacuumCleaner_vacuumHand_waterFx_low_loop01_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_vacuumCleaner_vacuumHand_low_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="71">
+                            <TransitionClassList>
+                              <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                            </TransitionClassList>
+                          </Controller>
+                        </Choice>
+                        <Choice weight="50" avoidRepeat="False">
+                          <Controller target="x" controller="@ClipController(clip=a2o_vacuumCleaner_vacuumHand_waterFx_low_loop02_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_vacuumCleaner_vacuumHand_low_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="72">
+                            <TransitionClassList>
+                              <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                            </TransitionClassList>
+                          </Controller>
+                        </Choice>
+                      </RandomSelector>
+                    </Choice>
+                  </ParameterSelector>
+                </Choice>
+              </ParameterSelector>
+            </Choice>
+            <Choice value="true">
+              <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="78">
+                <Choice weight="50" avoidRepeat="False">
+                  <Controller target="x" controller="@ClipController(clip=c2o_vacuumCleaner_vacuumHand_floor_loop01_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c2o_vacuumCleaner_vacuumHand_floor_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="76">
+                    <TransitionClassList>
+                      <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                    </TransitionClassList>
+                  </Controller>
+                </Choice>
+                <Choice weight="50" avoidRepeat="False">
+                  <Controller target="x" controller="@ClipController(clip=c2o_vacuumCleaner_vacuumHand_floor_loop02_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c2o_vacuumCleaner_vacuumHand_floor_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="77">
+                    <TransitionClassList>
+                      <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                    </TransitionClassList>
+                  </Controller>
+                </Choice>
+              </RandomSelector>
+            </Choice>
+          </ParameterSelector>
+        </Choice>
+      </PostureSelector>
+    </MakeController>
+  </State>
+  <State name="VacuumDustBunny_Child" type="public" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="84">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <ParameterSelector parameter="x:age" unique_id="83">
+          <Choice value="baby" />
+          <Choice value="toddler" />
+          <Choice value="child">
+            <Controller target="x" controller="@ClipController(clip=c2o_dustBunny_vacuum_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c2o_dustBunny_vacuum.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="81">
+              <TransitionClassList />
+            </Controller>
+            <Controller target="dustCritter" controller="@ClipController(clip=c2o_dustBunny_vacuum_dustCritter, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c2o_dustBunny_vacuum.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="82">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
+          <Choice value="teen" />
+          <Choice value="youngadult" />
+          <Choice value="adult" />
+          <Choice value="elder" />
+        </ParameterSelector>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="VacuumDustFiend_Child" type="public" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="88">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <ParameterSelector parameter="x:age" unique_id="87">
+          <Choice value="baby" />
+          <Choice value="toddler" />
+          <Choice value="child">
+            <Controller target="x" controller="@ClipController(clip=c2o_dustBunny_fiend_vacuum_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c2o_dustBunny_vacuum.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="85">
+              <TransitionClassList />
+            </Controller>
+            <Controller target="dustCritter" controller="@ClipController(clip=c2o_dustBunny_fiend_vacuum_dustCritter, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c2o_dustBunny_vacuum.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="86">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
+          <Choice value="teen" />
+          <Choice value="youngadult" />
+          <Choice value="adult" />
+          <Choice value="elder" />
+        </ParameterSelector>
+      </Choice>
+    </PostureSelector>
+  </State>
+</ASM>

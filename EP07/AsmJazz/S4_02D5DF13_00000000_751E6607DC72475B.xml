@@ -1,0 +1,114 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="Dolphin_Idles" dcc="sage">
+  <Actor name="Dolphin" type="Object" virtual="false" />
+  <Parameter name="transitionPosture" type="enum" labels="sit,stand,standOnObject" />
+  <Parameter name="direction" type="enum" labels="fromSimLeft,fromSimRight" default="fromSimLeft" />
+  <Parameter name="Dolphin:objectOrientation" type="quaternion" labels="" default="0,0,0,1" />
+  <Parameter name="Dolphin:objectPosition" type="vector3" labels="" default="0,0,0" />
+  <Parameter name="Dolphin:isMirroredPart" type="bool" labels="" default="False" />
+  <Parameter name="Dolphin:objectName" type="enum" labels="bedSingle,bedDouble,sofa,bed,litterbox,catcondo,petbed,petSurgery" />
+  <IkConfiguration name="o_dolphin_idles.ma">
+    <SourceFile name="o_dolphin_idles.ma">
+      <MapNamespace namespace="dolphin" actor="Dolphin" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="o_dolphin_disappear.ma">
+    <SourceFile name="o_dolphin_disappear.ma">
+      <MapNamespace namespace="dolphin" actor="Dolphin" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="o_dolphin_appear.ma">
+    <SourceFile name="o_dolphin_appear.ma">
+      <MapNamespace namespace="dolphin" actor="Dolphin" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_dolphin_interaction_dismiss.ma">
+    <SourceFile name="a2o_dolphin_interaction_dismiss.ma" />
+  </IkConfiguration>
+  <PostureManifest actors="" />
+  <State type="public" countlooptime="false" disableautostop="false" skippable="true" interrupt_this="true" name="Dolphin_Idles" focus="upper body" facialoverlays="false" tailoverlays="false" />
+  <State type="private" skippable="false" interrupt_this="false" name="GetIn" focus="none" facialoverlays="false" tailoverlays="false" />
+  <State type="private" skippable="false" interrupt_this="false" name="GetOut" focus="none" facialoverlays="false" tailoverlays="false" />
+  <State type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" name="HiddenDolphin" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="InvisibleDolphin" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <Connection from="Dolphin_Idles" to="GetOut" />
+  <Connection from="GetIn" to="Dolphin_Idles" />
+  <Connection from="GetOut" to="HiddenDolphin" />
+  <Connection from="GetOut" to="exit" />
+  <Connection from="HiddenDolphin" to="exit" />
+  <Connection from="InvisibleDolphin" to="HiddenDolphin" />
+  <Connection from="entry" to="GetIn" />
+  <Connection from="entry" to="InvisibleDolphin" />
+  <State name="Dolphin_Idles" type="public" countlooptime="false" disableautostop="false" skippable="true" interrupt_this="true" focus="upper body" facialoverlays="false" tailoverlays="false">
+    <description />
+    <MakeController>
+      <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="4">
+        <Choice weight="51" avoidRepeat="False">
+          <Controller target="Dolphin" controller="@ClipController(clip=o_dolphin_idle_dolphin, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="NoBlendLoop" transition_class_out="Default" ik_configuration="o_dolphin_idles.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="1">
+            <TransitionClassList>
+              <Transition transition_class_name="Default" transition_duration_in="0.5333334" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+            </TransitionClassList>
+          </Controller>
+        </Choice>
+        <Choice weight="50" avoidRepeat="False">
+          <Controller target="Dolphin" controller="@ClipController(clip=o_dolphin_idle02_dolphin, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="NoBlendLoop" transition_class_out="NoBlendLoop" ik_configuration="o_dolphin_idles.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="2">
+            <TransitionClassList>
+              <Transition transition_class_name="NoBlendLoop" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+            </TransitionClassList>
+          </Controller>
+        </Choice>
+        <Choice weight="50" avoidRepeat="False">
+          <Controller target="Dolphin" controller="@ClipController(clip=o_dolphin_idle03_dolphin, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="NoBlendLoop" transition_class_out="NoBlendLoop" ik_configuration="o_dolphin_idles.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="3">
+            <TransitionClassList>
+              <Transition transition_class_name="NoBlendLoop" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+            </TransitionClassList>
+          </Controller>
+        </Choice>
+      </RandomSelector>
+    </MakeController>
+  </State>
+  <State name="GetIn" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="false">
+    <description />
+    <Controller target="Dolphin" controller="@ClipController(clip=o_dolphin_appear_dolphin, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="o_dolphin_appear.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="7">
+      <TransitionClassList />
+    </Controller>
+    <MakeController unique_id="6">
+      <Controller target="Dolphin" controller="@ClipController(clip=o_dolphin_idle_dolphin, loop_count=#1)" overridePosture="false" mask="" track="low" mirror_conditional="False" suppress_footsteps="False" transition_class_in="NoBlendLoop" transition_class_out="Default" ik_configuration="o_dolphin_idles.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="5">
+        <TransitionClassList>
+          <Transition transition_class_name="Default" transition_duration_in="0.5333334" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+        </TransitionClassList>
+      </Controller>
+    </MakeController>
+  </State>
+  <State name="GetOut" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="false">
+    <description />
+    <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="11">
+      <Choice weight="50" avoidRepeat="False">
+        <Controller target="Dolphin" controller="@ClipController(clip=o_dolphin_disappear_dolphin, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="o_dolphin_disappear.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="9">
+          <TransitionClassList />
+        </Controller>
+        <Stop target="Dolphin" track="low" blend_in="0" unique_id="8" />
+      </Choice>
+      <Choice weight="50" avoidRepeat="False">
+        <Controller target="Dolphin" controller="@ClipController(clip=a2o_dolphin_interaction_dismiss_dolphin, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_dolphin_interaction_dismiss.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="10">
+          <TransitionClassList />
+        </Controller>
+        <Reference target="8" />
+      </Choice>
+    </RandomSelector>
+  </State>
+  <State name="HiddenDolphin" type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <MakeController>
+      <Controller target="Dolphin" controller="@ClipController(clip=o_dolphin_hiddenUnderWater_dolphin, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="o_dolphin_disappear.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="12">
+        <TransitionClassList />
+      </Controller>
+    </MakeController>
+  </State>
+  <State name="InvisibleDolphin" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <Controller target="Dolphin" controller="@ClipController(clip=o_dolphin_visibleOff_dolphin, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="o_dolphin_disappear.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="13">
+      <TransitionClassList />
+    </Controller>
+  </State>
+</ASM>

@@ -1,0 +1,1867 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="Book_Read" dcc="sage">
+  <Actor name="x" type="Sim" master="true" virtual="false" />
+  <Actor name="book" type="Object" virtual="false" />
+  <Actor name="sitTemplate" type="Object" virtual="true" />
+  <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
+  <Parameter name="x:mood" type="enum" labels="happy,confident,angry,sad,bored,embarrassed,uncomfortable,playful,tense,focused,energized,flirty,fine,inspired,dazed" default="happy" />
+  <Parameter name="book:objectType" type="enum" labels="book,bookThin" default="book" />
+  <IkConfiguration name="a2o_book_read_seated.ma">
+    <SourceFile name="a2o_book_read_seated.ma">
+      <MapNamespace namespace="book" actor="book" />
+      <MapNamespace namespace="sitTemplate" actor="sitTemplate" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_book_read.ma">
+    <SourceFile name="a2o_book_read.ma">
+      <MapNamespace namespace="book" actor="book" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_book_read_bored.ma">
+    <SourceFile name="a2o_book_read_bored.ma">
+      <MapNamespace namespace="book" actor="book" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_book_read_bored_seated.ma">
+    <SourceFile name="a2o_book_read_bored_seated.ma">
+      <MapNamespace namespace="book" actor="book" />
+      <MapNamespace namespace="sitTemplate" actor="sitTemplate" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_book_read_uncomfortable.ma">
+    <SourceFile name="a2o_book_read_uncomfortable.ma">
+      <MapNamespace namespace="book" actor="book" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_book_read_uncomfortable_seated.ma">
+    <SourceFile name="a2o_book_read_uncomfortable_seated.ma">
+      <MapNamespace namespace="book" actor="book" />
+      <MapNamespace namespace="sitTemplate" actor="sitTemplate" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_book_read_dazed.ma">
+    <SourceFile name="a2o_book_read_dazed.ma">
+      <MapNamespace namespace="book" actor="book" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_book_read_dazed_seated.ma">
+    <SourceFile name="a2o_book_read_dazed_seated.ma">
+      <MapNamespace namespace="book" actor="book" />
+      <MapNamespace namespace="sitTemplate" actor="sitTemplate" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_bookThin_read.ma">
+    <SourceFile name="a2o_bookThin_read.ma">
+      <MapNamespace namespace="bookThin" actor="book" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_bookThin_read_seated.ma">
+    <SourceFile name="a2o_bookThin_read_seated.ma">
+      <MapNamespace namespace="bookThin" actor="book" />
+      <MapNamespace namespace="sitTemplate" actor="sitTemplate" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <PostureManifest actors="" />
+  <PostureManifest actors="x">
+    <Support family="stand" compatibility="UpperBody" carry_left="-" carry_right="book" surface="*" />
+    <Support family="sit" compatibility="UpperBody" carry_left="-" carry_right="book" surface="-" />
+    <Support family="stand" compatibility="FullBody" carry_left="-" carry_right="book" surface="*" />
+    <Support family="sit" compatibility="FullBody" carry_left="-" carry_right="book" surface="-" />
+    <Support name="kneel" family="none" compatibility="UpperBody" carry_left="-" carry_right="book" surface="-" />
+  </PostureManifest>
+  <State type="public" skippable="false" interrupt_this="false" name="ActiveActions" focus="none" facialoverlays="true" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="GetIn" focus="none" facialoverlays="true" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="GetOut" focus="none" facialoverlays="true" tailoverlays="true" />
+  <State type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" name="PassiveActions" focus="none" facialoverlays="true" tailoverlays="true" />
+  <Connection from="ActiveActions" to="GetOut" />
+  <Connection from="ActiveActions" to="PassiveActions" />
+  <Connection from="GetIn" to="ActiveActions" />
+  <Connection from="GetIn" to="PassiveActions" />
+  <Connection from="GetOut" to="exit" />
+  <Connection from="PassiveActions" to="ActiveActions" />
+  <Connection from="PassiveActions" to="GetOut" />
+  <Connection from="entry" to="GetIn" />
+  <State name="ActiveActions" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="true" tailoverlays="true">
+    <description />
+    <ParameterSelector parameter="book:objectType" unique_id="123">
+      <Choice value="book">
+        <PostureSelector parameter="x:posture" unique_id="91">
+          <Choice value="kneel--UpperBody" track="carryinteraction" mask="Trackmask_UpperBody">
+            <ParameterSelector parameter="x:mood" unique_id="45">
+              <Choice value="happy">
+                <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="14">
+                  <Choice weight="100" avoidRepeat="False">
+                    <Controller target="x" controller="@ClipController(clip=a2o_book_read_turnPage_seated_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_book_read_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="4">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                    <MakeController unique_id="3">
+                      <Controller target="book" controller="@ClipController(clip=a2o_book_read_readLines_seated_book, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_book_read_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="1">
+                        <TransitionClassList>
+                          <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                        </TransitionClassList>
+                      </Controller>
+                      <Controller target="x" controller="@ClipController(clip=a2o_book_read_readLines_seated_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_book_read_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="2">
+                        <TransitionClassList>
+                          <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                        </TransitionClassList>
+                      </Controller>
+                    </MakeController>
+                    <Controller target="book" controller="@ClipController(clip=a2o_book_read_turnPage_seated_book, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_book_read_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="5">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                  </Choice>
+                  <Choice weight="100" avoidRepeat="False">
+                    <Controller target="book" controller="@ClipController(clip=a2o_book_read_readScratchCheek_seated_book, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_book_read_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="6">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                    <Controller target="x" controller="@ClipController(clip=a2o_book_read_readScratchCheek_seated_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_book_read_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="7">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                    <Reference target="3" />
+                  </Choice>
+                  <Choice weight="100" avoidRepeat="False">
+                    <Controller target="book" controller="@ClipController(clip=a2o_book_read_weighShift_seated_book, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_book_read_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="8">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                    <Controller target="x" controller="@ClipController(clip=a2o_book_read_weighShift_seated_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_book_read_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="9">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                    <Reference target="3" />
+                  </Choice>
+                  <Choice weight="100" avoidRepeat="False">
+                    <Controller target="book" controller="@ClipController(clip=a2o_book_read_readWithFinger_seated_book, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_book_read_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="10">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                    <Controller target="x" controller="@ClipController(clip=a2o_book_read_readWithFinger_seated_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_book_read_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="11">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                    <Reference target="3" />
+                  </Choice>
+                  <Choice weight="100" avoidRepeat="False">
+                    <Controller target="x" controller="@ClipController(clip=a2o_book_read_turnThreePages_seated_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_book_read_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="12">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                    <Reference target="3" />
+                    <Controller target="book" controller="@ClipController(clip=a2o_book_read_turnThreePages_seated_book, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_book_read_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="13">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                  </Choice>
+                </RandomSelector>
+              </Choice>
+              <Choice value="confident">
+                <Reference target="14" />
+              </Choice>
+              <Choice value="angry">
+                <Reference target="14" />
+              </Choice>
+              <Choice value="sad">
+                <Reference target="14" />
+              </Choice>
+              <Choice value="bored">
+                <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="24">
+                  <Choice weight="100" avoidRepeat="False">
+                    <Controller target="x" controller="@ClipController(clip=a2o_book_read_bored_yawn_seated_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_book_read_bored_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="18">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                    <MakeController unique_id="17">
+                      <Controller target="book" controller="@ClipController(clip=a2o_book_read_bored_loop_seated_book, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_book_read_bored_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="15">
+                        <TransitionClassList>
+                          <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                        </TransitionClassList>
+                      </Controller>
+                      <Controller target="x" controller="@ClipController(clip=a2o_book_read_bored_loop_seated_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_book_read_bored_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="16">
+                        <TransitionClassList>
+                          <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                        </TransitionClassList>
+                      </Controller>
+                    </MakeController>
+                    <Controller target="book" controller="@ClipController(clip=a2o_book_read_bored_yawn_seated_book, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_book_read_bored_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="19">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                  </Choice>
+                  <Choice weight="100" avoidRepeat="False">
+                    <Controller target="book" controller="@ClipController(clip=a2o_book_read_bored_headDroop_seated_book, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_book_read_bored_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="20">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                    <Controller target="x" controller="@ClipController(clip=a2o_book_read_bored_headDroop_seated_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_book_read_bored_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="21">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                    <Reference target="17" />
+                  </Choice>
+                  <Choice weight="100" avoidRepeat="False">
+                    <Controller target="x" controller="@ClipController(clip=a2o_book_read_bored_turnPage_seated_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_book_read_bored_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="22">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                    <Reference target="17" />
+                    <Controller target="book" controller="@ClipController(clip=a2o_book_read_bored_turnPage_seated_book, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_book_read_bored_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="23">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                  </Choice>
+                </RandomSelector>
+              </Choice>
+              <Choice value="embarrassed">
+                <Reference target="14" />
+              </Choice>
+              <Choice value="uncomfortable">
+                <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="34">
+                  <Choice weight="100" avoidRepeat="False">
+                    <Controller target="x" controller="@ClipController(clip=a2o_book_read_uncomfortable_shoulderRollHeadShake_seated_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_book_read_uncomfortable_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="28">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                    <MakeController unique_id="27">
+                      <Controller target="book" controller="@ClipController(clip=a2o_book_read_readLines_seated_book, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_book_read_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="25">
+                        <TransitionClassList>
+                          <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                        </TransitionClassList>
+                      </Controller>
+                      <Controller target="x" controller="@ClipController(clip=a2o_book_read_readLines_seated_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_book_read_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="26">
+                        <TransitionClassList>
+                          <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                        </TransitionClassList>
+                      </Controller>
+                    </MakeController>
+                    <Controller target="book" controller="@ClipController(clip=a2o_book_read_uncomfortable_shoulderRollHeadShake_seated_book, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_book_read_uncomfortable_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="29">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                  </Choice>
+                  <Choice weight="100" avoidRepeat="False">
+                    <Controller target="x" controller="@ClipController(clip=a2o_book_read_uncomfortable_highShudder_seated_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_book_read_uncomfortable_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="30">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                    <Reference target="27" />
+                    <Controller target="book" controller="@ClipController(clip=a2o_book_read_uncomfortable_highShudder_seated_book, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_book_read_uncomfortable_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="31">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                  </Choice>
+                  <Choice weight="100" avoidRepeat="False">
+                    <Controller target="book" controller="@ClipController(clip=a2o_book_read_uncomfortable_stretchMoan_seated_book, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_book_read_uncomfortable_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="32">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                    <Controller target="x" controller="@ClipController(clip=a2o_book_read_uncomfortable_stretchMoan_seated_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_book_read_uncomfortable_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="33">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                    <Reference target="27" />
+                  </Choice>
+                </RandomSelector>
+              </Choice>
+              <Choice value="playful">
+                <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="44">
+                  <Choice weight="100" avoidRepeat="False">
+                    <Controller target="x" controller="@ClipController(clip=a2o_book_read_dazed_chucklingStupidly_seated_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_book_read_dazed_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="38">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                    <MakeController unique_id="37">
+                      <Controller target="book" controller="@ClipController(clip=a2o_book_read_readLines_seated_book, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_book_read_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="35">
+                        <TransitionClassList>
+                          <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                        </TransitionClassList>
+                      </Controller>
+                      <Controller target="x" controller="@ClipController(clip=a2o_book_read_readLines_seated_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_book_read_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="36">
+                        <TransitionClassList>
+                          <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                        </TransitionClassList>
+                      </Controller>
+                    </MakeController>
+                    <Controller target="book" controller="@ClipController(clip=a2o_book_read_dazed_chucklingStupidly_seated_book, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_book_read_dazed_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="39">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                  </Choice>
+                  <Choice weight="100" avoidRepeat="False">
+                    <Controller target="x" controller="@ClipController(clip=a2o_book_read_dazed_playWithBook_seated_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_book_read_dazed_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="40">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                    <Reference target="37" />
+                    <Controller target="book" controller="@ClipController(clip=a2o_book_read_dazed_playWithBook_seated_book, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_book_read_dazed_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="41">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                  </Choice>
+                  <Choice weight="100" avoidRepeat="False">
+                    <Controller target="book" controller="@ClipController(clip=a2o_book_read_dazed_turnPage_seated_book, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_book_read_dazed_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="42">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                    <Controller target="x" controller="@ClipController(clip=a2o_book_read_dazed_turnPage_seated_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_book_read_dazed_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="43">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                    <Reference target="37" />
+                  </Choice>
+                </RandomSelector>
+              </Choice>
+              <Choice value="tense">
+                <Reference target="34" />
+              </Choice>
+              <Choice value="focused">
+                <Reference target="14" />
+              </Choice>
+              <Choice value="energized">
+                <Reference target="14" />
+              </Choice>
+              <Choice value="flirty">
+                <Reference target="14" />
+              </Choice>
+              <Choice value="fine">
+                <Reference target="14" />
+              </Choice>
+              <Choice value="inspired">
+                <Reference target="14" />
+              </Choice>
+              <Choice value="dazed">
+                <Reference target="44" />
+              </Choice>
+            </ParameterSelector>
+          </Choice>
+          <Choice value="-sit-FullBody" track="carryinteraction" mask="">
+            <Reference target="45" />
+          </Choice>
+          <Choice value="-sit-UpperBody" track="carryinteraction" mask="Trackmask_UpperBody">
+            <Reference target="45" />
+          </Choice>
+          <Choice value="-stand-FullBody" track="carryinteraction" mask="">
+            <ParameterSelector parameter="x:mood" unique_id="90">
+              <Choice value="happy">
+                <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="59">
+                  <Choice weight="100" avoidRepeat="False">
+                    <Controller target="book" controller="@ClipController(clip=a2o_book_read_turnPage_book, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_book_read.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="46">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                    <Controller target="x" controller="@ClipController(clip=a2o_book_read_turnPage_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_book_read.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="50">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                    <MakeController unique_id="49">
+                      <Controller target="x" controller="@ClipController(clip=a2o_book_read_readLines_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_book_read.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="47">
+                        <TransitionClassList>
+                          <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                        </TransitionClassList>
+                      </Controller>
+                      <Controller target="book" controller="@ClipController(clip=a2o_book_read_readLines_book, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_book_read.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="48">
+                        <TransitionClassList>
+                          <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                        </TransitionClassList>
+                      </Controller>
+                    </MakeController>
+                  </Choice>
+                  <Choice weight="100" avoidRepeat="False">
+                    <Controller target="book" controller="@ClipController(clip=a2o_book_read_readScratchCheek_book, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_book_read.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="51">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                    <Controller target="x" controller="@ClipController(clip=a2o_book_read_readScratchCheek_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_book_read.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="52">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                    <Reference target="49" />
+                  </Choice>
+                  <Choice weight="100" avoidRepeat="False">
+                    <Controller target="x" controller="@ClipController(clip=a2o_book_read_weighShift_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_book_read.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="53">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                    <Reference target="49" />
+                    <Controller target="book" controller="@ClipController(clip=a2o_book_read_weighShift_book, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_book_read.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="54">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                  </Choice>
+                  <Choice weight="100" avoidRepeat="False">
+                    <Controller target="book" controller="@ClipController(clip=a2o_book_read_readWithFinger_book, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_book_read.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="55">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                    <Controller target="x" controller="@ClipController(clip=a2o_book_read_readWithFinger_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_book_read.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="56">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                    <Reference target="49" />
+                  </Choice>
+                  <Choice weight="100" avoidRepeat="False">
+                    <Controller target="book" controller="@ClipController(clip=a2o_book_read_turnThreePages_book, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_book_read.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="57">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                    <Controller target="x" controller="@ClipController(clip=a2o_book_read_turnThreePages_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_book_read.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="58">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                    <Reference target="49" />
+                  </Choice>
+                </RandomSelector>
+              </Choice>
+              <Choice value="confident">
+                <Reference target="59" />
+              </Choice>
+              <Choice value="angry">
+                <Reference target="59" />
+              </Choice>
+              <Choice value="sad">
+                <Reference target="59" />
+              </Choice>
+              <Choice value="bored">
+                <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="69">
+                  <Choice weight="100" avoidRepeat="False">
+                    <Controller target="book" controller="@ClipController(clip=a2o_book_read_bored_yawn_book, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_book_read_bored.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="60">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                    <Controller target="x" controller="@ClipController(clip=a2o_book_read_bored_yawn_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_book_read_bored.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="64">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                    <MakeController unique_id="63">
+                      <Controller target="x" controller="@ClipController(clip=a2o_book_read_bored_loop_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_book_read_bored.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="61">
+                        <TransitionClassList>
+                          <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                        </TransitionClassList>
+                      </Controller>
+                      <Controller target="book" controller="@ClipController(clip=a2o_book_read_bored_loop_book, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_book_read_bored.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="62">
+                        <TransitionClassList>
+                          <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                        </TransitionClassList>
+                      </Controller>
+                    </MakeController>
+                  </Choice>
+                  <Choice weight="100" avoidRepeat="False">
+                    <Controller target="book" controller="@ClipController(clip=a2o_book_read_bored_headDroop_book, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_book_read_bored.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="65">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                    <Controller target="x" controller="@ClipController(clip=a2o_book_read_bored_headDroop_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_book_read_bored.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="66">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                    <Reference target="63" />
+                  </Choice>
+                  <Choice weight="100" avoidRepeat="False">
+                    <Controller target="x" controller="@ClipController(clip=a2o_book_read_bored_turnPage_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_book_read_bored.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="67">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                    <Reference target="63" />
+                    <Controller target="book" controller="@ClipController(clip=a2o_book_read_bored_turnPage_book, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_book_read_bored.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="68">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                  </Choice>
+                </RandomSelector>
+              </Choice>
+              <Choice value="embarrassed">
+                <Reference target="59" />
+              </Choice>
+              <Choice value="uncomfortable">
+                <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="79">
+                  <Choice weight="100" avoidRepeat="False">
+                    <Controller target="x" controller="@ClipController(clip=a2o_book_read_uncomfortable_shoulderRollHeadShake_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_book_read_uncomfortable.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="73">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                    <MakeController unique_id="72">
+                      <Controller target="x" controller="@ClipController(clip=a2o_book_read_readLines_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_book_read.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="70">
+                        <TransitionClassList>
+                          <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                        </TransitionClassList>
+                      </Controller>
+                      <Controller target="book" controller="@ClipController(clip=a2o_book_read_readLines_book, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_book_read.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="71">
+                        <TransitionClassList>
+                          <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                        </TransitionClassList>
+                      </Controller>
+                    </MakeController>
+                    <Controller target="book" controller="@ClipController(clip=a2o_book_read_uncomfortable_shoulderRollHeadShake_book, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_book_read_uncomfortable.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="74">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                  </Choice>
+                  <Choice weight="100" avoidRepeat="False">
+                    <Controller target="book" controller="@ClipController(clip=a2o_book_read_uncomfortable_highShudder_book, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_book_read_uncomfortable.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="75">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                    <Controller target="x" controller="@ClipController(clip=a2o_book_read_uncomfortable_highShudder_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_book_read_uncomfortable.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="76">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                    <Reference target="72" />
+                  </Choice>
+                  <Choice weight="100" avoidRepeat="False">
+                    <Controller target="x" controller="@ClipController(clip=a2o_book_read_uncomfortable_stretchMoan_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_book_read_uncomfortable.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="77">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                    <Reference target="72" />
+                    <Controller target="book" controller="@ClipController(clip=a2o_book_read_uncomfortable_stretchMoan_book, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_book_read_uncomfortable.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="78">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                  </Choice>
+                </RandomSelector>
+              </Choice>
+              <Choice value="playful">
+                <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="89">
+                  <Choice weight="100" avoidRepeat="False">
+                    <Controller target="x" controller="@ClipController(clip=a2o_book_read_dazed_chucklingStupidly_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_book_read_dazed.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="83">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                    <MakeController unique_id="82">
+                      <Controller target="book" controller="@ClipController(clip=a2o_book_read_readLines_book, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_book_read.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="80">
+                        <TransitionClassList>
+                          <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                        </TransitionClassList>
+                      </Controller>
+                      <Controller target="x" controller="@ClipController(clip=a2o_book_read_readLines_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_book_read.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="81">
+                        <TransitionClassList>
+                          <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                        </TransitionClassList>
+                      </Controller>
+                    </MakeController>
+                    <Controller target="book" controller="@ClipController(clip=a2o_book_read_dazed_chucklingStupidly_book, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_book_read_dazed.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="84">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                  </Choice>
+                  <Choice weight="100" avoidRepeat="False">
+                    <Controller target="x" controller="@ClipController(clip=a2o_book_read_dazed_playWithBook_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_book_read_dazed.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="85">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                    <Reference target="82" />
+                    <Controller target="book" controller="@ClipController(clip=a2o_book_read_dazed_playWithBook_book, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_book_read_dazed.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="86">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                  </Choice>
+                  <Choice weight="100" avoidRepeat="False">
+                    <Controller target="x" controller="@ClipController(clip=a2o_book_read_dazed_turnPage_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_book_read_dazed.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="87">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                    <Reference target="82" />
+                    <Controller target="book" controller="@ClipController(clip=a2o_book_read_dazed_turnPage_book, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_book_read_dazed.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="88">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                  </Choice>
+                </RandomSelector>
+              </Choice>
+              <Choice value="tense">
+                <Reference target="79" />
+              </Choice>
+              <Choice value="focused">
+                <Reference target="59" />
+              </Choice>
+              <Choice value="energized">
+                <Reference target="59" />
+              </Choice>
+              <Choice value="flirty">
+                <Reference target="59" />
+              </Choice>
+              <Choice value="fine">
+                <Reference target="59" />
+              </Choice>
+              <Choice value="inspired">
+                <Reference target="59" />
+              </Choice>
+              <Choice value="dazed">
+                <Reference target="89" />
+              </Choice>
+            </ParameterSelector>
+          </Choice>
+          <Choice value="-stand-UpperBody" track="carryinteraction" mask="Trackmask_UpperBody">
+            <Reference target="90" />
+          </Choice>
+        </PostureSelector>
+      </Choice>
+      <Choice value="bookThin">
+        <PostureSelector parameter="x:posture" unique_id="122">
+          <Choice value="kneel--UpperBody" track="carryinteraction" mask="Trackmask_UpperBody">
+            <ParameterSelector parameter="x:mood" unique_id="106">
+              <Choice value="happy">
+                <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="105">
+                  <Choice weight="100" avoidRepeat="True">
+                    <Controller target="book" controller="@ClipController(clip=a2o_bookThin_read_turnPage_seated_bookThin, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bookThin_read_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="92">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                    <Controller target="x" controller="@ClipController(clip=a2o_bookThin_read_turnPage_seated_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bookThin_read_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="96">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                    <MakeController unique_id="95">
+                      <Controller target="book" controller="@ClipController(clip=a2o_bookThin_read_readLines_seated_bookThin, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bookThin_read_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="93">
+                        <TransitionClassList>
+                          <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                        </TransitionClassList>
+                      </Controller>
+                      <Controller target="x" controller="@ClipController(clip=a2o_bookThin_read_readLines_seated_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bookThin_read_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="94">
+                        <TransitionClassList>
+                          <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                        </TransitionClassList>
+                      </Controller>
+                    </MakeController>
+                  </Choice>
+                  <Choice weight="100" avoidRepeat="False">
+                    <Controller target="book" controller="@ClipController(clip=a2o_bookThin_read_readScratchCheek_seated_bookThin, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bookThin_read_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="97">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                    <Controller target="x" controller="@ClipController(clip=a2o_bookThin_read_readScratchCheek_seated_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bookThin_read_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="98">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                    <Reference target="95" />
+                  </Choice>
+                  <Choice weight="100" avoidRepeat="False">
+                    <Controller target="book" controller="@ClipController(clip=a2o_bookThin_read_weighShift_seated_bookThin, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bookThin_read_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="99">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                    <Controller target="x" controller="@ClipController(clip=a2o_bookThin_read_weighShift_seated_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bookThin_read_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="100">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                    <Reference target="95" />
+                  </Choice>
+                  <Choice weight="100" avoidRepeat="False">
+                    <Controller target="x" controller="@ClipController(clip=a2o_bookThin_read_readWithFinger_seated_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bookThin_read_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="101">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                    <Reference target="95" />
+                    <Controller target="book" controller="@ClipController(clip=a2o_bookThin_read_readWithFinger_seated_bookThin, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bookThin_read_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="102">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                  </Choice>
+                  <Choice weight="100" avoidRepeat="True">
+                    <Controller target="x" controller="@ClipController(clip=a2o_bookThin_read_turnThreePages_seated_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bookThin_read_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="103">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                    <Reference target="95" />
+                    <Controller target="book" controller="@ClipController(clip=a2o_bookThin_read_turnThreePages_seated_bookThin, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bookThin_read_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="104">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                  </Choice>
+                </RandomSelector>
+              </Choice>
+              <Choice value="confident">
+                <Reference target="105" />
+              </Choice>
+              <Choice value="angry">
+                <Reference target="105" />
+              </Choice>
+              <Choice value="sad">
+                <Reference target="105" />
+              </Choice>
+              <Choice value="bored">
+                <Reference target="105" />
+              </Choice>
+              <Choice value="embarrassed">
+                <Reference target="105" />
+              </Choice>
+              <Choice value="uncomfortable">
+                <Reference target="105" />
+              </Choice>
+              <Choice value="playful">
+                <Reference target="105" />
+              </Choice>
+              <Choice value="tense">
+                <Reference target="105" />
+              </Choice>
+              <Choice value="focused">
+                <Reference target="105" />
+              </Choice>
+              <Choice value="energized">
+                <Reference target="105" />
+              </Choice>
+              <Choice value="flirty">
+                <Reference target="105" />
+              </Choice>
+              <Choice value="fine">
+                <Reference target="105" />
+              </Choice>
+              <Choice value="inspired">
+                <Reference target="105" />
+              </Choice>
+              <Choice value="dazed">
+                <Reference target="105" />
+              </Choice>
+            </ParameterSelector>
+          </Choice>
+          <Choice value="-sit-FullBody" track="carryinteraction" mask="">
+            <Reference target="106" />
+          </Choice>
+          <Choice value="-sit-UpperBody" track="carryinteraction" mask="Trackmask_UpperBody">
+            <Reference target="106" />
+          </Choice>
+          <Choice value="-stand-FullBody" track="carryinteraction" mask="">
+            <ParameterSelector parameter="x:mood" unique_id="121">
+              <Choice value="happy">
+                <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="120">
+                  <Choice weight="100" avoidRepeat="True">
+                    <Controller target="book" controller="@ClipController(clip=a2o_bookThin_read_turnPage_bookThin, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bookThin_read.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="107">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                    <Controller target="x" controller="@ClipController(clip=a2o_bookThin_read_turnPage_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bookThin_read.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="111">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                    <MakeController unique_id="110">
+                      <Controller target="x" controller="@ClipController(clip=a2o_bookThin_read_readLines_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bookThin_read.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="108">
+                        <TransitionClassList>
+                          <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                        </TransitionClassList>
+                      </Controller>
+                      <Controller target="book" controller="@ClipController(clip=a2o_bookThin_read_readLines_bookThin, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bookThin_read.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="109">
+                        <TransitionClassList>
+                          <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                        </TransitionClassList>
+                      </Controller>
+                    </MakeController>
+                  </Choice>
+                  <Choice weight="100" avoidRepeat="False">
+                    <Controller target="book" controller="@ClipController(clip=a2o_bookThin_read_readScratchCheek_bookThin, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bookThin_read.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="112">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                    <Controller target="x" controller="@ClipController(clip=a2o_bookThin_read_readScratchCheek_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bookThin_read.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="113">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                    <Reference target="110" />
+                  </Choice>
+                  <Choice weight="100" avoidRepeat="False">
+                    <Controller target="x" controller="@ClipController(clip=a2o_bookThin_read_weighShift_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bookThin_read.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="114">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                    <Reference target="110" />
+                    <Controller target="book" controller="@ClipController(clip=a2o_bookThin_read_weighShift_bookThin, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bookThin_read.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="115">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                  </Choice>
+                  <Choice weight="100" avoidRepeat="False">
+                    <Controller target="x" controller="@ClipController(clip=a2o_bookThin_read_readWithFinger_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bookThin_read.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="116">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                    <Reference target="110" />
+                    <Controller target="book" controller="@ClipController(clip=a2o_bookThin_read_readWithFinger_bookThin, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bookThin_read.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="117">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                  </Choice>
+                  <Choice weight="100" avoidRepeat="True">
+                    <Controller target="x" controller="@ClipController(clip=a2o_bookThin_read_turnThreePages_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bookThin_read.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="118">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                    <Reference target="110" />
+                    <Controller target="book" controller="@ClipController(clip=a2o_bookThin_read_turnThreePages_bookThin, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bookThin_read.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="119">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                  </Choice>
+                </RandomSelector>
+              </Choice>
+              <Choice value="confident">
+                <Reference target="120" />
+              </Choice>
+              <Choice value="angry">
+                <Reference target="120" />
+              </Choice>
+              <Choice value="sad">
+                <Reference target="120" />
+              </Choice>
+              <Choice value="bored">
+                <Reference target="120" />
+              </Choice>
+              <Choice value="embarrassed">
+                <Reference target="120" />
+              </Choice>
+              <Choice value="uncomfortable">
+                <Reference target="120" />
+              </Choice>
+              <Choice value="playful">
+                <Reference target="120" />
+              </Choice>
+              <Choice value="tense">
+                <Reference target="120" />
+              </Choice>
+              <Choice value="focused">
+                <Reference target="120" />
+              </Choice>
+              <Choice value="energized">
+                <Reference target="120" />
+              </Choice>
+              <Choice value="flirty">
+                <Reference target="120" />
+              </Choice>
+              <Choice value="fine">
+                <Reference target="120" />
+              </Choice>
+              <Choice value="inspired">
+                <Reference target="120" />
+              </Choice>
+              <Choice value="dazed">
+                <Reference target="120" />
+              </Choice>
+            </ParameterSelector>
+          </Choice>
+          <Choice value="-stand-UpperBody" track="carryinteraction" mask="Trackmask_UpperBody">
+            <Reference target="121" />
+          </Choice>
+        </PostureSelector>
+      </Choice>
+    </ParameterSelector>
+  </State>
+  <State name="GetIn" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="true" tailoverlays="true">
+    <description />
+    <ParameterSelector parameter="book:objectType" unique_id="140">
+      <Choice value="book">
+        <PostureSelector parameter="x:posture" unique_id="134">
+          <Choice value="kneel--UpperBody" track="carryinteraction" mask="Trackmask_UpperBody">
+            <ParameterSelector parameter="x:mood" unique_id="128">
+              <Choice value="happy">
+                <Controller target="book" controller="@ClipController(clip=a2o_book_read_start_seated_book, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_book_read_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="124">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=a2o_book_read_start_seated_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_book_read_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="125">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+              </Choice>
+              <Choice value="confident">
+                <Reference target="124" />
+                <Reference target="125" />
+              </Choice>
+              <Choice value="angry">
+                <Reference target="124" />
+                <Reference target="125" />
+              </Choice>
+              <Choice value="sad">
+                <Reference target="124" />
+                <Reference target="125" />
+              </Choice>
+              <Choice value="bored">
+                <Controller target="x" controller="@ClipController(clip=a2o_book_read_bored_start_seated_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_book_read_bored_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="126">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <Controller target="book" controller="@ClipController(clip=a2o_book_read_bored_start_seated_book, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_book_read_bored_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="127">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+              </Choice>
+              <Choice value="embarrassed">
+                <Reference target="124" />
+                <Reference target="125" />
+              </Choice>
+              <Choice value="uncomfortable">
+                <Reference target="124" />
+                <Reference target="125" />
+              </Choice>
+              <Choice value="playful">
+                <Reference target="124" />
+                <Reference target="125" />
+              </Choice>
+              <Choice value="tense">
+                <Reference target="124" />
+                <Reference target="125" />
+              </Choice>
+              <Choice value="focused">
+                <Reference target="124" />
+                <Reference target="125" />
+              </Choice>
+              <Choice value="energized">
+                <Reference target="124" />
+                <Reference target="125" />
+              </Choice>
+              <Choice value="flirty">
+                <Reference target="124" />
+                <Reference target="125" />
+              </Choice>
+              <Choice value="fine">
+                <Reference target="124" />
+                <Reference target="125" />
+              </Choice>
+              <Choice value="inspired">
+                <Reference target="124" />
+                <Reference target="125" />
+              </Choice>
+              <Choice value="dazed">
+                <Reference target="124" />
+                <Reference target="125" />
+              </Choice>
+            </ParameterSelector>
+          </Choice>
+          <Choice value="-sit-FullBody" track="carryinteraction" mask="">
+            <Reference target="128" />
+          </Choice>
+          <Choice value="-sit-UpperBody" track="carryinteraction" mask="Trackmask_UpperBody">
+            <Reference target="128" />
+          </Choice>
+          <Choice value="-stand-FullBody" track="carryinteraction" mask="">
+            <ParameterSelector parameter="x:mood" unique_id="133">
+              <Choice value="happy">
+                <Controller target="book" controller="@ClipController(clip=a2o_book_read_start_book, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_book_read.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="129">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=a2o_book_read_start_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_book_read.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="130">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+              </Choice>
+              <Choice value="confident">
+                <Reference target="129" />
+                <Reference target="130" />
+              </Choice>
+              <Choice value="angry">
+                <Reference target="129" />
+                <Reference target="130" />
+              </Choice>
+              <Choice value="sad">
+                <Reference target="129" />
+                <Reference target="130" />
+              </Choice>
+              <Choice value="bored">
+                <Controller target="book" controller="@ClipController(clip=a2o_book_read_bored_start_book, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_book_read_bored.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="131">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=a2o_book_read_bored_start_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_book_read_bored.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="132">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+              </Choice>
+              <Choice value="embarrassed">
+                <Reference target="129" />
+                <Reference target="130" />
+              </Choice>
+              <Choice value="uncomfortable">
+                <Reference target="129" />
+                <Reference target="130" />
+              </Choice>
+              <Choice value="playful">
+                <Reference target="129" />
+                <Reference target="130" />
+              </Choice>
+              <Choice value="tense">
+                <Reference target="129" />
+                <Reference target="130" />
+              </Choice>
+              <Choice value="focused">
+                <Reference target="129" />
+                <Reference target="130" />
+              </Choice>
+              <Choice value="energized">
+                <Reference target="129" />
+                <Reference target="130" />
+              </Choice>
+              <Choice value="flirty">
+                <Reference target="129" />
+                <Reference target="130" />
+              </Choice>
+              <Choice value="fine">
+                <Reference target="129" />
+                <Reference target="130" />
+              </Choice>
+              <Choice value="inspired">
+                <Reference target="129" />
+                <Reference target="130" />
+              </Choice>
+              <Choice value="dazed">
+                <Reference target="129" />
+                <Reference target="130" />
+              </Choice>
+            </ParameterSelector>
+          </Choice>
+          <Choice value="-stand-UpperBody" track="carryinteraction" mask="Trackmask_UpperBody">
+            <Reference target="133" />
+          </Choice>
+        </PostureSelector>
+      </Choice>
+      <Choice value="bookThin">
+        <PostureSelector parameter="x:posture" unique_id="139">
+          <Choice value="kneel--UpperBody" track="carryinteraction" mask="Trackmask_UpperBody">
+            <Controller target="x" controller="@ClipController(clip=a2o_bookThin_read_start_seated_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bookThin_read_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="135">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice value="-sit-FullBody" track="carryinteraction" mask="">
+            <Reference target="135" />
+            <Controller target="book" controller="@ClipController(clip=a2o_bookThin_read_start_seated_bookThin, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bookThin_read_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="136">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice value="-sit-UpperBody" track="carryinteraction" mask="Trackmask_UpperBody">
+            <Reference target="135" />
+            <Reference target="136" />
+          </Choice>
+          <Choice value="-stand-FullBody" track="carryinteraction" mask="">
+            <Controller target="book" controller="@ClipController(clip=a2o_bookThin_read_start_bookThin, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bookThin_read.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="137">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+            <Controller target="x" controller="@ClipController(clip=a2o_bookThin_read_start_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bookThin_read.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="138">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice value="-stand-UpperBody" track="carryinteraction" mask="Trackmask_UpperBody">
+            <Reference target="137" />
+            <Reference target="138" />
+          </Choice>
+        </PostureSelector>
+      </Choice>
+    </ParameterSelector>
+  </State>
+  <State name="GetOut" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="true" tailoverlays="true">
+    <description />
+    <ParameterSelector parameter="book:objectType" unique_id="159">
+      <Choice value="book">
+        <PostureSelector parameter="x:posture" unique_id="151">
+          <Choice value="kneel--UpperBody" track="carryinteraction" mask="Trackmask_UpperBody">
+            <ParameterSelector parameter="x:mood" unique_id="145">
+              <Choice value="happy">
+                <Controller target="x" controller="@ClipController(clip=a2o_book_read_stop_seated_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_book_read_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="141">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <Controller target="book" controller="@ClipController(clip=a2o_book_read_stop_seated_book, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_book_read_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="142">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+              </Choice>
+              <Choice value="confident">
+                <Reference target="141" />
+                <Reference target="142" />
+              </Choice>
+              <Choice value="angry">
+                <Reference target="141" />
+                <Reference target="142" />
+              </Choice>
+              <Choice value="sad">
+                <Reference target="141" />
+                <Reference target="142" />
+              </Choice>
+              <Choice value="bored">
+                <Controller target="book" controller="@ClipController(clip=a2o_book_read_bored_stop_seated_book, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_book_read_bored_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="143">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=a2o_book_read_bored_stop_seated_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_book_read_bored_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="144">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+              </Choice>
+              <Choice value="embarrassed">
+                <Reference target="141" />
+                <Reference target="142" />
+              </Choice>
+              <Choice value="uncomfortable">
+                <Reference target="141" />
+                <Reference target="142" />
+              </Choice>
+              <Choice value="playful">
+                <Reference target="141" />
+                <Reference target="142" />
+              </Choice>
+              <Choice value="tense">
+                <Reference target="141" />
+                <Reference target="142" />
+              </Choice>
+              <Choice value="focused">
+                <Reference target="141" />
+                <Reference target="142" />
+              </Choice>
+              <Choice value="energized">
+                <Reference target="141" />
+                <Reference target="142" />
+              </Choice>
+              <Choice value="flirty">
+                <Reference target="141" />
+                <Reference target="142" />
+              </Choice>
+              <Choice value="fine">
+                <Reference target="141" />
+                <Reference target="142" />
+              </Choice>
+              <Choice value="inspired">
+                <Reference target="141" />
+                <Reference target="142" />
+              </Choice>
+              <Choice value="dazed">
+                <Reference target="141" />
+                <Reference target="142" />
+              </Choice>
+            </ParameterSelector>
+          </Choice>
+          <Choice value="-sit-FullBody" track="carryinteraction" mask="">
+            <Reference target="145" />
+          </Choice>
+          <Choice value="-sit-UpperBody" track="carryinteraction" mask="Trackmask_UpperBody">
+            <Reference target="145" />
+          </Choice>
+          <Choice value="-stand-FullBody" track="carryinteraction" mask="">
+            <ParameterSelector parameter="x:mood" unique_id="150">
+              <Choice value="happy">
+                <Controller target="book" controller="@ClipController(clip=a2o_book_read_stop_book, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_book_read.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="146">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=a2o_book_read_stop_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_book_read.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="147">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+              </Choice>
+              <Choice value="confident">
+                <Reference target="146" />
+                <Reference target="147" />
+              </Choice>
+              <Choice value="angry">
+                <Reference target="146" />
+                <Reference target="147" />
+              </Choice>
+              <Choice value="sad">
+                <Reference target="146" />
+                <Reference target="147" />
+              </Choice>
+              <Choice value="bored">
+                <Controller target="x" controller="@ClipController(clip=a2o_book_read_bored_stop_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_book_read_bored.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="148">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <Controller target="book" controller="@ClipController(clip=a2o_book_read_bored_stop_book, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_book_read_bored.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="149">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+              </Choice>
+              <Choice value="embarrassed">
+                <Reference target="146" />
+                <Reference target="147" />
+              </Choice>
+              <Choice value="uncomfortable">
+                <Reference target="146" />
+                <Reference target="147" />
+              </Choice>
+              <Choice value="playful">
+                <Reference target="146" />
+                <Reference target="147" />
+              </Choice>
+              <Choice value="tense">
+                <Reference target="146" />
+                <Reference target="147" />
+              </Choice>
+              <Choice value="focused">
+                <Reference target="146" />
+                <Reference target="147" />
+              </Choice>
+              <Choice value="energized">
+                <Reference target="146" />
+                <Reference target="147" />
+              </Choice>
+              <Choice value="flirty">
+                <Reference target="146" />
+                <Reference target="147" />
+              </Choice>
+              <Choice value="fine">
+                <Reference target="146" />
+                <Reference target="147" />
+              </Choice>
+              <Choice value="inspired">
+                <Reference target="146" />
+                <Reference target="147" />
+              </Choice>
+              <Choice value="dazed">
+                <Reference target="146" />
+                <Reference target="147" />
+              </Choice>
+            </ParameterSelector>
+          </Choice>
+          <Choice value="-stand-UpperBody" track="carryinteraction" mask="Trackmask_UpperBody">
+            <Reference target="150" />
+          </Choice>
+        </PostureSelector>
+      </Choice>
+      <Choice value="bookThin">
+        <PostureSelector parameter="x:posture" unique_id="158">
+          <Choice value="kneel--UpperBody" track="carryinteraction" mask="Trackmask_UpperBody">
+            <ParameterSelector parameter="x:mood" unique_id="154">
+              <Choice value="happy">
+                <Controller target="book" controller="@ClipController(clip=a2o_bookThin_read_stop_seated_bookThin, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bookThin_read_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="152">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=a2o_bookThin_read_stop_seated_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bookThin_read_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="153">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+              </Choice>
+              <Choice value="confident">
+                <Reference target="152" />
+                <Reference target="153" />
+              </Choice>
+              <Choice value="angry">
+                <Reference target="152" />
+                <Reference target="153" />
+              </Choice>
+              <Choice value="sad">
+                <Reference target="152" />
+                <Reference target="153" />
+              </Choice>
+              <Choice value="bored">
+                <Reference target="152" />
+                <Reference target="153" />
+              </Choice>
+              <Choice value="embarrassed">
+                <Reference target="152" />
+                <Reference target="153" />
+              </Choice>
+              <Choice value="uncomfortable">
+                <Reference target="152" />
+                <Reference target="153" />
+              </Choice>
+              <Choice value="playful">
+                <Reference target="152" />
+                <Reference target="153" />
+              </Choice>
+              <Choice value="tense">
+                <Reference target="152" />
+                <Reference target="153" />
+              </Choice>
+              <Choice value="focused">
+                <Reference target="152" />
+                <Reference target="153" />
+              </Choice>
+              <Choice value="energized">
+                <Reference target="152" />
+                <Reference target="153" />
+              </Choice>
+              <Choice value="flirty">
+                <Reference target="152" />
+                <Reference target="153" />
+              </Choice>
+              <Choice value="fine">
+                <Reference target="152" />
+                <Reference target="153" />
+              </Choice>
+              <Choice value="inspired">
+                <Reference target="152" />
+                <Reference target="153" />
+              </Choice>
+              <Choice value="dazed">
+                <Reference target="152" />
+                <Reference target="153" />
+              </Choice>
+            </ParameterSelector>
+          </Choice>
+          <Choice value="-sit-FullBody" track="carryinteraction" mask="">
+            <Reference target="154" />
+          </Choice>
+          <Choice value="-sit-UpperBody" track="carryinteraction" mask="Trackmask_UpperBody">
+            <Reference target="154" />
+          </Choice>
+          <Choice value="-stand-FullBody" track="carryinteraction" mask="">
+            <ParameterSelector parameter="x:mood" unique_id="157">
+              <Choice value="happy">
+                <Controller target="book" controller="@ClipController(clip=a2o_bookThin_read_stop_bookThin, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bookThin_read.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="155">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=a2o_bookThin_read_stop_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bookThin_read.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="156">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+              </Choice>
+              <Choice value="confident">
+                <Reference target="155" />
+                <Reference target="156" />
+              </Choice>
+              <Choice value="angry">
+                <Reference target="155" />
+                <Reference target="156" />
+              </Choice>
+              <Choice value="sad">
+                <Reference target="155" />
+                <Reference target="156" />
+              </Choice>
+              <Choice value="bored">
+                <Reference target="155" />
+                <Reference target="156" />
+              </Choice>
+              <Choice value="embarrassed">
+                <Reference target="155" />
+                <Reference target="156" />
+              </Choice>
+              <Choice value="uncomfortable">
+                <Reference target="155" />
+                <Reference target="156" />
+              </Choice>
+              <Choice value="playful">
+                <Reference target="155" />
+                <Reference target="156" />
+              </Choice>
+              <Choice value="tense">
+                <Reference target="155" />
+                <Reference target="156" />
+              </Choice>
+              <Choice value="focused">
+                <Reference target="155" />
+                <Reference target="156" />
+              </Choice>
+              <Choice value="energized">
+                <Reference target="155" />
+                <Reference target="156" />
+              </Choice>
+              <Choice value="flirty">
+                <Reference target="155" />
+                <Reference target="156" />
+              </Choice>
+              <Choice value="fine">
+                <Reference target="155" />
+                <Reference target="156" />
+              </Choice>
+              <Choice value="inspired">
+                <Reference target="155" />
+                <Reference target="156" />
+              </Choice>
+              <Choice value="dazed">
+                <Reference target="155" />
+                <Reference target="156" />
+              </Choice>
+            </ParameterSelector>
+          </Choice>
+          <Choice value="-stand-UpperBody" track="carryinteraction" mask="Trackmask_UpperBody">
+            <Reference target="157" />
+          </Choice>
+        </PostureSelector>
+      </Choice>
+    </ParameterSelector>
+  </State>
+  <State name="PassiveActions" type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" focus="none" facialoverlays="true" tailoverlays="true">
+    <description />
+    <MakeController>
+      <ParameterSelector parameter="book:objectType" unique_id="196">
+        <Choice value="book">
+          <PostureSelector parameter="x:posture" unique_id="182">
+            <Choice value="kneel--UpperBody" track="carryinteraction" mask="Trackmask_UpperBody">
+              <ParameterSelector parameter="x:mood" unique_id="170">
+                <Choice value="happy">
+                  <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="164">
+                    <Choice weight="100" avoidRepeat="False">
+                      <Controller target="book" controller="@ClipController(clip=a2o_book_read_readLines_seated_book, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_book_read_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="160">
+                        <TransitionClassList>
+                          <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                        </TransitionClassList>
+                      </Controller>
+                      <Controller target="x" controller="@ClipController(clip=a2o_book_read_readLines_seated_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_book_read_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="161">
+                        <TransitionClassList>
+                          <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                        </TransitionClassList>
+                      </Controller>
+                    </Choice>
+                    <Choice weight="100" avoidRepeat="False">
+                      <Controller target="x" controller="@ClipController(clip=a2o_book_read_readLines_slowly_seated_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_book_read_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="162">
+                        <TransitionClassList>
+                          <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                        </TransitionClassList>
+                      </Controller>
+                      <Controller target="book" controller="@ClipController(clip=a2o_book_read_readLines_slowly_seated_book, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_book_read_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="163">
+                        <TransitionClassList>
+                          <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                        </TransitionClassList>
+                      </Controller>
+                    </Choice>
+                  </RandomSelector>
+                </Choice>
+                <Choice value="confident">
+                  <Reference target="164" />
+                </Choice>
+                <Choice value="angry">
+                  <Reference target="164" />
+                </Choice>
+                <Choice value="sad">
+                  <Reference target="164" />
+                </Choice>
+                <Choice value="bored">
+                  <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="169">
+                    <Choice weight="100" avoidRepeat="False">
+                      <Controller target="book" controller="@ClipController(clip=a2o_book_read_bored_loop_seated_book, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_book_read_bored_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="165">
+                        <TransitionClassList>
+                          <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                        </TransitionClassList>
+                      </Controller>
+                      <Controller target="x" controller="@ClipController(clip=a2o_book_read_bored_loop_seated_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_book_read_bored_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="166">
+                        <TransitionClassList>
+                          <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                        </TransitionClassList>
+                      </Controller>
+                    </Choice>
+                    <Choice weight="100" avoidRepeat="False">
+                      <Controller target="book" controller="@ClipController(clip=a2o_book_read_bored_readLines_seated_book, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_book_read_bored_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="167">
+                        <TransitionClassList>
+                          <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                        </TransitionClassList>
+                      </Controller>
+                      <Controller target="x" controller="@ClipController(clip=a2o_book_read_bored_readLines_seated_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_book_read_bored_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="168">
+                        <TransitionClassList>
+                          <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                        </TransitionClassList>
+                      </Controller>
+                    </Choice>
+                  </RandomSelector>
+                </Choice>
+                <Choice value="embarrassed">
+                  <Reference target="164" />
+                </Choice>
+                <Choice value="uncomfortable">
+                  <Reference target="164" />
+                </Choice>
+                <Choice value="playful">
+                  <Reference target="164" />
+                </Choice>
+                <Choice value="tense">
+                  <Reference target="164" />
+                </Choice>
+                <Choice value="focused">
+                  <Reference target="164" />
+                </Choice>
+                <Choice value="energized">
+                  <Reference target="164" />
+                </Choice>
+                <Choice value="flirty">
+                  <Reference target="164" />
+                </Choice>
+                <Choice value="fine">
+                  <Reference target="164" />
+                </Choice>
+                <Choice value="inspired">
+                  <Reference target="164" />
+                </Choice>
+                <Choice value="dazed">
+                  <Reference target="164" />
+                </Choice>
+              </ParameterSelector>
+            </Choice>
+            <Choice value="-sit-FullBody" track="carryinteraction" mask="">
+              <Reference target="170" />
+            </Choice>
+            <Choice value="-sit-UpperBody" track="carryinteraction" mask="Trackmask_UpperBody">
+              <Reference target="170" />
+            </Choice>
+            <Choice value="-stand-FullBody" track="carryinteraction" mask="">
+              <ParameterSelector parameter="x:mood" unique_id="181">
+                <Choice value="happy">
+                  <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="175">
+                    <Choice weight="100" avoidRepeat="False">
+                      <Controller target="book" controller="@ClipController(clip=a2o_book_read_readLines_book, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_book_read.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="171">
+                        <TransitionClassList>
+                          <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                        </TransitionClassList>
+                      </Controller>
+                      <Controller target="x" controller="@ClipController(clip=a2o_book_read_readLines_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_book_read.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="172">
+                        <TransitionClassList>
+                          <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                        </TransitionClassList>
+                      </Controller>
+                    </Choice>
+                    <Choice weight="100" avoidRepeat="False">
+                      <Controller target="x" controller="@ClipController(clip=a2o_book_read_readLines_slowly_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_book_read.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="173">
+                        <TransitionClassList>
+                          <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                        </TransitionClassList>
+                      </Controller>
+                      <Controller target="book" controller="@ClipController(clip=a2o_book_read_readLines_slowly_book, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_book_read.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="174">
+                        <TransitionClassList>
+                          <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                        </TransitionClassList>
+                      </Controller>
+                    </Choice>
+                  </RandomSelector>
+                </Choice>
+                <Choice value="confident">
+                  <Reference target="175" />
+                </Choice>
+                <Choice value="angry">
+                  <Reference target="175" />
+                </Choice>
+                <Choice value="sad">
+                  <Reference target="175" />
+                </Choice>
+                <Choice value="bored">
+                  <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="180">
+                    <Choice weight="100" avoidRepeat="False">
+                      <Controller target="x" controller="@ClipController(clip=a2o_book_read_bored_loop_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_book_read_bored.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="176">
+                        <TransitionClassList>
+                          <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                        </TransitionClassList>
+                      </Controller>
+                      <Controller target="book" controller="@ClipController(clip=a2o_book_read_bored_loop_book, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_book_read_bored.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="177">
+                        <TransitionClassList>
+                          <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                        </TransitionClassList>
+                      </Controller>
+                    </Choice>
+                    <Choice weight="100" avoidRepeat="False">
+                      <Controller target="book" controller="@ClipController(clip=a2o_book_read_bored_readLines_book, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_book_read_bored.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="178">
+                        <TransitionClassList>
+                          <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                        </TransitionClassList>
+                      </Controller>
+                      <Controller target="x" controller="@ClipController(clip=a2o_book_read_bored_readLines_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_book_read_bored.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="179">
+                        <TransitionClassList>
+                          <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                        </TransitionClassList>
+                      </Controller>
+                    </Choice>
+                  </RandomSelector>
+                </Choice>
+                <Choice value="embarrassed">
+                  <Reference target="175" />
+                </Choice>
+                <Choice value="uncomfortable">
+                  <Reference target="175" />
+                </Choice>
+                <Choice value="playful">
+                  <Reference target="175" />
+                </Choice>
+                <Choice value="tense">
+                  <Reference target="175" />
+                </Choice>
+                <Choice value="focused">
+                  <Reference target="175" />
+                </Choice>
+                <Choice value="energized">
+                  <Reference target="175" />
+                </Choice>
+                <Choice value="flirty">
+                  <Reference target="175" />
+                </Choice>
+                <Choice value="fine">
+                  <Reference target="175" />
+                </Choice>
+                <Choice value="inspired">
+                  <Reference target="175" />
+                </Choice>
+                <Choice value="dazed">
+                  <Reference target="175" />
+                </Choice>
+              </ParameterSelector>
+            </Choice>
+            <Choice value="-stand-UpperBody" track="carryinteraction" mask="Trackmask_UpperBody">
+              <Reference target="181" />
+            </Choice>
+          </PostureSelector>
+        </Choice>
+        <Choice value="bookThin">
+          <PostureSelector parameter="x:posture" unique_id="195">
+            <Choice value="kneel--UpperBody" track="carryinteraction" mask="Trackmask_UpperBody">
+              <ParameterSelector parameter="x:mood" unique_id="188">
+                <Choice value="happy">
+                  <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="187">
+                    <Choice weight="100" avoidRepeat="False">
+                      <Controller target="book" controller="@ClipController(clip=a2o_bookThin_read_readLines_seated_bookThin, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bookThin_read_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="183">
+                        <TransitionClassList>
+                          <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                        </TransitionClassList>
+                      </Controller>
+                      <Controller target="x" controller="@ClipController(clip=a2o_bookThin_read_readLines_seated_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bookThin_read_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="184">
+                        <TransitionClassList>
+                          <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                        </TransitionClassList>
+                      </Controller>
+                    </Choice>
+                    <Choice weight="100" avoidRepeat="False">
+                      <Controller target="x" controller="@ClipController(clip=a2o_bookThin_read_readLines_slowly_seated_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bookThin_read_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="185">
+                        <TransitionClassList>
+                          <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                        </TransitionClassList>
+                      </Controller>
+                      <Controller target="book" controller="@ClipController(clip=a2o_bookThin_read_readLines_slowly_seated_bookThin, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bookThin_read_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="186">
+                        <TransitionClassList>
+                          <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                        </TransitionClassList>
+                      </Controller>
+                    </Choice>
+                  </RandomSelector>
+                </Choice>
+                <Choice value="confident">
+                  <Reference target="187" />
+                </Choice>
+                <Choice value="angry">
+                  <Reference target="187" />
+                </Choice>
+                <Choice value="sad">
+                  <Reference target="187" />
+                </Choice>
+                <Choice value="bored">
+                  <Reference target="187" />
+                </Choice>
+                <Choice value="embarrassed">
+                  <Reference target="187" />
+                </Choice>
+                <Choice value="uncomfortable">
+                  <Reference target="187" />
+                </Choice>
+                <Choice value="playful">
+                  <Reference target="187" />
+                </Choice>
+                <Choice value="tense">
+                  <Reference target="187" />
+                </Choice>
+                <Choice value="focused">
+                  <Reference target="187" />
+                </Choice>
+                <Choice value="energized">
+                  <Reference target="187" />
+                </Choice>
+                <Choice value="flirty">
+                  <Reference target="187" />
+                </Choice>
+                <Choice value="fine">
+                  <Reference target="187" />
+                </Choice>
+                <Choice value="inspired">
+                  <Reference target="187" />
+                </Choice>
+                <Choice value="dazed">
+                  <Reference target="187" />
+                </Choice>
+              </ParameterSelector>
+            </Choice>
+            <Choice value="-sit-FullBody" track="carryinteraction" mask="">
+              <Reference target="188" />
+            </Choice>
+            <Choice value="-sit-UpperBody" track="carryinteraction" mask="Trackmask_UpperBody">
+              <Reference target="188" />
+            </Choice>
+            <Choice value="-stand-FullBody" track="carryinteraction" mask="">
+              <ParameterSelector parameter="x:mood" unique_id="194">
+                <Choice value="happy">
+                  <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="193">
+                    <Choice weight="100" avoidRepeat="False">
+                      <Controller target="x" controller="@ClipController(clip=a2o_bookThin_read_readLines_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bookThin_read.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="189">
+                        <TransitionClassList>
+                          <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                        </TransitionClassList>
+                      </Controller>
+                      <Controller target="book" controller="@ClipController(clip=a2o_bookThin_read_readLines_bookThin, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bookThin_read.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="190">
+                        <TransitionClassList>
+                          <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                        </TransitionClassList>
+                      </Controller>
+                    </Choice>
+                    <Choice weight="100" avoidRepeat="False">
+                      <Controller target="x" controller="@ClipController(clip=a2o_bookThin_read_readLines_slowly_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bookThin_read.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="191">
+                        <TransitionClassList>
+                          <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                        </TransitionClassList>
+                      </Controller>
+                      <Controller target="book" controller="@ClipController(clip=a2o_bookThin_read_readLines_slowly_bookThin, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bookThin_read.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="192">
+                        <TransitionClassList>
+                          <Transition transition_class_name="Default" transition_duration_in="0.1666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                        </TransitionClassList>
+                      </Controller>
+                    </Choice>
+                  </RandomSelector>
+                </Choice>
+                <Choice value="confident">
+                  <Reference target="193" />
+                </Choice>
+                <Choice value="angry">
+                  <Reference target="193" />
+                </Choice>
+                <Choice value="sad">
+                  <Reference target="193" />
+                </Choice>
+                <Choice value="bored">
+                  <Reference target="193" />
+                </Choice>
+                <Choice value="embarrassed">
+                  <Reference target="193" />
+                </Choice>
+                <Choice value="uncomfortable">
+                  <Reference target="193" />
+                </Choice>
+                <Choice value="playful">
+                  <Reference target="193" />
+                </Choice>
+                <Choice value="tense">
+                  <Reference target="193" />
+                </Choice>
+                <Choice value="focused">
+                  <Reference target="193" />
+                </Choice>
+                <Choice value="energized">
+                  <Reference target="193" />
+                </Choice>
+                <Choice value="flirty">
+                  <Reference target="193" />
+                </Choice>
+                <Choice value="fine">
+                  <Reference target="193" />
+                </Choice>
+                <Choice value="inspired">
+                  <Reference target="193" />
+                </Choice>
+                <Choice value="dazed">
+                  <Reference target="193" />
+                </Choice>
+              </ParameterSelector>
+            </Choice>
+            <Choice value="-stand-UpperBody" track="carryinteraction" mask="Trackmask_UpperBody">
+              <Reference target="194" />
+            </Choice>
+          </PostureSelector>
+        </Choice>
+      </ParameterSelector>
+    </MakeController>
+  </State>
+</ASM>

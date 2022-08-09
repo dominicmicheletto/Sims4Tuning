@@ -1,0 +1,82 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="WardrobePedestal_Posture" dcc="sage">
+  <Actor name="x" type="Sim" master="true" virtual="false" />
+  <Actor name="y" type="Sim" virtual="false" />
+  <Actor name="pedestalWardrobe" type="Object" virtual="true" />
+  <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
+  <Parameter name="x:isMirrored" type="bool" labels="" default="False" />
+  <Parameter name="y:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="y:sex" type="enum" labels="male,female" default="male" />
+  <Parameter name="pedestalWardrobe:isMirroredPart" type="bool" labels="" default="False" />
+  <IkConfiguration name="a2a_wardrobeFittingPedestal_getInOut.ma">
+    <SourceFile name="a2a_wardrobeFittingPedestal_getInOut.ma">
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="pedestalWardrobe" actor="pedestalWardrobe" />
+      <MapNamespace namespace="y" actor="y" />
+    </SourceFile>
+  </IkConfiguration>
+  <PostureManifest>
+    <Provide name="WardrobePedestal" family="none" compatibility="FullBody" carry_left="-" carry_right="-" surface="*" />
+  </PostureManifest>
+  <State type="private" skippable="false" interrupt_this="false" name="Mirror" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="Mirror (2)" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" name="WardrobePedestal" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="getIn" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="getOut" focus="none" facialoverlays="false" tailoverlays="true" />
+  <Connection from="Mirror" to="getIn" />
+  <Connection from="Mirror (2)" to="getOut" />
+  <Connection from="WardrobePedestal" to="Mirror (2)" />
+  <Connection from="entry" to="Mirror" />
+  <Connection from="getIn" to="WardrobePedestal" />
+  <Connection from="getOut" to="exit" />
+  <State name="Mirror" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <ParameterSelector parameter="pedestalWardrobe:isMirroredPart" unique_id="3">
+      <Choice value="false" />
+      <Choice value="true">
+        <SetMirror target="x" mirror="true" unique_id="1" />
+        <SetMirror target="y" mirror="true" unique_id="2" />
+      </Choice>
+    </ParameterSelector>
+  </State>
+  <State name="Mirror (2)" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <ParameterSelector parameter="pedestalWardrobe:isMirroredPart" unique_id="6">
+      <Choice value="false" />
+      <Choice value="true">
+        <SetMirror target="y" mirror="true" unique_id="4" />
+        <SetMirror target="x" mirror="true" unique_id="5" />
+      </Choice>
+    </ParameterSelector>
+  </State>
+  <State name="WardrobePedestal" type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <MakeController>
+      <Controller target="y" controller="@ClipController(clip=a2a_wardrobeFittingPedestal_posture_y, loop_count=#1)" overridePosture="false" mask="" track="low" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_wardrobeFittingPedestal_getInOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="7">
+        <TransitionClassList />
+      </Controller>
+      <Controller target="x" controller="@ClipController(clip=a2a_wardrobeFittingPedestal_posture_x, loop_count=#1)" overridePosture="false" mask="" track="low" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_wardrobeFittingPedestal_getInOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="8">
+        <TransitionClassList />
+      </Controller>
+    </MakeController>
+  </State>
+  <State name="getIn" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <Controller target="x" controller="@ClipController(clip=a2a_wardrobeFittingPedestal_getIn_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_wardrobeFittingPedestal_getInOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="9">
+      <TransitionClassList />
+    </Controller>
+    <Controller target="y" controller="@ClipController(clip=a2a_wardrobeFittingPedestal_getIn_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_wardrobeFittingPedestal_getInOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="10">
+      <TransitionClassList />
+    </Controller>
+  </State>
+  <State name="getOut" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <Controller target="y" controller="@ClipController(clip=a2a_wardrobeFittingPedestal_getOut_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_wardrobeFittingPedestal_getInOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="11">
+      <TransitionClassList />
+    </Controller>
+    <Controller target="x" controller="@ClipController(clip=a2a_wardrobeFittingPedestal_getOut_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_wardrobeFittingPedestal_getInOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="12">
+      <TransitionClassList />
+    </Controller>
+  </State>
+</ASM>

@@ -1,0 +1,444 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="PathObstacles" dcc="sage">
+  <Actor name="x" type="Sim" master="true" virtual="false" />
+  <Actor name="toolMachete" type="Prop" virtual="false" object_def_resource_key="c0db5ae7:00000000:000000000002bc9f#machete_GP06GEN" />
+  <Actor name="PathObstacleJungle" type="Object" virtual="false" />
+  <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
+  <IkConfiguration name="a2o_pathObstacles_getIn.ma">
+    <SourceFile name="a2o_pathObstacles_getIn.ma">
+      <MapNamespace namespace="pathObstacleJungle" actor="PathObstacleJungle" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_pathObstacles_clearWithHands_all.ma">
+    <SourceFile name="a2o_pathObstacles_clearWithHands_all.ma">
+      <MapNamespace namespace="pathObstacleJungle" actor="PathObstacleJungle" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_pathObstacles_clearWithMachete_all.ma">
+    <SourceFile name="a2o_pathObstacles_clearWithMachete_all.ma">
+      <MapNamespace namespace="pathObstacleJungle" actor="PathObstacleJungle" />
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="machete" actor="toolMachete" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_react_handPain.ma">
+    <SourceFile name="a2o_react_handPain.ma">
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="pathObstacleJungle" actor="PathObstacleJungle" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_naturalDangers_lookAround.ma">
+    <SourceFile name="a2o_naturalDangers_lookAround.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <PostureManifest actors="" />
+  <PostureManifest actors="x">
+    <Support family="stand" compatibility="FullBody" carry_left="-" carry_right="-" surface="*" />
+    <Support family="stand" compatibility="UpperBody" carry_left="-" carry_right="-" surface="*" />
+  </PostureManifest>
+  <State type="private" skippable="false" interrupt_this="false" name="Hub_Hands" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="Hub_Machete" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="getIn_ToAdventure" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="handPainReact" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" name="idle" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" name="idle_H" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="loop01" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="loop01_H" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="loop02" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="loop02_H" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="loop03" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="loop03_H" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="loop_fail" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="reaction" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="startH" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="startM" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="stopH" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="stopM" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <Connection from="Hub_Hands" to="idle_H" />
+  <Connection from="Hub_Hands" to="loop01_H" />
+  <Connection from="Hub_Hands" to="loop02_H" />
+  <Connection from="Hub_Hands" to="loop03_H" />
+  <Connection from="Hub_Hands" to="loop_fail" />
+  <Connection from="Hub_Hands" to="stopH" />
+  <Connection from="Hub_Machete" to="idle" />
+  <Connection from="Hub_Machete" to="loop01" />
+  <Connection from="Hub_Machete" to="loop02" />
+  <Connection from="Hub_Machete" to="loop03" />
+  <Connection from="Hub_Machete" to="stopM" />
+  <Connection from="entry" to="getIn_ToAdventure" />
+  <Connection from="entry" to="handPainReact" />
+  <Connection from="entry" to="reaction" />
+  <Connection from="entry" to="startH" />
+  <Connection from="entry" to="startM" />
+  <Connection from="getIn_ToAdventure" to="exit" />
+  <Connection from="handPainReact" to="exit" />
+  <Connection from="idle" to="Hub_Machete" />
+  <Connection from="idle_H" to="Hub_Hands" />
+  <Connection from="loop01" to="Hub_Machete" />
+  <Connection from="loop01_H" to="Hub_Hands" />
+  <Connection from="loop02" to="Hub_Machete" />
+  <Connection from="loop02_H" to="Hub_Hands" />
+  <Connection from="loop03" to="Hub_Machete" />
+  <Connection from="loop03_H" to="Hub_Hands" />
+  <Connection from="loop_fail" to="Hub_Hands" />
+  <Connection from="reaction" to="exit" />
+  <Connection from="startH" to="Hub_Hands" />
+  <Connection from="startM" to="Hub_Machete" />
+  <Connection from="stopH" to="exit" />
+  <Connection from="stopM" to="exit" />
+  <State name="Hub_Hands" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="2">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="1">
+          <Choice weight="51" avoidRepeat="False" />
+          <Choice weight="50" avoidRepeat="False" />
+          <Choice weight="50" avoidRepeat="False" />
+          <Choice weight="50" avoidRepeat="False" />
+        </RandomSelector>
+      </Choice>
+      <Choice value="-stand-UpperBody" track="normal" mask="Trackmask_UpperBody">
+        <Reference target="1" />
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="Hub_Machete" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="4">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="3">
+          <Choice weight="50" avoidRepeat="False" />
+          <Choice weight="50" avoidRepeat="False" />
+          <Choice weight="50" avoidRepeat="False" />
+        </RandomSelector>
+      </Choice>
+      <Choice value="-stand-UpperBody" track="normal" mask="Trackmask_UpperBody">
+        <Reference target="3" />
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="getIn_ToAdventure" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <Controller target="PathObstacleJungle" controller="@ClipController(clip=a2o_pathObstacles_getIn_pathObstacleJungle, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_pathObstacles_getIn.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="5">
+      <TransitionClassList />
+    </Controller>
+    <PostureSelector parameter="x:posture" unique_id="7">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2o_pathObstacles_getIn_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_pathObstacles_getIn.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="6">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+      <Choice value="-stand-UpperBody" track="normal" mask="Trackmask_UpperBody">
+        <Reference target="6" />
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="handPainReact" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <Controller target="PathObstacleJungle" controller="@ClipController(clip=a2o_react_handPain_pathObstacleJungle, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_react_handPain.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="8">
+      <TransitionClassList />
+    </Controller>
+    <PostureSelector parameter="x:posture" unique_id="10">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2o_react_handPain_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_react_handPain.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="9">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+      <Choice value="-stand-UpperBody" track="normal" mask="Trackmask_UpperBody">
+        <Reference target="9" />
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="idle" type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <MakeController>
+      <Controller target="PathObstacleJungle" controller="@ClipController(clip=a2o_pathObstacles_clearWithMachete_idle_pathObstacleJungle, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_pathObstacles_clearWithMachete_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="11">
+        <TransitionClassList />
+      </Controller>
+      <PostureSelector parameter="x:posture" unique_id="13">
+        <Choice value="-stand-FullBody" track="normal" mask="">
+          <Controller target="x" controller="@ClipController(clip=a2o_pathObstacles_clearWithMachete_idle_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_pathObstacles_clearWithMachete_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="12">
+            <TransitionClassList />
+          </Controller>
+        </Choice>
+        <Choice value="-stand-UpperBody" track="normal" mask="Trackmask_UpperBody">
+          <Reference target="12" />
+        </Choice>
+      </PostureSelector>
+    </MakeController>
+  </State>
+  <State name="idle_H" type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <MakeController>
+      <PostureSelector parameter="x:posture" unique_id="15">
+        <Choice value="-stand-FullBody" track="normal" mask="">
+          <Controller target="x" controller="@ClipController(clip=a2o_pathObstacles_clearWithHands_idle_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_pathObstacles_clearWithHands_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="14">
+            <TransitionClassList />
+          </Controller>
+        </Choice>
+        <Choice value="-stand-UpperBody" track="normal" mask="Trackmask_UpperBody">
+          <Reference target="14" />
+        </Choice>
+      </PostureSelector>
+      <Controller target="PathObstacleJungle" controller="@ClipController(clip=a2o_pathObstacles_clearWithHands_idle_pathObstacleJungle, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_pathObstacles_clearWithHands_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="16">
+        <TransitionClassList />
+      </Controller>
+    </MakeController>
+  </State>
+  <State name="loop01" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <Controller target="PathObstacleJungle" controller="@ClipController(clip=a2o_pathObstacles_clearWithMachete_loop01_pathObstacleJungle, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_pathObstacles_clearWithMachete_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="17">
+      <TransitionClassList />
+    </Controller>
+    <PostureSelector parameter="x:posture" unique_id="22">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2o_pathObstacles_clearWithMachete_loop01_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_pathObstacles_clearWithMachete_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="21">
+          <TransitionClassList />
+        </Controller>
+        <MakeController unique_id="20">
+          <Controller target="x" controller="@ClipController(clip=a2o_pathObstacles_clearWithMachete_idle_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_pathObstacles_clearWithMachete_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="18">
+            <TransitionClassList />
+          </Controller>
+          <Controller target="PathObstacleJungle" controller="@ClipController(clip=a2o_pathObstacles_clearWithMachete_idle_pathObstacleJungle, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_pathObstacles_clearWithMachete_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="19">
+            <TransitionClassList />
+          </Controller>
+        </MakeController>
+      </Choice>
+      <Choice value="-stand-UpperBody" track="normal" mask="Trackmask_UpperBody">
+        <Reference target="21" />
+        <Reference target="20" />
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="loop01_H" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <Controller target="PathObstacleJungle" controller="@ClipController(clip=a2o_pathObstacles_clearWithHands_loop01_pathObstacleJungle, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_pathObstacles_clearWithHands_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="23">
+      <TransitionClassList />
+    </Controller>
+    <PostureSelector parameter="x:posture" unique_id="28">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2o_pathObstacles_clearWithHands_loop01_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_pathObstacles_clearWithHands_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="27">
+          <TransitionClassList />
+        </Controller>
+        <MakeController unique_id="26">
+          <Controller target="x" controller="@ClipController(clip=a2o_pathObstacles_clearWithHands_idle_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_pathObstacles_clearWithHands_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="24">
+            <TransitionClassList />
+          </Controller>
+          <Controller target="PathObstacleJungle" controller="@ClipController(clip=a2o_pathObstacles_clearWithHands_idle_pathObstacleJungle, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_pathObstacles_clearWithHands_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="25">
+            <TransitionClassList />
+          </Controller>
+        </MakeController>
+      </Choice>
+      <Choice value="-stand-UpperBody" track="normal" mask="Trackmask_UpperBody">
+        <Reference target="27" />
+        <Reference target="26" />
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="loop02" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="33">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2o_pathObstacles_clearWithMachete_loop02_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_pathObstacles_clearWithMachete_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="32">
+          <TransitionClassList />
+        </Controller>
+        <MakeController unique_id="31">
+          <Controller target="x" controller="@ClipController(clip=a2o_pathObstacles_clearWithMachete_idle_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_pathObstacles_clearWithMachete_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="29">
+            <TransitionClassList />
+          </Controller>
+          <Controller target="PathObstacleJungle" controller="@ClipController(clip=a2o_pathObstacles_clearWithMachete_idle_pathObstacleJungle, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_pathObstacles_clearWithMachete_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="30">
+            <TransitionClassList />
+          </Controller>
+        </MakeController>
+      </Choice>
+      <Choice value="-stand-UpperBody" track="normal" mask="Trackmask_UpperBody">
+        <Reference target="32" />
+        <Reference target="31" />
+      </Choice>
+    </PostureSelector>
+    <Controller target="PathObstacleJungle" controller="@ClipController(clip=a2o_pathObstacles_clearWithMachete_loop02_pathObstacleJungle, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_pathObstacles_clearWithMachete_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="34">
+      <TransitionClassList />
+    </Controller>
+  </State>
+  <State name="loop02_H" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="39">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2o_pathObstacles_clearWithHands_loop02_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_pathObstacles_clearWithHands_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="38">
+          <TransitionClassList />
+        </Controller>
+        <MakeController unique_id="37">
+          <Controller target="PathObstacleJungle" controller="@ClipController(clip=a2o_pathObstacles_clearWithHands_idle_pathObstacleJungle, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_pathObstacles_clearWithHands_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="35">
+            <TransitionClassList />
+          </Controller>
+          <Controller target="x" controller="@ClipController(clip=a2o_pathObstacles_clearWithHands_idle_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_pathObstacles_clearWithHands_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="36">
+            <TransitionClassList />
+          </Controller>
+        </MakeController>
+      </Choice>
+      <Choice value="-stand-UpperBody" track="normal" mask="Trackmask_UpperBody">
+        <Reference target="38" />
+        <Reference target="37" />
+      </Choice>
+    </PostureSelector>
+    <Controller target="PathObstacleJungle" controller="@ClipController(clip=a2o_pathObstacles_clearWithHands_loop02_pathObstacleJungle, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_pathObstacles_clearWithHands_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="40">
+      <TransitionClassList />
+    </Controller>
+  </State>
+  <State name="loop03" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <Controller target="PathObstacleJungle" controller="@ClipController(clip=a2o_pathObstacles_clearWithMachete_loop03_pathObstacleJungle, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_pathObstacles_clearWithMachete_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="41">
+      <TransitionClassList />
+    </Controller>
+    <PostureSelector parameter="x:posture" unique_id="46">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2o_pathObstacles_clearWithMachete_loop03_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_pathObstacles_clearWithMachete_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="45">
+          <TransitionClassList />
+        </Controller>
+        <MakeController unique_id="44">
+          <Controller target="PathObstacleJungle" controller="@ClipController(clip=a2o_pathObstacles_clearWithMachete_idle_pathObstacleJungle, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_pathObstacles_clearWithMachete_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="42">
+            <TransitionClassList />
+          </Controller>
+          <Controller target="x" controller="@ClipController(clip=a2o_pathObstacles_clearWithMachete_idle_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_pathObstacles_clearWithMachete_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="43">
+            <TransitionClassList />
+          </Controller>
+        </MakeController>
+      </Choice>
+      <Choice value="-stand-UpperBody" track="normal" mask="Trackmask_UpperBody">
+        <Reference target="45" />
+        <Reference target="44" />
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="loop03_H" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <Controller target="PathObstacleJungle" controller="@ClipController(clip=a2o_pathObstacles_clearWithHands_loop03_pathObstacleJungle, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_pathObstacles_clearWithHands_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="47">
+      <TransitionClassList />
+    </Controller>
+    <PostureSelector parameter="x:posture" unique_id="52">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2o_pathObstacles_clearWithHands_loop03_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_pathObstacles_clearWithHands_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="51">
+          <TransitionClassList />
+        </Controller>
+        <MakeController unique_id="50">
+          <Controller target="PathObstacleJungle" controller="@ClipController(clip=a2o_pathObstacles_clearWithHands_idle_pathObstacleJungle, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_pathObstacles_clearWithHands_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="48">
+            <TransitionClassList />
+          </Controller>
+          <Controller target="x" controller="@ClipController(clip=a2o_pathObstacles_clearWithHands_idle_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_pathObstacles_clearWithHands_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="49">
+            <TransitionClassList />
+          </Controller>
+        </MakeController>
+      </Choice>
+      <Choice value="-stand-UpperBody" track="normal" mask="Trackmask_UpperBody">
+        <Reference target="51" />
+        <Reference target="50" />
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="loop_fail" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <Controller target="PathObstacleJungle" controller="@ClipController(clip=a2o_pathObstacles_clearWithHands_loopFail_pathObstacleJungle, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_pathObstacles_clearWithHands_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="53">
+      <TransitionClassList />
+    </Controller>
+    <PostureSelector parameter="x:posture" unique_id="58">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2o_pathObstacles_clearWithHands_loopFail_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_pathObstacles_clearWithHands_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="57">
+          <TransitionClassList />
+        </Controller>
+        <MakeController unique_id="56">
+          <Controller target="PathObstacleJungle" controller="@ClipController(clip=a2o_pathObstacles_clearWithHands_idle_pathObstacleJungle, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_pathObstacles_clearWithHands_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="54">
+            <TransitionClassList />
+          </Controller>
+          <Controller target="x" controller="@ClipController(clip=a2o_pathObstacles_clearWithHands_idle_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_pathObstacles_clearWithHands_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="55">
+            <TransitionClassList />
+          </Controller>
+        </MakeController>
+      </Choice>
+      <Choice value="-stand-UpperBody" track="normal" mask="Trackmask_UpperBody">
+        <Reference target="57" />
+        <Reference target="56" />
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="reaction" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="60">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2o_naturalDangers_lookAround_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_naturalDangers_lookAround.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="59">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+      <Choice value="-stand-UpperBody" track="normal" mask="Trackmask_UpperBody">
+        <Reference target="59" />
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="startH" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <Controller target="PathObstacleJungle" controller="@ClipController(clip=a2o_pathObstacles_clearWithHands_start_pathObstacleJungle, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_pathObstacles_clearWithHands_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="61">
+      <TransitionClassList />
+    </Controller>
+    <PostureSelector parameter="x:posture" unique_id="63">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2o_pathObstacles_clearWithHands_start_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_pathObstacles_clearWithHands_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="62">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+      <Choice value="-stand-UpperBody" track="normal" mask="Trackmask_UpperBody">
+        <Reference target="62" />
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="startM" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="65">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2o_pathObstacles_clearWithMachete_start_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_pathObstacles_clearWithMachete_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="64">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+      <Choice value="-stand-UpperBody" track="normal" mask="Trackmask_UpperBody">
+        <Reference target="64" />
+      </Choice>
+    </PostureSelector>
+    <Controller target="PathObstacleJungle" controller="@ClipController(clip=a2o_pathObstacles_clearWithMachete_start_pathObstacleJungle, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_pathObstacles_clearWithMachete_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="66">
+      <TransitionClassList />
+    </Controller>
+  </State>
+  <State name="stopH" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="68">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2o_pathObstacles_clearWithHands_stop_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_pathObstacles_clearWithHands_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="67">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+      <Choice value="-stand-UpperBody" track="normal" mask="Trackmask_UpperBody">
+        <Reference target="67" />
+      </Choice>
+    </PostureSelector>
+    <Controller target="PathObstacleJungle" controller="@ClipController(clip=a2o_pathObstacles_clearWithHands_stop_pathObstacleJungle, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_pathObstacles_clearWithHands_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="69">
+      <TransitionClassList />
+    </Controller>
+  </State>
+  <State name="stopM" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="71">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2o_pathObstacles_clearWithMachete_stop_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_pathObstacles_clearWithMachete_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="70">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+      <Choice value="-stand-UpperBody" track="normal" mask="Trackmask_UpperBody">
+        <Reference target="70" />
+      </Choice>
+    </PostureSelector>
+    <Controller target="PathObstacleJungle" controller="@ClipController(clip=a2o_pathObstacles_clearWithMachete_stop_pathObstacleJungle, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_pathObstacles_clearWithMachete_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="72">
+      <TransitionClassList />
+    </Controller>
+  </State>
+</ASM>

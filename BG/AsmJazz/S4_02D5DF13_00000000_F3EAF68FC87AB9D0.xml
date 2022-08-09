@@ -1,0 +1,227 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="Tablet_Use_Toddler" dcc="sage">
+  <Actor name="x" type="Sim" master="true" virtual="false" />
+  <Actor name="sitTemplate" type="Object" virtual="true" />
+  <Actor name="gadget" type="Object" virtual="false" />
+  <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
+  <Parameter name="gadget:carryTrack" type="enum" labels="left,right" default="right" />
+  <IkConfiguration name="p2o_tablet_OnOff_seated.ma">
+    <SourceFile name="p2o_tablet_OnOff_seated.ma">
+      <MapNamespace namespace="sitTemplate" actor="sitTemplate" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="p2o_tablet_OnOff.ma">
+    <SourceFile name="p2o_tablet_OnOff.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="p2o_tablet_useLoops_seated.ma">
+    <SourceFile name="p2o_tablet_useLoops_seated.ma">
+      <MapNamespace namespace="sitTemplate" actor="sitTemplate" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="p2o_tablet_useLoops.ma">
+    <SourceFile name="p2o_tablet_useLoops.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <PostureManifest actors="" />
+  <PostureManifest actors="x">
+    <Support family="stand" compatibility="FullBody" carry_left="-" carry_right="gadget" surface="*" />
+    <Support family="stand" compatibility="UpperBody" carry_left="-" carry_right="gadget" surface="*" />
+    <Support family="sit" compatibility="FullBody" carry_left="-" carry_right="gadget" surface="*" />
+    <Support family="sit" compatibility="UpperBody" carry_left="-" carry_right="gadget" surface="*" />
+  </PostureManifest>
+  <State type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" name="Idle_Watch" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="Swipe" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="Tap" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="get_in" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="get_out" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="hub" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="mirror" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <Connection from="Idle_Watch" to="hub" />
+  <Connection from="Swipe" to="hub" />
+  <Connection from="Tap" to="hub" />
+  <Connection from="entry" to="mirror" />
+  <Connection from="get_in" to="hub" />
+  <Connection from="get_out" to="exit" />
+  <Connection from="hub" to="Idle_Watch" />
+  <Connection from="hub" to="Swipe" />
+  <Connection from="hub" to="Tap" />
+  <Connection from="hub" to="get_out" />
+  <Connection from="mirror" to="get_in" />
+  <State name="Idle_Watch" type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <MakeController>
+      <PostureSelector parameter="x:posture" unique_id="3">
+        <Choice value="-sit-FullBody" track="carryinteraction" mask="">
+          <Controller target="x" controller="@ClipController(clip=p2o_tablet_watch_seated_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p2o_tablet_useLoops_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="1">
+            <TransitionClassList>
+              <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+            </TransitionClassList>
+          </Controller>
+        </Choice>
+        <Choice value="-sit-UpperBody" track="carryinteraction" mask="Trackmask_UpperBody">
+          <Reference target="1" />
+        </Choice>
+        <Choice value="-stand-FullBody" track="carryinteraction" mask="">
+          <Controller target="x" controller="@ClipController(clip=p2o_tablet_watch_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p2o_tablet_useLoops.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="2">
+            <TransitionClassList>
+              <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+            </TransitionClassList>
+          </Controller>
+        </Choice>
+        <Choice value="-stand-UpperBody" track="carryinteraction" mask="Trackmask_UpperBody">
+          <Reference target="2" />
+        </Choice>
+      </PostureSelector>
+    </MakeController>
+  </State>
+  <State name="Swipe" type="public" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="10">
+      <Choice value="-sit-FullBody" track="carryinteraction" mask="">
+        <Controller target="x" controller="@ClipController(clip=p2o_tablet_swipe_seated_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p2o_tablet_useLoops_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="6">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+        <MakeController unique_id="5">
+          <Controller target="x" controller="@ClipController(clip=p2o_tablet_watch_seated_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p2o_tablet_useLoops_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="4">
+            <TransitionClassList>
+              <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+            </TransitionClassList>
+          </Controller>
+        </MakeController>
+      </Choice>
+      <Choice value="-sit-UpperBody" track="carryinteraction" mask="Trackmask_UpperBody">
+        <Reference target="6" />
+        <Reference target="5" />
+      </Choice>
+      <Choice value="-stand-FullBody" track="carryinteraction" mask="">
+        <Controller target="x" controller="@ClipController(clip=p2o_tablet_swipe_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p2o_tablet_useLoops.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="9">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+        <MakeController unique_id="8">
+          <Controller target="x" controller="@ClipController(clip=p2o_tablet_watch_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p2o_tablet_useLoops.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="7">
+            <TransitionClassList>
+              <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+            </TransitionClassList>
+          </Controller>
+        </MakeController>
+      </Choice>
+      <Choice value="-stand-UpperBody" track="carryinteraction" mask="Trackmask_UpperBody">
+        <Reference target="9" />
+        <Reference target="8" />
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="Tap" type="public" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="17">
+      <Choice value="-sit-FullBody" track="carryinteraction" mask="">
+        <Controller target="x" controller="@ClipController(clip=p2o_tablet_tap_seated_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p2o_tablet_useLoops_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="13">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+        <MakeController unique_id="12">
+          <Controller target="x" controller="@ClipController(clip=p2o_tablet_watch_seated_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p2o_tablet_useLoops_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="11">
+            <TransitionClassList>
+              <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+            </TransitionClassList>
+          </Controller>
+        </MakeController>
+      </Choice>
+      <Choice value="-sit-UpperBody" track="carryinteraction" mask="Trackmask_UpperBody">
+        <Reference target="13" />
+        <Reference target="12" />
+      </Choice>
+      <Choice value="-stand-FullBody" track="carryinteraction" mask="">
+        <Controller target="x" controller="@ClipController(clip=p2o_tablet_tap_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p2o_tablet_useLoops.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="16">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+        <MakeController unique_id="15">
+          <Controller target="x" controller="@ClipController(clip=p2o_tablet_watch_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p2o_tablet_useLoops.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="14">
+            <TransitionClassList>
+              <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+            </TransitionClassList>
+          </Controller>
+        </MakeController>
+      </Choice>
+      <Choice value="-stand-UpperBody" track="carryinteraction" mask="Trackmask_UpperBody">
+        <Reference target="16" />
+        <Reference target="15" />
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="get_in" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="20">
+      <Choice value="-sit-FullBody" track="carryinteraction" mask="">
+        <Controller target="x" controller="@ClipController(clip=p2o_tablet_on_seated_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p2o_tablet_OnOff_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="18">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
+      <Choice value="-sit-UpperBody" track="carryinteraction" mask="Trackmask_UpperBody">
+        <Reference target="18" />
+      </Choice>
+      <Choice value="-stand-FullBody" track="carryinteraction" mask="">
+        <Controller target="x" controller="@ClipController(clip=p2o_tablet_on_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p2o_tablet_OnOff.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="19">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
+      <Choice value="-stand-UpperBody" track="carryinteraction" mask="Trackmask_UpperBody">
+        <Reference target="19" />
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="get_out" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="23">
+      <Choice value="-sit-FullBody" track="carryinteraction" mask="">
+        <Controller target="x" controller="@ClipController(clip=p2o_tablet_off_seated_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p2o_tablet_OnOff_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="21">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
+      <Choice value="-sit-UpperBody" track="carryinteraction" mask="Trackmask_UpperBody">
+        <Reference target="21" />
+      </Choice>
+      <Choice value="-stand-FullBody" track="carryinteraction" mask="">
+        <Controller target="x" controller="@ClipController(clip=p2o_tablet_off_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p2o_tablet_OnOff.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="22">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
+      <Choice value="-stand-UpperBody" track="carryinteraction" mask="Trackmask_UpperBody">
+        <Reference target="22" />
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="hub" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+  </State>
+  <State name="mirror" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <ParameterSelector parameter="gadget:carryTrack" unique_id="25">
+      <Choice value="left">
+        <SetMirror target="x" mirror="true" unique_id="24" />
+      </Choice>
+      <Choice value="right" />
+    </ParameterSelector>
+  </State>
+</ASM>

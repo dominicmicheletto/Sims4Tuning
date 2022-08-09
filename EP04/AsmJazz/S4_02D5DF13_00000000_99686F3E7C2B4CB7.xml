@@ -1,0 +1,219 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="Pets_Puddle_Play" dcc="sage">
+  <Actor name="x" type="Sim" master="true" virtual="false" />
+  <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
+  <Parameter name="x:species" type="enum" labels="human,dog,smalldog,cat" default="human" />
+  <Parameter name="x:is_reacting" type="bool" labels="" default="False" />
+  <IkConfiguration name="ac2o_puddle_drink_x.ma">
+    <SourceFile name="ac2o_puddle_drink_x.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="ad2o_puddle_drink.ma">
+    <SourceFile name="ad2o_puddle_drink.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="ac2o_puddle_drink_notice.ma">
+    <SourceFile name="ac2o_puddle_drink_notice.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="ad2o_puddle_drink_notice.ma">
+    <SourceFile name="ad2o_puddle_drink_notice.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="ad2o_puddle_playIn.ma">
+    <SourceFile name="ad2o_puddle_playIn.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <PostureManifest actors="">
+    <Support name="stand" family="none" compatibility="FullBody" carry_left="*" carry_right="*" surface="*" />
+  </PostureManifest>
+  <State type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" name="Drink" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="GetInDrink" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="GetInPlay" focus="none" facialoverlays="false" tailoverlays="false" />
+  <State type="private" skippable="false" interrupt_this="false" name="GetOutDrink" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="GetOutPlay" focus="none" facialoverlays="false" tailoverlays="false" />
+  <State type="public" skippable="false" interrupt_this="false" name="Play" focus="none" facialoverlays="false" tailoverlays="false" />
+  <Connection from="Drink" to="GetOutDrink" />
+  <Connection from="GetInDrink" to="Drink" />
+  <Connection from="GetInPlay" to="Play" />
+  <Connection from="GetOutDrink" to="exit" />
+  <Connection from="GetOutPlay" to="exit" />
+  <Connection from="Play" to="GetOutPlay" />
+  <Connection from="entry" to="GetInDrink" />
+  <Connection from="entry" to="GetInPlay" />
+  <State name="Drink" type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <MakeController>
+      <PostureSelector parameter="x:posture" unique_id="14">
+        <Choice value="stand--FullBody" track="normal" mask="">
+          <ParameterSelector parameter="x:species" unique_id="13">
+            <Choice value="human" />
+            <Choice value="dog">
+              <CustomController name="Eat Blend Tree AdultDog" target="x" overridePosture="false" track="normal" transition_class_in="Default" transition_class_out="Default" unique_id="6">
+                <TransitionClassList />
+                <ControllerTree>
+                  <Notice unique_id="5">
+                    <BaseContent>
+                      <Clip clip="ad2o_puddle_drink_loop_x" ik_configuration="ad2o_puddle_drink.ma" focus="none" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="1" />
+                    </BaseContent>
+                    <NoticeStart>
+                      <Clip clip="ad2o_puddle_drink_notice_start_x" ik_configuration="ad2o_puddle_drink_notice.ma" focus="full body" mirror="False" start_frame_offset="0" end_frame_offset="0" focus_min_turn_angle="-0.785398163397448" focus_max_turn_angle="0.785398163397448" unique_id="2" />
+                    </NoticeStart>
+                    <NoticeLoop>
+                      <Clip clip="ad2o_puddle_drink_notice_loop_x" ik_configuration="ad2o_puddle_drink_notice.ma" focus="full body" mirror="False" start_frame_offset="0" end_frame_offset="0" focus_min_turn_angle="-0.785398163397448" focus_max_turn_angle="0.785398163397448" unique_id="3" />
+                    </NoticeLoop>
+                    <NoticeStop>
+                      <Clip clip="ad2o_puddle_drink_notice_stop_x" ik_configuration="ad2o_puddle_drink_notice.ma" focus="none" mirror="False" start_frame_offset="0" end_frame_offset="0" focus_min_turn_angle="-0.785398163397448" focus_max_turn_angle="0.785398163397448" unique_id="4" />
+                    </NoticeStop>
+                  </Notice>
+                </ControllerTree>
+              </CustomController>
+            </Choice>
+            <Choice value="smalldog">
+              <Reference target="6" />
+            </Choice>
+            <Choice value="cat">
+              <CustomController name="Eat Blend Tree Cat" target="x" overridePosture="false" track="normal" transition_class_in="Default" transition_class_out="Default" unique_id="12">
+                <TransitionClassList />
+                <ControllerTree>
+                  <Notice unique_id="11">
+                    <BaseContent>
+                      <Clip clip="ac2o_puddle_drink_loop_x" ik_configuration="ac2o_puddle_drink_x.ma" focus="none" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="7" />
+                    </BaseContent>
+                    <NoticeStart>
+                      <Clip clip="ac2o_puddle_drink_notice_start_x" ik_configuration="ac2o_puddle_drink_notice.ma" focus="full body" mirror="False" start_frame_offset="0" end_frame_offset="0" focus_min_turn_angle="-0.785398163397448" focus_max_turn_angle="0.785398163397448" unique_id="8" />
+                    </NoticeStart>
+                    <NoticeLoop>
+                      <Clip clip="ac2o_puddle_drink_notice_loop_x" ik_configuration="ac2o_puddle_drink_notice.ma" focus="full body" mirror="False" start_frame_offset="0" end_frame_offset="0" focus_min_turn_angle="-0.785398163397448" focus_max_turn_angle="0.785398163397448" unique_id="9" />
+                    </NoticeLoop>
+                    <NoticeStop>
+                      <Clip clip="ac2o_puddle_drink_notice_stop_x" ik_configuration="ac2o_puddle_drink_notice.ma" focus="none" mirror="False" start_frame_offset="0" end_frame_offset="0" focus_min_turn_angle="-0.785398163397448" focus_max_turn_angle="0.785398163397448" unique_id="10" />
+                    </NoticeStop>
+                  </Notice>
+                </ControllerTree>
+              </CustomController>
+            </Choice>
+          </ParameterSelector>
+        </Choice>
+      </PostureSelector>
+    </MakeController>
+  </State>
+  <State name="GetInDrink" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="18">
+      <Choice value="stand--FullBody" track="normal" mask="">
+        <ParameterSelector parameter="x:species" unique_id="17">
+          <Choice value="human" />
+          <Choice value="dog">
+            <Controller target="x" controller="@ClipController(clip=ad2o_puddle_drink_start_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ad2o_puddle_drink.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="15">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
+          <Choice value="smalldog">
+            <Reference target="15" />
+          </Choice>
+          <Choice value="cat">
+            <Controller target="x" controller="@ClipController(clip=ac2o_puddle_drink_start_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ac2o_puddle_drink_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="16">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="GetInPlay" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="false">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="21">
+      <Choice value="stand--FullBody" track="normal" mask="">
+        <ParameterSelector parameter="x:species" unique_id="20">
+          <Choice value="human" />
+          <Choice value="dog">
+            <Controller target="x" controller="@ClipController(clip=ad2o_puddle_playIn_start_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ad2o_puddle_playIn.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="19">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
+          <Choice value="smalldog">
+            <Reference target="19" />
+          </Choice>
+          <Choice value="cat" />
+        </ParameterSelector>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="GetOutDrink" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="25">
+      <Choice value="stand--FullBody" track="normal" mask="">
+        <ParameterSelector parameter="x:species" unique_id="24">
+          <Choice value="human" />
+          <Choice value="dog">
+            <Controller target="x" controller="@ClipController(clip=ad2o_puddle_drink_stop_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ad2o_puddle_drink.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="22">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
+          <Choice value="smalldog">
+            <Reference target="22" />
+          </Choice>
+          <Choice value="cat">
+            <Controller target="x" controller="@ClipController(clip=ac2o_puddle_drink_stop_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ac2o_puddle_drink_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="23">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="GetOutPlay" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="false">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="28">
+      <Choice value="stand--FullBody" track="normal" mask="">
+        <ParameterSelector parameter="x:species" unique_id="27">
+          <Choice value="human" />
+          <Choice value="dog">
+            <Controller target="x" controller="@ClipController(clip=ad2o_puddle_playIn_stop_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ad2o_puddle_playIn.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="26">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
+          <Choice value="smalldog">
+            <Reference target="26" />
+          </Choice>
+          <Choice value="cat" />
+        </ParameterSelector>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="Play" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="false">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="33">
+      <Choice value="stand--FullBody" track="normal" mask="">
+        <ParameterSelector parameter="x:species" unique_id="32">
+          <Choice value="human" />
+          <Choice value="dog">
+            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="31">
+              <Choice weight="100" avoidRepeat="False">
+                <Controller target="x" controller="@ClipController(clip=ad2o_puddle_playIn_loop1_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ad2o_puddle_playIn.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="29">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+              <Choice weight="100" avoidRepeat="False">
+                <Controller target="x" controller="@ClipController(clip=ad2o_puddle_playIn_loop2_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ad2o_puddle_playIn.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="30">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+            </RandomSelector>
+          </Choice>
+          <Choice value="smalldog">
+            <Reference target="31" />
+          </Choice>
+          <Choice value="cat" />
+        </ParameterSelector>
+      </Choice>
+    </PostureSelector>
+  </State>
+</ASM>

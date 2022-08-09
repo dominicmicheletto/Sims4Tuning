@@ -1,0 +1,191 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="Acting_Gigs_treatPatient_Actions" dcc="sage">
+  <Actor name="x" type="Sim" master="true" virtual="false" />
+  <Actor name="y" type="Sim" virtual="false" />
+  <Actor name="sitTemplate" type="Object" virtual="true" />
+  <Actor name="Thermometer" type="Prop" virtual="false" object_def_resource_key="c0db5ae7:00000000:0000000000010529#toolThermometer_EP01GEN" />
+  <Actor name="eyelight" type="Prop" virtual="false" object_def_resource_key="c0db5ae7:00000000:000000000001052d#toolPenLight_EP01GEN" />
+  <Actor name="hospitalBed" type="Object" virtual="true" />
+  <Parameter name="isMirrored" type="bool" labels="" default="False" />
+  <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
+  <Parameter name="x:species" type="enum" labels="human,dog,smalldog,cat" default="human" />
+  <Parameter name="y:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="y:sex" type="enum" labels="male,female" default="male" />
+  <Parameter name="y:species" type="enum" labels="human,dog,smalldog,cat" default="human" />
+  <IkConfiguration name="a2a_actingGig_treatPatient_part1.ma">
+    <SourceFile name="a2a_actingGig_treatPatient_part1.ma">
+      <MapNamespace namespace="sitTemplate1" actor="sitTemplate" />
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="hospitalBed" actor="hospitalBed" />
+      <MapNamespace namespace="y" actor="y" />
+      <MapNamespace namespace="sitTemplate" actor="sitTemplate" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2a_actingGig_treatPatient_safeSuccess.ma">
+    <SourceFile name="a2a_actingGig_treatPatient_safeSuccess.ma">
+      <MapNamespace namespace="sitTemplate1" actor="sitTemplate" />
+      <MapNamespace namespace="y" actor="y" />
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="hospitalBed" actor="hospitalBed" />
+      <MapNamespace namespace="thermometer" actor="Thermometer" />
+      <MapNamespace namespace="sitTemplate" actor="sitTemplate" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2a_actingGig_treatPatient_riskySuccess.ma">
+    <SourceFile name="a2a_actingGig_treatPatient_riskySuccess.ma">
+      <MapNamespace namespace="sitTemplate1" actor="sitTemplate" />
+      <MapNamespace namespace="eyelight" actor="eyelight" />
+      <MapNamespace namespace="y" actor="y" />
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="hospitalBed" actor="hospitalBed" />
+      <MapNamespace namespace="sitTemplate" actor="sitTemplate" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2a_actingGig_treatPatient_riskyFail.ma">
+    <SourceFile name="a2a_actingGig_treatPatient_riskyFail.ma">
+      <MapNamespace namespace="sitTemplate1" actor="sitTemplate" />
+      <MapNamespace namespace="eyelight" actor="eyelight" />
+      <MapNamespace namespace="y" actor="y" />
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="hospitalBed" actor="hospitalBed" />
+      <MapNamespace namespace="sitTemplate" actor="sitTemplate" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2a_actingGig_treatPatient_safeFail.ma">
+    <SourceFile name="a2a_actingGig_treatPatient_safeFail.ma">
+      <MapNamespace namespace="sitTemplate1" actor="sitTemplate" />
+      <MapNamespace namespace="Thermometer" actor="Thermometer" />
+      <MapNamespace namespace="y" actor="y" />
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="hospitalBed" actor="hospitalBed" />
+      <MapNamespace namespace="sitTemplate" actor="sitTemplate" />
+    </SourceFile>
+  </IkConfiguration>
+  <PostureManifest actors="" />
+  <PostureManifest actors="x">
+    <Support name="hospitalBed_stand" family="none" compatibility="FullBody" carry_left="-" carry_right="-" surface="*" />
+  </PostureManifest>
+  <PostureManifest actors="y">
+    <Support name="hospitalBed_sit" family="none" compatibility="FullBody" carry_left="-" carry_right="-" surface="*" />
+  </PostureManifest>
+  <State type="public" skippable="false" interrupt_this="false" name="Risky_Fail" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="Risky_Success" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="Safe_Fail" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="Safe_Success" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="start" focus="none" facialoverlays="false" tailoverlays="true" />
+  <Connection from="Risky_Fail" to="exit" />
+  <Connection from="Risky_Success" to="exit" />
+  <Connection from="Safe_Fail" to="exit" />
+  <Connection from="Safe_Success" to="exit" />
+  <Connection from="entry" to="start" />
+  <Connection from="start" to="Risky_Fail" />
+  <Connection from="start" to="Risky_Success" />
+  <Connection from="start" to="Safe_Fail" />
+  <Connection from="start" to="Safe_Success" />
+  <State name="Risky_Fail" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="2">
+      <Choice value="hospitalBed_stand--FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2a_actingGig_treatPatient_riskyFail_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_actingGig_treatPatient_riskyFail.ma" focus="none" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="1">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
+    </PostureSelector>
+    <PostureSelector parameter="y:posture" unique_id="4">
+      <Choice value="hospitalBed_sit--FullBody" track="normal" mask="">
+        <Controller target="y" controller="@ClipController(clip=a2a_actingGig_treatPatient_riskyFail_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_actingGig_treatPatient_riskyFail.ma" focus="none" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="3">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="Risky_Success" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="y:posture" unique_id="6">
+      <Choice value="hospitalBed_sit--FullBody" track="normal" mask="">
+        <Controller target="y" controller="@ClipController(clip=a2a_actingGig_treatPatient_riskySuccess_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_actingGig_treatPatient_riskySuccess.ma" focus="none" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="5">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
+    </PostureSelector>
+    <PostureSelector parameter="x:posture" unique_id="8">
+      <Choice value="hospitalBed_stand--FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2a_actingGig_treatPatient_riskySuccess_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_actingGig_treatPatient_riskySuccess.ma" focus="none" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="7">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="Safe_Fail" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="y:posture" unique_id="10">
+      <Choice value="hospitalBed_sit--FullBody" track="normal" mask="">
+        <Controller target="y" controller="@ClipController(clip=a2a_actingGig_treatPatient_safeFail_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_actingGig_treatPatient_safeFail.ma" focus="none" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="9">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
+    </PostureSelector>
+    <PostureSelector parameter="x:posture" unique_id="12">
+      <Choice value="hospitalBed_stand--FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2a_actingGig_treatPatient_safeFail_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_actingGig_treatPatient_safeFail.ma" focus="none" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="11">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="Safe_Success" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="y:posture" unique_id="14">
+      <Choice value="hospitalBed_sit--FullBody" track="normal" mask="">
+        <Controller target="y" controller="@ClipController(clip=a2a_actingGig_treatPatient_safeSuccess_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_actingGig_treatPatient_safeSuccess.ma" focus="none" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="13">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
+    </PostureSelector>
+    <PostureSelector parameter="x:posture" unique_id="16">
+      <Choice value="hospitalBed_stand--FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2a_actingGig_treatPatient_safeSuccess_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_actingGig_treatPatient_safeSuccess.ma" focus="none" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="15">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="start" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="18">
+      <Choice value="hospitalBed_stand--FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2a_actingGig_treatPatient_start_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_actingGig_treatPatient_part1.ma" focus="none" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="17">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
+    </PostureSelector>
+    <PostureSelector parameter="y:posture" unique_id="20">
+      <Choice value="hospitalBed_sit--FullBody" track="normal" mask="">
+        <Controller target="y" controller="@ClipController(clip=a2a_actingGig_treatPatient_start_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_actingGig_treatPatient_part1.ma" focus="none" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="19">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
+    </PostureSelector>
+  </State>
+</ASM>

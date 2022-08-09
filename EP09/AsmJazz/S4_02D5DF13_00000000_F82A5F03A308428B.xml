@@ -1,0 +1,131 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="TrashUpdate_SortOutRecyclables_StopWithTrashBag" dcc="sage">
+  <Actor name="x" type="Sim" master="true" virtual="false" />
+  <Actor name="trash" type="Object" virtual="false" />
+  <Actor name="surface" type="Object" virtual="false" />
+  <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
+  <Parameter name="trash:carryTrack" type="enum" labels="left,right" default="right" />
+  <Parameter name="surface:lid" type="bool" labels="" default="True" />
+  <IkConfiguration name="a2o_trashUpdate_sortOutRecyclables_outdoor_lid.ma">
+    <SourceFile name="a2o_trashUpdate_sortOutRecyclables_outdoor_lid.ma">
+      <MapNamespace namespace="trashCanOutdoor" actor="surface" />
+      <MapNamespace namespace="trash" actor="trash" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_trashUpdate_sortOutRecyclables_outdoor_nolid.ma">
+    <SourceFile name="a2o_trashUpdate_sortOutRecyclables_outdoor_nolid.ma">
+      <MapNamespace namespace="trashCanOutdoor" actor="surface" />
+      <MapNamespace namespace="trash" actor="trash" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_trashUpdate_sortOutRecyclables_indoor.ma">
+    <SourceFile name="a2o_trashUpdate_sortOutRecyclables_indoor.ma">
+      <MapNamespace namespace="trash" actor="trash" />
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="trashCanIndoor" actor="surface" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="c2o_trashUpdate_sortOutRecyclables_outdoor_nolid.ma">
+    <SourceFile name="c2o_trashUpdate_sortOutRecyclables_outdoor_nolid.ma">
+      <MapNamespace namespace="trash" actor="trash" />
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="trashCanOutdoor" actor="surface" />
+    </SourceFile>
+  </IkConfiguration>
+  <PostureManifest actors="" />
+  <PostureManifest actors="x">
+    <Support family="stand" compatibility="FullBody" carry_left="trash" carry_right="-" surface="*" />
+    <Support family="stand" compatibility="FullBody" carry_left="-" carry_right="trash" surface="*" />
+  </PostureManifest>
+  <State type="private" skippable="false" interrupt_this="false" name="Mirror" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="SortOutRecyclables_IndoorCan" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="SortOutRecyclables_OutdoorCan" focus="none" facialoverlays="false" tailoverlays="true" />
+  <Connection from="Mirror" to="SortOutRecyclables_IndoorCan" />
+  <Connection from="Mirror" to="SortOutRecyclables_OutdoorCan" />
+  <Connection from="SortOutRecyclables_IndoorCan" to="exit" />
+  <Connection from="SortOutRecyclables_OutdoorCan" to="exit" />
+  <Connection from="entry" to="Mirror" />
+  <State name="Mirror" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <ParameterSelector parameter="trash:carryTrack" unique_id="3">
+      <Choice value="left">
+        <SetMirror target="x" mirror="true" unique_id="2" />
+        <SetMirror target="trash" mirror="true" unique_id="1" />
+      </Choice>
+      <Choice value="right" />
+    </ParameterSelector>
+  </State>
+  <State name="SortOutRecyclables_IndoorCan" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="6">
+      <Choice value="-stand-FullBody" track="carryinteraction" mask="">
+        <Controller target="trash" controller="@ClipController(clip=a2o_trashUpdate_sortOutRecyclables_indoor_trash, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_trashUpdate_sortOutRecyclables_indoor.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="4">
+          <TransitionClassList />
+        </Controller>
+        <Controller target="x" controller="@ClipController(clip=a2o_trashUpdate_sortOutRecyclables_indoor_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_trashUpdate_sortOutRecyclables_indoor.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="5">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="SortOutRecyclables_OutdoorCan" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="17">
+      <Choice value="-stand-FullBody" track="carryinteraction" mask="">
+        <ParameterSelector parameter="surface:lid" unique_id="16">
+          <Choice value="false">
+            <ParameterSelector parameter="x:age" unique_id="12">
+              <Choice value="baby" />
+              <Choice value="toddler" />
+              <Choice value="child">
+                <Controller target="surface" controller="@ClipController(clip=c2o_trashUpdate_sortOutRecyclables_outdoor_nolid_trashCanOutdoor, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c2o_trashUpdate_sortOutRecyclables_outdoor_nolid.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="7">
+                  <TransitionClassList />
+                </Controller>
+                <Controller target="trash" controller="@ClipController(clip=c2o_trashUpdate_sortOutRecyclables_outdoor_nolid_trash, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c2o_trashUpdate_sortOutRecyclables_outdoor_nolid.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="8">
+                  <TransitionClassList />
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=c2o_trashUpdate_sortOutRecyclables_outdoor_nolid_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c2o_trashUpdate_sortOutRecyclables_outdoor_nolid.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="9">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+              <Choice value="teen">
+                <Controller target="trash" controller="@ClipController(clip=a2o_trashUpdate_sortOutRecyclables_outdoor_nolid_trash, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_trashUpdate_sortOutRecyclables_outdoor_nolid.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="10">
+                  <TransitionClassList />
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=a2o_trashUpdate_sortOutRecyclables_outdoor_nolid_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_trashUpdate_sortOutRecyclables_outdoor_nolid.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="11">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+              <Choice value="youngadult">
+                <Reference target="10" />
+                <Reference target="11" />
+              </Choice>
+              <Choice value="adult">
+                <Reference target="10" />
+                <Reference target="11" />
+              </Choice>
+              <Choice value="elder">
+                <Reference target="10" />
+                <Reference target="11" />
+              </Choice>
+            </ParameterSelector>
+          </Choice>
+          <Choice value="true">
+            <Controller target="x" controller="@ClipController(clip=a2o_trashUpdate_sortOutRecyclables_outdoor_lid_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_trashUpdate_sortOutRecyclables_outdoor_lid.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="13">
+              <TransitionClassList />
+            </Controller>
+            <Controller target="surface" controller="@ClipController(clip=a2o_trashUpdate_sortOutRecyclables_outdoor_lid_trashCanOutdoor, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_trashUpdate_sortOutRecyclables_outdoor_lid.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="14">
+              <TransitionClassList />
+            </Controller>
+            <Controller target="trash" controller="@ClipController(clip=a2o_trashUpdate_sortOutRecyclables_outdoor_lid_trash, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_trashUpdate_sortOutRecyclables_outdoor_lid.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="15">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+    </PostureSelector>
+  </State>
+</ASM>

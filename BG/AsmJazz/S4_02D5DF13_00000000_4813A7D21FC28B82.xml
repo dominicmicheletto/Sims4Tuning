@@ -1,0 +1,910 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="SwimReactions_Swim_Locomotion" dcc="sage">
+  <Actor name="x" type="Sim" master="true" virtual="false" />
+  <Parameter name="x:age" type="enum" labels="baby,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
+  <Parameter name="x:species" type="enum" labels="human,dog,smalldog,cat" default="human" />
+  <Parameter name="x:isMermaid" type="bool" labels="" default="False" />
+  <Parameter name="x:walkstyle" type="enum" labels="Swim,SwimAngry,SwimEnergized,SwimPlayful,SwimSad,SwimSlow,SwimCaughtInCurrent,Swim_HighSpeed,Swim_MediumSpeed,SwimMermaid,SwimMermaidMedium,SwimMermaidSlow" />
+  <IkConfiguration name="a_swim_idle_x.ma">
+    <SourceFile name="a_swim_idle_x.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a_react_embarrassed_squirm.ma">
+    <SourceFile name="a_react_embarrassed_squirm.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a_loco_swim_freestyle_trans_swimToReact.ma">
+    <SourceFile name="a_loco_swim_freestyle_trans_swimToReact.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a_loco_swim_freestyle_trans_reactToSwim.ma">
+    <SourceFile name="a_loco_swim_freestyle_trans_reactToSwim.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a_facialOverlay_angrySad.ma">
+    <SourceFile name="a_facialOverlay_angrySad.ma" />
+  </IkConfiguration>
+  <IkConfiguration name="a_react_cold_shiver_swim.ma">
+    <SourceFile name="a_react_cold_shiver_swim.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a_loco_swim_trans_swimToReact_reactToSwim.ma">
+    <SourceFile name="a_loco_swim_trans_swimToReact_reactToSwim.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a_react_embarrassed_nervousLaugh.ma">
+    <SourceFile name="a_react_embarrassed_nervousLaugh.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a_react_uncomfortable_high_shudder.ma">
+    <SourceFile name="a_react_uncomfortable_high_shudder.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a_motive_swim_idle_longerBlend.ma">
+    <SourceFile name="a_motive_swim_idle_longerBlend.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a_motive_swim_idle.ma">
+    <SourceFile name="a_motive_swim_idle.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a_react_angry_high_fistShake.ma">
+    <SourceFile name="a_react_angry_high_fistShake.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a_react_cringe.ma">
+    <SourceFile name="a_react_cringe.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a_react_angry_annoyedSigh.ma">
+    <SourceFile name="a_react_angry_annoyedSigh.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a_react_scared_death_overlay_upper_swim.ma">
+    <SourceFile name="a_react_scared_death_overlay_upper_swim.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a_react_scared_recoil_worried_overlay_upper_swim.ma">
+    <SourceFile name="a_react_scared_recoil_worried_overlay_upper_swim.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <PostureManifest actors="" />
+  <PostureManifest actors="x">
+    <Support name="swim" family="none" compatibility="FullBody" carry_left="-" carry_right="-" surface="-" />
+  </PostureManifest>
+  <State type="public" skippable="false" interrupt_this="false" name="cramp" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="embarrassed" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="fearWater" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="shiver" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="splashedAngry" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <Connection from="cramp" to="exit" />
+  <Connection from="embarrassed" to="exit" />
+  <Connection from="entry" to="cramp" />
+  <Connection from="entry" to="embarrassed" />
+  <Connection from="entry" to="fearWater" />
+  <Connection from="entry" to="shiver" />
+  <Connection from="entry" to="splashedAngry" />
+  <Connection from="fearWater" to="exit" />
+  <Connection from="shiver" to="exit" />
+  <Connection from="splashedAngry" to="exit" />
+  <State name="cramp" type="public" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="20">
+      <Choice value="swim--FullBody" track="locomotionoverlay" mask="">
+        <ParameterSelector parameter="x:walkstyle" unique_id="19">
+          <Choice value="Swim">
+            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="9">
+              <Choice weight="50" avoidRepeat="False">
+                <Controller target="x" controller="@ClipController(clip=a_motive_swim_idle_longerBlend_x, loop_count=#1)" overridePosture="true" mask="" track="normalplus" mirror_conditional="False" suppress_footsteps="True" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_motive_swim_idle_longerBlend.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="2">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.5333334" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=a_loco_swim_trans_reactToSwim_x, loop_count=#1)" overridePosture="true" mask="" track="normalplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_loco_swim_trans_swimToReact_reactToSwim.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="1">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.5333334" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=a_facialOverlay_angry_x, loop_count=#1)" overridePosture="true" mask="Trackmask_None" track="locomotionoverlay" mirror_conditional="False" suppress_footsteps="True" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_facialOverlay_angrySad.ma" focus="undefined" start_frame_offset="0" end_frame_offset="53" timescale="1" unique_id="4">
+                  <TransitionClassList />
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=a_facialOverlay_angry_x, loop_count=#1)" overridePosture="true" mask="Trackmask_Face" track="locomotionoverlay" mirror_conditional="False" suppress_footsteps="True" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_facialOverlay_angrySad.ma" focus="undefined" start_frame_offset="0" end_frame_offset="115" timescale="1" unique_id="3">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+              <Choice weight="50" avoidRepeat="False">
+                <Controller target="x" controller="@ClipController(clip=a_motive_swim_idle_longerBlend_noVox_x, loop_count=#1)" overridePosture="true" mask="" track="normalplus" mirror_conditional="False" suppress_footsteps="True" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_motive_swim_idle_longerBlend.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="6">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.5333334" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=a_loco_swim_trans_reactToSwim_x, loop_count=#1)" overridePosture="true" mask="" track="normalplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_loco_swim_trans_swimToReact_reactToSwim.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="5">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.5333334" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=a_react_uncomfortable_high_shudder_x, loop_count=#1)" overridePosture="true" mask="Trackmask_UpperBody_NoArms" track="locomotionoverlay" mirror_conditional="False" suppress_footsteps="True" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_uncomfortable_high_shudder.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="8">
+                  <TransitionClassList />
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=a_facialOverlay_angry_x, loop_count=#1)" overridePosture="true" mask="Trackmask_Face" track="locomotionoverlay" mirror_conditional="False" suppress_footsteps="True" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_facialOverlay_angrySad.ma" focus="undefined" start_frame_offset="0" end_frame_offset="115" timescale="1" unique_id="7">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+            </RandomSelector>
+          </Choice>
+          <Choice value="SwimAngry">
+            <Reference target="9" />
+          </Choice>
+          <Choice value="SwimEnergized">
+            <Reference target="9" />
+          </Choice>
+          <Choice value="SwimPlayful">
+            <Reference target="9" />
+          </Choice>
+          <Choice value="SwimSad">
+            <Reference target="9" />
+          </Choice>
+          <Choice value="SwimSlow">
+            <Reference target="9" />
+          </Choice>
+          <Choice value="SwimCaughtInCurrent" />
+          <Choice value="Swim_HighSpeed">
+            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="18">
+              <Choice weight="50" avoidRepeat="False">
+                <Controller target="x" controller="@ClipController(clip=a_facialOverlay_angry_x, loop_count=#1)" overridePosture="true" mask="Trackmask_None" track="locomotionoverlay" mirror_conditional="False" suppress_footsteps="True" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_facialOverlay_angrySad.ma" focus="undefined" start_frame_offset="0" end_frame_offset="125" timescale="1" unique_id="11">
+                  <TransitionClassList />
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=a_react_uncomfortable_high_shudder_x, loop_count=#1)" overridePosture="true" mask="Trackmask_UpperBody_NoArms" track="locomotionoverlay" mirror_conditional="False" suppress_footsteps="True" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_uncomfortable_high_shudder.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="10">
+                  <TransitionClassList />
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=a_loco_swim_trans_swimToReact_x, loop_count=#1)" overridePosture="true" mask="" track="normalplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_loco_swim_trans_swimToReact_reactToSwim.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="14">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.5333334" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.5333334" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=a_motive_swim_idle_longerBlend_noVox_x, loop_count=#1)" overridePosture="true" mask="" track="normalplus" mirror_conditional="False" suppress_footsteps="True" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_motive_swim_idle_longerBlend.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="13">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.5333334" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=a_loco_swim_freestyle_trans_reactToSwim_x, loop_count=#1)" overridePosture="true" mask="" track="normalplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_loco_swim_freestyle_trans_reactToSwim.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="12">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.5333334" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+              </Choice>
+              <Choice weight="50" avoidRepeat="False">
+                <Controller target="x" controller="@ClipController(clip=a_loco_swim_trans_swimToReact_x, loop_count=#1)" overridePosture="true" mask="" track="normalplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_loco_swim_trans_swimToReact_reactToSwim.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="17">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.5333334" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.5333334" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=a_motive_swim_idle_x, loop_count=#1)" overridePosture="true" mask="" track="normalplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_motive_swim_idle.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="16">
+                  <TransitionClassList />
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=a_loco_swim_freestyle_trans_reactToSwim_x, loop_count=#1)" overridePosture="true" mask="" track="normalplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_loco_swim_freestyle_trans_reactToSwim.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="15">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.5333334" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+              </Choice>
+            </RandomSelector>
+          </Choice>
+          <Choice value="Swim_MediumSpeed">
+            <Reference target="18" />
+          </Choice>
+          <Choice value="SwimMermaid" />
+          <Choice value="SwimMermaidMedium" />
+          <Choice value="SwimMermaidSlow" />
+        </ParameterSelector>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="embarrassed" type="public" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="53">
+      <Choice value="swim--FullBody" track="locomotionoverlay" mask="">
+        <ParameterSelector parameter="x:walkstyle" unique_id="52">
+          <Choice value="Swim">
+            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="36">
+              <Choice weight="50" avoidRepeat="False">
+                <Controller target="x" controller="@ClipController(clip=a_loco_swim_trans_swimToReact_x, loop_count=#1)" overridePosture="true" mask="" track="normalplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_loco_swim_trans_swimToReact_reactToSwim.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="25">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.5333334" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=a_swim_idle_x, loop_count=#1)" overridePosture="true" mask="" track="normalplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="NoBlendLoop" transition_class_out="NoBlendLoop" ik_configuration="a_swim_idle_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="24">
+                  <TransitionClassList>
+                    <Transition transition_class_name="NoBlendLoop" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="false" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=a_swim_idle_x, loop_count=#1)" overridePosture="true" mask="" track="normalplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="NoBlendLoop" transition_class_out="NoBlendLoop" ik_configuration="a_swim_idle_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="23">
+                  <TransitionClassList>
+                    <Transition transition_class_name="NoBlendLoop" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="false" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=a_swim_idle_longerBlend_x, loop_count=#1)" overridePosture="true" mask="" track="normalplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="NoBlendLoop" transition_class_out="Default" ik_configuration="a_swim_idle_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="22">
+                  <TransitionClassList>
+                    <Transition transition_class_name="NoBlendLoop" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="false" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=a_loco_swim_trans_reactToSwim_x, loop_count=#1)" overridePosture="true" mask="" track="normalplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_loco_swim_trans_swimToReact_reactToSwim.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="21">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.5333334" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=a_facialOverlay_sad_x, loop_count=#1)" overridePosture="true" mask="Trackmask_Face" track="locomotionoverlay" mirror_conditional="False" suppress_footsteps="True" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_facialOverlay_angrySad.ma" focus="undefined" start_frame_offset="0" end_frame_offset="40" timescale="1" unique_id="28">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.5333334" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=a_react_embarrassed_squirm_x, loop_count=#1)" overridePosture="true" mask="Trackmask_UpperBody_NoArms" track="locomotionoverlay" mirror_conditional="False" suppress_footsteps="True" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_embarrassed_squirm.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="27">
+                  <TransitionClassList />
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=a_facialOverlay_sad_x, loop_count=#1)" overridePosture="true" mask="Trackmask_Face" track="locomotionoverlay" mirror_conditional="False" suppress_footsteps="True" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_facialOverlay_angrySad.ma" focus="undefined" start_frame_offset="0" end_frame_offset="40" timescale="1" unique_id="26">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.5333334" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+              </Choice>
+              <Choice weight="50" avoidRepeat="False">
+                <Controller target="x" controller="@ClipController(clip=a_loco_swim_trans_swimToReact_x, loop_count=#1)" overridePosture="true" mask="" track="normalplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_loco_swim_trans_swimToReact_reactToSwim.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="33">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.5333334" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=a_swim_idle_x, loop_count=#1)" overridePosture="true" mask="" track="normalplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="NoBlendLoop" transition_class_out="NoBlendLoop" ik_configuration="a_swim_idle_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="32">
+                  <TransitionClassList>
+                    <Transition transition_class_name="NoBlendLoop" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="false" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=a_swim_idle_x, loop_count=#1)" overridePosture="true" mask="" track="normalplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="NoBlendLoop" transition_class_out="NoBlendLoop" ik_configuration="a_swim_idle_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="31">
+                  <TransitionClassList>
+                    <Transition transition_class_name="NoBlendLoop" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="false" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=a_swim_idle_longerBlend_x, loop_count=#1)" overridePosture="true" mask="" track="normalplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="NoBlendLoop" transition_class_out="Default" ik_configuration="a_swim_idle_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="30">
+                  <TransitionClassList>
+                    <Transition transition_class_name="NoBlendLoop" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="false" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=a_loco_swim_trans_reactToSwim_x, loop_count=#1)" overridePosture="true" mask="" track="normalplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_loco_swim_trans_swimToReact_reactToSwim.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="29">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.5333334" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=a_facialOverlay_sad_x, loop_count=#1)" overridePosture="true" mask="Trackmask_Face" track="locomotionoverlay" mirror_conditional="False" suppress_footsteps="True" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_facialOverlay_angrySad.ma" focus="undefined" start_frame_offset="0" end_frame_offset="40" timescale="1" unique_id="35">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.5333334" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=a_react_embarrassed_nervousLaugh_x, loop_count=#1)" overridePosture="true" mask="Trackmask_UpperBody_NoArms" track="locomotionoverlay" mirror_conditional="False" suppress_footsteps="True" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_embarrassed_nervousLaugh.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="34">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+            </RandomSelector>
+          </Choice>
+          <Choice value="SwimAngry">
+            <Reference target="36" />
+          </Choice>
+          <Choice value="SwimEnergized">
+            <Reference target="36" />
+          </Choice>
+          <Choice value="SwimPlayful">
+            <Reference target="36" />
+          </Choice>
+          <Choice value="SwimSad">
+            <Reference target="36" />
+          </Choice>
+          <Choice value="SwimSlow">
+            <Reference target="36" />
+          </Choice>
+          <Choice value="SwimCaughtInCurrent" />
+          <Choice value="Swim_HighSpeed">
+            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="51">
+              <Choice weight="50" avoidRepeat="False">
+                <Controller target="x" controller="@ClipController(clip=a_loco_swim_freestyle_trans_swimToReact_x, loop_count=#1)" overridePosture="true" mask="" track="normalplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_loco_swim_freestyle_trans_swimToReact.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="41">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.5333334" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=a_swim_idle_x, loop_count=#1)" overridePosture="true" mask="" track="normalplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="NoBlendLoop" transition_class_out="NoBlendLoop" ik_configuration="a_swim_idle_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="40">
+                  <TransitionClassList>
+                    <Transition transition_class_name="NoBlendLoop" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="false" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=a_swim_idle_x, loop_count=#1)" overridePosture="true" mask="" track="normalplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="NoBlendLoop" transition_class_out="NoBlendLoop" ik_configuration="a_swim_idle_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="39">
+                  <TransitionClassList>
+                    <Transition transition_class_name="NoBlendLoop" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="false" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=a_swim_idle_longerBlend_x, loop_count=#1)" overridePosture="true" mask="" track="normalplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="NoBlendLoop" transition_class_out="Default" ik_configuration="a_swim_idle_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="38">
+                  <TransitionClassList>
+                    <Transition transition_class_name="NoBlendLoop" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="false" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=a_loco_swim_freestyle_trans_reactToSwim_x, loop_count=#1)" overridePosture="true" mask="" track="normalplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_loco_swim_freestyle_trans_reactToSwim.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="37">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.5333334" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=a_facialOverlay_sad_x, loop_count=#1)" overridePosture="true" mask="Trackmask_Face" track="locomotionoverlay" mirror_conditional="False" suppress_footsteps="True" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_facialOverlay_angrySad.ma" focus="undefined" start_frame_offset="0" end_frame_offset="20" timescale="1" unique_id="43">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.5333334" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=a_react_embarrassed_squirm_x, loop_count=#1)" overridePosture="true" mask="Trackmask_UpperBody_NoArms" track="locomotionoverlay" mirror_conditional="False" suppress_footsteps="True" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_embarrassed_squirm.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="42">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+              <Choice weight="50" avoidRepeat="False">
+                <Controller target="x" controller="@ClipController(clip=a_loco_swim_freestyle_trans_swimToReact_x, loop_count=#1)" overridePosture="true" mask="" track="normalplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_loco_swim_freestyle_trans_swimToReact.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="48">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.5333334" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=a_swim_idle_x, loop_count=#1)" overridePosture="true" mask="" track="normalplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="NoBlendLoop" transition_class_out="NoBlendLoop" ik_configuration="a_swim_idle_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="47">
+                  <TransitionClassList>
+                    <Transition transition_class_name="NoBlendLoop" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="false" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=a_swim_idle_x, loop_count=#1)" overridePosture="true" mask="" track="normalplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="NoBlendLoop" transition_class_out="NoBlendLoop" ik_configuration="a_swim_idle_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="46">
+                  <TransitionClassList>
+                    <Transition transition_class_name="NoBlendLoop" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="false" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=a_swim_idle_longerBlend_x, loop_count=#1)" overridePosture="true" mask="" track="normalplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="NoBlendLoop" transition_class_out="Default" ik_configuration="a_swim_idle_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="45">
+                  <TransitionClassList>
+                    <Transition transition_class_name="NoBlendLoop" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="false" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=a_loco_swim_freestyle_trans_reactToSwim_x, loop_count=#1)" overridePosture="true" mask="" track="normalplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_loco_swim_freestyle_trans_reactToSwim.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="44">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.5333334" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=a_facialOverlay_sad_x, loop_count=#1)" overridePosture="true" mask="Trackmask_Face" track="locomotionoverlay" mirror_conditional="False" suppress_footsteps="True" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_facialOverlay_angrySad.ma" focus="undefined" start_frame_offset="0" end_frame_offset="20" timescale="1" unique_id="50">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.5333334" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=a_react_embarrassed_nervousLaugh_x, loop_count=#1)" overridePosture="true" mask="Trackmask_UpperBody_NoArms" track="locomotionoverlay" mirror_conditional="False" suppress_footsteps="True" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_embarrassed_nervousLaugh.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="49">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+            </RandomSelector>
+          </Choice>
+          <Choice value="Swim_MediumSpeed">
+            <Reference target="51" />
+          </Choice>
+          <Choice value="SwimMermaid" />
+          <Choice value="SwimMermaidMedium" />
+          <Choice value="SwimMermaidSlow" />
+        </ParameterSelector>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="fearWater" type="public" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="85">
+      <Choice value="swim--FullBody" track="locomotionoverlay" mask="">
+        <ParameterSelector parameter="x:walkstyle" unique_id="84">
+          <Choice value="Swim">
+            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="68">
+              <Choice weight="50" avoidRepeat="False">
+                <Controller target="x" controller="@ClipController(clip=a_facialOverlay_sad_x, loop_count=#1)" overridePosture="true" mask="Trackmask_Face" track="locomotionoverlay" mirror_conditional="False" suppress_footsteps="True" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_facialOverlay_angrySad.ma" focus="undefined" start_frame_offset="0" end_frame_offset="40" timescale="1" unique_id="55">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.5333334" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=a_react_scared_recoil_upper_overlay_swim_x, loop_count=#1)" overridePosture="true" mask="Trackmask_UpperBody_LeftArmOn" track="locomotionoverlay" mirror_conditional="False" suppress_footsteps="True" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_scared_recoil_worried_overlay_upper_swim.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="54">
+                  <TransitionClassList />
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=a_loco_swim_trans_swimToReact_x, loop_count=#1)" overridePosture="true" mask="" track="normalplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_loco_swim_trans_swimToReact_reactToSwim.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="60">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.5333334" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=a_swim_idle_x, loop_count=#1)" overridePosture="true" mask="" track="normalplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="NoBlendLoop" transition_class_out="NoBlendLoop" ik_configuration="a_swim_idle_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="59">
+                  <TransitionClassList>
+                    <Transition transition_class_name="NoBlendLoop" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="false" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=a_swim_idle_x, loop_count=#1)" overridePosture="true" mask="" track="normalplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="NoBlendLoop" transition_class_out="NoBlendLoop" ik_configuration="a_swim_idle_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="58">
+                  <TransitionClassList>
+                    <Transition transition_class_name="NoBlendLoop" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="false" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=a_swim_idle_longerBlend_x, loop_count=#1)" overridePosture="true" mask="" track="normalplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="NoBlendLoop" transition_class_out="Default" ik_configuration="a_swim_idle_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="8" timescale="1" unique_id="57">
+                  <TransitionClassList>
+                    <Transition transition_class_name="NoBlendLoop" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="false" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=a_loco_swim_trans_reactToSwim_x, loop_count=#1)" overridePosture="true" mask="" track="normalplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_loco_swim_trans_swimToReact_reactToSwim.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="56">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.5333334" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+              </Choice>
+              <Choice weight="50" avoidRepeat="False">
+                <Controller target="x" controller="@ClipController(clip=a_facialOverlay_sad_x, loop_count=#1)" overridePosture="true" mask="Trackmask_Face" track="locomotionoverlay" mirror_conditional="False" suppress_footsteps="True" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_facialOverlay_angrySad.ma" focus="undefined" start_frame_offset="0" end_frame_offset="40" timescale="1" unique_id="62">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.5333334" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=a_react_scared_death_overlay_upper_swim_x, loop_count=#1)" overridePosture="true" mask="Trackmask_UpperBody_LeftArmOn" track="locomotionoverlay" mirror_conditional="False" suppress_footsteps="True" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_scared_death_overlay_upper_swim.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="61">
+                  <TransitionClassList />
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=a_loco_swim_trans_swimToReact_x, loop_count=#1)" overridePosture="true" mask="" track="normalplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_loco_swim_trans_swimToReact_reactToSwim.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="67">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.5333334" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=a_swim_idle_x, loop_count=#1)" overridePosture="true" mask="" track="normalplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="NoBlendLoop" transition_class_out="NoBlendLoop" ik_configuration="a_swim_idle_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="66">
+                  <TransitionClassList>
+                    <Transition transition_class_name="NoBlendLoop" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="false" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=a_swim_idle_x, loop_count=#1)" overridePosture="true" mask="" track="normalplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="NoBlendLoop" transition_class_out="NoBlendLoop" ik_configuration="a_swim_idle_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="65">
+                  <TransitionClassList>
+                    <Transition transition_class_name="NoBlendLoop" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="false" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=a_swim_idle_longerBlend_x, loop_count=#1)" overridePosture="true" mask="" track="normalplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="NoBlendLoop" transition_class_out="Default" ik_configuration="a_swim_idle_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="6" timescale="1" unique_id="64">
+                  <TransitionClassList>
+                    <Transition transition_class_name="NoBlendLoop" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="false" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=a_loco_swim_trans_reactToSwim_x, loop_count=#1)" overridePosture="true" mask="" track="normalplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_loco_swim_trans_swimToReact_reactToSwim.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="63">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.5333334" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+              </Choice>
+            </RandomSelector>
+          </Choice>
+          <Choice value="SwimAngry">
+            <Reference target="68" />
+          </Choice>
+          <Choice value="SwimEnergized">
+            <Reference target="68" />
+          </Choice>
+          <Choice value="SwimPlayful">
+            <Reference target="68" />
+          </Choice>
+          <Choice value="SwimSad">
+            <Reference target="68" />
+          </Choice>
+          <Choice value="SwimSlow">
+            <Reference target="68" />
+          </Choice>
+          <Choice value="SwimCaughtInCurrent" />
+          <Choice value="Swim_HighSpeed">
+            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="83">
+              <Choice weight="50" avoidRepeat="False">
+                <Controller target="x" controller="@ClipController(clip=a_loco_swim_freestyle_trans_swimToReact_x, loop_count=#1)" overridePosture="true" mask="" track="normalplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_loco_swim_freestyle_trans_swimToReact.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="73">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.5333334" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=a_swim_idle_x, loop_count=#1)" overridePosture="true" mask="" track="normalplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="NoBlendLoop" transition_class_out="NoBlendLoop" ik_configuration="a_swim_idle_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="72">
+                  <TransitionClassList>
+                    <Transition transition_class_name="NoBlendLoop" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="false" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=a_swim_idle_x, loop_count=#1)" overridePosture="true" mask="" track="normalplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="NoBlendLoop" transition_class_out="NoBlendLoop" ik_configuration="a_swim_idle_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="71">
+                  <TransitionClassList>
+                    <Transition transition_class_name="NoBlendLoop" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="false" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=a_swim_idle_longerBlend_x, loop_count=#1)" overridePosture="true" mask="" track="normalplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="NoBlendLoop" transition_class_out="Default" ik_configuration="a_swim_idle_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="8" timescale="1" unique_id="70">
+                  <TransitionClassList>
+                    <Transition transition_class_name="NoBlendLoop" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="false" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=a_loco_swim_freestyle_trans_reactToSwim_x, loop_count=#1)" overridePosture="true" mask="" track="normalplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_loco_swim_freestyle_trans_reactToSwim.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="69">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.5333334" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=a_facialOverlay_sad_x, loop_count=#1)" overridePosture="true" mask="Trackmask_Face" track="locomotionoverlay" mirror_conditional="False" suppress_footsteps="True" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_facialOverlay_angrySad.ma" focus="undefined" start_frame_offset="0" end_frame_offset="20" timescale="1" unique_id="75">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.5333334" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=a_react_scared_recoil_upper_overlay_swim_x, loop_count=#1)" overridePosture="true" mask="Trackmask_UpperBody_LeftArmOn" track="locomotionoverlay" mirror_conditional="False" suppress_footsteps="True" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_scared_recoil_worried_overlay_upper_swim.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="74">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+              <Choice weight="50" avoidRepeat="False">
+                <Controller target="x" controller="@ClipController(clip=a_loco_swim_freestyle_trans_swimToReact_x, loop_count=#1)" overridePosture="true" mask="" track="normalplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_loco_swim_freestyle_trans_swimToReact.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="80">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.5333334" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=a_swim_idle_x, loop_count=#1)" overridePosture="true" mask="" track="normalplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="NoBlendLoop" transition_class_out="NoBlendLoop" ik_configuration="a_swim_idle_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="79">
+                  <TransitionClassList>
+                    <Transition transition_class_name="NoBlendLoop" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="false" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=a_swim_idle_x, loop_count=#1)" overridePosture="true" mask="" track="normalplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="NoBlendLoop" transition_class_out="NoBlendLoop" ik_configuration="a_swim_idle_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="78">
+                  <TransitionClassList>
+                    <Transition transition_class_name="NoBlendLoop" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="false" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=a_swim_idle_longerBlend_x, loop_count=#1)" overridePosture="true" mask="" track="normalplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="NoBlendLoop" transition_class_out="Default" ik_configuration="a_swim_idle_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="6" timescale="1" unique_id="77">
+                  <TransitionClassList>
+                    <Transition transition_class_name="NoBlendLoop" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="false" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=a_loco_swim_freestyle_trans_reactToSwim_x, loop_count=#1)" overridePosture="true" mask="" track="normalplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_loco_swim_freestyle_trans_reactToSwim.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="76">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.5333334" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=a_facialOverlay_sad_x, loop_count=#1)" overridePosture="true" mask="Trackmask_Face" track="locomotionoverlay" mirror_conditional="False" suppress_footsteps="True" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_facialOverlay_angrySad.ma" focus="undefined" start_frame_offset="0" end_frame_offset="20" timescale="1" unique_id="82">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.5333334" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=a_react_scared_death_overlay_upper_swim_x, loop_count=#1)" overridePosture="true" mask="Trackmask_UpperBody_LeftArmOn" track="locomotionoverlay" mirror_conditional="False" suppress_footsteps="True" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_scared_death_overlay_upper_swim.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="81">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+            </RandomSelector>
+          </Choice>
+          <Choice value="Swim_MediumSpeed">
+            <Reference target="83" />
+          </Choice>
+          <Choice value="SwimMermaid" />
+          <Choice value="SwimMermaidMedium" />
+          <Choice value="SwimMermaidSlow" />
+        </ParameterSelector>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="shiver" type="public" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="95">
+      <Choice value="swim--FullBody" track="locomotionoverlay" mask="">
+        <ParameterSelector parameter="x:walkstyle" unique_id="94">
+          <Choice value="Swim">
+            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="89">
+              <Choice weight="50" avoidRepeat="False">
+                <Controller target="x" controller="@ClipController(clip=a_loco_swim_trans_swimToReact_x, loop_count=#1)" overridePosture="false" mask="" track="locomotionoverlay" mirror_conditional="False" suppress_footsteps="True" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_loco_swim_trans_swimToReact_reactToSwim.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="88">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.5333334" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=a_react_cold_shiver_swim_x, loop_count=#1)" overridePosture="false" mask="" track="locomotionoverlay" mirror_conditional="False" suppress_footsteps="True" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_cold_shiver_swim.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="87">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=a_loco_swim_trans_reactToSwim_x, loop_count=#1)" overridePosture="false" mask="" track="locomotionoverlay" mirror_conditional="False" suppress_footsteps="True" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_loco_swim_trans_swimToReact_reactToSwim.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="86">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.5333334" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+              </Choice>
+            </RandomSelector>
+          </Choice>
+          <Choice value="SwimAngry">
+            <Reference target="89" />
+          </Choice>
+          <Choice value="SwimEnergized">
+            <Reference target="89" />
+          </Choice>
+          <Choice value="SwimPlayful">
+            <Reference target="89" />
+          </Choice>
+          <Choice value="SwimSad">
+            <Reference target="89" />
+          </Choice>
+          <Choice value="SwimSlow">
+            <Reference target="89" />
+          </Choice>
+          <Choice value="SwimCaughtInCurrent" />
+          <Choice value="Swim_HighSpeed">
+            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="93">
+              <Choice weight="50" avoidRepeat="False">
+                <Controller target="x" controller="@ClipController(clip=a_loco_swim_freestyle_trans_swimToReact_x, loop_count=#1)" overridePosture="false" mask="" track="locomotionoverlay" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_loco_swim_freestyle_trans_swimToReact.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="92">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.5333334" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=a_react_cold_shiver_swim_x, loop_count=#1)" overridePosture="false" mask="" track="locomotionoverlay" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_cold_shiver_swim.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="91">
+                  <TransitionClassList />
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=a_loco_swim_freestyle_trans_reactToSwim_x, loop_count=#1)" overridePosture="false" mask="" track="locomotionoverlay" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_loco_swim_freestyle_trans_reactToSwim.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="90">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.5333334" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+              </Choice>
+            </RandomSelector>
+          </Choice>
+          <Choice value="Swim_MediumSpeed">
+            <Reference target="93" />
+          </Choice>
+          <Choice value="SwimMermaid" />
+          <Choice value="SwimMermaidMedium" />
+          <Choice value="SwimMermaidSlow" />
+        </ParameterSelector>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="splashedAngry" type="public" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="141">
+      <Choice value="swim--FullBody" track="locomotionoverlay" mask="">
+        <ParameterSelector parameter="x:walkstyle" unique_id="140">
+          <Choice value="Swim">
+            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="113">
+              <Choice weight="50" avoidRepeat="False">
+                <Controller target="x" controller="@ClipController(clip=a_motive_swim_idle_longerBlend_noVox_x, loop_count=#1)" overridePosture="true" mask="" track="normalplus" mirror_conditional="False" suppress_footsteps="True" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_motive_swim_idle_longerBlend.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="99">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.5333334" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=a_swim_idle_x, loop_count=#1)" overridePosture="true" mask="" track="normalplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="NoBlendLoop" transition_class_out="NoBlendLoop" ik_configuration="a_swim_idle_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="98">
+                  <TransitionClassList>
+                    <Transition transition_class_name="NoBlendLoop" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="false" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=a_swim_idle_longerBlend_x, loop_count=#1)" overridePosture="true" mask="" track="normalplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="NoBlendLoop" transition_class_out="Default" ik_configuration="a_swim_idle_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="18" timescale="1" unique_id="97">
+                  <TransitionClassList>
+                    <Transition transition_class_name="NoBlendLoop" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="false" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=a_loco_swim_trans_reactToSwim_x, loop_count=#1)" overridePosture="true" mask="" track="normalplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_loco_swim_trans_swimToReact_reactToSwim.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="96">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.5333334" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=a_react_cringe_fxSplash_x, loop_count=#1)" overridePosture="true" mask="Trackmask_UpperBody_NoArms" track="locomotionoverlay" mirror_conditional="False" suppress_footsteps="True" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_cringe.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="102">
+                  <TransitionClassList />
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=a_react_angry_high_fistShake_x, loop_count=#1)" overridePosture="true" mask="Trackmask_UpperBody_NoArms" track="locomotionoverlay" mirror_conditional="False" suppress_footsteps="True" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_angry_high_fistShake.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="101">
+                  <TransitionClassList />
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=a_facialOverlay_angry_x, loop_count=#1)" overridePosture="true" mask="Trackmask_Face" track="locomotionoverlay" mirror_conditional="False" suppress_footsteps="True" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_facialOverlay_angrySad.ma" focus="undefined" start_frame_offset="0" end_frame_offset="120" timescale="1" unique_id="100">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+              <Choice weight="50" avoidRepeat="False">
+                <Controller target="x" controller="@ClipController(clip=a_react_uncomfortable_high_shudder_fxSplash_x, loop_count=#1)" overridePosture="true" mask="Trackmask_UpperBody_NoArms" track="locomotionoverlay" mirror_conditional="False" suppress_footsteps="True" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_uncomfortable_high_shudder.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="104">
+                  <TransitionClassList />
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=a_facialOverlay_angry_x, loop_count=#1)" overridePosture="true" mask="Trackmask_Face" track="locomotionoverlay" mirror_conditional="False" suppress_footsteps="True" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_facialOverlay_angrySad.ma" focus="undefined" start_frame_offset="0" end_frame_offset="100" timescale="1" unique_id="103">
+                  <TransitionClassList />
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=a_motive_swim_idle_longerBlend_noVox_x, loop_count=#1)" overridePosture="true" mask="" track="normalplus" mirror_conditional="False" suppress_footsteps="True" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_motive_swim_idle_longerBlend.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="106">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.5333334" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=a_loco_swim_trans_reactToSwim_x, loop_count=#1)" overridePosture="true" mask="" track="normalplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_loco_swim_trans_swimToReact_reactToSwim.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="105">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.5333334" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+              </Choice>
+              <Choice weight="50" avoidRepeat="False">
+                <Controller target="x" controller="@ClipController(clip=a_motive_swim_idle_longerBlend_noVox_x, loop_count=#1)" overridePosture="true" mask="" track="normalplus" mirror_conditional="False" suppress_footsteps="True" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_motive_swim_idle_longerBlend.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="109">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.5333334" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=a_swim_idle_longerBlend_x, loop_count=#1)" overridePosture="true" mask="" track="normalplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="NoBlendLoop" transition_class_out="Default" ik_configuration="a_swim_idle_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="18" timescale="1" unique_id="108">
+                  <TransitionClassList>
+                    <Transition transition_class_name="NoBlendLoop" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="false" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=a_loco_swim_trans_reactToSwim_x, loop_count=#1)" overridePosture="true" mask="" track="normalplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_loco_swim_trans_swimToReact_reactToSwim.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="107">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.5333334" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=a_react_cringe_fxSplash_x, loop_count=#1)" overridePosture="true" mask="Trackmask_UpperBody_NoArms" track="locomotionoverlay" mirror_conditional="False" suppress_footsteps="True" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_cringe.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="112">
+                  <TransitionClassList />
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=a_react_angry_annoyedSigh_x, loop_count=#1)" overridePosture="true" mask="Trackmask_UpperBody_NoArms" track="locomotionoverlay" mirror_conditional="False" suppress_footsteps="True" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_angry_annoyedSigh.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="111">
+                  <TransitionClassList />
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=a_facialOverlay_angry_x, loop_count=#1)" overridePosture="true" mask="Trackmask_Face" track="locomotionoverlay" mirror_conditional="False" suppress_footsteps="True" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_facialOverlay_angrySad.ma" focus="undefined" start_frame_offset="0" end_frame_offset="120" timescale="1" unique_id="110">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+            </RandomSelector>
+          </Choice>
+          <Choice value="SwimAngry">
+            <Reference target="113" />
+          </Choice>
+          <Choice value="SwimEnergized">
+            <Reference target="113" />
+          </Choice>
+          <Choice value="SwimPlayful">
+            <Reference target="113" />
+          </Choice>
+          <Choice value="SwimSad">
+            <Reference target="113" />
+          </Choice>
+          <Choice value="SwimSlow">
+            <Reference target="113" />
+          </Choice>
+          <Choice value="SwimCaughtInCurrent" />
+          <Choice value="Swim_HighSpeed">
+            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="139">
+              <Choice weight="50" avoidRepeat="False">
+                <Controller target="x" controller="@ClipController(clip=a_loco_swim_trans_swimToReact_x, loop_count=#1)" overridePosture="true" mask="" track="normalplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_loco_swim_trans_swimToReact_reactToSwim.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="118">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.5333334" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=a_motive_swim_idle_longerBlend_noVox_x, loop_count=#1)" overridePosture="true" mask="" track="normalplus" mirror_conditional="False" suppress_footsteps="True" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_motive_swim_idle_longerBlend.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="117">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.5333334" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.5333334" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=a_swim_idle_x, loop_count=#1)" overridePosture="true" mask="" track="normalplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="NoBlendLoop" transition_class_out="NoBlendLoop" ik_configuration="a_swim_idle_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="116">
+                  <TransitionClassList>
+                    <Transition transition_class_name="NoBlendLoop" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="false" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=a_swim_idle_longerBlend_x, loop_count=#1)" overridePosture="true" mask="" track="normalplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="NoBlendLoop" transition_class_out="Default" ik_configuration="a_swim_idle_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="25" timescale="1" unique_id="115">
+                  <TransitionClassList>
+                    <Transition transition_class_name="NoBlendLoop" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="false" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.5333334" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=a_loco_swim_freestyle_trans_reactToSwim_x, loop_count=#1)" overridePosture="true" mask="" track="normalplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_loco_swim_freestyle_trans_reactToSwim.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="114">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.5333334" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.5333334" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=a_facialOverlay_angry_x, loop_count=#1)" overridePosture="true" mask="Trackmask_None" track="locomotionoverlay" mirror_conditional="False" suppress_footsteps="True" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_facialOverlay_angrySad.ma" focus="undefined" start_frame_offset="0" end_frame_offset="133" timescale="1" unique_id="122">
+                  <TransitionClassList />
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=a_react_cringe_fxSplash_x, loop_count=#1)" overridePosture="true" mask="Trackmask_UpperBody_NoArms" track="locomotionoverlay" mirror_conditional="False" suppress_footsteps="True" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_cringe.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="121">
+                  <TransitionClassList />
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=a_react_angry_high_fistShake_x, loop_count=#1)" overridePosture="true" mask="Trackmask_UpperBody_NoArms" track="locomotionoverlay" mirror_conditional="False" suppress_footsteps="True" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_angry_high_fistShake.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="120">
+                  <TransitionClassList />
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=a_facialOverlay_angry_x, loop_count=#1)" overridePosture="true" mask="Trackmask_Face" track="locomotionoverlay" mirror_conditional="False" suppress_footsteps="True" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_facialOverlay_angrySad.ma" focus="undefined" start_frame_offset="0" end_frame_offset="120" timescale="1" unique_id="119">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+              <Choice weight="50" avoidRepeat="False">
+                <Controller target="x" controller="@ClipController(clip=a_facialOverlay_angry_x, loop_count=#1)" overridePosture="true" mask="Trackmask_Face" track="locomotionoverlay" mirror_conditional="False" suppress_footsteps="True" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_facialOverlay_angrySad.ma" focus="undefined" start_frame_offset="0" end_frame_offset="139" timescale="1" unique_id="125">
+                  <TransitionClassList />
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=a_react_uncomfortable_high_shudder_fxSplash_x, loop_count=#1)" overridePosture="true" mask="Trackmask_UpperBody_NoArms" track="locomotionoverlay" mirror_conditional="False" suppress_footsteps="True" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_uncomfortable_high_shudder.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="124">
+                  <TransitionClassList />
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=a_facialOverlay_angry_x, loop_count=#1)" overridePosture="true" mask="Trackmask_Face" track="locomotionoverlay" mirror_conditional="False" suppress_footsteps="True" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_facialOverlay_angrySad.ma" focus="undefined" start_frame_offset="0" end_frame_offset="100" timescale="1" unique_id="123">
+                  <TransitionClassList />
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=a_loco_swim_trans_swimToReact_x, loop_count=#1)" overridePosture="true" mask="" track="normalplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_loco_swim_trans_swimToReact_reactToSwim.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="130">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.5333334" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=a_swim_idle_x, loop_count=#1)" overridePosture="true" mask="" track="normalplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="NoBlendLoop" transition_class_out="NoBlendLoop" ik_configuration="a_swim_idle_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="129">
+                  <TransitionClassList>
+                    <Transition transition_class_name="NoBlendLoop" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="false" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=a_swim_idle_x, loop_count=#1)" overridePosture="true" mask="" track="normalplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="NoBlendLoop" transition_class_out="NoBlendLoop" ik_configuration="a_swim_idle_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="128">
+                  <TransitionClassList>
+                    <Transition transition_class_name="NoBlendLoop" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="false" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=a_swim_idle_longerBlend_x, loop_count=#1)" overridePosture="true" mask="" track="normalplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="NoBlendLoop" transition_class_out="Default" ik_configuration="a_swim_idle_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="25" timescale="1" unique_id="127">
+                  <TransitionClassList>
+                    <Transition transition_class_name="NoBlendLoop" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="false" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.5333334" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=a_loco_swim_freestyle_trans_reactToSwim_x, loop_count=#1)" overridePosture="true" mask="" track="normalplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_loco_swim_freestyle_trans_reactToSwim.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="126">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.5333334" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.5333334" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+              </Choice>
+              <Choice weight="50" avoidRepeat="False">
+                <Controller target="x" controller="@ClipController(clip=a_loco_swim_trans_swimToReact_x, loop_count=#1)" overridePosture="true" mask="" track="normalplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_loco_swim_trans_swimToReact_reactToSwim.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="134">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.5333334" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=a_motive_swim_idle_x, loop_count=#1)" overridePosture="true" mask="" track="normalplus" mirror_conditional="False" suppress_footsteps="True" transition_class_in="NoBlendLoop" transition_class_out="NoBlendLoop" ik_configuration="a_motive_swim_idle.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="133">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                    <Transition transition_class_name="NoBlendLoop" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=a_swim_idle_longerBlend_x, loop_count=#1)" overridePosture="true" mask="" track="normalplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="NoBlendLoop" transition_class_out="Default" ik_configuration="a_swim_idle_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="18" timescale="1" unique_id="132">
+                  <TransitionClassList>
+                    <Transition transition_class_name="NoBlendLoop" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="false" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=a_loco_swim_freestyle_trans_reactToSwim_x, loop_count=#1)" overridePosture="true" mask="" track="normalplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_loco_swim_freestyle_trans_reactToSwim.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="131">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.5333334" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=a_facialOverlay_angry_x, loop_count=#1)" overridePosture="true" mask="Trackmask_Face" track="locomotionoverlay" mirror_conditional="False" suppress_footsteps="True" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_facialOverlay_angrySad.ma" focus="undefined" start_frame_offset="0" end_frame_offset="126" timescale="1" unique_id="138">
+                  <TransitionClassList />
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=a_react_cringe_fxSplash_x, loop_count=#1)" overridePosture="true" mask="Trackmask_UpperBody_NoArms" track="locomotionoverlay" mirror_conditional="False" suppress_footsteps="True" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_cringe.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="137">
+                  <TransitionClassList />
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=a_react_angry_annoyedSigh_x, loop_count=#1)" overridePosture="true" mask="Trackmask_UpperBody_NoArms" track="locomotionoverlay" mirror_conditional="False" suppress_footsteps="True" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_angry_annoyedSigh.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="136">
+                  <TransitionClassList />
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=a_facialOverlay_angry_x, loop_count=#1)" overridePosture="true" mask="Trackmask_Face" track="locomotionoverlay" mirror_conditional="False" suppress_footsteps="True" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_facialOverlay_angrySad.ma" focus="undefined" start_frame_offset="0" end_frame_offset="120" timescale="1" unique_id="135">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+            </RandomSelector>
+          </Choice>
+          <Choice value="Swim_MediumSpeed">
+            <Reference target="139" />
+          </Choice>
+          <Choice value="SwimMermaid" />
+          <Choice value="SwimMermaidMedium" />
+          <Choice value="SwimMermaidSlow" />
+        </ParameterSelector>
+      </Choice>
+    </PostureSelector>
+  </State>
+</ASM>

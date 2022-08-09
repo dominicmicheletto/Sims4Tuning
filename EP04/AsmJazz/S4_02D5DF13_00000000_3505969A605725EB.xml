@@ -1,0 +1,229 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="petExamTable_Pet_Stressed_Idles" dcc="sage">
+  <Actor name="x" type="Sim" master="true" virtual="false" />
+  <Actor name="ExamTable" type="Object" virtual="true" />
+  <Actor name="postureObject" type="Object" virtual="true" />
+  <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
+  <Parameter name="x:species" type="enum" labels="human,dog,smalldog,cat" default="human" />
+  <IkConfiguration name="ad_react_scared_skittish_layDown.ma">
+    <SourceFile name="ad_react_scared_skittish_layDown.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="ad_react_sad_whimper_layDown.ma">
+    <SourceFile name="ad_react_sad_whimper_layDown.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="ad_react_excited_howl_layDown.ma">
+    <SourceFile name="ad_react_excited_howl_layDown.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="ad_react_angry_bark_layDown.ma">
+    <SourceFile name="ad_react_angry_bark_layDown.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="ac_react_anxious_whineOneShot_layDown.ma">
+    <SourceFile name="ac_react_anxious_whineOneShot_layDown.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="ac_react_scared_skittish_layDown.ma">
+    <SourceFile name="ac_react_scared_skittish_layDown.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="ac_react_angry_hissAt_layDown.ma">
+    <SourceFile name="ac_react_angry_hissAt_layDown.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="ac_react_anxious_yowl_layDown.ma">
+    <SourceFile name="ac_react_anxious_yowl_layDown.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="ac_react_hyper_meow_noisy_layDown.ma">
+    <SourceFile name="ac_react_hyper_meow_noisy_layDown.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="ac_react_scared_cower_layDown.ma">
+    <SourceFile name="ac_react_scared_cower_layDown.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="ad_react_scared_cower_layDown.ma">
+    <SourceFile name="ad_react_scared_cower_layDown.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <PostureManifest actors="">
+    <Support family="layDown" compatibility="FullBody" carry_left="-" carry_right="-" surface="*" />
+  </PostureManifest>
+  <State type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" name="Stressed_1" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" name="Stressed_2" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" name="Stressed_3" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="hub" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <Connection from="Stressed_1" to="hub" />
+  <Connection from="Stressed_2" to="hub" />
+  <Connection from="Stressed_3" to="hub" />
+  <Connection from="entry" to="hub" />
+  <Connection from="hub" to="Stressed_1" />
+  <Connection from="hub" to="Stressed_2" />
+  <Connection from="hub" to="Stressed_3" />
+  <Connection from="hub" to="exit" />
+  <State name="Stressed_1" type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <MakeController>
+      <ParameterSelector parameter="x:species" unique_id="7">
+        <Choice value="human" />
+        <Choice value="dog">
+          <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="3">
+            <Choice weight="95" avoidRepeat="False">
+              <Controller target="x" controller="@ClipController(clip=ad_react_sad_whimper_layDown_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ad_react_sad_whimper_layDown.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="1">
+                <TransitionClassList />
+              </Controller>
+            </Choice>
+            <Choice weight="16" avoidRepeat="False">
+              <Controller target="x" controller="@ClipController(clip=ad_react_excited_howl_layDown_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ad_react_excited_howl_layDown.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="2">
+                <TransitionClassList />
+              </Controller>
+            </Choice>
+          </RandomSelector>
+        </Choice>
+        <Choice value="smalldog">
+          <Reference target="3" />
+        </Choice>
+        <Choice value="cat">
+          <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="6">
+            <Choice weight="69" avoidRepeat="False">
+              <Controller target="x" controller="@ClipController(clip=ac_react_anxious_whineOneShot_layDown_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ac_react_anxious_whineOneShot_layDown.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="4">
+                <TransitionClassList />
+              </Controller>
+            </Choice>
+            <Choice weight="10" avoidRepeat="False">
+              <Controller target="x" controller="@ClipController(clip=ac_react_hyper_meow_noisy_layDown_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ac_react_hyper_meow_noisy_layDown.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="5">
+                <TransitionClassList />
+              </Controller>
+            </Choice>
+          </RandomSelector>
+        </Choice>
+      </ParameterSelector>
+    </MakeController>
+  </State>
+  <State name="Stressed_2" type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <MakeController>
+      <ParameterSelector parameter="x:species" unique_id="16">
+        <Choice value="human" />
+        <Choice value="dog">
+          <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="11">
+            <Choice weight="22" avoidRepeat="False">
+              <Controller target="x" controller="@ClipController(clip=ad_react_sad_whimper_layDown_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ad_react_sad_whimper_layDown.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="8">
+                <TransitionClassList />
+              </Controller>
+            </Choice>
+            <Choice weight="71" avoidRepeat="False">
+              <Controller target="x" controller="@ClipController(clip=ad_react_scared_skittish_layDown_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ad_react_scared_skittish_layDown.ma" focus="none" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="9">
+                <TransitionClassList />
+              </Controller>
+            </Choice>
+            <Choice weight="71" avoidRepeat="False">
+              <Controller target="x" controller="@ClipController(clip=ad_react_scared_cower_layDown_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ad_react_scared_cower_layDown.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="10">
+                <TransitionClassList />
+              </Controller>
+            </Choice>
+          </RandomSelector>
+        </Choice>
+        <Choice value="smalldog">
+          <Reference target="11" />
+        </Choice>
+        <Choice value="cat">
+          <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="15">
+            <Choice weight="71" avoidRepeat="True">
+              <Controller target="x" controller="@ClipController(clip=ac_react_angry_hissAt_layDown_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ac_react_angry_hissAt_layDown.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="12">
+                <TransitionClassList />
+              </Controller>
+            </Choice>
+            <Choice weight="27" avoidRepeat="False">
+              <Controller target="x" controller="@ClipController(clip=ac_react_hyper_meow_noisy_layDown_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ac_react_hyper_meow_noisy_layDown.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="13">
+                <TransitionClassList />
+              </Controller>
+            </Choice>
+            <Choice weight="70" avoidRepeat="False">
+              <Controller target="x" controller="@ClipController(clip=ac_react_scared_cower_layDown_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ac_react_scared_cower_layDown.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="14">
+                <TransitionClassList />
+              </Controller>
+            </Choice>
+          </RandomSelector>
+        </Choice>
+      </ParameterSelector>
+    </MakeController>
+  </State>
+  <State name="Stressed_3" type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <MakeController>
+      <ParameterSelector parameter="x:species" unique_id="27">
+        <Choice value="human" />
+        <Choice value="dog">
+          <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="21">
+            <Choice weight="8" avoidRepeat="False">
+              <Controller target="x" controller="@ClipController(clip=ad_react_sad_whimper_layDown_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ad_react_sad_whimper_layDown.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="17">
+                <TransitionClassList />
+              </Controller>
+            </Choice>
+            <Choice weight="51" avoidRepeat="False">
+              <Controller target="x" controller="@ClipController(clip=ad_react_scared_skittish_layDown_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ad_react_scared_skittish_layDown.ma" focus="none" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="18">
+                <TransitionClassList />
+              </Controller>
+            </Choice>
+            <Choice weight="99" avoidRepeat="False">
+              <Controller target="x" controller="@ClipController(clip=ad_react_excited_howl_layDown_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ad_react_excited_howl_layDown.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="19">
+                <TransitionClassList />
+              </Controller>
+            </Choice>
+            <Choice weight="100" avoidRepeat="False">
+              <Controller target="x" controller="@ClipController(clip=ad_react_angry_bark_layDown_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ad_react_angry_bark_layDown.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="20">
+                <TransitionClassList />
+              </Controller>
+            </Choice>
+          </RandomSelector>
+        </Choice>
+        <Choice value="smalldog">
+          <Reference target="21" />
+        </Choice>
+        <Choice value="cat">
+          <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="26">
+            <Choice weight="68" avoidRepeat="True">
+              <Controller target="x" controller="@ClipController(clip=ac_react_scared_skittish_layDown_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ac_react_scared_skittish_layDown.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="22">
+                <TransitionClassList />
+              </Controller>
+            </Choice>
+            <Choice weight="68" avoidRepeat="True">
+              <Controller target="x" controller="@ClipController(clip=ac_react_angry_hissAt_layDown_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ac_react_angry_hissAt_layDown.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="23">
+                <TransitionClassList />
+              </Controller>
+            </Choice>
+            <Choice weight="90" avoidRepeat="False">
+              <Controller target="x" controller="@ClipController(clip=ac_react_anxious_yowl_layDown_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ac_react_anxious_yowl_layDown.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="24">
+                <TransitionClassList />
+              </Controller>
+            </Choice>
+            <Choice weight="89" avoidRepeat="False">
+              <Controller target="x" controller="@ClipController(clip=ac_react_hyper_meow_noisy_layDown_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ac_react_hyper_meow_noisy_layDown.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="25">
+                <TransitionClassList />
+              </Controller>
+            </Choice>
+          </RandomSelector>
+        </Choice>
+      </ParameterSelector>
+    </MakeController>
+  </State>
+  <State name="hub" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+  </State>
+</ASM>

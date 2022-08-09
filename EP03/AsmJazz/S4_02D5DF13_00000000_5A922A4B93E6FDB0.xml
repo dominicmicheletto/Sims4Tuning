@@ -1,0 +1,94 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="performanceSpace_react_phoneLight" dcc="sage">
+  <Actor name="x" type="Sim" master="true" virtual="false" />
+  <Actor name="phone" type="Prop" virtual="false" object_def_resource_key="c0db5ae7:00000000:0000000000023819#gadgetSmlPhoneCellGEN_01" />
+  <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
+  <Parameter name="x:carryState" type="enum" labels="none,left,right,both" default="right" />
+  <IkConfiguration name="a_performanceSpace_react_phoneLight.ma">
+    <SourceFile name="a_performanceSpace_react_phoneLight.ma">
+      <MapNamespace namespace="phone" actor="phone" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <PostureManifest actors="" />
+  <PostureManifest actors="x">
+    <Support family="stand" compatibility="FullBody" carry_left="*" carry_right="*" surface="*" />
+    <Support family="stand" compatibility="UpperBody" carry_left="*" carry_right="*" surface="*" />
+    <Support family="movingStand" compatibility="UpperBody" carry_left="*" carry_right="*" surface="*" />
+  </PostureManifest>
+  <State type="private" skippable="false" interrupt_this="false" name="Mirror" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="React_phoneLight" focus="head" facialoverlays="true" tailoverlays="true" />
+  <Connection from="Mirror" to="React_phoneLight" />
+  <Connection from="React_phoneLight" to="exit" />
+  <Connection from="entry" to="Mirror" />
+  <State name="Mirror" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="3">
+      <Choice value="-movingStand-UpperBody" track="normal" mask="Trackmask_UpperBody">
+        <ParameterSelector parameter="x:carryState" unique_id="2">
+          <Choice value="none" />
+          <Choice value="left" />
+          <Choice value="right">
+            <SetMirror target="x" mirror="true" unique_id="1" />
+          </Choice>
+          <Choice value="both" />
+        </ParameterSelector>
+      </Choice>
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <Reference target="2" />
+      </Choice>
+      <Choice value="-stand-UpperBody" track="normal" mask="Trackmask_UpperBody">
+        <Reference target="2" />
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="React_phoneLight" type="public" skippable="false" interrupt_this="false" focus="head" facialoverlays="true" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="10">
+      <Choice value="-movingStand-UpperBody" track="normalplus" mask="Trackmask_SoftArms">
+        <ParameterSelector parameter="x:carryState" unique_id="6">
+          <Choice value="none">
+            <SetMirror target="x" mirror="true" unique_id="5" />
+            <Controller target="x" controller="@ClipController(clip=a_performanceSpace_react_phoneLight_x, loop_count=#1)" overridePosture="true" mask="Trackmask_UpperBody" track="normalplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_performanceSpace_react_phoneLight.ma" focus="none" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="4">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice value="left">
+            <Reference target="5" />
+            <Reference target="4" />
+          </Choice>
+          <Choice value="right">
+            <Reference target="4" />
+          </Choice>
+          <Choice value="both" />
+        </ParameterSelector>
+      </Choice>
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <ParameterSelector parameter="x:carryState" unique_id="9">
+          <Choice value="none">
+            <SetMirror target="x" mirror="true" unique_id="8" />
+            <Controller target="x" controller="@ClipController(clip=a_performanceSpace_react_phoneLight_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_performanceSpace_react_phoneLight.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="7">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice value="left">
+            <Reference target="8" />
+            <Reference target="7" />
+          </Choice>
+          <Choice value="right">
+            <Reference target="7" />
+          </Choice>
+          <Choice value="both" />
+        </ParameterSelector>
+      </Choice>
+      <Choice value="-stand-UpperBody" track="normalplus" mask="Trackmask_UpperBody">
+        <Reference target="9" />
+      </Choice>
+    </PostureSelector>
+  </State>
+</ASM>

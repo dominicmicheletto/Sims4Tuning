@@ -1,0 +1,89 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="soc_NT_makeToast_reactionlets" dcc="sage">
+  <Actor name="x" type="Sim" master="true" virtual="false" />
+  <Actor name="consumable" type="Object" virtual="false" />
+  <Actor name="sitTemplate" type="Object" virtual="true" />
+  <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="x:sex" type="enum" labels="male,female" default="female" />
+  <Parameter name="consumable:carryObject" type="string" labels="" default="drinkTumbler" />
+  <Parameter name="consumable:Quality" type="enum" labels="Quality_Poor,Quality_Normal,Quality_Outstanding" default="Quality_Normal" />
+  <Parameter name="consumable:carryTrack" type="enum" labels="left,right" default="left" />
+  <Parameter name="consumable:spoiled" type="enum" labels="notSpoiled,Spoiled" default="notSpoiled" />
+  <PostureManifest actors="" />
+  <PostureManifest actors="x">
+    <Support family="stand" compatibility="FullBody" carry_left="consumable" carry_right="-" surface="*" />
+    <Support family="stand" compatibility="FullBody" carry_left="-" carry_right="consumable" surface="*" />
+    <Support family="stand" compatibility="UpperBody" carry_left="consumable" carry_right="-" surface="*" />
+    <Support family="stand" compatibility="UpperBody" carry_left="-" carry_right="consumable" surface="*" />
+    <Support family="sit" compatibility="FullBody" carry_left="consumable" carry_right="-" surface="*" />
+    <Support family="sit" compatibility="FullBody" carry_left="-" carry_right="consumable" surface="*" />
+    <Support family="sit" compatibility="UpperBody" carry_left="consumable" carry_right="-" surface="*" />
+    <Support family="sit" compatibility="UpperBody" carry_left="-" carry_right="consumable" surface="*" />
+    <Support family="movingStand" compatibility="UpperBody" carry_left="consumable" carry_right="-" surface="*" />
+    <Support family="movingStand" compatibility="UpperBody" carry_left="-" carry_right="consumable" surface="*" />
+  </PostureManifest>
+  <State type="private" skippable="false" interrupt_this="false" name="mirror" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="reactionlet" focus="none" facialoverlays="false" tailoverlays="true" />
+  <Connection from="entry" to="mirror" />
+  <Connection from="mirror" to="reactionlet" />
+  <Connection from="reactionlet" to="exit" />
+  <State name="mirror" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <ParameterSelector parameter="consumable:carryTrack" unique_id="2">
+      <Choice value="left">
+        <SetMirror target="x" mirror="true" unique_id="1" />
+      </Choice>
+      <Choice value="right" />
+    </ParameterSelector>
+  </State>
+  <State name="reactionlet" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="9">
+      <Choice value="-movingStand-UpperBody" track="carryoverride" mask="Trackmask_UpperBody">
+        <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="5">
+          <Choice weight="100" avoidRepeat="False">
+            <Controller target="x" controller="@ClipController(clip=a_react_makeToast_{consumable:carryObject}_raiseAndDrink02_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="3">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice weight="100" avoidRepeat="False">
+            <Controller target="x" controller="@ClipController(clip=a_react_makeToast_{consumable:carryObject}_raiseAndDrink01_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="4">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+        </RandomSelector>
+      </Choice>
+      <Choice value="-sit-FullBody" track="carryinteraction" mask="">
+        <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="8">
+          <Choice weight="100" avoidRepeat="False">
+            <Controller target="x" controller="@ClipController(clip=a_react_makeToast_{consumable:carryObject}_raiseAndDrink01_seated_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="6">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice weight="100" avoidRepeat="False">
+            <Controller target="x" controller="@ClipController(clip=a_react_makeToast_{consumable:carryObject}_raiseAndDrink02_seated_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="7">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+        </RandomSelector>
+      </Choice>
+      <Choice value="-sit-UpperBody" track="carryinteraction" mask="Trackmask_UpperBody">
+        <Reference target="8" />
+      </Choice>
+      <Choice value="-stand-FullBody" track="carryinteraction" mask="">
+        <Reference target="5" />
+      </Choice>
+      <Choice value="-stand-UpperBody" track="carryinteraction" mask="Trackmask_UpperBody">
+        <Reference target="5" />
+      </Choice>
+    </PostureSelector>
+  </State>
+</ASM>

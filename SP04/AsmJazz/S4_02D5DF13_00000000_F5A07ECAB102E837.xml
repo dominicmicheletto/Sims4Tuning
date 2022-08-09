@@ -1,0 +1,315 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="pumpkinCarvingStation_use" dcc="sage">
+  <Actor name="x" type="Sim" master="true" virtual="false" />
+  <Actor name="CarvingStation" type="Object" virtual="true" />
+  <Actor name="Pumpkin" type="Object" virtual="false" />
+  <Actor name="carvingKnife" type="Prop" virtual="false" object_def_resource_key="c0db5ae7:00000000:000000000001a05a#toolKnifeCarving_SP04GEN" />
+  <Actor name="Knife" type="Prop" virtual="false" object_def_resource_key="c0db5ae7:00000000:0000000000001fbb#toolKnifeChefGEN_01_prop" />
+  <Actor name="Scraper" type="Prop" virtual="false" object_def_resource_key="c0db5ae7:00000000:000000000001a05b#toolSculptScraper_SP04GEN" />
+  <Actor name="Spoon" type="Prop" virtual="false" object_def_resource_key="c0db5ae7:00000000:000000000001a059#toolSpoonLarge_SP04GENPlastic" />
+  <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
+  <Parameter name="x:mood" type="enum" labels="happy,confident,angry,sad,bored,embarrassed,uncomfortable,playful,tense,focused,energized,flirty,fine,inspired,dazed" default="happy" />
+  <IkConfiguration name="a2o_carvingStation_startCarving.ma">
+    <SourceFile name="a2o_carvingStation_startCarving.ma">
+      <MapNamespace namespace="carvingStation" actor="CarvingStation" />
+      <MapNamespace namespace="pumpkin" actor="Pumpkin" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_carvingStation_scoopSeeds.ma">
+    <SourceFile name="a2o_carvingStation_scoopSeeds.ma">
+      <MapNamespace namespace="carvingKnife" actor="carvingKnife" />
+      <MapNamespace namespace="carvingStation" actor="CarvingStation" />
+      <MapNamespace namespace="pumpkin" actor="Pumpkin" />
+      <MapNamespace namespace="spoon" actor="Spoon" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_carvingStation_carveAngry.ma">
+    <SourceFile name="a2o_carvingStation_carveAngry.ma">
+      <MapNamespace namespace="carvingStation" actor="CarvingStation" />
+      <MapNamespace namespace="knife" actor="Knife" />
+      <MapNamespace namespace="pumpkin" actor="Pumpkin" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_carvingStation_carveLoops.ma">
+    <SourceFile name="a2o_carvingStation_carveLoops.ma">
+      <MapNamespace namespace="carvingKnife" actor="carvingKnife" />
+      <MapNamespace namespace="carvingStation" actor="CarvingStation" />
+      <MapNamespace namespace="pumpkin" actor="Pumpkin" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_carvingStation_shaveLoops.ma">
+    <SourceFile name="a2o_carvingStation_shaveLoops.ma">
+      <MapNamespace namespace="carvingStation" actor="CarvingStation" />
+      <MapNamespace namespace="pumpkin" actor="Pumpkin" />
+      <MapNamespace namespace="scraper" actor="Scraper" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <PostureManifest actors="" />
+  <PostureManifest actors="x">
+    <Support family="stand" compatibility="FullBody" carry_left="-" carry_right="-" surface="*" />
+  </PostureManifest>
+  <State type="public" skippable="false" interrupt_this="false" name="Carve" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="Carve_Idle" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="Shave" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="Start_New" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="hub" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="start" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="stop" focus="none" facialoverlays="false" tailoverlays="true" />
+  <Connection from="Carve" to="hub" />
+  <Connection from="Carve_Idle" to="hub" />
+  <Connection from="Shave" to="hub" />
+  <Connection from="Start_New" to="hub" />
+  <Connection from="entry" to="start" />
+  <Connection from="hub" to="Carve" />
+  <Connection from="hub" to="Carve_Idle" />
+  <Connection from="hub" to="Shave" />
+  <Connection from="hub" to="Start_New" />
+  <Connection from="hub" to="stop" />
+  <Connection from="start" to="hub" />
+  <Connection from="stop" to="exit" />
+  <State name="Carve" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="12">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <ParameterSelector parameter="x:mood" unique_id="11">
+          <Choice value="happy">
+            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="7">
+              <Choice weight="100" avoidRepeat="False">
+                <Controller target="x" controller="@ClipController(clip=a2o_carvingStation_carveDetailFace_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_carvingStation_carveLoops.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="3">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <MakeController unique_id="2">
+                  <Controller target="x" controller="@ClipController(clip=a2o_carvingStation_idleBreath_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_carvingStation_startCarving.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="1">
+                    <TransitionClassList>
+                      <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                    </TransitionClassList>
+                  </Controller>
+                </MakeController>
+                <Controller target="Pumpkin" controller="@ClipController(clip=a2o_carvingStation_carveDetailFace_pumpkin, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_carvingStation_carveLoops.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="4">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+              </Choice>
+              <Choice weight="100" avoidRepeat="False">
+                <Controller target="x" controller="@ClipController(clip=a2o_carvingStation_carveBroad_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_carvingStation_carveLoops.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="5">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <Reference target="2" />
+                <Controller target="Pumpkin" controller="@ClipController(clip=a2o_carvingStation_carveBroad_pumpkin, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_carvingStation_carveLoops.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="6">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+              </Choice>
+            </RandomSelector>
+          </Choice>
+          <Choice value="confident">
+            <Reference target="7" />
+          </Choice>
+          <Choice value="angry">
+            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="10">
+              <Choice weight="100" avoidRepeat="False">
+                <Controller target="Pumpkin" controller="@ClipController(clip=a2o_carvingStation_carveAngry_pumpkin, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_carvingStation_carveAngry.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="8">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=a2o_carvingStation_carveAngry_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_carvingStation_carveAngry.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="9">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <Reference target="2" />
+              </Choice>
+              <Choice weight="34" avoidRepeat="False">
+                <Reference target="3" />
+                <Reference target="2" />
+                <Reference target="4" />
+              </Choice>
+              <Choice weight="34" avoidRepeat="False">
+                <Reference target="5" />
+                <Reference target="2" />
+                <Reference target="6" />
+              </Choice>
+            </RandomSelector>
+          </Choice>
+          <Choice value="sad">
+            <Reference target="7" />
+          </Choice>
+          <Choice value="bored">
+            <Reference target="7" />
+          </Choice>
+          <Choice value="embarrassed">
+            <Reference target="7" />
+          </Choice>
+          <Choice value="uncomfortable">
+            <Reference target="7" />
+          </Choice>
+          <Choice value="playful">
+            <Reference target="7" />
+          </Choice>
+          <Choice value="tense">
+            <Reference target="7" />
+          </Choice>
+          <Choice value="focused">
+            <Reference target="7" />
+          </Choice>
+          <Choice value="energized">
+            <Reference target="7" />
+          </Choice>
+          <Choice value="flirty">
+            <Reference target="7" />
+          </Choice>
+          <Choice value="fine">
+            <Reference target="7" />
+          </Choice>
+          <Choice value="inspired">
+            <Reference target="7" />
+          </Choice>
+          <Choice value="dazed">
+            <Reference target="7" />
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="Carve_Idle" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="19">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="18">
+          <Choice weight="100" avoidRepeat="False">
+            <Controller target="x" controller="@ClipController(clip=a2o_carvingStation_idleBreath_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_carvingStation_startCarving.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="15">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+            <MakeController unique_id="14">
+              <Controller target="x" controller="@ClipController(clip=a2o_carvingStation_idleBreath_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_carvingStation_startCarving.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="13">
+                <TransitionClassList>
+                  <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                </TransitionClassList>
+              </Controller>
+            </MakeController>
+          </Choice>
+          <Choice weight="50" avoidRepeat="False">
+            <Controller target="x" controller="@ClipController(clip=a2o_carvingStation_idleExamine_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_carvingStation_startCarving.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="16">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+            <Reference target="14" />
+            <Controller target="Pumpkin" controller="@ClipController(clip=a2o_carvingStation_idleExamine_pumpkin, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_carvingStation_startCarving.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="17">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+        </RandomSelector>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="Shave" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="27">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="26">
+          <Choice weight="100" avoidRepeat="False">
+            <Controller target="Pumpkin" controller="@ClipController(clip=a2o_carvingStation_shaveDetail_pumpkin, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_carvingStation_shaveLoops.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="20">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+            <Controller target="x" controller="@ClipController(clip=a2o_carvingStation_shaveDetail_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_carvingStation_shaveLoops.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="23">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+            <MakeController unique_id="22">
+              <Controller target="x" controller="@ClipController(clip=a2o_carvingStation_idleBreath_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_carvingStation_startCarving.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="21">
+                <TransitionClassList>
+                  <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                </TransitionClassList>
+              </Controller>
+            </MakeController>
+          </Choice>
+          <Choice weight="100" avoidRepeat="False">
+            <Controller target="x" controller="@ClipController(clip=a2o_carvingStation_shaveSurface_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_carvingStation_shaveLoops.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="24">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+            <Reference target="22" />
+            <Controller target="Pumpkin" controller="@ClipController(clip=a2o_carvingStation_shaveSurface_pumpkin, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_carvingStation_shaveLoops.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="25">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+        </RandomSelector>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="Start_New" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="32">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <Controller target="Pumpkin" controller="@ClipController(clip=a2o_carvingStation_scoopOutSeeds_pumpkin, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_carvingStation_scoopSeeds.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="28">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+        <Controller target="x" controller="@ClipController(clip=a2o_carvingStation_scoopOutSeeds_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_carvingStation_scoopSeeds.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="31">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+        <MakeController unique_id="30">
+          <Controller target="x" controller="@ClipController(clip=a2o_carvingStation_idleBreath_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_carvingStation_startCarving.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="29">
+            <TransitionClassList>
+              <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+            </TransitionClassList>
+          </Controller>
+        </MakeController>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="hub" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+  </State>
+  <State name="start" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="34">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2o_carvingStation_start_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_carvingStation_startCarving.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="33">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="stop" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="36">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2o_carvingStation_stop_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_carvingStation_startCarving.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="35">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
+    </PostureSelector>
+  </State>
+</ASM>

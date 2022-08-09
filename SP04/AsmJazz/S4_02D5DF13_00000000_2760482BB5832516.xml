@@ -1,0 +1,201 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="pumpkin_smashPumpkin" dcc="sage">
+  <Actor name="x" type="Sim" master="true" virtual="false" />
+  <Actor name="pumpkin" type="Object" virtual="false" />
+  <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
+  <Parameter name="x:mood" type="enum" labels="happy,confident,angry,sad,bored,embarrassed,uncomfortable,playful,tense,focused,energized,flirty,fine,inspired,dazed" default="happy" />
+  <IkConfiguration name="a2o_pumpkin_smash_stompAngry.ma">
+    <SourceFile name="a2o_pumpkin_smash_stompAngry.ma">
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="pumpkin" actor="pumpkin" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_pumpkin_smash_getIn.ma">
+    <SourceFile name="a2o_pumpkin_smash_getIn.ma">
+      <MapNamespace namespace="pumpkin" actor="pumpkin" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_pumpkin_smash_smashLoops.ma">
+    <SourceFile name="a2o_pumpkin_smash_smashLoops.ma">
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="pumpkin" actor="pumpkin" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_pumpkin_smash_sadKick.ma">
+    <SourceFile name="a2o_pumpkin_smash_sadKick.ma">
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="pumpkin" actor="pumpkin" />
+    </SourceFile>
+  </IkConfiguration>
+  <PostureManifest actors="" />
+  <PostureManifest actors="x">
+    <Support family="stand" compatibility="FullBody" carry_left="-" carry_right="-" surface="*" />
+  </PostureManifest>
+  <State type="public" skippable="false" interrupt_this="false" name="Smash" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="Start" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="Stop" focus="none" facialoverlays="false" tailoverlays="true" />
+  <Connection from="Smash" to="Stop" />
+  <Connection from="Start" to="Smash" />
+  <Connection from="Stop" to="exit" />
+  <Connection from="entry" to="Start" />
+  <State name="Smash" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="16">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <ParameterSelector parameter="x:mood" unique_id="15">
+          <Choice value="happy">
+            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="4">
+              <Choice weight="100" avoidRepeat="False">
+                <Controller target="x" controller="@ClipController(clip=a2o_pumpkin_smashPumpkin_jump_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_pumpkin_smash_smashLoops.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="1">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.3333333" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.3333333" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+              </Choice>
+              <Choice weight="100" avoidRepeat="False">
+                <Controller target="x" controller="@ClipController(clip=a2o_pumpkin_smashPumpkin_steppyStep_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_pumpkin_smash_smashLoops.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="2">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.3333333" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.3333333" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+              </Choice>
+              <Choice weight="100" avoidRepeat="False">
+                <Controller target="x" controller="@ClipController(clip=a2o_pumpkin_smashPumpkin_tapDance_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_pumpkin_smash_smashLoops.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="3">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.3333333" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.3333333" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+              </Choice>
+            </RandomSelector>
+          </Choice>
+          <Choice value="confident">
+            <Reference target="4" />
+          </Choice>
+          <Choice value="angry">
+            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="9">
+              <Choice weight="50" avoidRepeat="False">
+                <Controller target="x" controller="@ClipController(clip=a2o_pumpkin_smashPumpkin_jump_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_pumpkin_smash_smashLoops.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="5">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+              </Choice>
+              <Choice weight="50" avoidRepeat="False">
+                <Controller target="x" controller="@ClipController(clip=a2o_pumpkin_smashPumpkin_steppyStep_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_pumpkin_smash_smashLoops.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="6">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+              </Choice>
+              <Choice weight="50" avoidRepeat="False">
+                <Controller target="x" controller="@ClipController(clip=a2o_pumpkin_smashPumpkin_tapDance_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_pumpkin_smash_smashLoops.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="7">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+              </Choice>
+              <Choice weight="100" avoidRepeat="False">
+                <Controller target="x" controller="@ClipController(clip=a2o_pumpkin_smashPumpkin_stompAngry_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_pumpkin_smash_stompAngry.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="8">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+              </Choice>
+            </RandomSelector>
+          </Choice>
+          <Choice value="sad">
+            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="14">
+              <Choice weight="50" avoidRepeat="False">
+                <Controller target="x" controller="@ClipController(clip=a2o_pumpkin_smashPumpkin_jump_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_pumpkin_smash_smashLoops.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="10">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+              </Choice>
+              <Choice weight="50" avoidRepeat="False">
+                <Controller target="x" controller="@ClipController(clip=a2o_pumpkin_smashPumpkin_steppyStep_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_pumpkin_smash_smashLoops.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="11">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+              </Choice>
+              <Choice weight="50" avoidRepeat="False">
+                <Controller target="x" controller="@ClipController(clip=a2o_pumpkin_smashPumpkin_tapDance_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_pumpkin_smash_smashLoops.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="12">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+              </Choice>
+              <Choice weight="100" avoidRepeat="False">
+                <Controller target="x" controller="@ClipController(clip=a2o_pumpkin_smashPumpkin_kickSadly_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_pumpkin_smash_sadKick.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="13">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+              </Choice>
+            </RandomSelector>
+          </Choice>
+          <Choice value="bored">
+            <Reference target="4" />
+          </Choice>
+          <Choice value="embarrassed">
+            <Reference target="4" />
+          </Choice>
+          <Choice value="uncomfortable">
+            <Reference target="4" />
+          </Choice>
+          <Choice value="playful">
+            <Reference target="4" />
+          </Choice>
+          <Choice value="tense">
+            <Reference target="4" />
+          </Choice>
+          <Choice value="focused">
+            <Reference target="4" />
+          </Choice>
+          <Choice value="energized">
+            <Reference target="4" />
+          </Choice>
+          <Choice value="flirty">
+            <Reference target="4" />
+          </Choice>
+          <Choice value="fine">
+            <Reference target="4" />
+          </Choice>
+          <Choice value="inspired">
+            <Reference target="4" />
+          </Choice>
+          <Choice value="dazed">
+            <Reference target="4" />
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="Start" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="18">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2o_pumpkin_smashPumpkin_start_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_pumpkin_smash_getIn.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="17">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="Stop" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="20">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2o_pumpkin_smashPumpkin_stop_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_pumpkin_smash_smashLoops.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="19">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.3333333" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
+    </PostureSelector>
+  </State>
+</ASM>

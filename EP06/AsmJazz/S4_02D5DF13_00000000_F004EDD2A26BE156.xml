@@ -1,0 +1,272 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="BackgroundActor_ScriptReview" dcc="sage">
+  <Actor name="x" type="Sim" master="true" virtual="false" />
+  <Actor name="script" type="Prop" virtual="false" object_def_resource_key="c0db5ae7:00000000:0000000000031677#paper_EP06GENactingScript" />
+  <Actor name="sitTemplate" type="Object" virtual="true" />
+  <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
+  <IkConfiguration name="a2o_scriptReview_read.ma">
+    <SourceFile name="a2o_scriptReview_read.ma">
+      <MapNamespace namespace="script" actor="script" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_scriptReview_read_seated.ma">
+    <SourceFile name="a2o_scriptReview_read_seated.ma">
+      <MapNamespace namespace="script" actor="script" />
+      <MapNamespace namespace="sitTemplate" actor="sitTemplate" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <PostureManifest actors="" />
+  <PostureManifest actors="x">
+    <Support family="stand" compatibility="FullBody" carry_left="-" carry_right="-" surface="*" />
+    <Support family="sit" compatibility="FullBody" carry_left="-" carry_right="-" surface="*" />
+    <Support family="stand" compatibility="UpperBody" carry_left="-" carry_right="-" surface="*" />
+    <Support family="sit" compatibility="UpperBody" carry_left="-" carry_right="-" surface="*" />
+    <Support family="movingStand" compatibility="UpperBody" carry_left="-" carry_right="-" surface="*" />
+  </PostureManifest>
+  <State type="private" skippable="false" interrupt_this="false" name="Hub" focus="none" facialoverlays="true" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="ReadLines" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="ReadLinesSlowly" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="ReadScratchCheek" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="ReadWeightShift" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="Start" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="Stop" focus="none" facialoverlays="false" tailoverlays="true" />
+  <Connection from="Hub" to="ReadLines" />
+  <Connection from="Hub" to="ReadLinesSlowly" />
+  <Connection from="Hub" to="ReadScratchCheek" />
+  <Connection from="Hub" to="ReadWeightShift" />
+  <Connection from="Hub" to="Stop" />
+  <Connection from="ReadLines" to="Hub" />
+  <Connection from="ReadLinesSlowly" to="Hub" />
+  <Connection from="ReadScratchCheek" to="Hub" />
+  <Connection from="ReadWeightShift" to="Hub" />
+  <Connection from="Start" to="Hub" />
+  <Connection from="Stop" to="exit" />
+  <Connection from="entry" to="Start" />
+  <State name="Hub" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="true" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="2">
+      <Choice value="-movingStand-UpperBody" track="normalplus" mask="Trackmask_UpperBody" />
+      <Choice value="-sit-FullBody" track="normal" mask="" />
+      <Choice value="-sit-UpperBody" track="normal" mask="Trackmask_UpperBody" />
+      <Choice value="-stand-FullBody" track="carryinteraction" mask="">
+        <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="1">
+          <Choice weight="100" avoidRepeat="False" />
+          <Choice weight="100" avoidRepeat="False" />
+        </RandomSelector>
+      </Choice>
+      <Choice value="-stand-UpperBody" track="normal" mask="Trackmask_UpperBody" />
+    </PostureSelector>
+  </State>
+  <State name="ReadLines" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="9">
+      <Choice value="-movingStand-UpperBody" track="normalplus" mask="Trackmask_UpperBody">
+        <Controller target="x" controller="@ClipController(clip=a2o_scriptReview_read_readLines_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_scriptReview_read.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="5">
+          <TransitionClassList />
+        </Controller>
+        <MakeController unique_id="4">
+          <Controller target="x" controller="@ClipController(clip=a2o_scriptReview_read_readLines_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_scriptReview_read.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="3">
+            <TransitionClassList />
+          </Controller>
+        </MakeController>
+      </Choice>
+      <Choice value="-sit-FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2o_scriptReview_read_readLines_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_scriptReview_read_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="8">
+          <TransitionClassList />
+        </Controller>
+        <MakeController unique_id="7">
+          <Controller target="x" controller="@ClipController(clip=a2o_scriptReview_read_readLines_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_scriptReview_read_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="6">
+            <TransitionClassList />
+          </Controller>
+        </MakeController>
+      </Choice>
+      <Choice value="-sit-UpperBody" track="normal" mask="Trackmask_UpperBody">
+        <Reference target="8" />
+        <Reference target="7" />
+      </Choice>
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <Reference target="5" />
+        <Reference target="4" />
+      </Choice>
+      <Choice value="-stand-UpperBody" track="normal" mask="Trackmask_UpperBody">
+        <Reference target="5" />
+        <Reference target="4" />
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="ReadLinesSlowly" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="16">
+      <Choice value="-movingStand-UpperBody" track="normalplus" mask="Trackmask_UpperBody">
+        <Controller target="x" controller="@ClipController(clip=a2o_scriptReview_read_readLines_slowly_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_scriptReview_read.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="12">
+          <TransitionClassList />
+        </Controller>
+        <MakeController unique_id="11">
+          <Controller target="x" controller="@ClipController(clip=a2o_scriptReview_read_readLines_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_scriptReview_read.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="10">
+            <TransitionClassList />
+          </Controller>
+        </MakeController>
+      </Choice>
+      <Choice value="-sit-FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2o_scriptReview_read_readLines_slowly_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_scriptReview_read_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="15">
+          <TransitionClassList />
+        </Controller>
+        <MakeController unique_id="14">
+          <Controller target="x" controller="@ClipController(clip=a2o_scriptReview_read_readLines_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_scriptReview_read_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="13">
+            <TransitionClassList />
+          </Controller>
+        </MakeController>
+      </Choice>
+      <Choice value="-sit-UpperBody" track="normal" mask="Trackmask_UpperBody">
+        <Reference target="15" />
+        <Reference target="14" />
+      </Choice>
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <Reference target="12" />
+        <Reference target="11" />
+      </Choice>
+      <Choice value="-stand-UpperBody" track="normal" mask="Trackmask_UpperBody">
+        <Reference target="12" />
+        <Reference target="11" />
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="ReadScratchCheek" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="23">
+      <Choice value="-movingStand-UpperBody" track="normalplus" mask="Trackmask_UpperBody">
+        <Controller target="x" controller="@ClipController(clip=a2o_scriptReview_read_readScratchCheek_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_scriptReview_read.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="19">
+          <TransitionClassList />
+        </Controller>
+        <MakeController unique_id="18">
+          <Controller target="x" controller="@ClipController(clip=a2o_scriptReview_read_readLines_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_scriptReview_read.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="17">
+            <TransitionClassList />
+          </Controller>
+        </MakeController>
+      </Choice>
+      <Choice value="-sit-FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2o_scriptReview_read_readScratchCheek_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_scriptReview_read_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="22">
+          <TransitionClassList />
+        </Controller>
+        <MakeController unique_id="21">
+          <Controller target="x" controller="@ClipController(clip=a2o_scriptReview_read_readLines_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_scriptReview_read_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="20">
+            <TransitionClassList />
+          </Controller>
+        </MakeController>
+      </Choice>
+      <Choice value="-sit-UpperBody" track="normal" mask="Trackmask_UpperBody">
+        <Reference target="22" />
+        <Reference target="21" />
+      </Choice>
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <Reference target="19" />
+        <Reference target="18" />
+      </Choice>
+      <Choice value="-stand-UpperBody" track="normal" mask="Trackmask_UpperBody">
+        <Reference target="19" />
+        <Reference target="18" />
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="ReadWeightShift" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="30">
+      <Choice value="-movingStand-UpperBody" track="normalplus" mask="Trackmask_UpperBody">
+        <Controller target="x" controller="@ClipController(clip=a2o_scriptReview_read_weightShift_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_scriptReview_read.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="26">
+          <TransitionClassList />
+        </Controller>
+        <MakeController unique_id="25">
+          <Controller target="x" controller="@ClipController(clip=a2o_scriptReview_read_readLines_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_scriptReview_read.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="24">
+            <TransitionClassList />
+          </Controller>
+        </MakeController>
+      </Choice>
+      <Choice value="-sit-FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2o_scriptReview_read_weightShift_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_scriptReview_read_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="29">
+          <TransitionClassList />
+        </Controller>
+        <MakeController unique_id="28">
+          <Controller target="x" controller="@ClipController(clip=a2o_scriptReview_read_readLines_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_scriptReview_read_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="27">
+            <TransitionClassList />
+          </Controller>
+        </MakeController>
+      </Choice>
+      <Choice value="-sit-UpperBody" track="normal" mask="Trackmask_UpperBody">
+        <Reference target="29" />
+        <Reference target="28" />
+      </Choice>
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <Reference target="26" />
+        <Reference target="25" />
+      </Choice>
+      <Choice value="-stand-UpperBody" track="normal" mask="Trackmask_UpperBody">
+        <Reference target="26" />
+        <Reference target="25" />
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="Start" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="37">
+      <Choice value="-movingStand-UpperBody" track="normalplus" mask="Trackmask_UpperBody">
+        <Controller target="x" controller="@ClipController(clip=a2o_scriptReview_read_start_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_scriptReview_read.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="33">
+          <TransitionClassList />
+        </Controller>
+        <MakeController unique_id="32">
+          <Controller target="x" controller="@ClipController(clip=a2o_scriptReview_read_readLines_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_scriptReview_read.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="31">
+            <TransitionClassList />
+          </Controller>
+        </MakeController>
+      </Choice>
+      <Choice value="-sit-FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2o_scriptReview_read_start_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_scriptReview_read_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="36">
+          <TransitionClassList />
+        </Controller>
+        <MakeController unique_id="35">
+          <Controller target="x" controller="@ClipController(clip=a2o_scriptReview_read_readLines_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_scriptReview_read_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="34">
+            <TransitionClassList />
+          </Controller>
+        </MakeController>
+      </Choice>
+      <Choice value="-sit-UpperBody" track="normal" mask="Trackmask_UpperBody">
+        <Reference target="36" />
+        <Reference target="35" />
+      </Choice>
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <Reference target="33" />
+        <Reference target="32" />
+      </Choice>
+      <Choice value="-stand-UpperBody" track="normal" mask="Trackmask_UpperBody">
+        <Reference target="33" />
+        <Reference target="32" />
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="Stop" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="40">
+      <Choice value="-movingStand-UpperBody" track="normalplus" mask="Trackmask_UpperBody">
+        <Controller target="x" controller="@ClipController(clip=a2o_scriptReview_read_stop_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_scriptReview_read.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="38">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+      <Choice value="-sit-FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2o_scriptReview_read_stop_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_scriptReview_read_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="39">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+      <Choice value="-sit-UpperBody" track="normal" mask="Trackmask_UpperBody">
+        <Reference target="39" />
+      </Choice>
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <Reference target="38" />
+      </Choice>
+      <Choice value="-stand-UpperBody" track="normal" mask="Trackmask_UpperBody">
+        <Reference target="38" />
+      </Choice>
+    </PostureSelector>
+  </State>
+</ASM>

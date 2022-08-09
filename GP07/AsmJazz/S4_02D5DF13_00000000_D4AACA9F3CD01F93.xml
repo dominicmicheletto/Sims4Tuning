@@ -1,0 +1,166 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="GetPut_Fridge_Put_infectedFruit" dcc="sage">
+  <Actor name="x" type="Sim" master="true" virtual="false" />
+  <Actor name="infectedFruit" type="Prop" virtual="false" object_def_resource_key="c0db5ae7:00000000:00000000000330e8#gardenFruit_GP07GENinfected" />
+  <Actor name="surface" type="Object" virtual="false" />
+  <Parameter name="surfaceHeight" type="enum" labels="low,high,discard,inventory,from_xevt" default="high" />
+  <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
+  <Parameter name="x:mood" type="enum" labels="happy,confident,angry,sad,bored,embarrassed,uncomfortable,playful,tense,focused,energized,flirty,fine,inspired,dazed" default="happy" />
+  <IkConfiguration name="a2o_fridge_open_close.ma">
+    <SourceFile name="a2o_fridge_open_close.ma">
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="surface" actor="surface" />
+      <MapNamespace namespace="carryObject" actor="infectedFruit" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_fridge_open_close_right.ma">
+    <SourceFile name="a2o_fridge_open_close_right.ma">
+      <MapNamespace namespace="surface" actor="surface" />
+      <MapNamespace namespace="carryObject" actor="infectedFruit" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_fridge_close_rightHand_angry.ma">
+    <SourceFile name="a2o_fridge_close_rightHand_angry.ma">
+      <MapNamespace namespace="surface" actor="surface" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_fridge_infectedFruit_putdown.ma">
+    <SourceFile name="a2o_fridge_infectedFruit_putdown.ma">
+      <MapNamespace namespace="infectedFruit" actor="infectedFruit" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <PostureManifest actors="" />
+  <PostureManifest actors="x">
+    <Support family="stand" compatibility="FullBody" carry_left="-" carry_right="-" surface="surface" />
+  </PostureManifest>
+  <State type="private" skippable="false" interrupt_this="false" name="doorClose" focus="none" facialoverlays="true" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="doorOpen_put" focus="none" facialoverlays="true" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="put" focus="none" facialoverlays="true" tailoverlays="true" />
+  <Connection from="doorClose" to="exit" />
+  <Connection from="doorOpen_put" to="put" />
+  <Connection from="entry" to="doorOpen_put" />
+  <Connection from="put" to="doorClose" />
+  <State name="doorClose" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="true" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="6">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <ParameterSelector parameter="x:mood" unique_id="5">
+          <Choice value="happy">
+            <Controller target="surface" controller="@ClipController(clip=a2o_fridge_close_rightHand_surface, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_fridge_open_close_right.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="1">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice value="confident">
+            <Controller target="x" controller="@ClipController(clip=a2o_fridge_close_rightHand_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_fridge_open_close_right.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="2">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice value="angry">
+            <Controller target="x" controller="@ClipController(clip=a2o_fridge_close_rightHand_angry_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_fridge_close_rightHand_angry.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="3">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+            <Controller target="surface" controller="@ClipController(clip=a2o_fridge_close_rightHand_angry_surface, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_fridge_close_rightHand_angry.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="4">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice value="sad">
+            <Reference target="2" />
+            <Reference target="1" />
+          </Choice>
+          <Choice value="bored">
+            <Reference target="2" />
+            <Reference target="1" />
+          </Choice>
+          <Choice value="embarrassed">
+            <Reference target="2" />
+            <Reference target="1" />
+          </Choice>
+          <Choice value="uncomfortable">
+            <Reference target="2" />
+            <Reference target="1" />
+          </Choice>
+          <Choice value="playful">
+            <Reference target="2" />
+            <Reference target="1" />
+          </Choice>
+          <Choice value="tense">
+            <Reference target="3" />
+            <Reference target="4" />
+          </Choice>
+          <Choice value="focused">
+            <Reference target="2" />
+            <Reference target="1" />
+          </Choice>
+          <Choice value="energized">
+            <Reference target="2" />
+            <Reference target="1" />
+          </Choice>
+          <Choice value="flirty">
+            <Reference target="2" />
+            <Reference target="1" />
+          </Choice>
+          <Choice value="fine">
+            <Reference target="2" />
+            <Reference target="1" />
+          </Choice>
+          <Choice value="inspired">
+            <Reference target="2" />
+            <Reference target="1" />
+          </Choice>
+          <Choice value="dazed">
+            <Reference target="2" />
+            <Reference target="1" />
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="doorOpen_put" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="true" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="9">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <Controller target="surface" controller="@ClipController(clip=a2o_fridge_open_rightHand_surface, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_fridge_open_close_right.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="7">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+        <Controller target="x" controller="@ClipController(clip=a2o_fridge_open_put_rightHand_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_fridge_open_close_right.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="8">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="put" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="true" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="13">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <MakeController unique_id="11">
+          <Controller target="surface" controller="@ClipController(clip=a2o_fridge_stayOpen_surface, loop_count=#0)" overridePosture="true" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_fridge_open_close.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="10">
+            <TransitionClassList>
+              <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+            </TransitionClassList>
+          </Controller>
+        </MakeController>
+        <Controller target="x" controller="@ClipController(clip=a2o_fridge_infectedFruit_putDown_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_fridge_infectedFruit_putdown.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="12">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
+    </PostureSelector>
+  </State>
+</ASM>

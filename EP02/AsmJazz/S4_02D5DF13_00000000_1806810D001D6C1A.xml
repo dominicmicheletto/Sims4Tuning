@@ -1,0 +1,114 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="Bonfire_Actions">
+  <Actor name="x" type="Sim" master="true" virtual="false" />
+  <Actor name="toolFireExtinguisher" type="Prop" virtual="false" object_def_resource_key="c0db5ae7:00000000:000000000000a712" />
+  <Actor name="bonfire" type="Object" virtual="false" />
+  <Actor name="bottleLighterFluid" type="Prop" virtual="false" object_def_resource_key="c0db5ae7:00000000:00000000000095f5" />
+  <Actor name="match" type="Prop" virtual="false" object_def_resource_key="c0db5ae7:00000000:0000000000018fb8" />
+  <Actor name="firewood" type="Prop" virtual="false" object_def_resource_key="c0db5ae7:00000000:0000000000018fb2" />
+  <Parameter name="x:age" template="age" type="enum" labels="baby,unsupported_age,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="x:sex" template="sex" type="enum" labels="male,female" default="male" />
+  <PostureManifest actors="x">
+    <Support family="stand" compatibility="FullBody" carry_left="-" carry_right="-" surface="*" />
+  </PostureManifest>
+  <State type="private" skippable="false" interrupt_this="false" name="addLiquid" focus="none" facialoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="light_succeed" focus="none" facialoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="light_fail" focus="none" facialoverlays="false" />
+  <State type="public" skippable="false" interrupt_this="false" name="addfuel" focus="none" facialoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="extinguish" focus="none" facialoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="relight" focus="none" facialoverlays="true" />
+  <Connection from="addfuel" to="exit" />
+  <Connection from="addLiquid" to="light_fail" />
+  <Connection from="addLiquid" to="light_succeed" />
+  <Connection from="entry" to="addfuel" />
+  <Connection from="entry" to="addLiquid" />
+  <Connection from="entry" to="extinguish" />
+  <Connection from="entry" to="relight" />
+  <Connection from="extinguish" to="exit" />
+  <Connection from="light_fail" to="exit" />
+  <Connection from="light_succeed" to="exit" />
+  <Connection from="relight" to="exit" />
+  <State name="addLiquid">
+    <description />
+    <PostureSelector parameter="x:posture">
+      <Choice value="-stand-FullBody">
+        <Controller target="x" controller="@ClipController(clip=a2o_bonfire_addFluid_x, loop_count=#1)" overridePosture="false" mask="" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bonfire_addFluid.ma" focus="undefined" id="dd4f2ae7-d4a7-436f-920d-521b697196ed">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="light_succeed">
+    <description />
+    <PostureSelector parameter="x:posture">
+      <Choice value="-stand-FullBody">
+        <Controller target="x" controller="@ClipController(clip=a2o_bonfire_light_succeed_x, loop_count=#1)" overridePosture="false" mask="" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bonfire_light_addlog.ma" focus="undefined" id="f1074a90-c673-475c-9333-1f93d5c0e95c">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="light_fail">
+    <description />
+    <PostureSelector parameter="x:posture">
+      <Choice value="-stand-FullBody">
+        <Controller target="x" controller="@ClipController(clip=a2o_bonfire_light_fail_x, loop_count=#1)" overridePosture="false" mask="" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bonfire_light_addlog.ma" focus="undefined" id="b65ce594-f489-43b7-af69-11428f6943ea">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="addfuel">
+    <description />
+    <PostureSelector parameter="x:posture">
+      <Choice value="-stand-FullBody">
+        <RandomSelector id="3ba0aca8-5398-415e-a057-9022d7623df7" repeatweight="1" allow_empty_choices="False">
+          <Choice weight="1" avoidRepeat="False">
+            <Controller target="x" controller="@ClipController(clip=a2o_bonfire_addLog_x, loop_count=#1)" overridePosture="false" mask="" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bonfire_light_addlog.ma" focus="undefined" id="759f4d8c-a5d9-4f10-8584-c43fe5dfccc1">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice weight="1" avoidRepeat="False">
+            <Controller target="x" controller="@ClipController(clip=a2o_bonfire_playful_addFluid_x, loop_count=#1)" overridePosture="false" mask="" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bonfire_playful_addLighterFluid.ma" focus="undefined" id="539e6fae-8624-4e4d-b670-2e3b8cc17573">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+        </RandomSelector>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="extinguish">
+    <description />
+    <PostureSelector parameter="x:posture">
+      <Choice value="-stand-FullBody">
+        <Controller target="x" controller="@ClipController(clip=a2o_bonfire_extinguish_x, loop_count=#1)" overridePosture="false" mask="" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bonfire_extinguish.ma" focus="undefined" id="ebb0aa9b-b143-48f6-a430-f72fde4b1005">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="relight">
+    <description />
+    <PostureSelector parameter="x:posture">
+      <Choice value="-stand-FullBody">
+        <Controller target="x" controller="@ClipController(clip=a2o_bonfire_light_succeed_x, loop_count=#1)" overridePosture="false" mask="" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bonfire_light_addlog.ma" focus="undefined" id="17561e30-ee26-4612-a6d3-08f81ca29b3a">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
+    </PostureSelector>
+  </State>
+</ASM>

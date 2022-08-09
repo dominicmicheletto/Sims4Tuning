@@ -1,0 +1,563 @@
+﻿<?xml version="1.0"?>
+<ASM name="Traits_Squeamish">
+  <Actor name="sitTemplate" type="Object" virtual="true" />
+  <Actor name="x" type="Sim" master="true" virtual="false" />
+  <Parameter name="x:age" type="enum" labels="baby,unsupported_age,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
+  <Parameter name="x:carryState" template="carryState" type="enum" labels="none,left,right,both" default="right" />
+  <PostureManifest actors="x">
+    <Support family="stand" compatibility="FullBody" carry_left="*" carry_right="-" surface="*" />
+    <Support family="stand" compatibility="FullBody" carry_left="-" carry_right="*" surface="*" />
+    <Support family="stand" compatibility="FullBody" carry_left="*" carry_right="*" surface="*" />
+    <Support family="stand" compatibility="UpperBody" carry_left="*" carry_right="-" surface="*" />
+    <Support family="stand" compatibility="UpperBody" carry_left="-" carry_right="*" surface="*" />
+    <Support family="stand" compatibility="UpperBody" carry_left="*" carry_right="*" surface="*" />
+    <Support family="sit" compatibility="FullBody" carry_left="*" carry_right="-" surface="*" />
+    <Support family="sit" compatibility="FullBody" carry_left="-" carry_right="*" surface="*" />
+    <Support family="sit" compatibility="FullBody" carry_left="*" carry_right="*" surface="*" />
+    <Support family="sit" compatibility="UpperBody" carry_left="*" carry_right="-" surface="*" />
+    <Support family="sit" compatibility="UpperBody" carry_left="-" carry_right="*" surface="*" />
+    <Support family="sit" compatibility="UpperBody" carry_left="*" carry_right="*" surface="*" />
+  </PostureManifest>
+  <State type="private" skippable="false" interrupt_this="false" name="Mirror" focus="full body" facialoverlays="false" />
+  <State type="public" skippable="false" interrupt_this="false" name="Squeamish" focus="full body" facialoverlays="false" />
+  <Connection from="entry" to="Mirror" />
+  <Connection from="Mirror" to="Squeamish" />
+  <Connection from="Squeamish" to="exit" />
+  <State name="Mirror">
+    <description></description>
+    <ParameterSelector parameter="x:carryState">
+      <Choice value="left">
+        <SetMirror target="x" mirror="true" />
+      </Choice>
+    </ParameterSelector>
+  </State>
+  <State name="Squeamish">
+    <description></description>
+    <PostureSelector parameter="x:posture">
+      <Choice value="-stand-FullBody">
+        <Controller target="x" controller="@ClipController(clip=a_react_squeamish_x, loop_count=#1)" overridePosture="false" mask="" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_squeamish.ma" focus="none" id="f5ca3e3a-603c-4f0e-a597-0cba84adb6df">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
+      <Choice value="-stand-UpperBody">
+        <Controller target="x" controller="@ClipController(clip=a_react_squeamish_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_squeamish.ma" focus="none" id="f5ca3e3a-603c-4f0e-a597-0cba84adb6df">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
+      <Choice value="-sit-FullBody">
+        <Controller target="x" controller="@ClipController(clip=a_react_squeamish_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_squeamish_seated.ma" focus="none" id="c9551e2d-9d59-48ea-8ac5-a67903912285">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
+      <Choice value="-sit-UpperBody">
+        <Controller target="x" controller="@ClipController(clip=a_react_squeamish_seated_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_squeamish_seated.ma" focus="none" id="c9551e2d-9d59-48ea-8ac5-a67903912285">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <SwingPrivate swingfileversion="1.102.0.119">
+    <StateMachineData>
+      <State type="public" loop="false" skippable="false" interrupt_this="false" posture="false" name="entry" id="31" focus="full body" facialoverlays="false" />
+      <State type="public" loop="false" skippable="false" interrupt_this="false" posture="false" name="exit" id="32" focus="full body" facialoverlays="false" />
+      <State type="private" loop="false" skippable="false" interrupt_this="false" posture="false" name="Mirror" id="5" focus="full body" facialoverlays="false" entrypoint_id="6" connectedTo="7" />
+      <State type="public" loop="false" skippable="false" interrupt_this="false" posture="false" name="Squeamish" id="5a03a6d8-a348-45c6-86a6-354d0ae3ddd0" focus="full body" facialoverlays="false" entrypoint_id="bd079fce-599c-40ee-a9d1-16b2523d280e" connectedTo="91834ef7-8c1a-4d18-a6e7-e9ba6013fcaf" />
+      <Connection from="entry" from_id="31" to="Mirror" />
+      <Connection from="Mirror" to="Squeamish" />
+      <Connection from="Squeamish" to="exit" to_id="32" />
+      <State name="Mirror" id="5">
+        <description></description>
+        <ParameterSelector parameter="x:carryState" type="Swing.DataStructures.SelectStatement" id="7" swing_id="5">
+          <Choice value="left" connectedTo="11">
+            <SetMirror type="Swing.DataStructures.SetMirrorStatement" id="11" target="x" mirror="true" />
+          </Choice>
+        </ParameterSelector>
+      </State>
+      <State name="Squeamish" id="5a03a6d8-a348-45c6-86a6-354d0ae3ddd0">
+        <description></description>
+        <PostureSelector type="Swing.DataStructures.SupportedPosturesStatement" id="91834ef7-8c1a-4d18-a6e7-e9ba6013fcaf" parameter="x:posture" swing_id="5a03a6d8-a348-45c6-86a6-354d0ae3ddd0">
+          <Choice type="Swing.DataStructures.SupportedPosturesCaseStatement" value="-stand-FullBody" mask="" track="normal" connectedTo="f5ca3e3a-603c-4f0e-a597-0cba84adb6df">
+            <Controller target="x" controller="@ClipController(clip=a_react_squeamish_x, loop_count=#1)" overridePosture="false" mask="" track="normal" overrideTimingEnable="false" transition_class_in="Default" transition_class_out="Default" useLoopable="true" mayafilename="a_react_squeamish.ma" ik_configuration="a_react_squeamish.ma" focus="none" type="Swing.DataStructures.ActionStatement" id="f5ca3e3a-603c-4f0e-a597-0cba84adb6df">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice type="Swing.DataStructures.SupportedPosturesCaseStatement" value="-stand-UpperBody" mask="Trackmask_UpperBody" track="normal" connectedTo="f5ca3e3a-603c-4f0e-a597-0cba84adb6df">
+            <Controller target="x" controller="@ClipController(clip=a_react_squeamish_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="normal" overrideTimingEnable="false" transition_class_in="Default" transition_class_out="Default" useLoopable="true" mayafilename="a_react_squeamish.ma" ik_configuration="a_react_squeamish.ma" focus="none" type="Swing.DataStructures.ActionStatement" id="f5ca3e3a-603c-4f0e-a597-0cba84adb6df">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice type="Swing.DataStructures.SupportedPosturesCaseStatement" value="-sit-FullBody" mask="" track="normal" connectedTo="c9551e2d-9d59-48ea-8ac5-a67903912285">
+            <Controller target="x" controller="@ClipController(clip=a_react_squeamish_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" overrideTimingEnable="false" transition_class_in="Default" transition_class_out="Default" useLoopable="true" mayafilename="a_react_squeamish_seated.ma" ik_configuration="a_react_squeamish_seated.ma" focus="none" type="Swing.DataStructures.ActionStatement" id="c9551e2d-9d59-48ea-8ac5-a67903912285">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice type="Swing.DataStructures.SupportedPosturesCaseStatement" value="-sit-UpperBody" mask="Trackmask_UpperBody" track="normal" connectedTo="c9551e2d-9d59-48ea-8ac5-a67903912285">
+            <Controller target="x" controller="@ClipController(clip=a_react_squeamish_seated_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="normal" overrideTimingEnable="false" transition_class_in="Default" transition_class_out="Default" useLoopable="true" mayafilename="a_react_squeamish_seated.ma" ik_configuration="a_react_squeamish_seated.ma" focus="none" type="Swing.DataStructures.ActionStatement" id="c9551e2d-9d59-48ea-8ac5-a67903912285">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+        </PostureSelector>
+      </State>
+      <State type="public" loop="false" name="entry" id="31" />
+      <State type="public" loop="false" name="exit" id="32" />
+      <namespacemap>
+        <source file="a_react_squeamish.ma">
+          <mapping namespace="x" actor="x" />
+        </source>
+        <source file="a_react_squeamish_seated.ma">
+          <mapping namespace="sitTemplate" actor="sitTemplate" />
+          <mapping namespace="x" actor="x" />
+        </source>
+      </namespacemap>
+    </StateMachineData>
+    <widgetcanvas>
+      <viewport>
+        <track x="-95.7619" y="-86.62289" />
+        <zoom f="1.097216" />
+      </viewport>
+      <widget type="Swing.Widgets.StateWidget" id="12" fakeloop="False" edge="null" statetype="Normal">
+        <location x="527" y="259" />
+        <size width="100" height="100" />
+        <data ref="5" />
+        <widgetcanvas>
+          <viewport>
+            <track x="4" y="53" />
+            <zoom f="1" />
+          </viewport>
+          <widget type="Swing.Widgets.SelectWidget" id="13">
+            <location x="232" y="149" />
+            <size width="82" height="100" />
+            <data ref="7" />
+            <case value="none" />
+            <case value="left" />
+            <case value="right" />
+            <case value="both" />
+          </widget>
+          <widget type="Swing.Widgets.EntryPointWidget" id="15">
+            <location x="83" y="108" />
+            <size width="30" height="30" />
+            <data ref="6" />
+          </widget>
+          <widget type="Swing.Widgets.SetMirrorWidget" id="16">
+            <location x="426" y="146" />
+            <size width="86" height="80" />
+            <data ref="11" />
+          </widget>
+          <edge type="WidgetCanvas.Edge" id="18" origin="13.2" endpoint="16.0" />
+          <edge type="WidgetCanvas.Edge" id="20" origin="15.0" endpoint="13.0" />
+        </widgetcanvas>
+      </widget>
+      <widget type="Swing.Widgets.EntryWidget" id="48">
+        <location x="506" y="156" />
+        <size width="100" height="70" />
+        <data ref="31" />
+      </widget>
+      <widget type="Swing.Widgets.ExitWidget" id="59">
+        <location x="506" y="575" />
+        <size width="100" height="70" />
+        <data ref="32" />
+      </widget>
+      <widget type="Swing.Widgets.StateWidget" id="ddde0536-006e-417e-a54d-b89fd26b6a4f" fakeloop="False" edge="null" statetype="Normal">
+        <location x="519" y="427" />
+        <size width="100" height="100" />
+        <data ref="5a03a6d8-a348-45c6-86a6-354d0ae3ddd0" />
+        <widgetcanvas>
+          <viewport>
+            <track x="0" y="0" />
+            <zoom f="1" />
+          </viewport>
+          <widget type="Swing.Widgets.EntryPointWidget" id="6f32971a-babc-40b3-b755-7bc0736343e3">
+            <location x="50" y="100" />
+            <size width="30" height="30" />
+            <data ref="bd079fce-599c-40ee-a9d1-16b2523d280e" />
+          </widget>
+          <widget type="Swing.Widgets.ActionWidget" id="bc468ac0-b4d3-4f07-92aa-f935b7639305" showadvancedoptions="False">
+            <location x="428" y="201" />
+            <size width="217" height="58" />
+            <data ref="c9551e2d-9d59-48ea-8ac5-a67903912285" />
+          </widget>
+          <widget type="Swing.Widgets.SupportedPosturesWidget" id="e2721af1-a728-4a0f-8ac0-f4c0820793a7">
+            <location x="200" y="260" />
+            <size width="104" height="100" />
+            <data ref="91834ef7-8c1a-4d18-a6e7-e9ba6013fcaf" />
+            <case value="sit-FullBody" />
+            <case value="sit-UpperBody" />
+            <case value="stand-FullBody" />
+            <case value="stand-UpperBody" />
+          </widget>
+          <widget type="Swing.Widgets.ActionWidget" id="fe66acad-6fe6-4c4f-a147-d66119c100fa" showadvancedoptions="False">
+            <location x="435" y="297" />
+            <size width="217" height="58" />
+            <data ref="f5ca3e3a-603c-4f0e-a597-0cba84adb6df" />
+          </widget>
+          <edge type="WidgetCanvas.Edge" id="034c7979-2dbc-4aa1-bf58-2527711ba925" origin="e2721af1-a728-4a0f-8ac0-f4c0820793a7.4" endpoint="fe66acad-6fe6-4c4f-a147-d66119c100fa.0" />
+          <edge type="WidgetCanvas.Edge" id="1568d9fc-31d0-411c-a6e5-e821009c2fca" origin="6f32971a-babc-40b3-b755-7bc0736343e3.0" endpoint="e2721af1-a728-4a0f-8ac0-f4c0820793a7.0" />
+          <edge type="WidgetCanvas.Edge" id="17462622-fade-4acd-8671-9f836308551b" origin="e2721af1-a728-4a0f-8ac0-f4c0820793a7.1" endpoint="bc468ac0-b4d3-4f07-92aa-f935b7639305.0" />
+          <edge type="WidgetCanvas.Edge" id="8ffd8f98-e5fe-4577-b21f-7445a0aca24c" origin="e2721af1-a728-4a0f-8ac0-f4c0820793a7.2" endpoint="bc468ac0-b4d3-4f07-92aa-f935b7639305.0" />
+          <edge type="WidgetCanvas.Edge" id="cbb4b8b0-d05e-4faa-b606-ff6b9003139f" origin="e2721af1-a728-4a0f-8ac0-f4c0820793a7.3" endpoint="fe66acad-6fe6-4c4f-a147-d66119c100fa.0" />
+        </widgetcanvas>
+      </widget>
+      <edge type="WidgetCanvas.Edge" id="21" origin="48.0" endpoint="12.0" />
+      <edge type="WidgetCanvas.Edge" id="ca4f30a4-f60f-4de8-8f38-59dd3a10673a" origin="ddde0536-006e-417e-a54d-b89fd26b6a4f.0" endpoint="59.0" />
+      <edge type="WidgetCanvas.Edge" id="ec6d5997-b65b-443c-bd44-36898ca52259" origin="12.0" endpoint="ddde0536-006e-417e-a54d-b89fd26b6a4f.0" />
+      <Actor name="sitTemplate" type="Object" virtual="true" id="92" />
+      <Actor name="x" type="Sim" master="true" virtual="false" id="1" />
+      <Parameter name="x:age" type="enum" labels="baby,unsupported_age,child,teen,youngadult,adult,elder" default="adult" id="29" />
+      <Parameter name="x:sex" type="enum" labels="male,female" default="male" id="30" />
+      <Parameter name="x:carryState" template="carryState" type="enum" labels="none,left,right,both" default="right" id="389" />
+      <PostureManifest statemachine_type="INTERACTION" actors="x">
+        <Support family="stand" compatibility="FullBody" carry_left="*" carry_right="-" surface="*" />
+        <Support family="stand" compatibility="FullBody" carry_left="-" carry_right="*" surface="*" />
+        <Support family="stand" compatibility="FullBody" carry_left="*" carry_right="*" surface="*" />
+        <Support family="stand" compatibility="UpperBody" carry_left="*" carry_right="-" surface="*" />
+        <Support family="stand" compatibility="UpperBody" carry_left="-" carry_right="*" surface="*" />
+        <Support family="stand" compatibility="UpperBody" carry_left="*" carry_right="*" surface="*" />
+        <Support family="sit" compatibility="FullBody" carry_left="*" carry_right="-" surface="*" />
+        <Support family="sit" compatibility="FullBody" carry_left="-" carry_right="*" surface="*" />
+        <Support family="sit" compatibility="FullBody" carry_left="*" carry_right="*" surface="*" />
+        <Support family="sit" compatibility="UpperBody" carry_left="*" carry_right="-" surface="*" />
+        <Support family="sit" compatibility="UpperBody" carry_left="-" carry_right="*" surface="*" />
+        <Support family="sit" compatibility="UpperBody" carry_left="*" carry_right="*" surface="*" />
+      </PostureManifest>
+    </widgetcanvas>
+    <testcaselist>
+      <graphs>
+        <testcasegraph name="Squeamish_Sofa_Child" type="Swing.Testing.TestCaseGraph" id="f541d9ed-58a0-437d-a103-385a324951fb">
+          <description></description>
+          <decisionmaker type="Swing.Testing.RequestStatement" id="0156692d-25cd-4d80-b85f-165248eeff8d" actorinstance="62ffeca7-c127-46b0-aa81-a68b434bd18a" state="5a03a6d8-a348-45c6-86a6-354d0ae3ddd0" interrputiblity="Normal" />
+          <decisionmaker type="Swing.Testing.SceneStatement" id="049575c2-38bf-43a4-8783-d5eca83cd9e5" scenename="Sofa_Child" />
+          <decisionmaker type="Swing.DataStructures.EntryPoint" id="8ecaaeb0-6bf3-4d52-984d-fede491379f8">
+            <target id="049575c2-38bf-43a4-8783-d5eca83cd9e5" />
+          </decisionmaker>
+        </testcasegraph>
+        <widgetcanvas>
+          <viewport>
+            <track x="0" y="0" />
+            <zoom f="1" />
+          </viewport>
+          <widget type="Swing.Testing.RequestWidget" id="0e42a521-8d4a-4c85-8ec1-2347031c2c6f">
+            <location x="119" y="520" />
+            <size width="80" height="40" />
+            <data ref="0156692d-25cd-4d80-b85f-165248eeff8d" />
+          </widget>
+          <widget type="Swing.Testing.SceneWidget" id="58280440-9a8b-405f-8420-8ec83a21d4b9">
+            <location x="110" y="335" />
+            <size width="80" height="40" />
+            <data ref="049575c2-38bf-43a4-8783-d5eca83cd9e5" />
+          </widget>
+          <widget type="Swing.Widgets.EntryPointWidget" id="96a17a5d-9496-4043-8835-0a56fbe13529">
+            <location x="79" y="202" />
+            <size width="30" height="30" />
+            <data ref="8ecaaeb0-6bf3-4d52-984d-fede491379f8" />
+          </widget>
+          <edge type="WidgetCanvas.Edge" id="8606b4b3-a0de-46b4-8437-2ed3278b33bf" origin="58280440-9a8b-405f-8420-8ec83a21d4b9.1" endpoint="0e42a521-8d4a-4c85-8ec1-2347031c2c6f.0" />
+          <edge type="WidgetCanvas.Edge" id="9e8d6d90-8516-437b-9ac3-b50211cd6228" origin="96a17a5d-9496-4043-8835-0a56fbe13529.0" endpoint="58280440-9a8b-405f-8420-8ec83a21d4b9.0" />
+        </widgetcanvas>
+        <testcasegraph name="Squeamish_Seated" type="Swing.Testing.TestCaseGraph" id="56f193d7-cdd4-4bf2-854b-3a22960b4734">
+          <description></description>
+          <decisionmaker type="Swing.Testing.RequestStatement" id="41af4b03-1c65-4ae3-bc12-131b9e9233e6" actorinstance="62ffeca7-c127-46b0-aa81-a68b434bd18a" state="5a03a6d8-a348-45c6-86a6-354d0ae3ddd0" interrputiblity="Normal" />
+          <decisionmaker type="Swing.DataStructures.EntryPoint" id="90a1109d-408b-47b7-a9bf-4eea9ed5c18d">
+            <target id="ecf4a575-e35c-43a7-8e56-cd499f9e5758" />
+          </decisionmaker>
+          <decisionmaker type="Swing.Testing.SceneStatement" id="ecf4a575-e35c-43a7-8e56-cd499f9e5758" scenename="Seated" />
+        </testcasegraph>
+        <widgetcanvas>
+          <viewport>
+            <track x="0" y="0" />
+            <zoom f="1" />
+          </viewport>
+          <widget type="Swing.Widgets.EntryPointWidget" id="754229f1-0d2e-4613-a776-d0df413d54f6">
+            <location x="79" y="202" />
+            <size width="30" height="30" />
+            <data ref="90a1109d-408b-47b7-a9bf-4eea9ed5c18d" />
+          </widget>
+          <widget type="Swing.Testing.SceneWidget" id="bac40ebf-1cd1-4a5c-9447-dc5b01bcfc46">
+            <location x="110" y="335" />
+            <size width="80" height="40" />
+            <data ref="ecf4a575-e35c-43a7-8e56-cd499f9e5758" />
+          </widget>
+          <widget type="Swing.Testing.RequestWidget" id="e07e59d2-e26d-4491-95e0-9dd9b135d4dc">
+            <location x="127" y="512" />
+            <size width="80" height="40" />
+            <data ref="41af4b03-1c65-4ae3-bc12-131b9e9233e6" />
+          </widget>
+          <edge type="WidgetCanvas.Edge" id="05943227-7662-4825-bccc-8ca7fdf6e5cf" origin="bac40ebf-1cd1-4a5c-9447-dc5b01bcfc46.1" endpoint="e07e59d2-e26d-4491-95e0-9dd9b135d4dc.0" />
+          <edge type="WidgetCanvas.Edge" id="d8c5a52d-7113-4c49-923e-aa555829f607" origin="754229f1-0d2e-4613-a776-d0df413d54f6.0" endpoint="bac40ebf-1cd1-4a5c-9447-dc5b01bcfc46.0" />
+        </widgetcanvas>
+        <testcasegraph name="Squeamish_Standing" type="Swing.Testing.TestCaseGraph" id="436f8e35-309f-4174-bf28-7262af7bdd52">
+          <description></description>
+          <decisionmaker type="Swing.Testing.SceneStatement" id="1c27141f-3736-4cb1-a077-676cd1195064" scenename="Standing" />
+          <decisionmaker type="Swing.Testing.RequestStatement" id="4c254e37-404a-4c77-a12c-53b07c2980d2" actorinstance="62ffeca7-c127-46b0-aa81-a68b434bd18a" state="5a03a6d8-a348-45c6-86a6-354d0ae3ddd0" interrputiblity="Normal" />
+          <decisionmaker type="Swing.DataStructures.EntryPoint" id="c7dbb1c7-e6c1-4b1c-a00e-a3cce771e13f">
+            <target id="1c27141f-3736-4cb1-a077-676cd1195064" />
+          </decisionmaker>
+        </testcasegraph>
+        <widgetcanvas>
+          <viewport>
+            <track x="0" y="0" />
+            <zoom f="1" />
+          </viewport>
+          <widget type="Swing.Testing.RequestWidget" id="6496b2e8-5942-4bb4-bc1b-8f8720cfb6ce">
+            <location x="242" y="398" />
+            <size width="80" height="40" />
+            <data ref="4c254e37-404a-4c77-a12c-53b07c2980d2" />
+          </widget>
+          <widget type="Swing.Widgets.EntryPointWidget" id="9ec82d83-b9aa-4777-bf05-2596b23fbf34">
+            <location x="78" y="109" />
+            <size width="30" height="30" />
+            <data ref="c7dbb1c7-e6c1-4b1c-a00e-a3cce771e13f" />
+          </widget>
+          <widget type="Swing.Testing.SceneWidget" id="b1ad99f7-77fb-4b1b-bc32-a6cc807b3232">
+            <location x="240" y="219" />
+            <size width="80" height="40" />
+            <data ref="1c27141f-3736-4cb1-a077-676cd1195064" />
+          </widget>
+          <edge type="WidgetCanvas.Edge" id="29e881fb-4aa4-4ee4-8b84-35d417cc28fc" origin="b1ad99f7-77fb-4b1b-bc32-a6cc807b3232.1" endpoint="6496b2e8-5942-4bb4-bc1b-8f8720cfb6ce.0" />
+          <edge type="WidgetCanvas.Edge" id="ad233e59-7892-4803-a48e-6a73ad961892" origin="9ec82d83-b9aa-4777-bf05-2596b23fbf34.0" endpoint="b1ad99f7-77fb-4b1b-bc32-a6cc807b3232.0" />
+        </widgetcanvas>
+        <testcasegraph name="Squeamish_Standing_Child" type="Swing.Testing.TestCaseGraph" id="98ce3810-517c-4a31-a02b-b3944be241fb">
+          <description></description>
+          <decisionmaker type="Swing.Testing.SceneStatement" id="3203137c-6d64-40d8-b8ac-08732538692d" scenename="Standing_Child" />
+          <decisionmaker type="Swing.DataStructures.EntryPoint" id="58a3ab06-a492-4138-9388-3387cce2ba9c">
+            <target id="3203137c-6d64-40d8-b8ac-08732538692d" />
+          </decisionmaker>
+          <decisionmaker type="Swing.Testing.RequestStatement" id="8cc3c474-3b04-4a9d-a224-e37056eec7e6" actorinstance="62ffeca7-c127-46b0-aa81-a68b434bd18a" state="5a03a6d8-a348-45c6-86a6-354d0ae3ddd0" interrputiblity="Normal" />
+        </testcasegraph>
+        <widgetcanvas>
+          <viewport>
+            <track x="0" y="0" />
+            <zoom f="1" />
+          </viewport>
+          <widget type="Swing.Testing.RequestWidget" id="151f573b-eb01-4d2b-9e4c-ea200043c230">
+            <location x="242" y="398" />
+            <size width="80" height="40" />
+            <data ref="8cc3c474-3b04-4a9d-a224-e37056eec7e6" />
+          </widget>
+          <widget type="Swing.Testing.SceneWidget" id="6c00c605-550d-4f58-9a4e-3360b8d1bb20">
+            <location x="240" y="219" />
+            <size width="80" height="40" />
+            <data ref="3203137c-6d64-40d8-b8ac-08732538692d" />
+          </widget>
+          <widget type="Swing.Widgets.EntryPointWidget" id="ac8db5e2-3a2c-4beb-bf8e-4f473f76cc3a">
+            <location x="78" y="109" />
+            <size width="30" height="30" />
+            <data ref="58a3ab06-a492-4138-9388-3387cce2ba9c" />
+          </widget>
+          <edge type="WidgetCanvas.Edge" id="0747bc7d-82af-46ff-81e1-d1e4572b6b65" origin="ac8db5e2-3a2c-4beb-bf8e-4f473f76cc3a.0" endpoint="6c00c605-550d-4f58-9a4e-3360b8d1bb20.0" />
+          <edge type="WidgetCanvas.Edge" id="ef9b1f3a-0b4e-4459-ba03-b23b91b3db94" origin="6c00c605-550d-4f58-9a4e-3360b8d1bb20.1" endpoint="151f573b-eb01-4d2b-9e4c-ea200043c230.0" />
+        </widgetcanvas>
+        <testcasegraph name="Squeamish_Seated_Child" type="Swing.Testing.TestCaseGraph" id="dde74217-0d57-4aec-8a42-e4ecd3379c9e">
+          <description></description>
+          <decisionmaker type="Swing.DataStructures.EntryPoint" id="932bc91e-f7c4-4148-9862-1d59bb478468">
+            <target id="ba4bdeb5-1d0a-45f7-aee6-67e0d4f1c17f" />
+          </decisionmaker>
+          <decisionmaker type="Swing.Testing.SceneStatement" id="ba4bdeb5-1d0a-45f7-aee6-67e0d4f1c17f" scenename="Seated_Child" />
+          <decisionmaker type="Swing.Testing.RequestStatement" id="d11df547-a5d4-47c1-b4fb-4f7997ecac00" actorinstance="62ffeca7-c127-46b0-aa81-a68b434bd18a" state="5a03a6d8-a348-45c6-86a6-354d0ae3ddd0" interrputiblity="Normal" />
+        </testcasegraph>
+        <widgetcanvas>
+          <viewport>
+            <track x="0" y="0" />
+            <zoom f="1" />
+          </viewport>
+          <widget type="Swing.Testing.RequestWidget" id="11d11d80-4367-4ca1-8b88-c20d7c8674fc">
+            <location x="127" y="512" />
+            <size width="80" height="40" />
+            <data ref="d11df547-a5d4-47c1-b4fb-4f7997ecac00" />
+          </widget>
+          <widget type="Swing.Widgets.EntryPointWidget" id="61f801d4-e23f-42d6-ac4a-b158081fc248">
+            <location x="79" y="202" />
+            <size width="30" height="30" />
+            <data ref="932bc91e-f7c4-4148-9862-1d59bb478468" />
+          </widget>
+          <widget type="Swing.Testing.SceneWidget" id="913d3001-eae7-40c8-b711-47a3efcb54af">
+            <location x="110" y="335" />
+            <size width="80" height="40" />
+            <data ref="ba4bdeb5-1d0a-45f7-aee6-67e0d4f1c17f" />
+          </widget>
+          <edge type="WidgetCanvas.Edge" id="6987f060-0e46-43fd-83f9-10bf573825af" origin="913d3001-eae7-40c8-b711-47a3efcb54af.1" endpoint="11d11d80-4367-4ca1-8b88-c20d7c8674fc.0" />
+          <edge type="WidgetCanvas.Edge" id="a03eaeee-f7a6-47b1-9be9-67ee3449c2c6" origin="61f801d4-e23f-42d6-ac4a-b158081fc248.0" endpoint="913d3001-eae7-40c8-b711-47a3efcb54af.0" />
+        </widgetcanvas>
+        <testcasegraph name="Squeamish_Sofa" type="Swing.Testing.TestCaseGraph" id="07fef99f-d80d-454d-ae2e-accf3afaf53b">
+          <description></description>
+          <decisionmaker type="Swing.Testing.SceneStatement" id="58ac91e9-df34-486d-867d-efa185ad7d1b" scenename="Sofa" />
+          <decisionmaker type="Swing.DataStructures.EntryPoint" id="79cbdeeb-a9a6-44ff-b9e3-0abcbf741ace">
+            <target id="58ac91e9-df34-486d-867d-efa185ad7d1b" />
+          </decisionmaker>
+          <decisionmaker type="Swing.Testing.RequestStatement" id="ac134b0a-9a37-4426-a05d-910cfaa06788" actorinstance="62ffeca7-c127-46b0-aa81-a68b434bd18a" state="5a03a6d8-a348-45c6-86a6-354d0ae3ddd0" interrputiblity="Normal" />
+        </testcasegraph>
+        <widgetcanvas>
+          <viewport>
+            <track x="0" y="0" />
+            <zoom f="1" />
+          </viewport>
+          <widget type="Swing.Widgets.EntryPointWidget" id="2469464f-2453-4f31-83a2-0ea42fd490c0">
+            <location x="79" y="202" />
+            <size width="30" height="30" />
+            <data ref="79cbdeeb-a9a6-44ff-b9e3-0abcbf741ace" />
+          </widget>
+          <widget type="Swing.Testing.SceneWidget" id="981cc99b-49ee-457c-8726-b8a471b6c264">
+            <location x="110" y="335" />
+            <size width="80" height="40" />
+            <data ref="58ac91e9-df34-486d-867d-efa185ad7d1b" />
+          </widget>
+          <widget type="Swing.Testing.RequestWidget" id="ea0fadbf-d871-4e2e-b47b-b87c63f2a29f">
+            <location x="119" y="520" />
+            <size width="80" height="40" />
+            <data ref="ac134b0a-9a37-4426-a05d-910cfaa06788" />
+          </widget>
+          <edge type="WidgetCanvas.Edge" id="d9f7b6a4-97c4-4c5c-8150-bd6c12aadd3a" origin="981cc99b-49ee-457c-8726-b8a471b6c264.1" endpoint="ea0fadbf-d871-4e2e-b47b-b87c63f2a29f.0" />
+          <edge type="WidgetCanvas.Edge" id="fb19151c-c626-4338-b27b-56d4bcebd90c" origin="2469464f-2453-4f31-83a2-0ea42fd490c0.0" endpoint="981cc99b-49ee-457c-8726-b8a471b6c264.0" />
+        </widgetcanvas>
+      </graphs>
+    </testcaselist>
+    <blendmasklist />
+    <Lighting>
+      <Key0Light Rot="17.3" Height="0.9" Red="1" Green="1" Blue="1" Intensity="0.05" />
+      <Key1Light Rot="213.5" Height="0.45" Red="1" Green="1" Blue="1" Intensity="0.1" />
+      <Rim0Light Red="0.28" Green="0.15" Blue="0.06" Intensity="1.8" />
+      <Rim1Light Red="0" Green="0.3" Blue="0.4" Intensity="2.11" />
+      <DirectonalLight Yaw="0.5585054" Pitch="-0.9948377" Red="0.8" Green="0.8" Blue="0.8" Intensity="0.8" />
+      <AmbientLight Red="0.53" Green="0.76" Blue="0.53" Intensity="0.2" />
+      <ShadowLight Red="0.53" Green="0.76" Blue="0.53" Intensity="0.2" />
+    </Lighting>
+    <CameraData>
+      <EyePos posx="0.5189086" posy="1.941628" posz="2.590852" />
+      <TargetPos posx="0.05118598" posy="0.6051276" posz="-0.05395479" />
+    </CameraData>
+    <FocusData ActiveActorInstance="x">
+      <ActorInstanceFocus ActorInstance="x" CarryEnabled="false" HorizValue="-58" VertValue="15" FocusPostureType="PostureSit" CarryLeftAnim="plate" CarryRightAnim="plate" CarryLeftEnabled="false" CarryRightEnabled="false" />
+    </FocusData>
+    <SceneSetUp>
+      <Models>
+        <Model name="cmAdam" alias="cmAdam_1" obj_def_id="17728548793018838912">
+          <Position mode="Relative" targetactor="sitTemplate_Inst1" />
+        </Model>
+        <Model name="sitSofa3x1_bm" alias="sitSofa3x1_1" obj_def_id="7402">
+          <Position mode="Absolute" posx="0" posy="0" posz="0" rotx="0" roty="0" rotz="0" />
+        </Model>
+      </Models>
+      <VirtualActors>
+        <VirtualActor name="sitTemplate" instances="1" />
+      </VirtualActors>
+      <ActorInstances>
+        <ActorInstance name="x" postureinswing="sit,FullBody" parameters="x:age,x:sex,x:carryState" parametersinswing="child,male,right" modelname="cmAdam_1" subroot="" pairedactors="sitTemplate_Inst1" id="62ffeca7-c127-46b0-aa81-a68b434bd18a" />
+        <ActorInstance name="sitTemplate_Inst1" postureinswing="" parameters="" parametersinswing="" modelname="sitSofa3x1_1" subroot="1" pairedactors="" id="711cdc52-dffe-4fa6-8ec8-21257d851147" />
+      </ActorInstances>
+    </SceneSetUp>
+    <SceneList>
+      <SceneSetUp name="Standing">
+        <Models>
+          <Model name="yfEve" alias="yfEve_1" obj_def_id="10955419509230500818">
+            <Position mode="Absolute" posx="0" posy="0" posz="0" rotx="0" roty="0" rotz="0" />
+          </Model>
+        </Models>
+        <VirtualActors>
+          <VirtualActor name="sitTemplate" instances="1" />
+        </VirtualActors>
+        <ActorInstances>
+          <ActorInstance name="x" postureinswing="stand,FullBody" parameters="x:age,x:sex" parametersinswing="adult,male" modelname="yfEve_1" subroot="" pairedactors="" id="510" />
+          <ActorInstance name="sitTemplate_Inst1" postureinswing="" parameters="" parametersinswing="" modelname="unset" subroot="" pairedactors="" id="515" />
+        </ActorInstances>
+      </SceneSetUp>
+      <SceneSetUp name="Seated">
+        <Models>
+          <Model name="yfEve" alias="yfEve_1" obj_def_id="10955419509230500818">
+            <Position mode="Relative" targetactor="sitTemplate_Inst1" />
+          </Model>
+          <Model name="sitDining_bm" alias="sitDining_1" obj_def_id="7399">
+            <Position mode="Absolute" posx="0" posy="0" posz="0" rotx="0" roty="0" rotz="0" />
+          </Model>
+        </Models>
+        <VirtualActors>
+          <VirtualActor name="sitTemplate" instances="1" />
+        </VirtualActors>
+        <ActorInstances>
+          <ActorInstance name="x" postureinswing="sit,FullBody" parameters="x:age,x:sex" parametersinswing="adult,male" modelname="yfEve_1" subroot="" pairedactors="sitTemplate_Inst1" id="521" />
+          <ActorInstance name="sitTemplate_Inst1" postureinswing="" parameters="" parametersinswing="" modelname="sitDining_1" subroot="" pairedactors="" id="527" />
+        </ActorInstances>
+      </SceneSetUp>
+      <SceneSetUp name="Sofa">
+        <Models>
+          <Model name="yfEve" alias="yfEve_1" obj_def_id="10955419509230500818">
+            <Position mode="Relative" targetactor="sitTemplate_Inst1" />
+          </Model>
+          <Model name="sitSofa3x1_bm" alias="sitSofa3x1_1" obj_def_id="7402">
+            <Position mode="Absolute" posx="0" posy="0" posz="0" rotx="0" roty="0" rotz="0" />
+          </Model>
+        </Models>
+        <VirtualActors>
+          <VirtualActor name="sitTemplate" instances="1" />
+        </VirtualActors>
+        <ActorInstances>
+          <ActorInstance name="x" postureinswing="sit,FullBody" parameters="x:age,x:sex" parametersinswing="adult,male" modelname="yfEve_1" subroot="" pairedactors="sitTemplate_Inst1" id="1073" />
+          <ActorInstance name="sitTemplate_Inst1" postureinswing="" parameters="" parametersinswing="" modelname="sitSofa3x1_1" subroot="1" pairedactors="" id="1075" />
+        </ActorInstances>
+      </SceneSetUp>
+      <SceneSetUp name="Standing_Child">
+        <Models>
+          <Model name="cmAdam" alias="cmAdam_1" obj_def_id="17728548793018838912">
+            <Position mode="Absolute" posx="0" posy="0" posz="0" rotx="0" roty="0" rotz="0" />
+          </Model>
+        </Models>
+        <VirtualActors>
+          <VirtualActor name="sitTemplate" instances="1" />
+        </VirtualActors>
+        <ActorInstances>
+          <ActorInstance name="x" postureinswing="stand,FullBody" parameters="x:age,x:sex,x:carryState" parametersinswing="child,male,right" modelname="cmAdam_1" subroot="" pairedactors="sitTemplate_Inst1" id="486" />
+          <ActorInstance name="sitTemplate_Inst1" postureinswing="" parameters="" parametersinswing="" modelname="unset" subroot="" pairedactors="" id="487" />
+        </ActorInstances>
+      </SceneSetUp>
+      <SceneSetUp name="Sofa_Child">
+        <Models>
+          <Model name="cmAdam" alias="cmAdam_1" obj_def_id="17728548793018838912">
+            <Position mode="Relative" targetactor="sitTemplate_Inst1" />
+          </Model>
+          <Model name="sitSofa3x1_bm" alias="sitSofa3x1_1" obj_def_id="7402">
+            <Position mode="Absolute" posx="0" posy="0" posz="0" rotx="0" roty="0" rotz="0" />
+          </Model>
+        </Models>
+        <VirtualActors>
+          <VirtualActor name="sitTemplate" instances="1" />
+        </VirtualActors>
+        <ActorInstances>
+          <ActorInstance name="x" postureinswing="sit,FullBody" parameters="x:age,x:sex,x:carryState" parametersinswing="child,male,right" modelname="cmAdam_1" subroot="" pairedactors="sitTemplate_Inst1" id="9" />
+          <ActorInstance name="sitTemplate_Inst1" postureinswing="" parameters="" parametersinswing="" modelname="sitSofa3x1_1" subroot="1" pairedactors="" id="10" />
+        </ActorInstances>
+      </SceneSetUp>
+      <SceneSetUp name="Seated_Child">
+        <Models>
+          <Model name="cmAdam" alias="cmAdam_1" obj_def_id="17728548793018838912">
+            <Position mode="Relative" targetactor="sitTemplate_Inst1" />
+          </Model>
+          <Model name="sitDining_bm" alias="sitDining_1" obj_def_id="7399">
+            <Position mode="Absolute" posx="0" posy="0" posz="0" rotx="0" roty="0" rotz="0" />
+          </Model>
+        </Models>
+        <VirtualActors>
+          <VirtualActor name="sitTemplate" instances="1" />
+        </VirtualActors>
+        <ActorInstances>
+          <ActorInstance name="x" postureinswing="sit,FullBody" parameters="x:age,x:sex,x:carryState" parametersinswing="child,male,right" modelname="cmAdam_1" subroot="" pairedactors="sitTemplate_Inst1" id="25" />
+          <ActorInstance name="sitTemplate_Inst1" postureinswing="" parameters="" parametersinswing="" modelname="sitDining_1" subroot="" pairedactors="" id="26" />
+        </ActorInstances>
+      </SceneSetUp>
+    </SceneList>
+  </SwingPrivate>
+</ASM>

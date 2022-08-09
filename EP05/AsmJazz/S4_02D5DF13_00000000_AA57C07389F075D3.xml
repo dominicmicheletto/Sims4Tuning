@@ -1,0 +1,65 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="LeafPile_Burn" dcc="sage">
+  <Actor name="x" type="Sim" master="true" virtual="false" />
+  <Actor name="leafPile" type="Object" virtual="false" />
+  <Actor name="match" type="Prop" virtual="false" object_def_resource_key="c0db5ae7:00000000:0000000000018fb8#toolMatch_GEN" />
+  <Actor name="bottleLighterFluid" type="Prop" virtual="false" object_def_resource_key="c0db5ae7:00000000:00000000000095f5#bottleLighterFluidGEN_01_set1" />
+  <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
+  <Parameter name="x:species" type="enum" labels="human,dog,smalldog,cat" default="human" />
+  <IkConfiguration name="a2o_leafPile_burn_all.ma">
+    <SourceFile name="a2o_leafPile_burn_all.ma">
+      <MapNamespace namespace="match" actor="match" />
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="leafPile" actor="leafPile" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_leafPile_burn_addFluid.ma">
+    <SourceFile name="a2o_leafPile_burn_addFluid.ma">
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="leafPile" actor="leafPile" />
+      <MapNamespace namespace="bottleLighterFluid" actor="bottleLighterFluid" />
+    </SourceFile>
+  </IkConfiguration>
+  <PostureManifest actors="">
+    <Support family="stand" compatibility="FullBody" carry_left="-" carry_right="-" surface="*" />
+  </PostureManifest>
+  <State type="private" skippable="false" interrupt_this="false" name="addLiquid" focus="none" facialoverlays="true" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="light_fail" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="light_succeed" focus="none" facialoverlays="true" tailoverlays="true" />
+  <Connection from="addLiquid" to="light_fail" />
+  <Connection from="addLiquid" to="light_succeed" />
+  <Connection from="entry" to="addLiquid" />
+  <Connection from="light_fail" to="exit" />
+  <Connection from="light_succeed" to="exit" />
+  <State name="addLiquid" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="true" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="2">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2o_leafPile_burn_addFluid_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_leafPile_burn_addFluid.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="1">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="light_fail" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="4">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2o_leafPile_burn_lightFail_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_leafPile_burn_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="3">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="light_succeed" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="true" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="6">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2o_leafPile_burn_lightSucceed_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_leafPile_burn_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="5">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+    </PostureSelector>
+  </State>
+</ASM>

@@ -1,0 +1,79 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="Pets_BeachCombing_Rummage" dcc="sage">
+  <Actor name="x" type="Sim" master="true" virtual="false" />
+  <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
+  <Parameter name="x:species" type="enum" labels="human,dog,smalldog,cat" default="human" />
+  <IkConfiguration name="ad2o_beachCombing_rummage.ma">
+    <SourceFile name="ad2o_beachCombing_rummage.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <PostureManifest actors="">
+    <Support name="stand" family="none" compatibility="FullBody" carry_left="*" carry_right="*" surface="*" />
+  </PostureManifest>
+  <State type="private" skippable="false" interrupt_this="false" name="GetInRummage" focus="none" facialoverlays="false" tailoverlays="false" />
+  <State type="private" skippable="false" interrupt_this="false" name="GetOutRummage" focus="none" facialoverlays="false" tailoverlays="false" />
+  <State type="public" skippable="false" interrupt_this="false" name="Rummage" focus="none" facialoverlays="false" tailoverlays="false" />
+  <Connection from="GetInRummage" to="Rummage" />
+  <Connection from="GetOutRummage" to="exit" />
+  <Connection from="Rummage" to="GetOutRummage" />
+  <Connection from="entry" to="GetInRummage" />
+  <State name="GetInRummage" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="false">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="3">
+      <Choice value="stand--FullBody" track="normal" mask="">
+        <ParameterSelector parameter="x:species" unique_id="2">
+          <Choice value="human" />
+          <Choice value="dog">
+            <Controller target="x" controller="@ClipController(clip=ad2o_beachCombing_rummage_start_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ad2o_beachCombing_rummage.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="1">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
+          <Choice value="smalldog">
+            <Reference target="1" />
+          </Choice>
+          <Choice value="cat" />
+        </ParameterSelector>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="GetOutRummage" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="false">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="6">
+      <Choice value="stand--FullBody" track="normal" mask="">
+        <ParameterSelector parameter="x:species" unique_id="5">
+          <Choice value="human" />
+          <Choice value="dog">
+            <Controller target="x" controller="@ClipController(clip=ad2o_beachCombing_rummage_stop_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ad2o_beachCombing_rummage.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="4">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
+          <Choice value="smalldog">
+            <Reference target="4" />
+          </Choice>
+          <Choice value="cat" />
+        </ParameterSelector>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="Rummage" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="false">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="9">
+      <Choice value="stand--FullBody" track="normal" mask="">
+        <ParameterSelector parameter="x:species" unique_id="8">
+          <Choice value="human" />
+          <Choice value="dog">
+            <Controller target="x" controller="@ClipController(clip=ad2o_beachCombing_rummage_loop1_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ad2o_beachCombing_rummage.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="7">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
+          <Choice value="smalldog">
+            <Reference target="7" />
+          </Choice>
+          <Choice value="cat" />
+        </ParameterSelector>
+      </Choice>
+    </PostureSelector>
+  </State>
+</ASM>

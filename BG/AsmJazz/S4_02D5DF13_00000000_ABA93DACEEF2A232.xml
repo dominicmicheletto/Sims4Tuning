@@ -1,0 +1,979 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="soc_intimate_seated_makeOut" dcc="sage">
+  <Actor name="sitTemplate" type="Object" virtual="true" />
+  <Actor name="x" type="Sim" master="true" virtual="false" />
+  <Actor name="y" type="Sim" virtual="false" />
+  <Actor name="sitTemplate1" type="Object" virtual="false" />
+  <Actor name="surface" type="Object" virtual="false" />
+  <Parameter name="isMirrored" type="bool" labels="" default="False" />
+  <Parameter name="isPicnicTable" type="bool" labels="" default="False" />
+  <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
+  <Parameter name="y:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="y:sex" type="enum" labels="male,female" default="male" />
+  <IkConfiguration name="a2a_seated_intimate_makeOut.ma">
+    <SourceFile name="a2a_seated_intimate_makeOut.ma">
+      <MapNamespace namespace="sitTemplate" actor="sitTemplate" />
+      <MapNamespace namespace="sitTemplate1" actor="sitTemplate" />
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="y" actor="y" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="t2t_seated_intimate_makeOut.ma">
+    <SourceFile name="t2t_seated_intimate_makeOut.ma">
+      <MapNamespace namespace="sitTemplate" actor="sitTemplate" />
+      <MapNamespace namespace="sitTemplate1" actor="sitTemplate" />
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="y" actor="y" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2a_restaurantBooth_seated_intimate_makeOut.ma">
+    <SourceFile name="a2a_restaurantBooth_seated_intimate_makeOut.ma">
+      <MapNamespace namespace="sitTemplate" actor="sitTemplate" />
+      <MapNamespace namespace="sitTemplate1" actor="sitTemplate" />
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="y" actor="y" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="t2t_restaurantBooth_seated_intimate_makeOut.ma">
+    <SourceFile name="t2t_restaurantBooth_seated_intimate_makeOut.ma">
+      <MapNamespace namespace="sitTemplate" actor="sitTemplate" />
+      <MapNamespace namespace="sitTemplate1" actor="sitTemplate" />
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="y" actor="y" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2a_picnicTable_seated_intimate_makeOut.ma">
+    <SourceFile name="a2a_picnicTable_seated_intimate_makeOut.ma">
+      <MapNamespace namespace="sitTemplate" actor="sitTemplate" />
+      <MapNamespace namespace="sitTemplate1" actor="sitTemplate" />
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="y" actor="y" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="t2t_picnicTable_seated_intimate_makeOut.ma">
+    <SourceFile name="t2t_picnicTable_seated_intimate_makeOut.ma">
+      <MapNamespace namespace="sitTemplate" actor="sitTemplate" />
+      <MapNamespace namespace="sitTemplate1" actor="sitTemplate" />
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="y" actor="y" />
+    </SourceFile>
+  </IkConfiguration>
+  <PostureManifest actors="" />
+  <PostureManifest actors="x,y">
+    <Support name="sitIntimate" family="none" compatibility="FullBody" carry_left="-" carry_right="-" surface="*" />
+    <Support name="sitIntimateBooth" family="none" compatibility="FullBody" carry_left="-" carry_right="-" surface="*" />
+  </PostureManifest>
+  <State type="public" skippable="false" interrupt_this="false" name="Fail" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" name="Succeed" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="mirror" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="start" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="stop" focus="none" facialoverlays="false" tailoverlays="true" />
+  <Connection from="Fail" to="exit" />
+  <Connection from="Succeed" to="stop" />
+  <Connection from="entry" to="mirror" />
+  <Connection from="mirror" to="Fail" />
+  <Connection from="mirror" to="start" />
+  <Connection from="start" to="Succeed" />
+  <Connection from="stop" to="exit" />
+  <State name="Fail" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="11">
+      <Choice value="sitIntimateBooth--FullBody" track="normal" mask="">
+        <ParameterSelector parameter="x:age" unique_id="3">
+          <Choice value="baby" />
+          <Choice value="toddler" />
+          <Choice value="child" />
+          <Choice value="teen">
+            <Controller target="x" controller="@ClipController(clip=t2t_restaurantBooth_seated_intimate_makeOut_fail_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="t2t_restaurantBooth_seated_intimate_makeOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="1">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice value="youngadult">
+            <Controller target="x" controller="@ClipController(clip=a2a_restaurantBooth_seated_intimate_makeOut_fail_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_restaurantBooth_seated_intimate_makeOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="2">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice value="adult">
+            <Reference target="2" />
+          </Choice>
+          <Choice value="elder">
+            <Reference target="2" />
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+      <Choice value="sitIntimate--FullBody" track="normal" mask="">
+        <ParameterSelector parameter="isPicnicTable" unique_id="10">
+          <Choice value="false">
+            <ParameterSelector parameter="x:age" unique_id="6">
+              <Choice value="baby" />
+              <Choice value="toddler" />
+              <Choice value="child" />
+              <Choice value="teen">
+                <Controller target="x" controller="@ClipController(clip=t2t_seated_intimate_makeOut_fail_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="t2t_seated_intimate_makeOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="4">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+              </Choice>
+              <Choice value="youngadult">
+                <Controller target="x" controller="@ClipController(clip=a2a_seated_intimate_makeOut_fail_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_seated_intimate_makeOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="5">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+              </Choice>
+              <Choice value="adult">
+                <Reference target="5" />
+              </Choice>
+              <Choice value="elder">
+                <Reference target="5" />
+              </Choice>
+            </ParameterSelector>
+          </Choice>
+          <Choice value="true">
+            <ParameterSelector parameter="x:age" unique_id="9">
+              <Choice value="baby" />
+              <Choice value="toddler" />
+              <Choice value="child" />
+              <Choice value="teen">
+                <Controller target="x" controller="@ClipController(clip=t2t_picnicTable_seated_intimate_makeOut_fail_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="t2t_picnicTable_seated_intimate_makeOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="7">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+              </Choice>
+              <Choice value="youngadult">
+                <Controller target="x" controller="@ClipController(clip=a2a_picnicTable_seated_intimate_makeOut_fail_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_picnicTable_seated_intimate_makeOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="8">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+              </Choice>
+              <Choice value="adult">
+                <Reference target="8" />
+              </Choice>
+              <Choice value="elder">
+                <Reference target="8" />
+              </Choice>
+            </ParameterSelector>
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+    </PostureSelector>
+    <PostureSelector parameter="y:posture" unique_id="22">
+      <Choice value="sitIntimateBooth--FullBody" track="normal" mask="">
+        <ParameterSelector parameter="y:age" unique_id="14">
+          <Choice value="baby" />
+          <Choice value="toddler" />
+          <Choice value="child" />
+          <Choice value="teen">
+            <Controller target="y" controller="@ClipController(clip=t2t_restaurantBooth_seated_intimate_makeOut_fail_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="t2t_restaurantBooth_seated_intimate_makeOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="12">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice value="youngadult">
+            <Controller target="y" controller="@ClipController(clip=a2a_restaurantBooth_seated_intimate_makeOut_fail_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_restaurantBooth_seated_intimate_makeOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="13">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice value="adult">
+            <Reference target="13" />
+          </Choice>
+          <Choice value="elder">
+            <Reference target="13" />
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+      <Choice value="sitIntimate--FullBody" track="normal" mask="">
+        <ParameterSelector parameter="isPicnicTable" unique_id="21">
+          <Choice value="false">
+            <ParameterSelector parameter="y:age" unique_id="17">
+              <Choice value="baby" />
+              <Choice value="toddler" />
+              <Choice value="child" />
+              <Choice value="teen">
+                <Controller target="y" controller="@ClipController(clip=t2t_seated_intimate_makeOut_fail_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="t2t_seated_intimate_makeOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="15">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+              </Choice>
+              <Choice value="youngadult">
+                <Controller target="y" controller="@ClipController(clip=a2a_seated_intimate_makeOut_fail_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_seated_intimate_makeOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="16">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+              </Choice>
+              <Choice value="adult">
+                <Reference target="16" />
+              </Choice>
+              <Choice value="elder">
+                <Reference target="16" />
+              </Choice>
+            </ParameterSelector>
+          </Choice>
+          <Choice value="true">
+            <ParameterSelector parameter="y:age" unique_id="20">
+              <Choice value="baby" />
+              <Choice value="toddler" />
+              <Choice value="child" />
+              <Choice value="teen">
+                <Controller target="y" controller="@ClipController(clip=t2t_picnicTable_seated_intimate_makeOut_fail_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="t2t_picnicTable_seated_intimate_makeOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="18">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+              </Choice>
+              <Choice value="youngadult">
+                <Controller target="y" controller="@ClipController(clip=a2a_picnicTable_seated_intimate_makeOut_fail_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_picnicTable_seated_intimate_makeOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="19">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+              </Choice>
+              <Choice value="adult">
+                <Reference target="19" />
+              </Choice>
+              <Choice value="elder">
+                <Reference target="19" />
+              </Choice>
+            </ParameterSelector>
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="Succeed" type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <MakeController>
+      <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="67">
+        <Choice weight="100" avoidRepeat="False">
+          <PostureSelector parameter="x:posture" unique_id="33">
+            <Choice value="sitIntimateBooth--FullBody" track="normal" mask="">
+              <ParameterSelector parameter="x:age" unique_id="25">
+                <Choice value="baby" />
+                <Choice value="toddler" />
+                <Choice value="child" />
+                <Choice value="teen">
+                  <Controller target="x" controller="@ClipController(clip=t2t_restaurantBooth_seated_intimate_makeOut_breathe_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="t2t_restaurantBooth_seated_intimate_makeOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="23">
+                    <TransitionClassList>
+                      <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                    </TransitionClassList>
+                  </Controller>
+                </Choice>
+                <Choice value="youngadult">
+                  <Controller target="x" controller="@ClipController(clip=a2a_restaurantBooth_seated_intimate_makeOut_breathe_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_restaurantBooth_seated_intimate_makeOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="24">
+                    <TransitionClassList>
+                      <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                    </TransitionClassList>
+                  </Controller>
+                </Choice>
+                <Choice value="adult">
+                  <Reference target="24" />
+                </Choice>
+                <Choice value="elder">
+                  <Reference target="24" />
+                </Choice>
+              </ParameterSelector>
+            </Choice>
+            <Choice value="sitIntimate--FullBody" track="normal" mask="">
+              <ParameterSelector parameter="isPicnicTable" unique_id="32">
+                <Choice value="false">
+                  <ParameterSelector parameter="x:age" unique_id="28">
+                    <Choice value="baby" />
+                    <Choice value="toddler" />
+                    <Choice value="child" />
+                    <Choice value="teen">
+                      <Controller target="x" controller="@ClipController(clip=t2t_seated_intimate_makeOut_breathe_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="t2t_seated_intimate_makeOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="26">
+                        <TransitionClassList>
+                          <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                        </TransitionClassList>
+                      </Controller>
+                    </Choice>
+                    <Choice value="youngadult">
+                      <Controller target="x" controller="@ClipController(clip=a2a_seated_intimate_makeOut_breathe_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_seated_intimate_makeOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="27">
+                        <TransitionClassList>
+                          <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                        </TransitionClassList>
+                      </Controller>
+                    </Choice>
+                    <Choice value="adult">
+                      <Reference target="27" />
+                    </Choice>
+                    <Choice value="elder">
+                      <Reference target="27" />
+                    </Choice>
+                  </ParameterSelector>
+                </Choice>
+                <Choice value="true">
+                  <ParameterSelector parameter="x:age" unique_id="31">
+                    <Choice value="baby" />
+                    <Choice value="toddler" />
+                    <Choice value="child" />
+                    <Choice value="teen">
+                      <Controller target="x" controller="@ClipController(clip=t2t_picnicTable_seated_intimate_makeOut_breathe_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="t2t_picnicTable_seated_intimate_makeOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="29">
+                        <TransitionClassList>
+                          <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                        </TransitionClassList>
+                      </Controller>
+                    </Choice>
+                    <Choice value="youngadult">
+                      <Controller target="x" controller="@ClipController(clip=a2a_picnicTable_seated_intimate_makeOut_breathe_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_picnicTable_seated_intimate_makeOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="30">
+                        <TransitionClassList>
+                          <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                        </TransitionClassList>
+                      </Controller>
+                    </Choice>
+                    <Choice value="adult">
+                      <Reference target="30" />
+                    </Choice>
+                    <Choice value="elder">
+                      <Reference target="30" />
+                    </Choice>
+                  </ParameterSelector>
+                </Choice>
+              </ParameterSelector>
+            </Choice>
+          </PostureSelector>
+          <PostureSelector parameter="y:posture" unique_id="44">
+            <Choice value="sitIntimateBooth--FullBody" track="normal" mask="">
+              <ParameterSelector parameter="y:age" unique_id="36">
+                <Choice value="baby" />
+                <Choice value="toddler" />
+                <Choice value="child" />
+                <Choice value="teen">
+                  <Controller target="y" controller="@ClipController(clip=t2t_restaurantBooth_seated_intimate_makeOut_breathe_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="t2t_restaurantBooth_seated_intimate_makeOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="34">
+                    <TransitionClassList>
+                      <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                    </TransitionClassList>
+                  </Controller>
+                </Choice>
+                <Choice value="youngadult">
+                  <Controller target="y" controller="@ClipController(clip=a2a_restaurantBooth_seated_intimate_makeOut_breathe_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_restaurantBooth_seated_intimate_makeOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="35">
+                    <TransitionClassList>
+                      <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                    </TransitionClassList>
+                  </Controller>
+                </Choice>
+                <Choice value="adult">
+                  <Reference target="35" />
+                </Choice>
+                <Choice value="elder">
+                  <Reference target="35" />
+                </Choice>
+              </ParameterSelector>
+            </Choice>
+            <Choice value="sitIntimate--FullBody" track="normal" mask="">
+              <ParameterSelector parameter="isPicnicTable" unique_id="43">
+                <Choice value="false">
+                  <ParameterSelector parameter="y:age" unique_id="39">
+                    <Choice value="baby" />
+                    <Choice value="toddler" />
+                    <Choice value="child" />
+                    <Choice value="teen">
+                      <Controller target="y" controller="@ClipController(clip=t2t_seated_intimate_makeOut_breathe_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="t2t_seated_intimate_makeOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="37">
+                        <TransitionClassList>
+                          <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                        </TransitionClassList>
+                      </Controller>
+                    </Choice>
+                    <Choice value="youngadult">
+                      <Controller target="y" controller="@ClipController(clip=a2a_seated_intimate_makeOut_breathe_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_seated_intimate_makeOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="38">
+                        <TransitionClassList>
+                          <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                        </TransitionClassList>
+                      </Controller>
+                    </Choice>
+                    <Choice value="adult">
+                      <Reference target="38" />
+                    </Choice>
+                    <Choice value="elder">
+                      <Reference target="38" />
+                    </Choice>
+                  </ParameterSelector>
+                </Choice>
+                <Choice value="true">
+                  <ParameterSelector parameter="y:age" unique_id="42">
+                    <Choice value="baby" />
+                    <Choice value="toddler" />
+                    <Choice value="child" />
+                    <Choice value="teen">
+                      <Controller target="y" controller="@ClipController(clip=t2t_picnicTable_seated_intimate_makeOut_breathe_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="t2t_picnicTable_seated_intimate_makeOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="40">
+                        <TransitionClassList>
+                          <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                        </TransitionClassList>
+                      </Controller>
+                    </Choice>
+                    <Choice value="youngadult">
+                      <Controller target="y" controller="@ClipController(clip=a2a_picnicTable_seated_intimate_makeOut_breathe_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_picnicTable_seated_intimate_makeOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="41">
+                        <TransitionClassList>
+                          <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                        </TransitionClassList>
+                      </Controller>
+                    </Choice>
+                    <Choice value="adult">
+                      <Reference target="41" />
+                    </Choice>
+                    <Choice value="elder">
+                      <Reference target="41" />
+                    </Choice>
+                  </ParameterSelector>
+                </Choice>
+              </ParameterSelector>
+            </Choice>
+          </PostureSelector>
+        </Choice>
+        <Choice weight="100" avoidRepeat="False">
+          <PostureSelector parameter="y:posture" unique_id="55">
+            <Choice value="sitIntimateBooth--FullBody" track="normal" mask="">
+              <ParameterSelector parameter="y:age" unique_id="47">
+                <Choice value="baby" />
+                <Choice value="toddler" />
+                <Choice value="child" />
+                <Choice value="teen">
+                  <Controller target="y" controller="@ClipController(clip=t2t_restaurantBooth_seated_intimate_makeOut_kiss_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="t2t_restaurantBooth_seated_intimate_makeOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="45">
+                    <TransitionClassList>
+                      <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                    </TransitionClassList>
+                  </Controller>
+                </Choice>
+                <Choice value="youngadult">
+                  <Controller target="y" controller="@ClipController(clip=a2a_restaurantBooth_seated_intimate_makeOut_kiss_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_restaurantBooth_seated_intimate_makeOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="46">
+                    <TransitionClassList>
+                      <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                    </TransitionClassList>
+                  </Controller>
+                </Choice>
+                <Choice value="adult">
+                  <Reference target="46" />
+                </Choice>
+                <Choice value="elder">
+                  <Reference target="46" />
+                </Choice>
+              </ParameterSelector>
+            </Choice>
+            <Choice value="sitIntimate--FullBody" track="normal" mask="">
+              <ParameterSelector parameter="isPicnicTable" unique_id="54">
+                <Choice value="false">
+                  <ParameterSelector parameter="y:age" unique_id="50">
+                    <Choice value="baby" />
+                    <Choice value="toddler" />
+                    <Choice value="child" />
+                    <Choice value="teen">
+                      <Controller target="y" controller="@ClipController(clip=t2t_seated_intimate_makeOut_kiss_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="t2t_seated_intimate_makeOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="48">
+                        <TransitionClassList>
+                          <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                        </TransitionClassList>
+                      </Controller>
+                    </Choice>
+                    <Choice value="youngadult">
+                      <Controller target="y" controller="@ClipController(clip=a2a_seated_intimate_makeOut_kiss_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_seated_intimate_makeOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="49">
+                        <TransitionClassList>
+                          <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                        </TransitionClassList>
+                      </Controller>
+                    </Choice>
+                    <Choice value="adult">
+                      <Reference target="49" />
+                    </Choice>
+                    <Choice value="elder">
+                      <Reference target="49" />
+                    </Choice>
+                  </ParameterSelector>
+                </Choice>
+                <Choice value="true">
+                  <ParameterSelector parameter="y:age" unique_id="53">
+                    <Choice value="baby" />
+                    <Choice value="toddler" />
+                    <Choice value="child" />
+                    <Choice value="teen">
+                      <Controller target="y" controller="@ClipController(clip=t2t_picnicTable_seated_intimate_makeOut_kiss_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="t2t_picnicTable_seated_intimate_makeOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="51">
+                        <TransitionClassList>
+                          <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                        </TransitionClassList>
+                      </Controller>
+                    </Choice>
+                    <Choice value="youngadult">
+                      <Controller target="y" controller="@ClipController(clip=a2a_picnicTable_seated_intimate_makeOut_kiss_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_picnicTable_seated_intimate_makeOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="52">
+                        <TransitionClassList>
+                          <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                        </TransitionClassList>
+                      </Controller>
+                    </Choice>
+                    <Choice value="adult">
+                      <Reference target="52" />
+                    </Choice>
+                    <Choice value="elder">
+                      <Reference target="52" />
+                    </Choice>
+                  </ParameterSelector>
+                </Choice>
+              </ParameterSelector>
+            </Choice>
+          </PostureSelector>
+          <PostureSelector parameter="x:posture" unique_id="66">
+            <Choice value="sitIntimateBooth--FullBody" track="normal" mask="">
+              <ParameterSelector parameter="x:age" unique_id="58">
+                <Choice value="baby" />
+                <Choice value="toddler" />
+                <Choice value="child" />
+                <Choice value="teen">
+                  <Controller target="x" controller="@ClipController(clip=t2t_restaurantBooth_seated_intimate_makeOut_kiss_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="t2t_restaurantBooth_seated_intimate_makeOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="56">
+                    <TransitionClassList>
+                      <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                    </TransitionClassList>
+                  </Controller>
+                </Choice>
+                <Choice value="youngadult">
+                  <Controller target="x" controller="@ClipController(clip=a2a_restaurantBooth_seated_intimate_makeOut_kiss_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_restaurantBooth_seated_intimate_makeOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="57">
+                    <TransitionClassList>
+                      <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                    </TransitionClassList>
+                  </Controller>
+                </Choice>
+                <Choice value="adult">
+                  <Reference target="57" />
+                </Choice>
+                <Choice value="elder">
+                  <Reference target="57" />
+                </Choice>
+              </ParameterSelector>
+            </Choice>
+            <Choice value="sitIntimate--FullBody" track="normal" mask="">
+              <ParameterSelector parameter="isPicnicTable" unique_id="65">
+                <Choice value="false">
+                  <ParameterSelector parameter="x:age" unique_id="61">
+                    <Choice value="baby" />
+                    <Choice value="toddler" />
+                    <Choice value="child" />
+                    <Choice value="teen">
+                      <Controller target="x" controller="@ClipController(clip=t2t_seated_intimate_makeOut_kiss_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="t2t_seated_intimate_makeOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="59">
+                        <TransitionClassList>
+                          <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                        </TransitionClassList>
+                      </Controller>
+                    </Choice>
+                    <Choice value="youngadult">
+                      <Controller target="x" controller="@ClipController(clip=a2a_seated_intimate_makeOut_kiss_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_seated_intimate_makeOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="60">
+                        <TransitionClassList>
+                          <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                        </TransitionClassList>
+                      </Controller>
+                    </Choice>
+                    <Choice value="adult">
+                      <Reference target="60" />
+                    </Choice>
+                    <Choice value="elder">
+                      <Reference target="60" />
+                    </Choice>
+                  </ParameterSelector>
+                </Choice>
+                <Choice value="true">
+                  <ParameterSelector parameter="x:age" unique_id="64">
+                    <Choice value="baby" />
+                    <Choice value="toddler" />
+                    <Choice value="child" />
+                    <Choice value="teen">
+                      <Controller target="x" controller="@ClipController(clip=t2t_picnicTable_seated_intimate_makeOut_kiss_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="t2t_picnicTable_seated_intimate_makeOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="62">
+                        <TransitionClassList>
+                          <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                        </TransitionClassList>
+                      </Controller>
+                    </Choice>
+                    <Choice value="youngadult">
+                      <Controller target="x" controller="@ClipController(clip=a2a_picnicTable_seated_intimate_makeOut_kiss_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_picnicTable_seated_intimate_makeOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="63">
+                        <TransitionClassList>
+                          <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                        </TransitionClassList>
+                      </Controller>
+                    </Choice>
+                    <Choice value="adult">
+                      <Reference target="63" />
+                    </Choice>
+                    <Choice value="elder">
+                      <Reference target="63" />
+                    </Choice>
+                  </ParameterSelector>
+                </Choice>
+              </ParameterSelector>
+            </Choice>
+          </PostureSelector>
+        </Choice>
+      </RandomSelector>
+    </MakeController>
+  </State>
+  <State name="mirror" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <ParameterSelector parameter="isMirrored" unique_id="70">
+      <Choice value="false" />
+      <Choice value="true">
+        <SetMirror target="x" mirror="true" unique_id="69" />
+        <SetMirror target="y" mirror="true" unique_id="68" />
+      </Choice>
+    </ParameterSelector>
+  </State>
+  <State name="start" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="81">
+      <Choice value="sitIntimateBooth--FullBody" track="normal" mask="">
+        <ParameterSelector parameter="x:age" unique_id="73">
+          <Choice value="baby" />
+          <Choice value="toddler" />
+          <Choice value="child" />
+          <Choice value="teen">
+            <Controller target="x" controller="@ClipController(clip=t2t_restaurantBooth_seated_intimate_makeOut_start_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="t2t_restaurantBooth_seated_intimate_makeOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="71">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice value="youngadult">
+            <Controller target="x" controller="@ClipController(clip=a2a_restaurantBooth_seated_intimate_makeOut_start_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_restaurantBooth_seated_intimate_makeOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="72">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice value="adult">
+            <Reference target="72" />
+          </Choice>
+          <Choice value="elder">
+            <Reference target="72" />
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+      <Choice value="sitIntimate--FullBody" track="normal" mask="">
+        <ParameterSelector parameter="isPicnicTable" unique_id="80">
+          <Choice value="false">
+            <ParameterSelector parameter="x:age" unique_id="76">
+              <Choice value="baby" />
+              <Choice value="toddler" />
+              <Choice value="child" />
+              <Choice value="teen">
+                <Controller target="x" controller="@ClipController(clip=t2t_seated_intimate_makeOut_start_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="t2t_seated_intimate_makeOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="74">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+              </Choice>
+              <Choice value="youngadult">
+                <Controller target="x" controller="@ClipController(clip=a2a_seated_intimate_makeOut_start_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_seated_intimate_makeOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="75">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+              </Choice>
+              <Choice value="adult">
+                <Reference target="75" />
+              </Choice>
+              <Choice value="elder">
+                <Reference target="75" />
+              </Choice>
+            </ParameterSelector>
+          </Choice>
+          <Choice value="true">
+            <ParameterSelector parameter="x:age" unique_id="79">
+              <Choice value="baby" />
+              <Choice value="toddler" />
+              <Choice value="child" />
+              <Choice value="teen">
+                <Controller target="x" controller="@ClipController(clip=t2t_picnicTable_seated_intimate_makeOut_start_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="t2t_picnicTable_seated_intimate_makeOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="77">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+              </Choice>
+              <Choice value="youngadult">
+                <Controller target="x" controller="@ClipController(clip=a2a_picnicTable_seated_intimate_makeOut_start_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_picnicTable_seated_intimate_makeOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="78">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+              </Choice>
+              <Choice value="adult">
+                <Reference target="78" />
+              </Choice>
+              <Choice value="elder">
+                <Reference target="78" />
+              </Choice>
+            </ParameterSelector>
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+    </PostureSelector>
+    <PostureSelector parameter="y:posture" unique_id="92">
+      <Choice value="sitIntimateBooth--FullBody" track="normal" mask="">
+        <ParameterSelector parameter="y:age" unique_id="84">
+          <Choice value="baby" />
+          <Choice value="toddler" />
+          <Choice value="child" />
+          <Choice value="teen">
+            <Controller target="y" controller="@ClipController(clip=t2t_restaurantBooth_seated_intimate_makeOut_start_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="t2t_restaurantBooth_seated_intimate_makeOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="82">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice value="youngadult">
+            <Controller target="y" controller="@ClipController(clip=a2a_restaurantBooth_seated_intimate_makeOut_start_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_restaurantBooth_seated_intimate_makeOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="83">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice value="adult">
+            <Reference target="83" />
+          </Choice>
+          <Choice value="elder">
+            <Reference target="83" />
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+      <Choice value="sitIntimate--FullBody" track="normal" mask="">
+        <ParameterSelector parameter="isPicnicTable" unique_id="91">
+          <Choice value="false">
+            <ParameterSelector parameter="y:age" unique_id="87">
+              <Choice value="baby" />
+              <Choice value="toddler" />
+              <Choice value="child" />
+              <Choice value="teen">
+                <Controller target="y" controller="@ClipController(clip=t2t_seated_intimate_makeOut_start_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="t2t_seated_intimate_makeOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="85">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+              </Choice>
+              <Choice value="youngadult">
+                <Controller target="y" controller="@ClipController(clip=a2a_seated_intimate_makeOut_start_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_seated_intimate_makeOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="86">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+              </Choice>
+              <Choice value="adult">
+                <Reference target="86" />
+              </Choice>
+              <Choice value="elder">
+                <Reference target="86" />
+              </Choice>
+            </ParameterSelector>
+          </Choice>
+          <Choice value="true">
+            <ParameterSelector parameter="y:age" unique_id="90">
+              <Choice value="baby" />
+              <Choice value="toddler" />
+              <Choice value="child" />
+              <Choice value="teen">
+                <Controller target="y" controller="@ClipController(clip=t2t_picnicTable_seated_intimate_makeOut_start_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="t2t_picnicTable_seated_intimate_makeOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="88">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+              </Choice>
+              <Choice value="youngadult">
+                <Controller target="y" controller="@ClipController(clip=a2a_picnicTable_seated_intimate_makeOut_start_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_picnicTable_seated_intimate_makeOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="89">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+              </Choice>
+              <Choice value="adult">
+                <Reference target="89" />
+              </Choice>
+              <Choice value="elder">
+                <Reference target="89" />
+              </Choice>
+            </ParameterSelector>
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="stop" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="103">
+      <Choice value="sitIntimateBooth--FullBody" track="normal" mask="">
+        <ParameterSelector parameter="x:age" unique_id="95">
+          <Choice value="baby" />
+          <Choice value="toddler" />
+          <Choice value="child" />
+          <Choice value="teen">
+            <Controller target="x" controller="@ClipController(clip=t2t_restaurantBooth_seated_intimate_makeOut_stop_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="t2t_restaurantBooth_seated_intimate_makeOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="93">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice value="youngadult">
+            <Controller target="x" controller="@ClipController(clip=a2a_restaurantBooth_seated_intimate_makeOut_stop_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_restaurantBooth_seated_intimate_makeOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="94">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice value="adult">
+            <Reference target="94" />
+          </Choice>
+          <Choice value="elder">
+            <Reference target="94" />
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+      <Choice value="sitIntimate--FullBody" track="normal" mask="">
+        <ParameterSelector parameter="isPicnicTable" unique_id="102">
+          <Choice value="false">
+            <ParameterSelector parameter="x:age" unique_id="98">
+              <Choice value="baby" />
+              <Choice value="toddler" />
+              <Choice value="child" />
+              <Choice value="teen">
+                <Controller target="x" controller="@ClipController(clip=t2t_seated_intimate_makeOut_stop_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="t2t_seated_intimate_makeOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="96">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+              </Choice>
+              <Choice value="youngadult">
+                <Controller target="x" controller="@ClipController(clip=a2a_seated_intimate_makeOut_stop_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_seated_intimate_makeOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="97">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+              </Choice>
+              <Choice value="adult">
+                <Reference target="97" />
+              </Choice>
+              <Choice value="elder">
+                <Reference target="97" />
+              </Choice>
+            </ParameterSelector>
+          </Choice>
+          <Choice value="true">
+            <ParameterSelector parameter="x:age" unique_id="101">
+              <Choice value="baby" />
+              <Choice value="toddler" />
+              <Choice value="child" />
+              <Choice value="teen">
+                <Controller target="x" controller="@ClipController(clip=t2t_picnicTable_seated_intimate_makeOut_stop_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="t2t_picnicTable_seated_intimate_makeOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="99">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+              </Choice>
+              <Choice value="youngadult">
+                <Controller target="x" controller="@ClipController(clip=a2a_picnicTable_seated_intimate_makeOut_stop_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_picnicTable_seated_intimate_makeOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="100">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+              </Choice>
+              <Choice value="adult">
+                <Reference target="100" />
+              </Choice>
+              <Choice value="elder">
+                <Reference target="100" />
+              </Choice>
+            </ParameterSelector>
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+    </PostureSelector>
+    <PostureSelector parameter="y:posture" unique_id="114">
+      <Choice value="sitIntimateBooth--FullBody" track="normal" mask="">
+        <ParameterSelector parameter="y:age" unique_id="106">
+          <Choice value="baby" />
+          <Choice value="toddler" />
+          <Choice value="child" />
+          <Choice value="teen">
+            <Controller target="y" controller="@ClipController(clip=t2t_restaurantBooth_seated_intimate_makeOut_stop_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="t2t_restaurantBooth_seated_intimate_makeOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="104">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice value="youngadult">
+            <Controller target="y" controller="@ClipController(clip=a2a_restaurantBooth_seated_intimate_makeOut_stop_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_restaurantBooth_seated_intimate_makeOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="105">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice value="adult">
+            <Reference target="105" />
+          </Choice>
+          <Choice value="elder">
+            <Reference target="105" />
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+      <Choice value="sitIntimate--FullBody" track="normal" mask="">
+        <ParameterSelector parameter="isPicnicTable" unique_id="113">
+          <Choice value="false">
+            <ParameterSelector parameter="y:age" unique_id="109">
+              <Choice value="baby" />
+              <Choice value="toddler" />
+              <Choice value="child" />
+              <Choice value="teen">
+                <Controller target="y" controller="@ClipController(clip=t2t_seated_intimate_makeOut_stop_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="t2t_seated_intimate_makeOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="107">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+              </Choice>
+              <Choice value="youngadult">
+                <Controller target="y" controller="@ClipController(clip=a2a_seated_intimate_makeOut_stop_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_seated_intimate_makeOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="108">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+              </Choice>
+              <Choice value="adult">
+                <Reference target="108" />
+              </Choice>
+              <Choice value="elder">
+                <Reference target="108" />
+              </Choice>
+            </ParameterSelector>
+          </Choice>
+          <Choice value="true">
+            <ParameterSelector parameter="y:age" unique_id="112">
+              <Choice value="baby" />
+              <Choice value="toddler" />
+              <Choice value="child" />
+              <Choice value="teen">
+                <Controller target="y" controller="@ClipController(clip=t2t_picnicTable_seated_intimate_makeOut_stop_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="t2t_picnicTable_seated_intimate_makeOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="110">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+              </Choice>
+              <Choice value="youngadult">
+                <Controller target="y" controller="@ClipController(clip=a2a_picnicTable_seated_intimate_makeOut_stop_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_picnicTable_seated_intimate_makeOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="111">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+              </Choice>
+              <Choice value="adult">
+                <Reference target="111" />
+              </Choice>
+              <Choice value="elder">
+                <Reference target="111" />
+              </Choice>
+            </ParameterSelector>
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+    </PostureSelector>
+  </State>
+</ASM>

@@ -1,0 +1,334 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="Recycler_Operate" dcc="sage">
+  <Actor name="x" type="Sim" master="true" virtual="false" />
+  <Actor name="Recycler" type="Object" virtual="false" />
+  <Actor name="RecyclerCube" type="Prop" virtual="false" object_def_resource_key="c0db5ae7:00000000:00000000000392c3#recycleCube_EP09GEN" />
+  <Actor name="trash" type="Object" virtual="false" />
+  <Parameter name="IsRecyclerDirty" type="bool" labels="" default="False" />
+  <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
+  <Parameter name="x:carryState" type="enum" labels="none,left,right,both" default="right" />
+  <IkConfiguration name="a2o_recycler_Fail.ma">
+    <SourceFile name="a2o_recycler_Fail.ma">
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="recycler" actor="Recycler" />
+      <MapNamespace namespace="recycleCube" actor="RecyclerCube" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_recycler_succeed.ma">
+    <SourceFile name="a2o_recycler_succeed.ma">
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="recycler" actor="Recycler" />
+      <MapNamespace namespace="recycleCube" actor="RecyclerCube" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_recycler_operate.ma">
+    <SourceFile name="a2o_recycler_operate.ma">
+      <MapNamespace namespace="recycler" actor="Recycler" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_recycler_idle.ma">
+    <SourceFile name="a2o_recycler_idle.ma">
+      <MapNamespace namespace="recycler" actor="Recycler" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_recycler_SimSoftPosture.ma">
+    <SourceFile name="a2o_recycler_SimSoftPosture.ma">
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="recycler" actor="Recycler" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_recycler_add_recyclables_start_carryLeft.ma">
+    <SourceFile name="a2o_recycler_add_recyclables_start_carryLeft.ma">
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="trash" actor="trash" />
+      <MapNamespace namespace="recycler" actor="Recycler" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_recycler_add_recyclables_start_carryRight.ma">
+    <SourceFile name="a2o_recycler_add_recyclables_start_carryRight.ma">
+      <MapNamespace namespace="trash" actor="trash" />
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="recycler" actor="Recycler" />
+    </SourceFile>
+  </IkConfiguration>
+  <PostureManifest actors="" />
+  <PostureManifest actors="x">
+    <Support name="stand" family="none" compatibility="FullBody" carry_left="-" carry_right="-" surface="*" />
+    <Support name="stand" family="none" compatibility="FullBody" carry_left="-" carry_right="trash" surface="*" />
+    <Support name="stand" family="none" compatibility="FullBody" carry_left="trash" carry_right="-" surface="*" />
+  </PostureManifest>
+  <State type="public" skippable="false" interrupt_this="false" name="Add_Recyclables" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="Cancel" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="Fail" focus="none" facialoverlays="true" tailoverlays="true" />
+  <State type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" name="Idle" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="Operate" focus="none" facialoverlays="true" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="Start" focus="none" facialoverlays="true" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="Succeed" focus="none" facialoverlays="true" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="hub" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="stop" focus="none" facialoverlays="false" tailoverlays="true" />
+  <Connection from="Add_Recyclables" to="hub" />
+  <Connection from="Cancel" to="exit" />
+  <Connection from="Fail" to="exit" />
+  <Connection from="Idle" to="hub" />
+  <Connection from="Operate" to="hub" />
+  <Connection from="Start" to="hub" />
+  <Connection from="Succeed" to="exit" />
+  <Connection from="entry" to="Add_Recyclables" />
+  <Connection from="entry" to="Start" />
+  <Connection from="hub" to="Cancel" />
+  <Connection from="hub" to="Idle" />
+  <Connection from="hub" to="Operate" />
+  <Connection from="hub" to="stop" />
+  <Connection from="stop" to="Fail" />
+  <Connection from="stop" to="Succeed" />
+  <State name="Add_Recyclables" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="12">
+      <Choice value="stand--FullBody" track="normal" mask="">
+        <ParameterSelector parameter="x:carryState" unique_id="11">
+          <Choice value="none" />
+          <Choice value="left">
+            <Controller target="trash" controller="@ClipController(clip=a2o_recycler_add_recyclables_start_carryLeft_trash, loop_count=#1)" overridePosture="true" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_recycler_add_recyclables_start_carryLeft.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="1">
+              <TransitionClassList />
+            </Controller>
+            <Controller target="x" controller="@ClipController(clip=a2o_recycler_add_recyclables_start_carryLeft_x, loop_count=#1)" overridePosture="true" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_recycler_add_recyclables_start_carryLeft.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="4">
+              <TransitionClassList />
+            </Controller>
+            <MakeController unique_id="3">
+              <Controller target="x" controller="@ClipController(clip=a2o_recycler_pose_x, loop_count=#1)" overridePosture="true" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_recycler_SimSoftPosture.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="2">
+                <TransitionClassList />
+              </Controller>
+            </MakeController>
+            <Controller target="Recycler" controller="@ClipController(clip=a2o_recycler_add_recyclables_start_carryLeft_recycler, loop_count=#1)" overridePosture="true" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_recycler_add_recyclables_start_carryLeft.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="5">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
+          <Choice value="right">
+            <Controller target="trash" controller="@ClipController(clip=a2o_recycler_add_recyclables_start_carryRight_trash, loop_count=#1)" overridePosture="true" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_recycler_add_recyclables_start_carryRight.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="6">
+              <TransitionClassList />
+            </Controller>
+            <Controller target="x" controller="@ClipController(clip=a2o_recycler_add_recyclables_start_carryRight_x, loop_count=#1)" overridePosture="true" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_recycler_add_recyclables_start_carryRight.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="9">
+              <TransitionClassList />
+            </Controller>
+            <MakeController unique_id="8">
+              <Controller target="x" controller="@ClipController(clip=a2o_recycler_pose_x, loop_count=#1)" overridePosture="true" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_recycler_SimSoftPosture.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="7">
+                <TransitionClassList />
+              </Controller>
+            </MakeController>
+            <Controller target="Recycler" controller="@ClipController(clip=a2o_recycler_add_recyclables_start_carryRight_recycler, loop_count=#1)" overridePosture="true" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_recycler_add_recyclables_start_carryRight.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="10">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
+          <Choice value="both" />
+        </ParameterSelector>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="Cancel" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="14">
+      <Choice value="stand--FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2o_recycler_cancel_x, loop_count=#1)" overridePosture="true" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_recycler_operate.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="13">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
+    </PostureSelector>
+    <Controller target="Recycler" controller="@ClipController(clip=a2o_recycler_cancel_recycler, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_recycler_operate.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="15">
+      <TransitionClassList>
+        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+      </TransitionClassList>
+    </Controller>
+  </State>
+  <State name="Fail" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="true" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="19">
+      <Choice value="stand--FullBody" track="normal" mask="">
+        <ParameterSelector parameter="IsRecyclerDirty" unique_id="18">
+          <Choice value="false">
+            <Controller target="x" controller="@ClipController(clip=a2o_recycler_stop_fail_x, loop_count=#1)" overridePosture="true" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="NoBlendLoop" transition_class_out="Default" ik_configuration="a2o_recycler_Fail.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="16">
+              <TransitionClassList>
+                <Transition transition_class_name="NoBlendLoop" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="false" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice value="true">
+            <Controller target="x" controller="@ClipController(clip=a2o_recycler_stop_fail_dirty_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_recycler_Fail.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="17">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+    </PostureSelector>
+    <Controller target="Recycler" controller="@ClipController(clip=a2o_recycler_stop_fail_recycler, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="NoBlendLoop" transition_class_out="Default" ik_configuration="a2o_recycler_Fail.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="20">
+      <TransitionClassList>
+        <Transition transition_class_name="NoBlendLoop" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+      </TransitionClassList>
+    </Controller>
+  </State>
+  <State name="Idle" type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <MakeController>
+      <PostureSelector parameter="x:posture" unique_id="25">
+        <Choice value="stand--FullBody" track="normal" mask="">
+          <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="24">
+            <Choice weight="100" avoidRepeat="False">
+              <Controller target="Recycler" controller="@ClipController(clip=a2o_recycler_operate_idle_recycler, loop_count=#1)" overridePosture="true" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="NoBlendLoop" transition_class_out="NoBlendLoop" ik_configuration="a2o_recycler_idle.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="21">
+                <TransitionClassList>
+                  <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="false" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                </TransitionClassList>
+              </Controller>
+              <Controller target="x" controller="@ClipController(clip=a2o_recycler_operate_idle2_x, loop_count=#1)" overridePosture="true" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="NoBlendLoop" transition_class_out="NoBlendLoop" ik_configuration="a2o_recycler_idle.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="22">
+                <TransitionClassList>
+                  <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="false" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  <Transition transition_class_name="NoBlendLoop" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                </TransitionClassList>
+              </Controller>
+            </Choice>
+            <Choice weight="23" avoidRepeat="False">
+              <Reference target="21" />
+              <Controller target="x" controller="@ClipController(clip=a2o_recycler_operate_idle_x, loop_count=#1)" overridePosture="true" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="NoBlendLoop" transition_class_out="NoBlendLoop" ik_configuration="a2o_recycler_idle.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="23">
+                <TransitionClassList>
+                  <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="false" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  <Transition transition_class_name="NoBlendLoop" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                </TransitionClassList>
+              </Controller>
+            </Choice>
+          </RandomSelector>
+        </Choice>
+      </PostureSelector>
+    </MakeController>
+  </State>
+  <State name="Operate" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="true" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="35">
+      <Choice value="stand--FullBody" track="normal" mask="">
+        <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="34">
+          <Choice weight="75" avoidRepeat="False">
+            <Controller target="x" controller="@ClipController(clip=a2o_recycler_operate_loop1_x, loop_count=#1)" overridePosture="true" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_recycler_operate.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="28">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+            <MakeController unique_id="27">
+              <Controller target="x" controller="@ClipController(clip=a2o_recycler_pose_x, loop_count=#1)" overridePosture="true" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_recycler_SimSoftPosture.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="26">
+                <TransitionClassList />
+              </Controller>
+            </MakeController>
+            <Controller target="Recycler" controller="@ClipController(clip=a2o_recycler_operate_loop1_recycler, loop_count=#1)" overridePosture="true" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_recycler_operate.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="29">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice weight="67" avoidRepeat="True">
+            <Controller target="Recycler" controller="@ClipController(clip=a2o_recycler_operate_loop2_recycler, loop_count=#1)" overridePosture="true" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_recycler_operate.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="30">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+            <Controller target="x" controller="@ClipController(clip=a2o_recycler_operate_loop2_x, loop_count=#1)" overridePosture="true" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_recycler_operate.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="31">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+            <Reference target="27" />
+          </Choice>
+          <Choice weight="24" avoidRepeat="False">
+            <Controller target="x" controller="@ClipController(clip=a2o_recycler_operate_checkProgress_x, loop_count=#1)" overridePosture="true" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_recycler_operate.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="32">
+              <TransitionClassList />
+            </Controller>
+            <Reference target="27" />
+            <Controller target="Recycler" controller="@ClipController(clip=a2o_recycler_operate_checkProgress_recycler, loop_count=#1)" overridePosture="true" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_recycler_operate.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="33">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
+        </RandomSelector>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="Start" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="true" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="41">
+      <Choice value="stand--FullBody" track="normal" mask="">
+        <ParameterSelector parameter="x:carryState" unique_id="40">
+          <Choice value="none">
+            <Controller target="Recycler" controller="@ClipController(clip=a2o_recycler_start_recycler, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_recycler_operate.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="36">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+            <Controller target="x" controller="@ClipController(clip=a2o_recycler_start_x, loop_count=#1)" overridePosture="true" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_recycler_operate.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="39">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+            <MakeController unique_id="38">
+              <Controller target="x" controller="@ClipController(clip=a2o_recycler_pose_x, loop_count=#1)" overridePosture="true" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_recycler_SimSoftPosture.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="37">
+                <TransitionClassList />
+              </Controller>
+            </MakeController>
+          </Choice>
+          <Choice value="left" />
+          <Choice value="right" />
+          <Choice value="both" />
+        </ParameterSelector>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="Succeed" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="true" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="45">
+      <Choice value="stand--FullBody" track="normal" mask="">
+        <ParameterSelector parameter="IsRecyclerDirty" unique_id="44">
+          <Choice value="false">
+            <Controller target="x" controller="@ClipController(clip=a2o_recycler_stop_succeed_x, loop_count=#1)" overridePosture="true" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_recycler_succeed.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="42">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="false" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice value="true">
+            <Controller target="x" controller="@ClipController(clip=a2o_recycler_stop_succeed_dirty_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_recycler_succeed.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="43">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+    </PostureSelector>
+    <Controller target="Recycler" controller="@ClipController(clip=a2o_recycler_stop_succeed_recycler, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_recycler_succeed.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="46">
+      <TransitionClassList>
+        <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="false" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+      </TransitionClassList>
+    </Controller>
+  </State>
+  <State name="hub" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="47">
+      <Choice value="stand--FullBody" track="normal" mask="" />
+    </PostureSelector>
+  </State>
+  <State name="stop" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="49">
+      <Choice value="stand--FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2o_recycler_cancel_x, loop_count=#1)" overridePosture="true" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_recycler_operate.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="48">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="false" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1333333" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
+    </PostureSelector>
+    <Controller target="Recycler" controller="@ClipController(clip=a2o_recycler_cancel_recycler, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_recycler_operate.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="50">
+      <TransitionClassList>
+        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="false" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1333333" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+      </TransitionClassList>
+    </Controller>
+  </State>
+</ASM>

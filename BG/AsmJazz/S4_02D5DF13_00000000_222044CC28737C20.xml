@@ -1,0 +1,125 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="Cook_Shared_TrickActions" dcc="sage">
+  <Actor name="x" type="Sim" master="true" virtual="false" />
+  <Actor name="spiceBottle" type="Prop" virtual="false" object_def_resource_key="c0db5ae7:00000000:0000000000001d16#spiceBottleGEN_01_prop" />
+  <Actor name="spiceBottle1" type="Prop" virtual="false" object_def_resource_key="c0db5ae7:00000000:0000000000001d16#spiceBottleGEN_01_prop" />
+  <Actor name="surface" type="Object" virtual="false" />
+  <Actor name="ico" type="Object" virtual="false" />
+  <Actor name="knife" type="Prop" virtual="false" object_def_resource_key="c0db5ae7:00000000:0000000000001fbb#toolKnifeChefGEN_01_prop" />
+  <Actor name="knife1" type="Prop" virtual="false" object_def_resource_key="c0db5ae7:00000000:0000000000001fbb#toolKnifeChefGEN_01_prop" />
+  <Actor name="bottle" type="Prop" virtual="false" object_def_resource_key="c0db5ae7:00000000:000000000000e4ae#bottleCulinaryGEN_01" />
+  <Actor name="foodPalm" type="Prop" virtual="false" object_def_resource_key="c0db5ae7:00000000:000000000000236f#foodPalmGENOnion_01" />
+  <Actor name="foodCuttingBoard" type="Prop" virtual="false" object_def_resource_key="c0db5ae7:00000000:0000000000000000" />
+  <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
+  <IkConfiguration name="a2o_cuttingBoard_cook_airSlice_succeed.ma">
+    <SourceFile name="a2o_cuttingBoard_cook_airSlice_succeed.ma">
+      <MapNamespace namespace="foodPalm" actor="foodPalm" />
+      <MapNamespace namespace="knife" actor="knife" />
+      <MapNamespace namespace="knife1" actor="knife1" />
+      <MapNamespace namespace="surface" actor="surface" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_cuttingBoard_cook_airSlice_fail.ma">
+    <SourceFile name="a2o_cuttingBoard_cook_airSlice_fail.ma">
+      <MapNamespace namespace="foodPalm" actor="foodPalm" />
+      <MapNamespace namespace="knife" actor="knife" />
+      <MapNamespace namespace="knife1" actor="knife1" />
+      <MapNamespace namespace="surface" actor="surface" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_cook_addCombo_succeed_x.ma">
+    <SourceFile name="a2o_cook_addCombo_succeed_x.ma">
+      <MapNamespace namespace="bottle" actor="bottle" />
+      <MapNamespace namespace="spiceBottle" actor="spiceBottle" />
+      <MapNamespace namespace="surface" actor="surface" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_cook_addCombo_fail_x.ma">
+    <SourceFile name="a2o_cook_addCombo_fail_x.ma">
+      <MapNamespace namespace="bottle" actor="bottle" />
+      <MapNamespace namespace="surface" actor="surface" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <PostureManifest actors="" />
+  <PostureManifest actors="x">
+    <Support name="cook" family="none" compatibility="FullBody" carry_left="-" carry_right="-" surface="surface" />
+    <Support name="grill" family="none" compatibility="FullBody" carry_left="-" carry_right="-" surface="surface" />
+  </PostureManifest>
+  <State type="public" skippable="false" interrupt_this="false" name="AddCombo_Fail" focus="none" facialoverlays="true" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="AddCombo_Succeed" focus="none" facialoverlays="true" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="AirSlice_Fail" focus="none" facialoverlays="true" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="AirSlice_Succeed" focus="none" facialoverlays="true" tailoverlays="true" />
+  <Connection from="AddCombo_Fail" to="exit" />
+  <Connection from="AddCombo_Succeed" to="exit" />
+  <Connection from="AirSlice_Fail" to="exit" />
+  <Connection from="AirSlice_Succeed" to="exit" />
+  <Connection from="entry" to="AddCombo_Fail" />
+  <Connection from="entry" to="AddCombo_Succeed" />
+  <Connection from="entry" to="AirSlice_Fail" />
+  <Connection from="entry" to="AirSlice_Succeed" />
+  <State name="AddCombo_Fail" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="true" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="2">
+      <Choice value="cook--FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2o_cook_addCombo_fail_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_cook_addCombo_fail_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="1">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
+      <Choice value="grill--FullBody" track="normal" mask="">
+        <Reference target="1" />
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="AddCombo_Succeed" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="true" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="4">
+      <Choice value="cook--FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2o_cook_addCombo_succeed_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_cook_addCombo_succeed_x.ma" focus="none" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="3">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
+      <Choice value="grill--FullBody" track="normal" mask="">
+        <Reference target="3" />
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="AirSlice_Fail" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="true" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="6">
+      <Choice value="cook--FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2o_cuttingBoard_cook_airSlice_fail_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_cuttingBoard_cook_airSlice_fail.ma" focus="none" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="5">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
+      <Choice value="grill--FullBody" track="normal" mask="">
+        <Reference target="5" />
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="AirSlice_Succeed" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="true" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="8">
+      <Choice value="cook--FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2o_cuttingBoard_cook_airSlice_succeed_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_cuttingBoard_cook_airSlice_succeed.ma" focus="none" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="7">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
+      <Choice value="grill--FullBody" track="normal" mask="">
+        <Reference target="7" />
+      </Choice>
+    </PostureSelector>
+  </State>
+</ASM>

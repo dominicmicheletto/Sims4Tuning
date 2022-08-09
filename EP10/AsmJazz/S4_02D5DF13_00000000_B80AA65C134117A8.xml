@@ -1,0 +1,165 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="hotSprings_sit_posture" dcc="sage">
+  <Actor name="x" type="Sim" master="true" virtual="false" />
+  <Actor name="sitTemplate" type="Object" virtual="true" />
+  <Actor name="y" type="Sim" virtual="false" />
+  <Parameter name="transitionPosture" type="enum" labels="bed_Intimate,bed_Nap,bed_Relax,bed_Sleep,bed_Undercovers,bed_Woohoo,computer,hotTub_sit,hotTub_stand,hotTub_woohoo,sit,sitIntimate,sofa_Nap_TwoSeated,stand,swim,hotSprings_sit,hotSprings_stand" default="stand" />
+  <Parameter name="isMirrored" type="bool" labels="" default="False" />
+  <Parameter name="direction" type="enum" labels="fromSimLeft,fromSimRight" default="fromSimLeft" />
+  <Parameter name="subroot" type="enum" labels="0,1,2,3,4,5,6,7,8,9" default="0" />
+  <Parameter name="distance" type="enum" labels="low,mid,high" default="low" />
+  <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="x:sex" type="enum" labels="male,female" default="female" />
+  <Parameter name="y:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="y:sex" type="enum" labels="male,female" default="male" />
+  <IkConfiguration name="c2o_idles_seated.ma">
+    <SourceFile name="c2o_idles_seated.ma">
+      <MapNamespace namespace="sitTemplate" actor="sitTemplate" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_idles_seated.ma">
+    <SourceFile name="a2o_idles_seated.ma">
+      <MapNamespace namespace="sitTemplate" actor="sitTemplate" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_sit_scoot.ma">
+    <SourceFile name="a2o_sit_scoot.ma">
+      <MapNamespace namespace="sitTemplate" actor="sitTemplate" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_hotSprings_trans_hotSpringSit_getInOut.ma">
+    <SourceFile name="a2o_hotSprings_trans_hotSpringSit_getInOut.ma">
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="sitTemplate" actor="sitTemplate" />
+    </SourceFile>
+  </IkConfiguration>
+  <PostureManifest>
+    <Provide name="hotSprings_sit" family="sit" compatibility="FullBody" carry_left="*" carry_right="*" surface="*" />
+    <Provide name="hotSprings_sit" family="sit" compatibility="UpperBody" carry_left="*" carry_right="*" surface="*" />
+  </PostureManifest>
+  <State type="private" skippable="false" interrupt_this="false" name="Unmirror" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="getOut" focus="none" facialoverlays="true" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="get_in" focus="none" facialoverlays="true" tailoverlays="true" />
+  <State type="public" countlooptime="false" disableautostop="false" skippable="true" interrupt_this="true" name="hotSprings_Sit_Posture" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <Connection from="Unmirror" to="hotSprings_Sit_Posture" />
+  <Connection from="entry" to="get_in" />
+  <Connection from="getOut" to="exit" />
+  <Connection from="get_in" to="Unmirror" />
+  <Connection from="hotSprings_Sit_Posture" to="getOut" />
+  <State name="Unmirror" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <SetMirror target="x" mirror="false" unique_id="2" />
+    <SetMirror target="y" mirror="false" unique_id="1" />
+  </State>
+  <State name="getOut" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="true" tailoverlays="true">
+    <description />
+    <ParameterSelector parameter="transitionPosture" unique_id="4">
+      <Choice value="bed_Intimate" />
+      <Choice value="bed_Nap" />
+      <Choice value="bed_Relax" />
+      <Choice value="bed_Sleep" />
+      <Choice value="bed_Undercovers" />
+      <Choice value="bed_Woohoo" />
+      <Choice value="computer" />
+      <Choice value="hotTub_sit" />
+      <Choice value="hotTub_stand" />
+      <Choice value="hotTub_woohoo" />
+      <Choice value="sit" />
+      <Choice value="sitIntimate" />
+      <Choice value="sofa_Nap_TwoSeated" />
+      <Choice value="stand">
+        <Controller target="x" controller="@ClipController(clip=a2o_hotSprings_trans_hotSpringsSit_to_hotSpringsStand_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_hotSprings_trans_hotSpringSit_getInOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="3">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+      <Choice value="swim" />
+      <Choice value="hotSprings_sit" />
+      <Choice value="hotSprings_stand">
+        <Reference target="3" />
+      </Choice>
+    </ParameterSelector>
+  </State>
+  <State name="get_in" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="true" tailoverlays="true">
+    <description />
+    <ParameterSelector parameter="transitionPosture" unique_id="9">
+      <Choice value="bed_Intimate" />
+      <Choice value="bed_Nap" />
+      <Choice value="bed_Relax" />
+      <Choice value="bed_Sleep" />
+      <Choice value="bed_Undercovers" />
+      <Choice value="bed_Woohoo" />
+      <Choice value="computer" />
+      <Choice value="hotTub_sit" />
+      <Choice value="hotTub_stand" />
+      <Choice value="hotTub_woohoo" />
+      <Choice value="sit" />
+      <Choice value="sitIntimate" />
+      <Choice value="sofa_Nap_TwoSeated" />
+      <Choice value="stand">
+        <Controller target="x" controller="@ClipController(clip=a2o_hotSprings_trans_hotSpringsStand_to_hotSpringsSit_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_hotSprings_trans_hotSpringSit_getInOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="5">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
+      <Choice value="swim" />
+      <Choice value="hotSprings_sit">
+        <ParameterSelector parameter="direction" unique_id="8">
+          <Choice value="fromSimLeft">
+            <Controller target="x" controller="@ClipController(clip=a2o_sofa_scootLeft_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_sit_scoot.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="6">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice value="fromSimRight">
+            <SetMirror target="x" mirror="true" unique_id="7" />
+            <Reference target="6" />
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+      <Choice value="hotSprings_stand">
+        <Reference target="5" />
+      </Choice>
+    </ParameterSelector>
+  </State>
+  <State name="hotSprings_Sit_Posture" type="public" countlooptime="false" disableautostop="false" skippable="true" interrupt_this="true" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <MakeController>
+      <ParameterSelector parameter="x:age" unique_id="13">
+        <Choice value="baby" />
+        <Choice value="toddler" />
+        <Choice value="child">
+          <Controller target="x" controller="@ClipController(clip=c2o_seated_posture_x, loop_count=#1)" overridePosture="false" mask="" track="low" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c2o_idles_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="10">
+            <TransitionClassList>
+              <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+            </TransitionClassList>
+          </Controller>
+        </Choice>
+        <Choice value="teen">
+          <Controller target="x" controller="@ClipController(clip=a2o_idle_seated_x, loop_count=#1)" overridePosture="false" mask="" track="low" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_idles_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="11">
+            <TransitionClassList>
+              <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+            </TransitionClassList>
+          </Controller>
+        </Choice>
+        <Choice value="youngadult">
+          <Reference target="11" />
+        </Choice>
+        <Choice value="adult">
+          <Controller target="x" controller="@ClipController(clip=a2o_idle_seated_x, loop_count=#1)" overridePosture="false" mask="" track="low" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_idles_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="12">
+            <TransitionClassList>
+              <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+            </TransitionClassList>
+          </Controller>
+        </Choice>
+        <Choice value="elder">
+          <Reference target="12" />
+        </Choice>
+      </ParameterSelector>
+    </MakeController>
+  </State>
+</ASM>

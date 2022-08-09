@@ -1,0 +1,975 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="MassageTherapist_MagazineRead">
+  <Actor name="x" type="Sim" master="true" virtual="false" />
+  <Actor name="magazine" type="Prop" virtual="false" object_def_resource_key="c0db5ae7:00000000:00000000000164e4" />
+  <Parameter name="x:age" type="enum" labels="baby,unsupported_age,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
+  <Parameter name="x:carryState" template="carryState" type="enum" labels="none,left,right,both" default="right" />
+  <PostureManifest actors="x">
+    <Support family="stand" compatibility="FullBody" carry_left="-" carry_right="-" surface="*" />
+    <Support family="stand" compatibility="UpperBody" carry_left="-" carry_right="-" surface="*" />
+    <Support family="movingStand" compatibility="UpperBody" carry_left="-" carry_right="-" surface="*" />
+  </PostureManifest>
+  <State type="private" skippable="false" interrupt_this="false" name="Hub" focus="none" facialoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="Start" focus="full body" facialoverlays="false" />
+  <State type="private" skippable="false" interrupt_this="false" name="Stop" focus="full body" facialoverlays="false" />
+  <State type="public" skippable="false" interrupt_this="false" name="TurnPage" focus="full body" facialoverlays="false" />
+  <State type="public" skippable="false" interrupt_this="false" name="ReadLines" focus="full body" facialoverlays="false" />
+  <State type="public" skippable="false" interrupt_this="false" name="ReadLinesSlowly" focus="full body" facialoverlays="false" />
+  <State type="public" skippable="false" interrupt_this="false" name="ReadScratchCheek" focus="full body" facialoverlays="false" />
+  <State type="public" skippable="false" interrupt_this="false" name="ReadWithFinger" focus="full body" facialoverlays="false" />
+  <State type="public" skippable="false" interrupt_this="false" name="ReadTurnThreePages" focus="full body" facialoverlays="false" />
+  <State type="public" skippable="false" interrupt_this="false" name="ReadWeightShift" focus="full body" facialoverlays="false" />
+  <Connection from="entry" to="Start" />
+  <Connection from="Hub" to="ReadLines" />
+  <Connection from="Hub" to="ReadLinesSlowly" />
+  <Connection from="Hub" to="ReadScratchCheek" />
+  <Connection from="Hub" to="ReadTurnThreePages" />
+  <Connection from="Hub" to="ReadWeightShift" />
+  <Connection from="Hub" to="ReadWithFinger" />
+  <Connection from="Hub" to="Stop" />
+  <Connection from="Hub" to="TurnPage" />
+  <Connection from="ReadLines" to="Hub" />
+  <Connection from="ReadLinesSlowly" to="Hub" />
+  <Connection from="ReadScratchCheek" to="Hub" />
+  <Connection from="ReadTurnThreePages" to="Hub" />
+  <Connection from="ReadWeightShift" to="Hub" />
+  <Connection from="ReadWithFinger" to="Hub" />
+  <Connection from="Start" to="Hub" />
+  <Connection from="Stop" to="exit" />
+  <Connection from="TurnPage" to="Hub" />
+  <State name="Hub">
+    <description />
+    <PostureSelector parameter="x:posture">
+      <Choice value="-stand-FullBody">
+        <RandomSelector id="8f29821d-7f91-456d-b122-24717c9ad468" repeatweight="1" allow_empty_choices="False">
+          <Choice weight="1" avoidRepeat="False" />
+          <Choice weight="1" avoidRepeat="False" />
+        </RandomSelector>
+      </Choice>
+      <Choice value="-stand-UpperBody">
+        <RandomSelector id="8f29821d-7f91-456d-b122-24717c9ad468" repeatweight="1" allow_empty_choices="False">
+          <Choice weight="1" avoidRepeat="False" />
+          <Choice weight="1" avoidRepeat="False" />
+        </RandomSelector>
+      </Choice>
+      <Choice value="-movingStand-UpperBody">
+        <RandomSelector id="8f29821d-7f91-456d-b122-24717c9ad468" repeatweight="1" allow_empty_choices="False">
+          <Choice weight="1" avoidRepeat="False" />
+          <Choice weight="1" avoidRepeat="False" />
+        </RandomSelector>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="Start">
+    <description />
+    <PostureSelector parameter="x:posture">
+      <Choice value="-stand-FullBody">
+        <Controller target="x" controller="@ClipController(clip=a2o_magazine_read_start_x, loop_count=#1)" overridePosture="false" mask="" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="12640891-06ff-420e-bfe3-0b8000d24282">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+        <MakeController>
+          <Controller target="x" controller="@ClipController(clip=a2o_magazine_read_readLines_x, loop_count=#1)" overridePosture="false" mask="" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="24bc0784-fe8a-46b1-af18-d087a085b755">
+            <TransitionClassList>
+              <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+            </TransitionClassList>
+          </Controller>
+          <Controller target="magazine" controller="@ClipController(clip=a2o_magazine_read_readLines_magazine, loop_count=#1)" overridePosture="false" mask="" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="3cb5b718-d54d-41b6-ba91-1151471e3d4f">
+            <TransitionClassList>
+              <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+            </TransitionClassList>
+          </Controller>
+        </MakeController>
+        <Controller target="magazine" controller="@ClipController(clip=a2o_magazine_read_start_magazine, loop_count=#1)" overridePosture="false" mask="" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="87b846dc-6c65-4ed2-ad40-6c50594d3cff">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+        <MakeController>
+          <Controller target="x" controller="@ClipController(clip=a2o_magazine_read_readLines_x, loop_count=#1)" overridePosture="false" mask="" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="24bc0784-fe8a-46b1-af18-d087a085b755">
+            <TransitionClassList>
+              <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+            </TransitionClassList>
+          </Controller>
+          <Controller target="magazine" controller="@ClipController(clip=a2o_magazine_read_readLines_magazine, loop_count=#1)" overridePosture="false" mask="" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="3cb5b718-d54d-41b6-ba91-1151471e3d4f">
+            <TransitionClassList>
+              <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+            </TransitionClassList>
+          </Controller>
+        </MakeController>
+      </Choice>
+      <Choice value="-stand-UpperBody">
+        <Controller target="x" controller="@ClipController(clip=a2o_magazine_read_start_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="12640891-06ff-420e-bfe3-0b8000d24282">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+        <MakeController>
+          <Controller target="x" controller="@ClipController(clip=a2o_magazine_read_readLines_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="24bc0784-fe8a-46b1-af18-d087a085b755">
+            <TransitionClassList>
+              <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+            </TransitionClassList>
+          </Controller>
+          <Controller target="magazine" controller="@ClipController(clip=a2o_magazine_read_readLines_magazine, loop_count=#1)" overridePosture="false" mask="" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="3cb5b718-d54d-41b6-ba91-1151471e3d4f">
+            <TransitionClassList>
+              <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+            </TransitionClassList>
+          </Controller>
+        </MakeController>
+        <Controller target="magazine" controller="@ClipController(clip=a2o_magazine_read_start_magazine, loop_count=#1)" overridePosture="false" mask="" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="87b846dc-6c65-4ed2-ad40-6c50594d3cff">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+        <MakeController>
+          <Controller target="x" controller="@ClipController(clip=a2o_magazine_read_readLines_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="24bc0784-fe8a-46b1-af18-d087a085b755">
+            <TransitionClassList>
+              <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+            </TransitionClassList>
+          </Controller>
+          <Controller target="magazine" controller="@ClipController(clip=a2o_magazine_read_readLines_magazine, loop_count=#1)" overridePosture="false" mask="" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="3cb5b718-d54d-41b6-ba91-1151471e3d4f">
+            <TransitionClassList>
+              <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+            </TransitionClassList>
+          </Controller>
+        </MakeController>
+      </Choice>
+      <Choice value="-movingStand-UpperBody">
+        <Controller target="x" controller="@ClipController(clip=a2o_magazine_read_start_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="normalplus" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="12640891-06ff-420e-bfe3-0b8000d24282">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+        <MakeController>
+          <Controller target="x" controller="@ClipController(clip=a2o_magazine_read_readLines_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="normalplus" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="24bc0784-fe8a-46b1-af18-d087a085b755">
+            <TransitionClassList>
+              <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+            </TransitionClassList>
+          </Controller>
+          <Controller target="magazine" controller="@ClipController(clip=a2o_magazine_read_readLines_magazine, loop_count=#1)" overridePosture="false" mask="" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="3cb5b718-d54d-41b6-ba91-1151471e3d4f">
+            <TransitionClassList>
+              <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+            </TransitionClassList>
+          </Controller>
+        </MakeController>
+        <Controller target="magazine" controller="@ClipController(clip=a2o_magazine_read_start_magazine, loop_count=#1)" overridePosture="false" mask="" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="87b846dc-6c65-4ed2-ad40-6c50594d3cff">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+        <MakeController>
+          <Controller target="x" controller="@ClipController(clip=a2o_magazine_read_readLines_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="normalplus" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="24bc0784-fe8a-46b1-af18-d087a085b755">
+            <TransitionClassList>
+              <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+            </TransitionClassList>
+          </Controller>
+          <Controller target="magazine" controller="@ClipController(clip=a2o_magazine_read_readLines_magazine, loop_count=#1)" overridePosture="false" mask="" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="3cb5b718-d54d-41b6-ba91-1151471e3d4f">
+            <TransitionClassList>
+              <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+            </TransitionClassList>
+          </Controller>
+        </MakeController>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="Stop">
+    <description />
+    <PostureSelector parameter="x:posture">
+      <Choice value="-stand-FullBody">
+        <Controller target="magazine" controller="@ClipController(clip=a2o_magazine_read_stop_magazine, loop_count=#1)" overridePosture="false" mask="" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="5bbfaa45-3512-495c-9513-2464a66f3ae7">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+        <Controller target="x" controller="@ClipController(clip=a2o_magazine_read_stop_x, loop_count=#1)" overridePosture="false" mask="" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="bb90abb0-ae4f-47bd-9ad9-f68c4e55d804">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
+      <Choice value="-stand-UpperBody">
+        <Controller target="magazine" controller="@ClipController(clip=a2o_magazine_read_stop_magazine, loop_count=#1)" overridePosture="false" mask="" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="5bbfaa45-3512-495c-9513-2464a66f3ae7">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+        <Controller target="x" controller="@ClipController(clip=a2o_magazine_read_stop_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="bb90abb0-ae4f-47bd-9ad9-f68c4e55d804">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
+      <Choice value="-movingStand-UpperBody">
+        <Controller target="magazine" controller="@ClipController(clip=a2o_magazine_read_stop_magazine, loop_count=#1)" overridePosture="false" mask="" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="5bbfaa45-3512-495c-9513-2464a66f3ae7">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+        <Controller target="x" controller="@ClipController(clip=a2o_magazine_read_stop_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="normalplus" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="bb90abb0-ae4f-47bd-9ad9-f68c4e55d804">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="TurnPage">
+    <description />
+    <PostureSelector parameter="x:posture">
+      <Choice value="-stand-FullBody">
+        <Controller target="x" controller="@ClipController(clip=a2o_magazine_read_turnPage_x, loop_count=#1)" overridePosture="false" mask="" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="1c51ee10-246e-48fb-9b28-9bce2458cd70">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+        <MakeController>
+          <Controller target="magazine" controller="@ClipController(clip=a2o_magazine_read_readLines_magazine, loop_count=#1)" overridePosture="false" mask="" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="23a2b5c7-dbe6-4115-9edf-622cf94531ef">
+            <TransitionClassList>
+              <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+            </TransitionClassList>
+          </Controller>
+          <Controller target="x" controller="@ClipController(clip=a2o_magazine_read_readLines_x, loop_count=#1)" overridePosture="false" mask="" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="9d094b05-6504-4dc4-bac7-f5b5177d7f24">
+            <TransitionClassList>
+              <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+            </TransitionClassList>
+          </Controller>
+        </MakeController>
+        <Controller target="magazine" controller="@ClipController(clip=a2o_magazine_read_turnPage_magazine, loop_count=#1)" overridePosture="false" mask="" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="ffc0d4fd-ea44-404e-a647-5f6a610ea5e4">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+        <MakeController>
+          <Controller target="magazine" controller="@ClipController(clip=a2o_magazine_read_readLines_magazine, loop_count=#1)" overridePosture="false" mask="" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="23a2b5c7-dbe6-4115-9edf-622cf94531ef">
+            <TransitionClassList>
+              <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+            </TransitionClassList>
+          </Controller>
+          <Controller target="x" controller="@ClipController(clip=a2o_magazine_read_readLines_x, loop_count=#1)" overridePosture="false" mask="" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="9d094b05-6504-4dc4-bac7-f5b5177d7f24">
+            <TransitionClassList>
+              <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+            </TransitionClassList>
+          </Controller>
+        </MakeController>
+      </Choice>
+      <Choice value="-stand-UpperBody">
+        <Controller target="x" controller="@ClipController(clip=a2o_magazine_read_turnPage_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="1c51ee10-246e-48fb-9b28-9bce2458cd70">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+        <MakeController>
+          <Controller target="magazine" controller="@ClipController(clip=a2o_magazine_read_readLines_magazine, loop_count=#1)" overridePosture="false" mask="" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="23a2b5c7-dbe6-4115-9edf-622cf94531ef">
+            <TransitionClassList>
+              <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+            </TransitionClassList>
+          </Controller>
+          <Controller target="x" controller="@ClipController(clip=a2o_magazine_read_readLines_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="9d094b05-6504-4dc4-bac7-f5b5177d7f24">
+            <TransitionClassList>
+              <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+            </TransitionClassList>
+          </Controller>
+        </MakeController>
+        <Controller target="magazine" controller="@ClipController(clip=a2o_magazine_read_turnPage_magazine, loop_count=#1)" overridePosture="false" mask="" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="ffc0d4fd-ea44-404e-a647-5f6a610ea5e4">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+        <MakeController>
+          <Controller target="magazine" controller="@ClipController(clip=a2o_magazine_read_readLines_magazine, loop_count=#1)" overridePosture="false" mask="" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="23a2b5c7-dbe6-4115-9edf-622cf94531ef">
+            <TransitionClassList>
+              <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+            </TransitionClassList>
+          </Controller>
+          <Controller target="x" controller="@ClipController(clip=a2o_magazine_read_readLines_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="9d094b05-6504-4dc4-bac7-f5b5177d7f24">
+            <TransitionClassList>
+              <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+            </TransitionClassList>
+          </Controller>
+        </MakeController>
+      </Choice>
+      <Choice value="-movingStand-UpperBody">
+        <Controller target="x" controller="@ClipController(clip=a2o_magazine_read_turnPage_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="normalplus" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="1c51ee10-246e-48fb-9b28-9bce2458cd70">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+        <MakeController>
+          <Controller target="magazine" controller="@ClipController(clip=a2o_magazine_read_readLines_magazine, loop_count=#1)" overridePosture="false" mask="" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="23a2b5c7-dbe6-4115-9edf-622cf94531ef">
+            <TransitionClassList>
+              <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+            </TransitionClassList>
+          </Controller>
+          <Controller target="x" controller="@ClipController(clip=a2o_magazine_read_readLines_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="normalplus" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="9d094b05-6504-4dc4-bac7-f5b5177d7f24">
+            <TransitionClassList>
+              <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+            </TransitionClassList>
+          </Controller>
+        </MakeController>
+        <Controller target="magazine" controller="@ClipController(clip=a2o_magazine_read_turnPage_magazine, loop_count=#1)" overridePosture="false" mask="" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="ffc0d4fd-ea44-404e-a647-5f6a610ea5e4">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+        <MakeController>
+          <Controller target="magazine" controller="@ClipController(clip=a2o_magazine_read_readLines_magazine, loop_count=#1)" overridePosture="false" mask="" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="23a2b5c7-dbe6-4115-9edf-622cf94531ef">
+            <TransitionClassList>
+              <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+            </TransitionClassList>
+          </Controller>
+          <Controller target="x" controller="@ClipController(clip=a2o_magazine_read_readLines_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="normalplus" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="9d094b05-6504-4dc4-bac7-f5b5177d7f24">
+            <TransitionClassList>
+              <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+            </TransitionClassList>
+          </Controller>
+        </MakeController>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="ReadLines">
+    <description />
+    <PostureSelector parameter="x:posture">
+      <Choice value="-stand-FullBody">
+        <Controller target="magazine" controller="@ClipController(clip=a2o_magazine_read_readLines_magazine, loop_count=#1)" overridePosture="false" mask="" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="f024cec5-3060-44ca-8829-e45a668b2184">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+        <MakeController>
+          <Controller target="x" controller="@ClipController(clip=a2o_magazine_read_readLines_x, loop_count=#1)" overridePosture="false" mask="" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="1e16cbad-fe75-4833-a653-2310379890d9">
+            <TransitionClassList>
+              <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+            </TransitionClassList>
+          </Controller>
+          <Controller target="magazine" controller="@ClipController(clip=a2o_magazine_read_readLines_magazine, loop_count=#1)" overridePosture="false" mask="" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="d8e8b506-bb21-4a84-ba4f-709a71ea7afe">
+            <TransitionClassList>
+              <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+            </TransitionClassList>
+          </Controller>
+        </MakeController>
+      </Choice>
+      <Choice value="-stand-UpperBody">
+        <Controller target="x" controller="@ClipController(clip=a2o_magazine_read_readLines_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="dd301f55-8b9e-43c1-a8a1-331e47525644">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+        <MakeController>
+          <Controller target="x" controller="@ClipController(clip=a2o_magazine_read_readLines_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="1e16cbad-fe75-4833-a653-2310379890d9">
+            <TransitionClassList>
+              <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+            </TransitionClassList>
+          </Controller>
+          <Controller target="magazine" controller="@ClipController(clip=a2o_magazine_read_readLines_magazine, loop_count=#1)" overridePosture="false" mask="" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="d8e8b506-bb21-4a84-ba4f-709a71ea7afe">
+            <TransitionClassList>
+              <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+            </TransitionClassList>
+          </Controller>
+        </MakeController>
+      </Choice>
+      <Choice value="-movingStand-UpperBody">
+        <Controller target="x" controller="@ClipController(clip=a2o_magazine_read_readLines_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="normalplus" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="dd301f55-8b9e-43c1-a8a1-331e47525644">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+        <MakeController>
+          <Controller target="x" controller="@ClipController(clip=a2o_magazine_read_readLines_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="normalplus" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="1e16cbad-fe75-4833-a653-2310379890d9">
+            <TransitionClassList>
+              <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+            </TransitionClassList>
+          </Controller>
+          <Controller target="magazine" controller="@ClipController(clip=a2o_magazine_read_readLines_magazine, loop_count=#1)" overridePosture="false" mask="" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="d8e8b506-bb21-4a84-ba4f-709a71ea7afe">
+            <TransitionClassList>
+              <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+            </TransitionClassList>
+          </Controller>
+        </MakeController>
+        <Controller target="magazine" controller="@ClipController(clip=a2o_magazine_read_readLines_magazine, loop_count=#1)" overridePosture="false" mask="" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="f024cec5-3060-44ca-8829-e45a668b2184">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+        <MakeController>
+          <Controller target="x" controller="@ClipController(clip=a2o_magazine_read_readLines_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="normalplus" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="1e16cbad-fe75-4833-a653-2310379890d9">
+            <TransitionClassList>
+              <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+            </TransitionClassList>
+          </Controller>
+          <Controller target="magazine" controller="@ClipController(clip=a2o_magazine_read_readLines_magazine, loop_count=#1)" overridePosture="false" mask="" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="d8e8b506-bb21-4a84-ba4f-709a71ea7afe">
+            <TransitionClassList>
+              <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+            </TransitionClassList>
+          </Controller>
+        </MakeController>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="ReadLinesSlowly">
+    <description />
+    <PostureSelector parameter="x:posture">
+      <Choice value="-stand-FullBody">
+        <Controller target="magazine" controller="@ClipController(clip=a2o_magazine_read_readLines_slowly_magazine, loop_count=#1)" overridePosture="false" mask="" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="4a81e782-f7e5-4896-88bb-cfe121224499">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+        <MakeController>
+          <Controller target="magazine" controller="@ClipController(clip=a2o_magazine_read_readLines_magazine, loop_count=#1)" overridePosture="false" mask="" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="49036320-d3cd-4249-b61b-ebfd37d9a6b9">
+            <TransitionClassList>
+              <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+            </TransitionClassList>
+          </Controller>
+          <Controller target="x" controller="@ClipController(clip=a2o_magazine_read_readLines_x, loop_count=#1)" overridePosture="false" mask="" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="9e2b4619-7ac8-401f-b422-2d6723cbf2ec">
+            <TransitionClassList>
+              <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+            </TransitionClassList>
+          </Controller>
+        </MakeController>
+        <Controller target="x" controller="@ClipController(clip=a2o_magazine_read_readLines_slowly_x, loop_count=#1)" overridePosture="false" mask="" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="9ef8e9df-7d51-4e81-a368-935d97239194">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+        <MakeController>
+          <Controller target="magazine" controller="@ClipController(clip=a2o_magazine_read_readLines_magazine, loop_count=#1)" overridePosture="false" mask="" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="49036320-d3cd-4249-b61b-ebfd37d9a6b9">
+            <TransitionClassList>
+              <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+            </TransitionClassList>
+          </Controller>
+          <Controller target="x" controller="@ClipController(clip=a2o_magazine_read_readLines_x, loop_count=#1)" overridePosture="false" mask="" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="9e2b4619-7ac8-401f-b422-2d6723cbf2ec">
+            <TransitionClassList>
+              <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+            </TransitionClassList>
+          </Controller>
+        </MakeController>
+      </Choice>
+      <Choice value="-stand-UpperBody">
+        <Controller target="magazine" controller="@ClipController(clip=a2o_magazine_read_readLines_slowly_magazine, loop_count=#1)" overridePosture="false" mask="" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="4a81e782-f7e5-4896-88bb-cfe121224499">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+        <MakeController>
+          <Controller target="magazine" controller="@ClipController(clip=a2o_magazine_read_readLines_magazine, loop_count=#1)" overridePosture="false" mask="" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="49036320-d3cd-4249-b61b-ebfd37d9a6b9">
+            <TransitionClassList>
+              <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+            </TransitionClassList>
+          </Controller>
+          <Controller target="x" controller="@ClipController(clip=a2o_magazine_read_readLines_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="9e2b4619-7ac8-401f-b422-2d6723cbf2ec">
+            <TransitionClassList>
+              <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+            </TransitionClassList>
+          </Controller>
+        </MakeController>
+        <Controller target="x" controller="@ClipController(clip=a2o_magazine_read_readLines_slowly_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="9ef8e9df-7d51-4e81-a368-935d97239194">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+        <MakeController>
+          <Controller target="magazine" controller="@ClipController(clip=a2o_magazine_read_readLines_magazine, loop_count=#1)" overridePosture="false" mask="" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="49036320-d3cd-4249-b61b-ebfd37d9a6b9">
+            <TransitionClassList>
+              <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+            </TransitionClassList>
+          </Controller>
+          <Controller target="x" controller="@ClipController(clip=a2o_magazine_read_readLines_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="9e2b4619-7ac8-401f-b422-2d6723cbf2ec">
+            <TransitionClassList>
+              <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+            </TransitionClassList>
+          </Controller>
+        </MakeController>
+      </Choice>
+      <Choice value="-movingStand-UpperBody">
+        <Controller target="magazine" controller="@ClipController(clip=a2o_magazine_read_readLines_slowly_magazine, loop_count=#1)" overridePosture="false" mask="" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="4a81e782-f7e5-4896-88bb-cfe121224499">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+        <MakeController>
+          <Controller target="magazine" controller="@ClipController(clip=a2o_magazine_read_readLines_magazine, loop_count=#1)" overridePosture="false" mask="" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="49036320-d3cd-4249-b61b-ebfd37d9a6b9">
+            <TransitionClassList>
+              <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+            </TransitionClassList>
+          </Controller>
+          <Controller target="x" controller="@ClipController(clip=a2o_magazine_read_readLines_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="normalplus" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="9e2b4619-7ac8-401f-b422-2d6723cbf2ec">
+            <TransitionClassList>
+              <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+            </TransitionClassList>
+          </Controller>
+        </MakeController>
+        <Controller target="x" controller="@ClipController(clip=a2o_magazine_read_readLines_slowly_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="normalplus" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="9ef8e9df-7d51-4e81-a368-935d97239194">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+        <MakeController>
+          <Controller target="magazine" controller="@ClipController(clip=a2o_magazine_read_readLines_magazine, loop_count=#1)" overridePosture="false" mask="" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="49036320-d3cd-4249-b61b-ebfd37d9a6b9">
+            <TransitionClassList>
+              <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+            </TransitionClassList>
+          </Controller>
+          <Controller target="x" controller="@ClipController(clip=a2o_magazine_read_readLines_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="normalplus" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="9e2b4619-7ac8-401f-b422-2d6723cbf2ec">
+            <TransitionClassList>
+              <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+            </TransitionClassList>
+          </Controller>
+        </MakeController>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="ReadScratchCheek">
+    <description />
+    <PostureSelector parameter="x:posture">
+      <Choice value="-stand-FullBody">
+        <Controller target="x" controller="@ClipController(clip=a2o_magazine_read_readScratchCheek_x, loop_count=#1)" overridePosture="false" mask="" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="267c556e-2c0f-493b-ab52-607f7deebea9">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+        <MakeController>
+          <Controller target="magazine" controller="@ClipController(clip=a2o_magazine_read_readLines_magazine, loop_count=#1)" overridePosture="false" mask="" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="45047b3a-cd84-4702-89cd-64ba2df47c21">
+            <TransitionClassList>
+              <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+            </TransitionClassList>
+          </Controller>
+          <Controller target="x" controller="@ClipController(clip=a2o_magazine_read_readLines_x, loop_count=#1)" overridePosture="false" mask="" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="5b3b937f-8ef5-466a-a0a5-ac12042253d6">
+            <TransitionClassList>
+              <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+            </TransitionClassList>
+          </Controller>
+        </MakeController>
+        <Controller target="magazine" controller="@ClipController(clip=a2o_magazine_read_readScratchCheek_magazine, loop_count=#1)" overridePosture="false" mask="" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="3abed582-5e44-4a05-8e46-54956850ccfd">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+        <MakeController>
+          <Controller target="magazine" controller="@ClipController(clip=a2o_magazine_read_readLines_magazine, loop_count=#1)" overridePosture="false" mask="" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="45047b3a-cd84-4702-89cd-64ba2df47c21">
+            <TransitionClassList>
+              <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+            </TransitionClassList>
+          </Controller>
+          <Controller target="x" controller="@ClipController(clip=a2o_magazine_read_readLines_x, loop_count=#1)" overridePosture="false" mask="" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="5b3b937f-8ef5-466a-a0a5-ac12042253d6">
+            <TransitionClassList>
+              <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+            </TransitionClassList>
+          </Controller>
+        </MakeController>
+      </Choice>
+      <Choice value="-stand-UpperBody">
+        <Controller target="x" controller="@ClipController(clip=a2o_magazine_read_readScratchCheek_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="267c556e-2c0f-493b-ab52-607f7deebea9">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+        <MakeController>
+          <Controller target="magazine" controller="@ClipController(clip=a2o_magazine_read_readLines_magazine, loop_count=#1)" overridePosture="false" mask="" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="45047b3a-cd84-4702-89cd-64ba2df47c21">
+            <TransitionClassList>
+              <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+            </TransitionClassList>
+          </Controller>
+          <Controller target="x" controller="@ClipController(clip=a2o_magazine_read_readLines_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="5b3b937f-8ef5-466a-a0a5-ac12042253d6">
+            <TransitionClassList>
+              <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+            </TransitionClassList>
+          </Controller>
+        </MakeController>
+        <Controller target="magazine" controller="@ClipController(clip=a2o_magazine_read_readScratchCheek_magazine, loop_count=#1)" overridePosture="false" mask="" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="3abed582-5e44-4a05-8e46-54956850ccfd">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+        <MakeController>
+          <Controller target="magazine" controller="@ClipController(clip=a2o_magazine_read_readLines_magazine, loop_count=#1)" overridePosture="false" mask="" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="45047b3a-cd84-4702-89cd-64ba2df47c21">
+            <TransitionClassList>
+              <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+            </TransitionClassList>
+          </Controller>
+          <Controller target="x" controller="@ClipController(clip=a2o_magazine_read_readLines_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="5b3b937f-8ef5-466a-a0a5-ac12042253d6">
+            <TransitionClassList>
+              <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+            </TransitionClassList>
+          </Controller>
+        </MakeController>
+      </Choice>
+      <Choice value="-movingStand-UpperBody">
+        <Controller target="x" controller="@ClipController(clip=a2o_magazine_read_readScratchCheek_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="normalplus" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="267c556e-2c0f-493b-ab52-607f7deebea9">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+        <MakeController>
+          <Controller target="magazine" controller="@ClipController(clip=a2o_magazine_read_readLines_magazine, loop_count=#1)" overridePosture="false" mask="" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="45047b3a-cd84-4702-89cd-64ba2df47c21">
+            <TransitionClassList>
+              <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+            </TransitionClassList>
+          </Controller>
+          <Controller target="x" controller="@ClipController(clip=a2o_magazine_read_readLines_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="normalplus" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="5b3b937f-8ef5-466a-a0a5-ac12042253d6">
+            <TransitionClassList>
+              <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+            </TransitionClassList>
+          </Controller>
+        </MakeController>
+        <Controller target="magazine" controller="@ClipController(clip=a2o_magazine_read_readScratchCheek_magazine, loop_count=#1)" overridePosture="false" mask="" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="3abed582-5e44-4a05-8e46-54956850ccfd">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+        <MakeController>
+          <Controller target="magazine" controller="@ClipController(clip=a2o_magazine_read_readLines_magazine, loop_count=#1)" overridePosture="false" mask="" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="45047b3a-cd84-4702-89cd-64ba2df47c21">
+            <TransitionClassList>
+              <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+            </TransitionClassList>
+          </Controller>
+          <Controller target="x" controller="@ClipController(clip=a2o_magazine_read_readLines_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="normalplus" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="5b3b937f-8ef5-466a-a0a5-ac12042253d6">
+            <TransitionClassList>
+              <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+            </TransitionClassList>
+          </Controller>
+        </MakeController>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="ReadWithFinger">
+    <description />
+    <PostureSelector parameter="x:posture">
+      <Choice value="-stand-FullBody">
+        <Controller target="x" controller="@ClipController(clip=a2o_magazine_read_readWithFinger_x, loop_count=#1)" overridePosture="false" mask="" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="37dac65c-1dd3-4c63-b8db-f438da72caa8">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+        <MakeController>
+          <Controller target="magazine" controller="@ClipController(clip=a2o_magazine_read_readLines_magazine, loop_count=#1)" overridePosture="false" mask="" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="569c0649-3e63-43ba-87fb-83854718d8b5">
+            <TransitionClassList>
+              <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+            </TransitionClassList>
+          </Controller>
+          <Controller target="x" controller="@ClipController(clip=a2o_magazine_read_readLines_x, loop_count=#1)" overridePosture="false" mask="" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="8d201ad1-dbec-46af-8238-0cc9b134f4b0">
+            <TransitionClassList>
+              <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+            </TransitionClassList>
+          </Controller>
+        </MakeController>
+        <Controller target="magazine" controller="@ClipController(clip=a2o_magazine_read_readWithFinger_magazine, loop_count=#1)" overridePosture="false" mask="" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="aff487e0-fc31-401d-9ab2-408368c0c9ca">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+        <MakeController>
+          <Controller target="magazine" controller="@ClipController(clip=a2o_magazine_read_readLines_magazine, loop_count=#1)" overridePosture="false" mask="" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="569c0649-3e63-43ba-87fb-83854718d8b5">
+            <TransitionClassList>
+              <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+            </TransitionClassList>
+          </Controller>
+          <Controller target="x" controller="@ClipController(clip=a2o_magazine_read_readLines_x, loop_count=#1)" overridePosture="false" mask="" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="8d201ad1-dbec-46af-8238-0cc9b134f4b0">
+            <TransitionClassList>
+              <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+            </TransitionClassList>
+          </Controller>
+        </MakeController>
+      </Choice>
+      <Choice value="-stand-UpperBody">
+        <Controller target="x" controller="@ClipController(clip=a2o_magazine_read_readWithFinger_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="37dac65c-1dd3-4c63-b8db-f438da72caa8">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+        <MakeController>
+          <Controller target="magazine" controller="@ClipController(clip=a2o_magazine_read_readLines_magazine, loop_count=#1)" overridePosture="false" mask="" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="569c0649-3e63-43ba-87fb-83854718d8b5">
+            <TransitionClassList>
+              <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+            </TransitionClassList>
+          </Controller>
+          <Controller target="x" controller="@ClipController(clip=a2o_magazine_read_readLines_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="8d201ad1-dbec-46af-8238-0cc9b134f4b0">
+            <TransitionClassList>
+              <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+            </TransitionClassList>
+          </Controller>
+        </MakeController>
+        <Controller target="magazine" controller="@ClipController(clip=a2o_magazine_read_readWithFinger_magazine, loop_count=#1)" overridePosture="false" mask="" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="aff487e0-fc31-401d-9ab2-408368c0c9ca">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+        <MakeController>
+          <Controller target="magazine" controller="@ClipController(clip=a2o_magazine_read_readLines_magazine, loop_count=#1)" overridePosture="false" mask="" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="569c0649-3e63-43ba-87fb-83854718d8b5">
+            <TransitionClassList>
+              <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+            </TransitionClassList>
+          </Controller>
+          <Controller target="x" controller="@ClipController(clip=a2o_magazine_read_readLines_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="8d201ad1-dbec-46af-8238-0cc9b134f4b0">
+            <TransitionClassList>
+              <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+            </TransitionClassList>
+          </Controller>
+        </MakeController>
+      </Choice>
+      <Choice value="-movingStand-UpperBody">
+        <Controller target="x" controller="@ClipController(clip=a2o_magazine_read_readWithFinger_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="normalplus" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="37dac65c-1dd3-4c63-b8db-f438da72caa8">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+        <MakeController>
+          <Controller target="magazine" controller="@ClipController(clip=a2o_magazine_read_readLines_magazine, loop_count=#1)" overridePosture="false" mask="" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="569c0649-3e63-43ba-87fb-83854718d8b5">
+            <TransitionClassList>
+              <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+            </TransitionClassList>
+          </Controller>
+          <Controller target="x" controller="@ClipController(clip=a2o_magazine_read_readLines_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="normalplus" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="8d201ad1-dbec-46af-8238-0cc9b134f4b0">
+            <TransitionClassList>
+              <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+            </TransitionClassList>
+          </Controller>
+        </MakeController>
+        <Controller target="magazine" controller="@ClipController(clip=a2o_magazine_read_readWithFinger_magazine, loop_count=#1)" overridePosture="false" mask="" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="aff487e0-fc31-401d-9ab2-408368c0c9ca">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+        <MakeController>
+          <Controller target="magazine" controller="@ClipController(clip=a2o_magazine_read_readLines_magazine, loop_count=#1)" overridePosture="false" mask="" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="569c0649-3e63-43ba-87fb-83854718d8b5">
+            <TransitionClassList>
+              <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+            </TransitionClassList>
+          </Controller>
+          <Controller target="x" controller="@ClipController(clip=a2o_magazine_read_readLines_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="normalplus" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="8d201ad1-dbec-46af-8238-0cc9b134f4b0">
+            <TransitionClassList>
+              <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+            </TransitionClassList>
+          </Controller>
+        </MakeController>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="ReadTurnThreePages">
+    <description />
+    <PostureSelector parameter="x:posture">
+      <Choice value="-stand-FullBody">
+        <Controller target="magazine" controller="@ClipController(clip=a2o_magazine_read_turnThreePages_magazine, loop_count=#1)" overridePosture="false" mask="" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="69eef67f-12b8-4f37-86a0-778efbe73113">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+        <MakeController>
+          <Controller target="x" controller="@ClipController(clip=a2o_magazine_read_readLines_x, loop_count=#1)" overridePosture="false" mask="" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="5e5b903d-6e02-4141-a383-fc8d0ad6bbf1">
+            <TransitionClassList>
+              <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+            </TransitionClassList>
+          </Controller>
+          <Controller target="magazine" controller="@ClipController(clip=a2o_magazine_read_readLines_magazine, loop_count=#1)" overridePosture="false" mask="" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="93c3aaef-2b89-4abb-afba-a732a8cb3053">
+            <TransitionClassList>
+              <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+            </TransitionClassList>
+          </Controller>
+        </MakeController>
+        <Controller target="x" controller="@ClipController(clip=a2o_magazine_read_turnThreePages_x, loop_count=#1)" overridePosture="false" mask="" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="fc5a265e-4430-4ae3-acdb-92f65b4f8df9">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+        <MakeController>
+          <Controller target="x" controller="@ClipController(clip=a2o_magazine_read_readLines_x, loop_count=#1)" overridePosture="false" mask="" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="5e5b903d-6e02-4141-a383-fc8d0ad6bbf1">
+            <TransitionClassList>
+              <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+            </TransitionClassList>
+          </Controller>
+          <Controller target="magazine" controller="@ClipController(clip=a2o_magazine_read_readLines_magazine, loop_count=#1)" overridePosture="false" mask="" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="93c3aaef-2b89-4abb-afba-a732a8cb3053">
+            <TransitionClassList>
+              <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+            </TransitionClassList>
+          </Controller>
+        </MakeController>
+      </Choice>
+      <Choice value="-stand-UpperBody">
+        <Controller target="magazine" controller="@ClipController(clip=a2o_magazine_read_turnThreePages_magazine, loop_count=#1)" overridePosture="false" mask="" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="69eef67f-12b8-4f37-86a0-778efbe73113">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+        <MakeController>
+          <Controller target="x" controller="@ClipController(clip=a2o_magazine_read_readLines_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="5e5b903d-6e02-4141-a383-fc8d0ad6bbf1">
+            <TransitionClassList>
+              <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+            </TransitionClassList>
+          </Controller>
+          <Controller target="magazine" controller="@ClipController(clip=a2o_magazine_read_readLines_magazine, loop_count=#1)" overridePosture="false" mask="" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="93c3aaef-2b89-4abb-afba-a732a8cb3053">
+            <TransitionClassList>
+              <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+            </TransitionClassList>
+          </Controller>
+        </MakeController>
+        <Controller target="x" controller="@ClipController(clip=a2o_magazine_read_turnThreePages_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="fc5a265e-4430-4ae3-acdb-92f65b4f8df9">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+        <MakeController>
+          <Controller target="x" controller="@ClipController(clip=a2o_magazine_read_readLines_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="5e5b903d-6e02-4141-a383-fc8d0ad6bbf1">
+            <TransitionClassList>
+              <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+            </TransitionClassList>
+          </Controller>
+          <Controller target="magazine" controller="@ClipController(clip=a2o_magazine_read_readLines_magazine, loop_count=#1)" overridePosture="false" mask="" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="93c3aaef-2b89-4abb-afba-a732a8cb3053">
+            <TransitionClassList>
+              <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+            </TransitionClassList>
+          </Controller>
+        </MakeController>
+      </Choice>
+      <Choice value="-movingStand-UpperBody">
+        <Controller target="magazine" controller="@ClipController(clip=a2o_magazine_read_turnThreePages_magazine, loop_count=#1)" overridePosture="false" mask="" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="69eef67f-12b8-4f37-86a0-778efbe73113">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+        <MakeController>
+          <Controller target="x" controller="@ClipController(clip=a2o_magazine_read_readLines_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="normalplus" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="5e5b903d-6e02-4141-a383-fc8d0ad6bbf1">
+            <TransitionClassList>
+              <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+            </TransitionClassList>
+          </Controller>
+          <Controller target="magazine" controller="@ClipController(clip=a2o_magazine_read_readLines_magazine, loop_count=#1)" overridePosture="false" mask="" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="93c3aaef-2b89-4abb-afba-a732a8cb3053">
+            <TransitionClassList>
+              <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+            </TransitionClassList>
+          </Controller>
+        </MakeController>
+        <Controller target="x" controller="@ClipController(clip=a2o_magazine_read_turnThreePages_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="normalplus" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="fc5a265e-4430-4ae3-acdb-92f65b4f8df9">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+        <MakeController>
+          <Controller target="x" controller="@ClipController(clip=a2o_magazine_read_readLines_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="normalplus" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="5e5b903d-6e02-4141-a383-fc8d0ad6bbf1">
+            <TransitionClassList>
+              <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+            </TransitionClassList>
+          </Controller>
+          <Controller target="magazine" controller="@ClipController(clip=a2o_magazine_read_readLines_magazine, loop_count=#1)" overridePosture="false" mask="" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="93c3aaef-2b89-4abb-afba-a732a8cb3053">
+            <TransitionClassList>
+              <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+            </TransitionClassList>
+          </Controller>
+        </MakeController>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="ReadWeightShift">
+    <description />
+    <PostureSelector parameter="x:posture">
+      <Choice value="-stand-FullBody">
+        <Controller target="x" controller="@ClipController(clip=a2o_magazine_read_weighShift_x, loop_count=#1)" overridePosture="false" mask="" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="658087ef-4ebd-4421-8933-65299406ab73">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+        <MakeController>
+          <Controller target="magazine" controller="@ClipController(clip=a2o_magazine_read_readLines_magazine, loop_count=#1)" overridePosture="false" mask="" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="02796a13-0ba2-43e2-af62-2002e8d3e087">
+            <TransitionClassList>
+              <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+            </TransitionClassList>
+          </Controller>
+          <Controller target="x" controller="@ClipController(clip=a2o_magazine_read_readLines_x, loop_count=#1)" overridePosture="false" mask="" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="8d6d50da-81ef-4934-bd62-0d3bed3cf6b2">
+            <TransitionClassList>
+              <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+            </TransitionClassList>
+          </Controller>
+        </MakeController>
+        <Controller target="magazine" controller="@ClipController(clip=a2o_magazine_read_weighShift_magazine, loop_count=#1)" overridePosture="false" mask="" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="7fd503d1-2dba-4d53-bb40-bad9fe69266e">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+        <MakeController>
+          <Controller target="magazine" controller="@ClipController(clip=a2o_magazine_read_readLines_magazine, loop_count=#1)" overridePosture="false" mask="" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="02796a13-0ba2-43e2-af62-2002e8d3e087">
+            <TransitionClassList>
+              <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+            </TransitionClassList>
+          </Controller>
+          <Controller target="x" controller="@ClipController(clip=a2o_magazine_read_readLines_x, loop_count=#1)" overridePosture="false" mask="" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="8d6d50da-81ef-4934-bd62-0d3bed3cf6b2">
+            <TransitionClassList>
+              <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+            </TransitionClassList>
+          </Controller>
+        </MakeController>
+      </Choice>
+      <Choice value="-stand-UpperBody">
+        <Controller target="x" controller="@ClipController(clip=a2o_magazine_read_weighShift_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="658087ef-4ebd-4421-8933-65299406ab73">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+        <MakeController>
+          <Controller target="magazine" controller="@ClipController(clip=a2o_magazine_read_readLines_magazine, loop_count=#1)" overridePosture="false" mask="" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="02796a13-0ba2-43e2-af62-2002e8d3e087">
+            <TransitionClassList>
+              <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+            </TransitionClassList>
+          </Controller>
+          <Controller target="x" controller="@ClipController(clip=a2o_magazine_read_readLines_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="8d6d50da-81ef-4934-bd62-0d3bed3cf6b2">
+            <TransitionClassList>
+              <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+            </TransitionClassList>
+          </Controller>
+        </MakeController>
+        <Controller target="magazine" controller="@ClipController(clip=a2o_magazine_read_weighShift_magazine, loop_count=#1)" overridePosture="false" mask="" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="7fd503d1-2dba-4d53-bb40-bad9fe69266e">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+        <MakeController>
+          <Controller target="magazine" controller="@ClipController(clip=a2o_magazine_read_readLines_magazine, loop_count=#1)" overridePosture="false" mask="" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="02796a13-0ba2-43e2-af62-2002e8d3e087">
+            <TransitionClassList>
+              <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+            </TransitionClassList>
+          </Controller>
+          <Controller target="x" controller="@ClipController(clip=a2o_magazine_read_readLines_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="8d6d50da-81ef-4934-bd62-0d3bed3cf6b2">
+            <TransitionClassList>
+              <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+            </TransitionClassList>
+          </Controller>
+        </MakeController>
+      </Choice>
+      <Choice value="-movingStand-UpperBody">
+        <Controller target="x" controller="@ClipController(clip=a2o_magazine_read_weighShift_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="normalplus" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="658087ef-4ebd-4421-8933-65299406ab73">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+        <MakeController>
+          <Controller target="magazine" controller="@ClipController(clip=a2o_magazine_read_readLines_magazine, loop_count=#1)" overridePosture="false" mask="" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="02796a13-0ba2-43e2-af62-2002e8d3e087">
+            <TransitionClassList>
+              <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+            </TransitionClassList>
+          </Controller>
+          <Controller target="x" controller="@ClipController(clip=a2o_magazine_read_readLines_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="normalplus" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="8d6d50da-81ef-4934-bd62-0d3bed3cf6b2">
+            <TransitionClassList>
+              <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+            </TransitionClassList>
+          </Controller>
+        </MakeController>
+        <Controller target="magazine" controller="@ClipController(clip=a2o_magazine_read_weighShift_magazine, loop_count=#1)" overridePosture="false" mask="" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="7fd503d1-2dba-4d53-bb40-bad9fe69266e">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+        <MakeController>
+          <Controller target="magazine" controller="@ClipController(clip=a2o_magazine_read_readLines_magazine, loop_count=#1)" overridePosture="false" mask="" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="02796a13-0ba2-43e2-af62-2002e8d3e087">
+            <TransitionClassList>
+              <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+            </TransitionClassList>
+          </Controller>
+          <Controller target="x" controller="@ClipController(clip=a2o_magazine_read_readLines_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="normalplus" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_magazine_read.ma" focus="undefined" id="8d6d50da-81ef-4934-bd62-0d3bed3cf6b2">
+            <TransitionClassList>
+              <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+            </TransitionClassList>
+          </Controller>
+        </MakeController>
+      </Choice>
+    </PostureSelector>
+  </State>
+</ASM>

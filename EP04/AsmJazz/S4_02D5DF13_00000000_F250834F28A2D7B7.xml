@@ -1,0 +1,80 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="Cat_MouseHole_Hunt" dcc="sage">
+  <Actor name="x" type="Sim" master="true" virtual="false" />
+  <Actor name="mouseHole" type="Object" virtual="false" />
+  <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
+  <Parameter name="x:species" type="enum" labels="human,dog,smalldog,cat" default="human" />
+  <IkConfiguration name="ac_pounce_loops.ma">
+    <SourceFile name="ac_pounce_loops.ma">
+      <MapNamespace namespace="mouseHole" actor="mouseHole" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="ac_pounce_start_stop.ma">
+    <SourceFile name="ac_pounce_start_stop.ma">
+      <MapNamespace namespace="mouseHole" actor="mouseHole" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="ac_pounce.ma">
+    <SourceFile name="ac_pounce.ma">
+      <MapNamespace namespace="mouseHole" actor="mouseHole" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <PostureManifest actors="">
+    <Support family="stand" compatibility="FullBody" carry_left="-" carry_right="-" surface="-" />
+  </PostureManifest>
+  <State type="private" skippable="false" interrupt_this="false" name="Hub" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" name="Hunt" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="Pounce" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="Start" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="Stop" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <Connection from="Hub" to="Hunt" />
+  <Connection from="Hub" to="Pounce" />
+  <Connection from="Hub" to="Stop" />
+  <Connection from="Hunt" to="Hub" />
+  <Connection from="Pounce" to="exit" />
+  <Connection from="Start" to="Hub" />
+  <Connection from="Stop" to="exit" />
+  <Connection from="entry" to="Start" />
+  <State name="Hub" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+  </State>
+  <State name="Hunt" type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <MakeController>
+      <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="3">
+        <Choice weight="50" avoidRepeat="False">
+          <Controller target="x" controller="@ClipController(clip=ac_pounce_flipTail_idle_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ac_pounce_loops.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="1">
+            <TransitionClassList />
+          </Controller>
+        </Choice>
+        <Choice weight="50" avoidRepeat="False">
+          <Controller target="x" controller="@ClipController(clip=ac_pounce_wiggle_idle_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ac_pounce_loops.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="2">
+            <TransitionClassList />
+          </Controller>
+        </Choice>
+      </RandomSelector>
+    </MakeController>
+  </State>
+  <State name="Pounce" type="public" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <Controller target="x" controller="@ClipController(clip=ac_pounce_jump_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ac_pounce.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="4">
+      <TransitionClassList />
+    </Controller>
+  </State>
+  <State name="Start" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <Controller target="x" controller="@ClipController(clip=ac_trans2idle_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ac_pounce_start_stop.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="5">
+      <TransitionClassList />
+    </Controller>
+  </State>
+  <State name="Stop" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <Controller target="x" controller="@ClipController(clip=ac_pounce_idle_stop, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ac_pounce_start_stop.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="6">
+      <TransitionClassList />
+    </Controller>
+  </State>
+</ASM>

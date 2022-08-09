@@ -1,0 +1,224 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="SitPoolEdge_Posture" dcc="sage">
+  <Actor name="x" type="Sim" master="true" virtual="false" />
+  <Actor name="sitTemplate" type="Object" virtual="true" />
+  <Parameter name="transitionPosture" type="enum" labels="stand,sit,sitPoolEdge,bed_Sleep,bed_Intimate,bed_Woohoo,bed_Relax,bed_Nap,sitIntimate,computer,sofa_Nap_TwoSeated,bed_Undercovers,swim" default="stand" />
+  <Parameter name="routingSlot" type="enum" labels="0,1,2,3" default="0" />
+  <Parameter name="isMirrored" type="bool" labels="" default="False" />
+  <Parameter name="direction" type="enum" labels="fromSimLeft,fromSimRight" default="fromSimLeft" />
+  <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="x:sex" type="enum" labels="male,female" default="female" />
+  <Parameter name="x:isMermaid" type="bool" labels="" default="False" />
+  <Parameter name="sitTemplate:objectName" type="enum" labels="sitPoolEdge" default="sitPoolEdge" />
+  <IkConfiguration name="a2o_pool_trans_sitToSwim.ma">
+    <SourceFile name="a2o_pool_trans_sitToSwim.ma">
+      <MapNamespace namespace="sitTemplate" actor="sitTemplate" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_sit_scoot.ma">
+    <SourceFile name="a2o_sit_scoot.ma">
+      <MapNamespace namespace="sitTemplate" actor="sitTemplate" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="c2o_idles_seated.ma">
+    <SourceFile name="c2o_idles_seated.ma">
+      <MapNamespace namespace="sitTemplate" actor="sitTemplate" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_idles_seated.ma">
+    <SourceFile name="a2o_idles_seated.ma">
+      <MapNamespace namespace="sitTemplate" actor="sitTemplate" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_pool_trans_standToSit.ma">
+    <SourceFile name="a2o_pool_trans_standToSit.ma">
+      <MapNamespace namespace="sitTemplate" actor="sitTemplate" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_pool_trans_swimToSit.ma">
+    <SourceFile name="a2o_pool_trans_swimToSit.ma">
+      <MapNamespace namespace="sitTemplate" actor="sitTemplate" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_pool_trans_sitToStand.ma">
+    <SourceFile name="a2o_pool_trans_sitToStand.ma">
+      <MapNamespace namespace="sitTemplate" actor="sitTemplate" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a_mermaid_swim_transForms.ma">
+    <SourceFile name="a_mermaid_swim_transForms.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <PostureManifest>
+    <Provide name="sitPoolEdge" family="sit" compatibility="FullBody" carry_left="*" carry_right="*" surface="*" />
+    <Provide name="sitPoolEdge" family="sit" compatibility="UpperBody" carry_left="*" carry_right="*" surface="*" />
+  </PostureManifest>
+  <State type="public" countlooptime="false" disableautostop="false" skippable="true" interrupt_this="true" name="Sit_Posture" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="Unmirror" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="getOut" focus="none" facialoverlays="true" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="get_in" focus="none" facialoverlays="true" tailoverlays="true" />
+  <Connection from="Sit_Posture" to="getOut" />
+  <Connection from="Unmirror" to="Sit_Posture" />
+  <Connection from="entry" to="get_in" />
+  <Connection from="getOut" to="exit" />
+  <Connection from="get_in" to="Unmirror" />
+  <State name="Sit_Posture" type="public" countlooptime="false" disableautostop="false" skippable="true" interrupt_this="true" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <MakeController>
+      <ParameterSelector parameter="x:age" unique_id="3">
+        <Choice value="baby" />
+        <Choice value="toddler" />
+        <Choice value="child">
+          <Controller target="x" controller="@ClipController(clip=c2o_seated_posture_x, loop_count=#1)" overridePosture="false" mask="" track="low" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c2o_idles_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="1">
+            <TransitionClassList>
+              <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+            </TransitionClassList>
+          </Controller>
+        </Choice>
+        <Choice value="teen">
+          <Controller target="x" controller="@ClipController(clip=a2o_seated_posture_x, loop_count=#1)" overridePosture="false" mask="" track="low" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_idles_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="2">
+            <TransitionClassList>
+              <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+            </TransitionClassList>
+          </Controller>
+        </Choice>
+        <Choice value="youngadult">
+          <Reference target="2" />
+        </Choice>
+        <Choice value="adult">
+          <Reference target="2" />
+        </Choice>
+        <Choice value="elder">
+          <Reference target="2" />
+        </Choice>
+      </ParameterSelector>
+    </MakeController>
+  </State>
+  <State name="Unmirror" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <SetMirror target="x" mirror="false" unique_id="4" />
+    <SetMirror target="sitTemplate" mirror="false" unique_id="5" />
+  </State>
+  <State name="getOut" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="true" tailoverlays="true">
+    <description />
+    <ParameterSelector parameter="transitionPosture" unique_id="11">
+      <Choice value="stand">
+        <Controller target="x" controller="@ClipController(clip=a2o_pool_trans_sitToStand_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_pool_trans_sitToStand.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="6">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
+      <Choice value="sit" />
+      <Choice value="sitPoolEdge" />
+      <Choice value="bed_Sleep" />
+      <Choice value="bed_Intimate" />
+      <Choice value="bed_Woohoo" />
+      <Choice value="bed_Relax" />
+      <Choice value="bed_Nap" />
+      <Choice value="sitIntimate" />
+      <Choice value="computer" />
+      <Choice value="sofa_Nap_TwoSeated" />
+      <Choice value="bed_Undercovers" />
+      <Choice value="swim">
+        <ParameterSelector parameter="x:isMermaid" unique_id="10">
+          <Choice value="false">
+            <Controller target="x" controller="@ClipController(clip=a2o_pool_trans_sitToSwim_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_pool_trans_sitToSwim.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="7">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice value="true">
+            <Controller target="x" controller="@ClipController(clip=a2o_pool_trans_sitToSwim_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_pool_trans_sitToSwim.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="9">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+            <Controller target="x" controller="@ClipController(clip=a_mermaid_surfaceSwim_formChangeToMermaid_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_mermaid_swim_transForms.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="8">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+    </ParameterSelector>
+  </State>
+  <State name="get_in" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="true" tailoverlays="true">
+    <description />
+    <ParameterSelector parameter="transitionPosture" unique_id="22">
+      <Choice value="stand">
+        <Controller target="x" controller="@ClipController(clip=a2o_pool_trans_standToSit_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_pool_trans_standToSit.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="12">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
+      <Choice value="sit" />
+      <Choice value="sitPoolEdge">
+        <ParameterSelector parameter="direction" unique_id="16">
+          <Choice value="fromSimLeft">
+            <Controller target="x" controller="@ClipController(clip=a2o_poolEdge_scootLeft_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_sit_scoot.ma" focus="head" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="13">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                <Transition transition_class_name="Locomotion" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice value="fromSimRight">
+            <SetMirror target="x" mirror="true" unique_id="15" />
+            <Controller target="x" controller="@ClipController(clip=a2o_poolEdge_scootLeft_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_sit_scoot.ma" focus="head" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="14">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                <Transition transition_class_name="Locomotion" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+      <Choice value="bed_Sleep" />
+      <Choice value="bed_Intimate" />
+      <Choice value="bed_Woohoo" />
+      <Choice value="bed_Relax" />
+      <Choice value="bed_Nap" />
+      <Choice value="sitIntimate">
+        <Controller target="x" controller="@ClipController(clip=a2o_pool_sit_fxStart_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_pool_trans_standToSit.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="17">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
+      <Choice value="computer" />
+      <Choice value="sofa_Nap_TwoSeated" />
+      <Choice value="bed_Undercovers" />
+      <Choice value="swim">
+        <ParameterSelector parameter="x:isMermaid" unique_id="21">
+          <Choice value="false">
+            <Controller target="x" controller="@ClipController(clip=a2o_pool_trans_swimToSit_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_pool_trans_swimToSit.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="18">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice value="true">
+            <Controller target="x" controller="@ClipController(clip=a_mermaid_surfaceSwim_formChangeToSim_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_mermaid_swim_transForms.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="20">
+              <TransitionClassList />
+            </Controller>
+            <Controller target="x" controller="@ClipController(clip=a2o_pool_trans_swimToSit_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_pool_trans_swimToSit.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="19">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+    </ParameterSelector>
+  </State>
+</ASM>

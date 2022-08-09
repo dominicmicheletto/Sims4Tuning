@@ -1,0 +1,331 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="Cat_Meow" dcc="sage">
+  <Actor name="x" type="Sim" master="true" virtual="false" />
+  <Actor name="sitTemplate" type="Object" virtual="true" />
+  <Actor name="postureObject" type="Object" virtual="true" />
+  <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
+  <Parameter name="x:species" type="enum" labels="human,dog,smalldog,cat" default="human" />
+  <Parameter name="x:carryState" type="enum" labels="none,left,right,both" default="right" />
+  <Parameter name="sitTemplate:isMirroredPart" type="bool" labels="" default="False" />
+  <Parameter name="postureObject:isMirroredPart" type="bool" labels="" default="False" />
+  <IkConfiguration name="ac_react_neutral_meow.ma">
+    <SourceFile name="ac_react_neutral_meow.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="ac_react_neutral_meow_sitOnGround.ma">
+    <SourceFile name="ac_react_neutral_meow_sitOnGround.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="ac_react_neutral_meow_layDown.ma">
+    <SourceFile name="ac_react_neutral_meow_layDown.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="ac_react_hyper_meow_noisy.ma">
+    <SourceFile name="ac_react_hyper_meow_noisy.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="ac_react_hyper_meow_noisy_sitOnGround.ma">
+    <SourceFile name="ac_react_hyper_meow_noisy_sitOnGround.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="ac_react_hyper_meow_noisy_layDown.ma">
+    <SourceFile name="ac_react_hyper_meow_noisy_layDown.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="ac_react_neutral_meow_short.ma">
+    <SourceFile name="ac_react_neutral_meow_short.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="ac_react_neutral_meow_short_sitOnGround.ma">
+    <SourceFile name="ac_react_neutral_meow_short_sitOnGround.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="ac_react_neutral_meow_short_layDown.ma">
+    <SourceFile name="ac_react_neutral_meow_short_layDown.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="ac_react_neutral_meow_2_layDown.ma">
+    <SourceFile name="ac_react_neutral_meow_2_layDown.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="ac_react_neutral_meow_2_sitOnGround.ma">
+    <SourceFile name="ac_react_neutral_meow_2_sitOnGround.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="ac_react_neutral_meow_2.ma">
+    <SourceFile name="ac_react_neutral_meow_2.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <PostureManifest actors="">
+    <Support family="stand" compatibility="FullBody" carry_left="*" carry_right="*" surface="*" />
+    <Support family="sit" compatibility="FullBody" carry_left="*" carry_right="*" surface="*" />
+    <Support family="layDown" compatibility="FullBody" carry_left="*" carry_right="*" surface="*" />
+  </PostureManifest>
+  <State type="public" skippable="false" interrupt_this="false" name="MeowNeutral" focus="full body" facialoverlays="false" tailoverlays="false" />
+  <State type="public" skippable="false" interrupt_this="false" name="MeowNoisy" focus="full body" facialoverlays="false" tailoverlays="false" />
+  <State type="private" skippable="false" interrupt_this="false" name="mirror" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="mirror (2)" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <Connection from="MeowNeutral" to="exit" />
+  <Connection from="MeowNoisy" to="exit" />
+  <Connection from="entry" to="mirror" />
+  <Connection from="entry" to="mirror (2)" />
+  <Connection from="mirror" to="MeowNeutral" />
+  <Connection from="mirror (2)" to="MeowNoisy" />
+  <State name="MeowNeutral" type="public" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="false">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="28">
+      <Choice value="-layDown-FullBody" track="normal" mask="">
+        <ParameterSelector parameter="x:carryState" unique_id="9">
+          <Choice value="none">
+            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="4">
+              <Choice weight="50" avoidRepeat="False">
+                <Controller target="x" controller="@ClipController(clip=ac_react_neutral_meow_layDown_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ac_react_neutral_meow_layDown.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="1">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+              <Choice weight="50" avoidRepeat="False">
+                <Controller target="x" controller="@ClipController(clip=ac_react_neutral_meow_short_layDown_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ac_react_neutral_meow_short_layDown.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="2">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+              <Choice weight="50" avoidRepeat="False">
+                <Controller target="x" controller="@ClipController(clip=ac_react_neutral_meow_2_layDown_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ac_react_neutral_meow_2_layDown.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="3">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+            </RandomSelector>
+          </Choice>
+          <Choice value="left">
+            <Reference target="4" />
+          </Choice>
+          <Choice value="right">
+            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="8">
+              <Choice weight="50" avoidRepeat="False">
+                <Controller target="x" controller="@ClipController(clip=ac_react_neutral_meow_carryAudio_layDown_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ac_react_neutral_meow_layDown.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="5">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+              <Choice weight="50" avoidRepeat="False">
+                <Controller target="x" controller="@ClipController(clip=ac_react_neutral_meow_short_carryAudio_layDown_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ac_react_neutral_meow_short_layDown.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="6">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+              <Choice weight="50" avoidRepeat="False">
+                <Controller target="x" controller="@ClipController(clip=ac_react_neutral_meow_2_carryAudio_layDown_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ac_react_neutral_meow_2_layDown.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="7">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+            </RandomSelector>
+          </Choice>
+          <Choice value="both">
+            <Reference target="8" />
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+      <Choice value="-sit-FullBody" track="normal" mask="">
+        <ParameterSelector parameter="x:carryState" unique_id="18">
+          <Choice value="none">
+            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="13">
+              <Choice weight="50" avoidRepeat="False">
+                <Controller target="x" controller="@ClipController(clip=ac_react_neutral_meow_sitOnGround_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ac_react_neutral_meow_sitOnGround.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="10">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+              <Choice weight="50" avoidRepeat="False">
+                <Controller target="x" controller="@ClipController(clip=ac_react_neutral_meow_short_sitOnGround_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ac_react_neutral_meow_short_sitOnGround.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="11">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+              <Choice weight="50" avoidRepeat="False">
+                <Controller target="x" controller="@ClipController(clip=ac_react_neutral_meow_2_sitOnGround_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ac_react_neutral_meow_2_sitOnGround.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="12">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+            </RandomSelector>
+          </Choice>
+          <Choice value="left">
+            <Reference target="13" />
+          </Choice>
+          <Choice value="right">
+            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="17">
+              <Choice weight="50" avoidRepeat="False">
+                <Controller target="x" controller="@ClipController(clip=ac_react_neutral_meow_carryAudio_sitOnGround_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ac_react_neutral_meow_sitOnGround.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="14">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+              <Choice weight="50" avoidRepeat="False">
+                <Controller target="x" controller="@ClipController(clip=ac_react_neutral_meow_short_carryAudio_sitOnGround_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ac_react_neutral_meow_short_sitOnGround.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="15">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+              <Choice weight="50" avoidRepeat="False">
+                <Controller target="x" controller="@ClipController(clip=ac_react_neutral_meow_2_carryAudio_sitOnGround_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ac_react_neutral_meow_2_sitOnGround.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="16">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+            </RandomSelector>
+          </Choice>
+          <Choice value="both">
+            <Reference target="17" />
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <ParameterSelector parameter="x:carryState" unique_id="27">
+          <Choice value="none">
+            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="22">
+              <Choice weight="50" avoidRepeat="False">
+                <Controller target="x" controller="@ClipController(clip=ac_react_neutral_meow_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ac_react_neutral_meow.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="19">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+              <Choice weight="50" avoidRepeat="False">
+                <Controller target="x" controller="@ClipController(clip=ac_react_neutral_meow_short_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ac_react_neutral_meow_short.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="20">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+              <Choice weight="50" avoidRepeat="False">
+                <Controller target="x" controller="@ClipController(clip=ac_react_neutral_meow_2_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ac_react_neutral_meow_2.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="21">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+            </RandomSelector>
+          </Choice>
+          <Choice value="left">
+            <Reference target="22" />
+          </Choice>
+          <Choice value="right">
+            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="26">
+              <Choice weight="50" avoidRepeat="False">
+                <Controller target="x" controller="@ClipController(clip=ac_react_neutral_meow_carryAudio_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ac_react_neutral_meow.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="23">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+              <Choice weight="50" avoidRepeat="False">
+                <Controller target="x" controller="@ClipController(clip=ac_react_neutral_meow_short_carryAudio_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ac_react_neutral_meow_short.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="24">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+              <Choice weight="50" avoidRepeat="False">
+                <Controller target="x" controller="@ClipController(clip=ac_react_neutral_meow_2_carryAudio_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ac_react_neutral_meow_2.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="25">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+            </RandomSelector>
+          </Choice>
+          <Choice value="both">
+            <Reference target="26" />
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="MeowNoisy" type="public" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="false">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="38">
+      <Choice value="-layDown-FullBody" track="normal" mask="">
+        <ParameterSelector parameter="x:carryState" unique_id="31">
+          <Choice value="none">
+            <Controller target="x" controller="@ClipController(clip=ac_react_hyper_meow_noisy_layDown_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ac_react_hyper_meow_noisy_layDown.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="29">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
+          <Choice value="left">
+            <Reference target="29" />
+          </Choice>
+          <Choice value="right">
+            <Controller target="x" controller="@ClipController(clip=ac_react_hyper_meow_noisy_carryAudio_layDown_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ac_react_hyper_meow_noisy_layDown.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="30">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
+          <Choice value="both">
+            <Reference target="30" />
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+      <Choice value="-sit-FullBody" track="normal" mask="">
+        <ParameterSelector parameter="x:carryState" unique_id="34">
+          <Choice value="none">
+            <Controller target="x" controller="@ClipController(clip=ac_react_hyper_meow_noisy_sitOnGround_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ac_react_hyper_meow_noisy_sitOnGround.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="32">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
+          <Choice value="left">
+            <Reference target="32" />
+          </Choice>
+          <Choice value="right">
+            <Controller target="x" controller="@ClipController(clip=ac_react_hyper_meow_noisy_carryAudio_sitOnGround_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ac_react_hyper_meow_noisy_sitOnGround.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="33">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
+          <Choice value="both">
+            <Reference target="33" />
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <ParameterSelector parameter="x:carryState" unique_id="37">
+          <Choice value="none">
+            <Controller target="x" controller="@ClipController(clip=ac_react_hyper_meow_noisy_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ac_react_hyper_meow_noisy.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="35">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
+          <Choice value="left">
+            <Reference target="35" />
+          </Choice>
+          <Choice value="right">
+            <Controller target="x" controller="@ClipController(clip=ac_react_hyper_meow_noisy_carryAudio_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ac_react_hyper_meow_noisy.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="36">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
+          <Choice value="both">
+            <Reference target="36" />
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="mirror" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <ParameterSelector parameter="sitTemplate:isMirroredPart" unique_id="40">
+      <Choice value="false" />
+      <Choice value="true">
+        <SetMirror target="x" mirror="true" unique_id="39" />
+      </Choice>
+    </ParameterSelector>
+    <ParameterSelector parameter="postureObject:isMirroredPart" unique_id="42">
+      <Choice value="false" />
+      <Choice value="true">
+        <SetMirror target="x" mirror="true" unique_id="41" />
+      </Choice>
+    </ParameterSelector>
+  </State>
+  <State name="mirror (2)" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <ParameterSelector parameter="sitTemplate:isMirroredPart" unique_id="44">
+      <Choice value="false" />
+      <Choice value="true">
+        <SetMirror target="x" mirror="true" unique_id="43" />
+      </Choice>
+    </ParameterSelector>
+    <ParameterSelector parameter="postureObject:isMirroredPart" unique_id="46">
+      <Choice value="false" />
+      <Choice value="true">
+        <SetMirror target="x" mirror="true" unique_id="45" />
+      </Choice>
+    </ParameterSelector>
+  </State>
+</ASM>

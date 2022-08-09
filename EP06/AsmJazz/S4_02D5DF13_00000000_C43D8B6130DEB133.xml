@@ -1,0 +1,193 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="Paparazzi_takePicture" dcc="sage">
+  <Actor name="x" type="Sim" master="true" virtual="false" />
+  <Actor name="photoCamera" type="Prop" virtual="false" object_def_resource_key="c0db5ae7:00000000:000000000003190e#photoCameraLrg_EP06GEN_set1" />
+  <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
+  <Parameter name="x:species" type="enum" labels="human,dog,smalldog,cat" default="human" />
+  <IkConfiguration name="a_paparazzi_takePicture_covert_startStop_camera.ma">
+    <SourceFile name="a_paparazzi_takePicture_covert_startStop_camera.ma">
+      <MapNamespace namespace="photoCamera" actor="photoCamera" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a_paparazzi_takePicture_startStop_camera.ma">
+    <SourceFile name="a_paparazzi_takePicture_startStop_camera.ma">
+      <MapNamespace namespace="photoCamera" actor="photoCamera" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a_paparazzi_takePicture_loop01_loop02_camera.ma">
+    <SourceFile name="a_paparazzi_takePicture_loop01_loop02_camera.ma">
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="photoCamera" actor="photoCamera" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a_paparazzi_takePicture_loop03_loop04_camera.ma">
+    <SourceFile name="a_paparazzi_takePicture_loop03_loop04_camera.ma">
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="photoCamera" actor="photoCamera" />
+    </SourceFile>
+  </IkConfiguration>
+  <PostureManifest actors="" />
+  <PostureManifest actors="x">
+    <Support family="stand" compatibility="FullBody" carry_left="-" carry_right="-" surface="*" />
+  </PostureManifest>
+  <State type="public" skippable="false" interrupt_this="false" name="Covert_Stop_Embarrassing" focus="none" facialoverlays="false" tailoverlays="false" />
+  <State type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="false" name="Covert_Take_Photo" focus="full body" facialoverlays="false" tailoverlays="false" />
+  <State type="public" skippable="false" interrupt_this="false" name="Get Attention" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="Regular_Stop_Embarrassing" focus="none" facialoverlays="false" tailoverlays="false" />
+  <State type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" name="Regular_Take_Photo" focus="full body" facialoverlays="false" tailoverlays="false" />
+  <State type="private" skippable="false" interrupt_this="false" name="Start" focus="full body" facialoverlays="false" tailoverlays="false" />
+  <State type="private" skippable="false" interrupt_this="false" name="Start (2)" focus="full body" facialoverlays="false" tailoverlays="false" />
+  <State type="private" skippable="false" interrupt_this="false" name="Stop" focus="full body" facialoverlays="false" tailoverlays="false" />
+  <State type="private" skippable="false" interrupt_this="false" name="Stop (2)" focus="full body" facialoverlays="false" tailoverlays="false" />
+  <State type="public" skippable="false" interrupt_this="false" name="Take_Photo_UpHigh" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="hub" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <Connection from="Covert_Stop_Embarrassing" to="exit" />
+  <Connection from="Covert_Take_Photo" to="Covert_Stop_Embarrassing" />
+  <Connection from="Covert_Take_Photo" to="Stop (2)" />
+  <Connection from="Get Attention" to="hub" />
+  <Connection from="Regular_Stop_Embarrassing" to="exit" />
+  <Connection from="Regular_Take_Photo" to="hub" />
+  <Connection from="Start" to="Covert_Take_Photo" />
+  <Connection from="Start (2)" to="hub" />
+  <Connection from="Stop" to="exit" />
+  <Connection from="Stop (2)" to="exit" />
+  <Connection from="Take_Photo_UpHigh" to="hub" />
+  <Connection from="entry" to="Start" />
+  <Connection from="entry" to="Start (2)" />
+  <Connection from="hub" to="Get Attention" />
+  <Connection from="hub" to="Regular_Stop_Embarrassing" />
+  <Connection from="hub" to="Regular_Take_Photo" />
+  <Connection from="hub" to="Stop" />
+  <Connection from="hub" to="Take_Photo_UpHigh" />
+  <State name="Covert_Stop_Embarrassing" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="false">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="2">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a_paparazzi_takePicture_embarassing_stop_moneyShot_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_paparazzi_takePicture_startStop_camera.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="1">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="Covert_Take_Photo" type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="false">
+    <description />
+    <MakeController>
+      <PostureSelector parameter="x:posture" unique_id="6">
+        <Choice value="-stand-FullBody" track="normal" mask="">
+          <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="5">
+            <Choice weight="50" avoidRepeat="False">
+              <Controller target="x" controller="@ClipController(clip=a_paparazzi_takePicture_loop1_camera_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_paparazzi_takePicture_loop01_loop02_camera.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="3">
+                <TransitionClassList />
+              </Controller>
+            </Choice>
+            <Choice weight="50" avoidRepeat="False">
+              <Controller target="x" controller="@ClipController(clip=a_paparazzi_takePicture_loop2_camera_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_paparazzi_takePicture_loop01_loop02_camera.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="4">
+                <TransitionClassList />
+              </Controller>
+            </Choice>
+          </RandomSelector>
+        </Choice>
+      </PostureSelector>
+    </MakeController>
+  </State>
+  <State name="Get Attention" type="public" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="8">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a_paparazzi_takePicture_loop4_getAttention_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_paparazzi_takePicture_loop03_loop04_camera.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="7">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="Regular_Stop_Embarrassing" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="false">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="10">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a_paparazzi_takePicture_embarassing_stop_moneyShot_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_paparazzi_takePicture_startStop_camera.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="9">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="Regular_Take_Photo" type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" focus="full body" facialoverlays="false" tailoverlays="false">
+    <description />
+    <MakeController>
+      <PostureSelector parameter="x:posture" unique_id="14">
+        <Choice value="-stand-FullBody" track="normal" mask="">
+          <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="13">
+            <Choice weight="51" avoidRepeat="False">
+              <Controller target="x" controller="@ClipController(clip=a_paparazzi_takePicture_loop1_camera_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_paparazzi_takePicture_loop01_loop02_camera.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="11">
+                <TransitionClassList />
+              </Controller>
+            </Choice>
+            <Choice weight="50" avoidRepeat="False">
+              <Controller target="x" controller="@ClipController(clip=a_paparazzi_takePicture_loop2_camera_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_paparazzi_takePicture_loop01_loop02_camera.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="12">
+                <TransitionClassList />
+              </Controller>
+            </Choice>
+          </RandomSelector>
+        </Choice>
+      </PostureSelector>
+    </MakeController>
+  </State>
+  <State name="Start" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="false">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="16">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a_paparazzi_takePicture_covert_start_camera_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_paparazzi_takePicture_covert_startStop_camera.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="15">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="Start (2)" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="false">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="18">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a_paparazzi_takePicture_start_camera_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_paparazzi_takePicture_startStop_camera.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="17">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="Stop" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="false">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="20">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a_paparazzi_takePicture_stop_camera_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_paparazzi_takePicture_startStop_camera.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="19">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="Stop (2)" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="false">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="22">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a_paparazzi_takePicture_stop_camera_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_paparazzi_takePicture_startStop_camera.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="21">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="Take_Photo_UpHigh" type="public" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="24">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a_paparazzi_takePicture_loop3_camera_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_paparazzi_takePicture_loop03_loop04_camera.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="23">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="hub" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="25">
+      <Choice value="-stand-FullBody" track="normal" mask="" />
+    </PostureSelector>
+  </State>
+</ASM>

@@ -1,0 +1,590 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="Motion_Based_Gaming_Posture" dcc="sage">
+  <Actor name="x" type="Sim" master="true" virtual="false" />
+  <Actor name="gameMat" type="Object" virtual="false" />
+  <Actor name="remote" type="Prop" virtual="false" object_def_resource_key="c0db5ae7:00000000:0000000000001168#remoteTvGEN_01" />
+  <Parameter name="gametype" type="enum" labels="adventure,family,sports,puzzle" default="adventure" />
+  <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="child" />
+  <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
+  <Parameter name="x:mood" type="enum" labels="happy,confident,angry,sad,bored,embarrassed,uncomfortable,playful,tense,focused,energized,flirty,fine,inspired,dazed" default="fine" />
+  <Parameter name="gameMat:subroot" type="enum" labels="0,1,2,3" default="0" />
+  <IkConfiguration name="a2o_MotionGaming_getIn.ma">
+    <SourceFile name="a2o_MotionGaming_getIn.ma">
+      <MapNamespace namespace="gameMat" actor="gameMat" />
+      <MapNamespace namespace="remote" actor="remote" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_MotionGaming_getOut.ma">
+    <SourceFile name="a2o_MotionGaming_getOut.ma">
+      <MapNamespace namespace="gameMat" actor="gameMat" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_MotionGaming_sway.ma">
+    <SourceFile name="a2o_MotionGaming_sway.ma">
+      <MapNamespace namespace="gameMat" actor="gameMat" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_motionGaming_bored_getIn.ma">
+    <SourceFile name="a2o_motionGaming_bored_getIn.ma">
+      <MapNamespace namespace="gameMat" actor="gameMat" />
+      <MapNamespace namespace="remote" actor="remote" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_motionGaming_puzzle_getIn.ma">
+    <SourceFile name="a2o_motionGaming_puzzle_getIn.ma">
+      <MapNamespace namespace="gameMat" actor="gameMat" />
+      <MapNamespace namespace="remote" actor="remote" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_motionGaming_bored_getOut.ma">
+    <SourceFile name="a2o_motionGaming_bored_getOut.ma">
+      <MapNamespace namespace="gameMat" actor="gameMat" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_motionGaming_puzzle_getOut.ma">
+    <SourceFile name="a2o_motionGaming_puzzle_getOut.ma">
+      <MapNamespace namespace="gameMat" actor="gameMat" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <PostureManifest>
+    <Provide name="motionbasedgame" family="none" compatibility="FullBody" carry_left="-" carry_right="-" surface="*" />
+  </PostureManifest>
+  <State type="public" skippable="false" interrupt_this="false" name="GetIn" focus="none" facialoverlays="true" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="GetOut" focus="none" facialoverlays="true" tailoverlays="true" />
+  <State type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" name="MotionBasedGaming_Posture" focus="none" facialoverlays="true" tailoverlays="true" />
+  <Connection from="GetIn" to="MotionBasedGaming_Posture" />
+  <Connection from="GetOut" to="exit" />
+  <Connection from="MotionBasedGaming_Posture" to="GetOut" />
+  <Connection from="entry" to="GetIn" />
+  <State name="GetIn" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="true" tailoverlays="true">
+    <description />
+    <ParameterSelector parameter="gametype" unique_id="18">
+      <Choice value="adventure">
+        <ParameterSelector parameter="x:mood" unique_id="5">
+          <Choice value="happy">
+            <Controller target="x" controller="@ClipController(clip=a2o_motionGaming_adventure_getIn_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_MotionGaming_getIn.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="1">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+            <Controller target="gameMat" controller="@ClipController(clip=a2o_motionGaming_adventure_getIn_gameMat, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_MotionGaming_getIn.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="2">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice value="confident">
+            <Reference target="1" />
+            <Reference target="2" />
+          </Choice>
+          <Choice value="angry">
+            <Reference target="1" />
+            <Reference target="2" />
+          </Choice>
+          <Choice value="sad">
+            <Controller target="gameMat" controller="@ClipController(clip=a2o_motionGaming_adventure_bored_getIn_gameMat, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_motionGaming_bored_getIn.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="3">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+            <Controller target="x" controller="@ClipController(clip=a2o_motionGaming_adventure_bored_getIn_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_motionGaming_bored_getIn.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="4">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice value="bored">
+            <Reference target="3" />
+            <Reference target="4" />
+          </Choice>
+          <Choice value="embarrassed">
+            <Reference target="1" />
+            <Reference target="2" />
+          </Choice>
+          <Choice value="uncomfortable">
+            <Reference target="1" />
+            <Reference target="2" />
+          </Choice>
+          <Choice value="playful">
+            <Reference target="1" />
+            <Reference target="2" />
+          </Choice>
+          <Choice value="tense">
+            <Reference target="1" />
+            <Reference target="2" />
+          </Choice>
+          <Choice value="focused">
+            <Reference target="1" />
+            <Reference target="2" />
+          </Choice>
+          <Choice value="energized">
+            <Reference target="1" />
+            <Reference target="2" />
+          </Choice>
+          <Choice value="flirty">
+            <Reference target="1" />
+            <Reference target="2" />
+          </Choice>
+          <Choice value="fine">
+            <Reference target="1" />
+            <Reference target="2" />
+          </Choice>
+          <Choice value="inspired">
+            <Reference target="1" />
+            <Reference target="2" />
+          </Choice>
+          <Choice value="dazed">
+            <Reference target="1" />
+            <Reference target="2" />
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+      <Choice value="family">
+        <ParameterSelector parameter="x:mood" unique_id="10">
+          <Choice value="happy">
+            <Controller target="x" controller="@ClipController(clip=a2o_motionGaming_family_getIn_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_MotionGaming_getIn.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="6">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+            <Controller target="gameMat" controller="@ClipController(clip=a2o_motionGaming_family_getIn_gameMat, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_MotionGaming_getIn.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="7">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice value="confident">
+            <Reference target="6" />
+            <Reference target="7" />
+          </Choice>
+          <Choice value="angry">
+            <Reference target="6" />
+            <Reference target="7" />
+          </Choice>
+          <Choice value="sad">
+            <Controller target="gameMat" controller="@ClipController(clip=a2o_motionGaming_family_bored_getIn_gameMat, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_motionGaming_bored_getIn.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="8">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+            <Controller target="x" controller="@ClipController(clip=a2o_motionGaming_family_bored_getIn_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_motionGaming_bored_getIn.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="9">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice value="bored">
+            <Reference target="8" />
+            <Reference target="9" />
+          </Choice>
+          <Choice value="embarrassed">
+            <Reference target="6" />
+            <Reference target="7" />
+          </Choice>
+          <Choice value="uncomfortable">
+            <Reference target="6" />
+            <Reference target="7" />
+          </Choice>
+          <Choice value="playful">
+            <Reference target="6" />
+            <Reference target="7" />
+          </Choice>
+          <Choice value="tense">
+            <Reference target="6" />
+            <Reference target="7" />
+          </Choice>
+          <Choice value="focused">
+            <Reference target="6" />
+            <Reference target="7" />
+          </Choice>
+          <Choice value="energized">
+            <Reference target="6" />
+            <Reference target="7" />
+          </Choice>
+          <Choice value="flirty">
+            <Reference target="6" />
+            <Reference target="7" />
+          </Choice>
+          <Choice value="fine">
+            <Reference target="6" />
+            <Reference target="7" />
+          </Choice>
+          <Choice value="inspired">
+            <Reference target="6" />
+            <Reference target="7" />
+          </Choice>
+          <Choice value="dazed">
+            <Reference target="6" />
+            <Reference target="7" />
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+      <Choice value="sports">
+        <ParameterSelector parameter="x:mood" unique_id="15">
+          <Choice value="happy">
+            <Controller target="gameMat" controller="@ClipController(clip=a2o_motionGaming_sports_getIn_gameMat, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_MotionGaming_getIn.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="11">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+            <Controller target="x" controller="@ClipController(clip=a2o_motionGaming_sports_getIn_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_MotionGaming_getIn.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="12">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice value="confident">
+            <Reference target="11" />
+            <Reference target="12" />
+          </Choice>
+          <Choice value="angry">
+            <Reference target="11" />
+            <Reference target="12" />
+          </Choice>
+          <Choice value="sad">
+            <Controller target="gameMat" controller="@ClipController(clip=a2o_motionGaming_sports_bored_getIn_gameMat, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_motionGaming_bored_getIn.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="13">
+              <TransitionClassList />
+            </Controller>
+            <Controller target="x" controller="@ClipController(clip=a2o_motionGaming_sports_bored_getIn_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_motionGaming_bored_getIn.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="14">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice value="bored">
+            <Reference target="13" />
+            <Reference target="14" />
+          </Choice>
+          <Choice value="embarrassed">
+            <Reference target="11" />
+            <Reference target="12" />
+          </Choice>
+          <Choice value="uncomfortable">
+            <Reference target="11" />
+            <Reference target="12" />
+          </Choice>
+          <Choice value="playful">
+            <Reference target="11" />
+            <Reference target="12" />
+          </Choice>
+          <Choice value="tense">
+            <Reference target="11" />
+            <Reference target="12" />
+          </Choice>
+          <Choice value="focused">
+            <Reference target="11" />
+            <Reference target="12" />
+          </Choice>
+          <Choice value="energized">
+            <Reference target="11" />
+            <Reference target="12" />
+          </Choice>
+          <Choice value="flirty">
+            <Reference target="11" />
+            <Reference target="12" />
+          </Choice>
+          <Choice value="fine">
+            <Reference target="11" />
+            <Reference target="12" />
+          </Choice>
+          <Choice value="inspired">
+            <Reference target="11" />
+            <Reference target="12" />
+          </Choice>
+          <Choice value="dazed">
+            <Reference target="11" />
+            <Reference target="12" />
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+      <Choice value="puzzle">
+        <Controller target="x" controller="@ClipController(clip=a2o_motionGaming_puzzle_getIn_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_motionGaming_puzzle_getIn.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="16">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+        <Controller target="gameMat" controller="@ClipController(clip=a2o_motionGaming_puzzle_getIn_gameMat, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_motionGaming_puzzle_getIn.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="17">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
+    </ParameterSelector>
+  </State>
+  <State name="GetOut" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="true" tailoverlays="true">
+    <description />
+    <ParameterSelector parameter="gametype" unique_id="36">
+      <Choice value="adventure">
+        <ParameterSelector parameter="x:mood" unique_id="23">
+          <Choice value="happy">
+            <Controller target="x" controller="@ClipController(clip=a2o_motionGaming_adventure_getOut_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_MotionGaming_getOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="19">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+            <Controller target="gameMat" controller="@ClipController(clip=a2o_motionGaming_adventure_getOut_gameMat, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_MotionGaming_getOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="20">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice value="confident">
+            <Reference target="19" />
+            <Reference target="20" />
+          </Choice>
+          <Choice value="angry">
+            <Reference target="19" />
+            <Reference target="20" />
+          </Choice>
+          <Choice value="sad">
+            <Controller target="gameMat" controller="@ClipController(clip=a2o_motionGaming_adventure_bored_getOut_gameMat, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_motionGaming_bored_getOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="21">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+            <Controller target="x" controller="@ClipController(clip=a2o_motionGaming_adventure_bored_getOut_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_motionGaming_bored_getOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="22">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice value="bored">
+            <Reference target="21" />
+            <Reference target="22" />
+          </Choice>
+          <Choice value="embarrassed">
+            <Reference target="19" />
+            <Reference target="20" />
+          </Choice>
+          <Choice value="uncomfortable">
+            <Reference target="19" />
+            <Reference target="20" />
+          </Choice>
+          <Choice value="playful">
+            <Reference target="19" />
+            <Reference target="20" />
+          </Choice>
+          <Choice value="tense">
+            <Reference target="19" />
+            <Reference target="20" />
+          </Choice>
+          <Choice value="focused">
+            <Reference target="19" />
+            <Reference target="20" />
+          </Choice>
+          <Choice value="energized">
+            <Reference target="19" />
+            <Reference target="20" />
+          </Choice>
+          <Choice value="flirty">
+            <Reference target="19" />
+            <Reference target="20" />
+          </Choice>
+          <Choice value="fine">
+            <Reference target="19" />
+            <Reference target="20" />
+          </Choice>
+          <Choice value="inspired">
+            <Reference target="19" />
+            <Reference target="20" />
+          </Choice>
+          <Choice value="dazed">
+            <Reference target="19" />
+            <Reference target="20" />
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+      <Choice value="family">
+        <ParameterSelector parameter="x:mood" unique_id="28">
+          <Choice value="happy">
+            <Controller target="gameMat" controller="@ClipController(clip=a2o_motionGaming_family_getOut_gameMat, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_MotionGaming_getOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="24">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+            <Controller target="x" controller="@ClipController(clip=a2o_motionGaming_family_getOut_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_MotionGaming_getOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="25">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice value="confident">
+            <Reference target="24" />
+            <Reference target="25" />
+          </Choice>
+          <Choice value="angry">
+            <Reference target="24" />
+            <Reference target="25" />
+          </Choice>
+          <Choice value="sad">
+            <Controller target="gameMat" controller="@ClipController(clip=a2o_motionGaming_family_bored_getOut_gameMat, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_motionGaming_bored_getOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="26">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+            <Controller target="x" controller="@ClipController(clip=a2o_motionGaming_family_bored_getOut_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_motionGaming_bored_getOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="27">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice value="bored">
+            <Reference target="26" />
+            <Reference target="27" />
+          </Choice>
+          <Choice value="embarrassed">
+            <Reference target="24" />
+            <Reference target="25" />
+          </Choice>
+          <Choice value="uncomfortable">
+            <Reference target="24" />
+            <Reference target="25" />
+          </Choice>
+          <Choice value="playful">
+            <Reference target="24" />
+            <Reference target="25" />
+          </Choice>
+          <Choice value="tense">
+            <Reference target="24" />
+            <Reference target="25" />
+          </Choice>
+          <Choice value="focused">
+            <Reference target="24" />
+            <Reference target="25" />
+          </Choice>
+          <Choice value="energized">
+            <Reference target="24" />
+            <Reference target="25" />
+          </Choice>
+          <Choice value="flirty">
+            <Reference target="24" />
+            <Reference target="25" />
+          </Choice>
+          <Choice value="fine">
+            <Reference target="24" />
+            <Reference target="25" />
+          </Choice>
+          <Choice value="inspired">
+            <Reference target="24" />
+            <Reference target="25" />
+          </Choice>
+          <Choice value="dazed">
+            <Reference target="24" />
+            <Reference target="25" />
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+      <Choice value="sports">
+        <ParameterSelector parameter="x:mood" unique_id="33">
+          <Choice value="happy">
+            <Controller target="gameMat" controller="@ClipController(clip=a2o_motionGaming_sports_getOut_gameMat, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_MotionGaming_getOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="29">
+              <TransitionClassList />
+            </Controller>
+            <Controller target="x" controller="@ClipController(clip=a2o_motionGaming_sports_getOut_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_MotionGaming_getOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="30">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice value="confident">
+            <Reference target="29" />
+            <Reference target="30" />
+          </Choice>
+          <Choice value="angry">
+            <Reference target="29" />
+            <Reference target="30" />
+          </Choice>
+          <Choice value="sad">
+            <Controller target="x" controller="@ClipController(clip=a2o_motionGaming_sports_bored_getOut_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_motionGaming_bored_getOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="31">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+            <Controller target="gameMat" controller="@ClipController(clip=a2o_motionGaming_sports_bored_getOut_gameMat, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_motionGaming_bored_getOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="32">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
+          <Choice value="bored">
+            <Reference target="31" />
+            <Reference target="32" />
+          </Choice>
+          <Choice value="embarrassed">
+            <Reference target="29" />
+            <Reference target="30" />
+          </Choice>
+          <Choice value="uncomfortable">
+            <Reference target="29" />
+            <Reference target="30" />
+          </Choice>
+          <Choice value="playful">
+            <Reference target="29" />
+            <Reference target="30" />
+          </Choice>
+          <Choice value="tense">
+            <Reference target="29" />
+            <Reference target="30" />
+          </Choice>
+          <Choice value="focused">
+            <Reference target="29" />
+            <Reference target="30" />
+          </Choice>
+          <Choice value="energized">
+            <Reference target="29" />
+            <Reference target="30" />
+          </Choice>
+          <Choice value="flirty">
+            <Reference target="29" />
+            <Reference target="30" />
+          </Choice>
+          <Choice value="fine">
+            <Reference target="29" />
+            <Reference target="30" />
+          </Choice>
+          <Choice value="inspired">
+            <Reference target="29" />
+            <Reference target="30" />
+          </Choice>
+          <Choice value="dazed">
+            <Reference target="29" />
+            <Reference target="30" />
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+      <Choice value="puzzle">
+        <Controller target="x" controller="@ClipController(clip=a2o_motionGaming_puzzle_getOut_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_motionGaming_puzzle_getOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="34">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+        <Controller target="gameMat" controller="@ClipController(clip=a2o_motionGaming_puzzle_getOut_gameMat, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_motionGaming_puzzle_getOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="35">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+    </ParameterSelector>
+    <Stop target="gameMat" track="low" blend_in="0.2666667" unique_id="37" />
+  </State>
+  <State name="MotionBasedGaming_Posture" type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" focus="none" facialoverlays="true" tailoverlays="true">
+    <description />
+    <MakeController>
+      <Controller target="gameMat" controller="@ClipController(clip=a2o_motionGaming_posture_gameMat, loop_count=#1)" overridePosture="false" mask="" track="low" mirror_conditional="False" suppress_footsteps="False" transition_class_in="NoBlendLoop" transition_class_out="NoBlendLoop" ik_configuration="a2o_MotionGaming_sway.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="38">
+        <TransitionClassList>
+          <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          <Transition transition_class_name="NoBlendLoop" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+        </TransitionClassList>
+      </Controller>
+      <Controller target="x" controller="@ClipController(clip=a2o_motionGaming_posture_x, loop_count=#1)" overridePosture="false" mask="" track="low" mirror_conditional="False" suppress_footsteps="False" transition_class_in="NoBlendLoop" transition_class_out="NoBlendLoop" ik_configuration="a2o_MotionGaming_sway.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="39">
+        <TransitionClassList>
+          <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          <Transition transition_class_name="NoBlendLoop" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+        </TransitionClassList>
+      </Controller>
+    </MakeController>
+  </State>
+</ASM>

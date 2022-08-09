@@ -1,0 +1,194 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="InjuryFatigue_RouteEvents_Locomotion" dcc="sage">
+  <Actor name="x" type="Sim" master="true" virtual="false" />
+  <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
+  <Parameter name="x:carryState" type="enum" labels="none,left,right,both" default="right" />
+  <Parameter name="x:walkstyle" type="enum" labels="default,jog,run,runGhost,trot,trotGhost,walk,walkDroopy,walkGhost,walkPanting,Swim,SwimAngry,SwimEnergized,SwimPlayful,SwimSad,SwimSlow,SwimCaughtInCurrent,Swim_HighSpeed,Swim_MediumSpeed,SwimMermaid,SwimMermaidMedium,SwimMermaidSlow,WalkCreepy" default="default" />
+  <IkConfiguration name="a_react_uncomfortable_shoulderRollHeadShake_x.ma">
+    <SourceFile name="a_react_uncomfortable_shoulderRollHeadShake_x.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a_idle_injuryFatigue_minor_handPain.ma">
+    <SourceFile name="a_idle_injuryFatigue_minor_handPain.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a_idle_injuryFatigue_major_pain.ma">
+    <SourceFile name="a_idle_injuryFatigue_major_pain.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <PostureManifest actors="">
+    <Support family="stand" compatibility="FullBody" carry_left="*" carry_right="*" surface="*" />
+  </PostureManifest>
+  <State type="public" skippable="false" interrupt_this="false" name="Major_Injury" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="Minor_Injury" focus="none" facialoverlays="false" tailoverlays="true" />
+  <Connection from="Major_Injury" to="exit" />
+  <Connection from="Minor_Injury" to="exit" />
+  <Connection from="entry" to="Major_Injury" />
+  <Connection from="entry" to="Minor_Injury" />
+  <State name="Major_Injury" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <ParameterSelector parameter="x:walkstyle" unique_id="4">
+      <Choice value="default" />
+      <Choice value="jog">
+        <PostureSelector parameter="x:posture" unique_id="2">
+          <Choice value="-stand-FullBody" track="locomotionoverlay" mask="Trackmask_Upperbody_Soft20_arms">
+            <Controller target="x" controller="@ClipController(clip=a_idle_injuryFatigue_major_pain_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_idle_injuryFatigue_major_pain.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="1">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
+        </PostureSelector>
+      </Choice>
+      <Choice value="run">
+        <Reference target="2" />
+      </Choice>
+      <Choice value="runGhost" />
+      <Choice value="trot" />
+      <Choice value="trotGhost" />
+      <Choice value="walk">
+        <PostureSelector parameter="x:posture" unique_id="3">
+          <Choice value="-stand-FullBody" track="locomotionoverlay" mask="Trackmask_Upperbody_Soft40_arms">
+            <Reference target="1" />
+          </Choice>
+        </PostureSelector>
+      </Choice>
+      <Choice value="walkDroopy" />
+      <Choice value="walkGhost" />
+      <Choice value="walkPanting" />
+      <Choice value="Swim" />
+      <Choice value="SwimAngry" />
+      <Choice value="SwimEnergized" />
+      <Choice value="SwimPlayful" />
+      <Choice value="SwimSad" />
+      <Choice value="SwimSlow" />
+      <Choice value="SwimCaughtInCurrent" />
+      <Choice value="Swim_HighSpeed" />
+      <Choice value="Swim_MediumSpeed" />
+      <Choice value="SwimMermaid" />
+      <Choice value="SwimMermaidMedium" />
+      <Choice value="SwimMermaidSlow" />
+      <Choice value="WalkCreepy">
+        <Reference target="2" />
+      </Choice>
+    </ParameterSelector>
+  </State>
+  <State name="Minor_Injury" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <ParameterSelector parameter="x:walkstyle" unique_id="23">
+      <Choice value="default" />
+      <Choice value="jog">
+        <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="12">
+          <Choice weight="50" avoidRepeat="False">
+            <ParameterSelector parameter="x:carryState" unique_id="11">
+              <Choice value="none">
+                <PostureSelector parameter="x:posture" unique_id="6">
+                  <Choice value="-stand-FullBody" track="locomotionoverlay" mask="Trackmask_Upperbody_Loco_Soft_Rarm">
+                    <Controller target="x" controller="@ClipController(clip=a_idle_injuryFatigue_minor_handPain_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_idle_injuryFatigue_minor_handPain.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="5">
+                      <TransitionClassList />
+                    </Controller>
+                  </Choice>
+                </PostureSelector>
+              </Choice>
+              <Choice value="left">
+                <Reference target="6" />
+              </Choice>
+              <Choice value="right">
+                <PostureSelector parameter="x:posture" unique_id="8">
+                  <Choice value="-stand-FullBody" track="locomotionoverlay" mask="Trackmask_Upperbody_Loco_Soft_Larm">
+                    <SetMirror target="x" mirror="true" unique_id="7" />
+                    <Reference target="5" />
+                  </Choice>
+                </PostureSelector>
+              </Choice>
+              <Choice value="both">
+                <PostureSelector parameter="x:posture" unique_id="10">
+                  <Choice value="-stand-FullBody" track="locomotionoverlay" mask="Trackmask_Upperbody_Soft20_arms">
+                    <Controller target="x" controller="@ClipController(clip=a_react_uncomfortable_shoulderRollHeadShake_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_uncomfortable_shoulderRollHeadShake_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="9">
+                      <TransitionClassList />
+                    </Controller>
+                  </Choice>
+                </PostureSelector>
+              </Choice>
+            </ParameterSelector>
+          </Choice>
+          <Choice weight="50" avoidRepeat="False">
+            <Reference target="10" />
+          </Choice>
+        </RandomSelector>
+      </Choice>
+      <Choice value="run">
+        <Reference target="12" />
+      </Choice>
+      <Choice value="runGhost" />
+      <Choice value="trot" />
+      <Choice value="trotGhost" />
+      <Choice value="walk">
+        <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="20">
+          <Choice weight="50" avoidRepeat="False">
+            <ParameterSelector parameter="x:carryState" unique_id="19">
+              <Choice value="none">
+                <PostureSelector parameter="x:posture" unique_id="14">
+                  <Choice value="-stand-FullBody" track="locomotionoverlay" mask="Trackmask_Upperbody_Loco_Soft_Rarm">
+                    <Controller target="x" controller="@ClipController(clip=a_idle_injuryFatigue_minor_handPain_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_idle_injuryFatigue_minor_handPain.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="13">
+                      <TransitionClassList />
+                    </Controller>
+                  </Choice>
+                </PostureSelector>
+              </Choice>
+              <Choice value="left">
+                <Reference target="14" />
+              </Choice>
+              <Choice value="right">
+                <PostureSelector parameter="x:posture" unique_id="16">
+                  <Choice value="-stand-FullBody" track="locomotionoverlay" mask="Trackmask_Upperbody_Loco_Soft_Larm">
+                    <SetMirror target="x" mirror="true" unique_id="15" />
+                    <Reference target="13" />
+                  </Choice>
+                </PostureSelector>
+              </Choice>
+              <Choice value="both">
+                <PostureSelector parameter="x:posture" unique_id="18">
+                  <Choice value="-stand-FullBody" track="locomotionoverlay" mask="Trackmask_Upperbody_Soft40_arms">
+                    <Controller target="x" controller="@ClipController(clip=a_react_uncomfortable_shoulderRollHeadShake_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_uncomfortable_shoulderRollHeadShake_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="17">
+                      <TransitionClassList />
+                    </Controller>
+                  </Choice>
+                </PostureSelector>
+              </Choice>
+            </ParameterSelector>
+          </Choice>
+          <Choice weight="50" avoidRepeat="False">
+            <Reference target="18" />
+          </Choice>
+        </RandomSelector>
+      </Choice>
+      <Choice value="walkDroopy" />
+      <Choice value="walkGhost" />
+      <Choice value="walkPanting" />
+      <Choice value="Swim" />
+      <Choice value="SwimAngry" />
+      <Choice value="SwimEnergized" />
+      <Choice value="SwimPlayful" />
+      <Choice value="SwimSad" />
+      <Choice value="SwimSlow" />
+      <Choice value="SwimCaughtInCurrent" />
+      <Choice value="Swim_HighSpeed" />
+      <Choice value="Swim_MediumSpeed" />
+      <Choice value="SwimMermaid" />
+      <Choice value="SwimMermaidMedium" />
+      <Choice value="SwimMermaidSlow" />
+      <Choice value="WalkCreepy">
+        <PostureSelector parameter="x:posture" unique_id="22">
+          <Choice value="-stand-FullBody" track="locomotionoverlay" mask="Trackmask_Upperbody_Soft20_arms">
+            <Controller target="x" controller="@ClipController(clip=a_react_uncomfortable_shoulderRollHeadShake_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_uncomfortable_shoulderRollHeadShake_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="21">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
+        </PostureSelector>
+      </Choice>
+    </ParameterSelector>
+  </State>
+</ASM>

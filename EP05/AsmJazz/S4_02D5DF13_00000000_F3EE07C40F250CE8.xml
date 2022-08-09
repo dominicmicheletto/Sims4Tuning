@@ -1,0 +1,345 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="ThrowThings" dcc="sage">
+  <Actor name="x" type="Sim" master="true" virtual="false" />
+  <Actor name="y" type="Sim" virtual="false" />
+  <Actor name="carryObject" type="Prop" virtual="false" object_def_resource_key="c0db5ae7:00000000:000000000002e321#ball_EP05GENballoon_set1" />
+  <Parameter name="BounceDistance" type="float" labels="" default="0" />
+  <Parameter name="LandingSurface" type="enum" labels="Ground,Water,None" default="None" />
+  <Parameter name="scriptEventID" type="uint" labels="" default="0" />
+  <Parameter name="scriptEventPlacement" type="float" labels="" default="0" />
+  <Parameter name="TargetOrientation" type="quaternion" labels="" default="0,0,0,1" />
+  <Parameter name="TargetTranslation" type="vector3" labels="" default="0,0,0" />
+  <Parameter name="ThrowAngle" type="float" labels="" default="0" />
+  <Parameter name="hitAngle" type="float" labels="" default="0" />
+  <Parameter name="x:InitialOrientation" type="quaternion" labels="" default="0,0,0,1" />
+  <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
+  <Parameter name="x:species" type="enum" labels="human,dog,smalldog,cat" default="human" />
+  <Parameter name="y:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="y:sex" type="enum" labels="male,female" default="male" />
+  <Parameter name="y:species" type="enum" labels="human,dog,smalldog,cat" default="human" />
+  <IkConfiguration name="a2o_throwObject_Throw.ma">
+    <SourceFile name="a2o_throwObject_Throw.ma">
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="carryObject" actor="carryObject" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_throwObject_hit_nailed1.ma">
+    <SourceFile name="a2o_throwObject_hit_nailed1.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_throwObject_hit_nailed2.ma">
+    <SourceFile name="a2o_throwObject_hit_nailed2.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_throwObject_idle_active1.ma">
+    <SourceFile name="a2o_throwObject_idle_active1.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_throwObject_idle_active2.ma">
+    <SourceFile name="a2o_throwObject_idle_active2.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_throwObject_idle_active3.ma">
+    <SourceFile name="a2o_throwObject_idle_active3.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_throwObject_hitTarget.ma">
+    <SourceFile name="a2o_throwObject_hitTarget.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_throwObject_hitTarget_mirrored.ma">
+    <SourceFile name="a2o_throwObject_hitTarget_mirrored.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <PostureManifest actors="">
+    <Support family="stand" compatibility="FullBody" carry_left="-" carry_right="-" surface="*" />
+  </PostureManifest>
+  <State type="public" skippable="false" interrupt_this="false" name="Hit_Target" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="Miss" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="Nailed" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="Nailed_Target" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="Throw" focus="none" facialoverlays="false" tailoverlays="true" />
+  <Connection from="Hit_Target" to="exit" />
+  <Connection from="Miss" to="exit" />
+  <Connection from="Nailed" to="Nailed_Target" />
+  <Connection from="Nailed_Target" to="exit" />
+  <Connection from="Throw" to="Hit_Target" />
+  <Connection from="entry" to="Miss" />
+  <Connection from="entry" to="Nailed" />
+  <Connection from="entry" to="Throw" />
+  <State name="Hit_Target" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="7">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <CustomController name="Hit_Custom_Controller" target="x" overridePosture="false" track="normal" transition_class_in="Default" transition_class_out="Default" unique_id="6">
+          <TransitionClassList />
+          <ControllerTree>
+            <Blend1D mode="blend" type="static" transition_velocity="-1" parameter="hitAngle" unique_id="5">
+              <Choice value="90">
+                <Clip clip="a2o_throwObject_hit_side_x" ik_configuration="a2o_throwObject_hitTarget.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="1" />
+              </Choice>
+              <Choice value="0" low="true">
+                <Clip clip="a2o_throwObject_hit_front_mirrored_x" ik_configuration="a2o_throwObject_hitTarget_mirrored.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="2" />
+              </Choice>
+              <Choice value="0">
+                <Clip clip="a2o_throwObject_hit_front_x" ik_configuration="a2o_throwObject_hitTarget.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="3" />
+              </Choice>
+              <Choice value="-90">
+                <Clip clip="a2o_throwObject_hit_side_mirrored_x" ik_configuration="a2o_throwObject_hitTarget_mirrored.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="4" />
+              </Choice>
+            </Blend1D>
+          </ControllerTree>
+        </CustomController>
+      </Choice>
+    </PostureSelector>
+    <PostureSelector parameter="y:posture" unique_id="8">
+      <Choice value="-stand-FullBody" track="normal" mask="" />
+    </PostureSelector>
+  </State>
+  <State name="Miss" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="14">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <MakeController unique_id="13">
+          <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="12">
+            <Choice weight="50" avoidRepeat="False">
+              <Controller target="x" controller="@ClipController(clip=a2o_throwObject_idle_active1_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_throwObject_idle_active1.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="9">
+                <TransitionClassList />
+              </Controller>
+            </Choice>
+            <Choice weight="50" avoidRepeat="False">
+              <Controller target="x" controller="@ClipController(clip=a2o_throwObject_idle_active2_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_throwObject_idle_active2.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="10">
+                <TransitionClassList />
+              </Controller>
+            </Choice>
+            <Choice weight="50" avoidRepeat="False">
+              <Controller target="x" controller="@ClipController(clip=a2o_throwObject_idle_active3_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_throwObject_idle_active3.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="11">
+                <TransitionClassList />
+              </Controller>
+            </Choice>
+          </RandomSelector>
+        </MakeController>
+      </Choice>
+    </PostureSelector>
+    <PostureSelector parameter="y:posture" unique_id="27">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <CustomController name="Custom Controller" target="y" overridePosture="false" track="normal" transition_class_in="Default" transition_class_out="Default" unique_id="26">
+          <TransitionClassList />
+          <ControllerTree>
+            <ScheduleOnEvent actor="carryObject" track="normal" event_id="100" unique_id="20">
+              <BaseContent>
+                <Blend1D mode="blend" type="static" transition_velocity="-1" parameter="ThrowAngle" unique_id="18">
+                  <Choice value="90">
+                    <Clip clip="a2o_throwObject_throw_left_x" ik_configuration="a2o_throwObject_Throw.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="15" />
+                  </Choice>
+                  <Choice value="0">
+                    <Clip clip="a2o_throwObject_throw_forward_x" ik_configuration="a2o_throwObject_Throw.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="16" />
+                  </Choice>
+                  <Choice value="-90">
+                    <Clip clip="a2o_throwObject_throw_right_x" ik_configuration="a2o_throwObject_Throw.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="17" />
+                  </Choice>
+                </Blend1D>
+              </BaseContent>
+              <EventContent>
+                <Ballistic tag_source_actor="y" target_translation_parameter="TargetTranslation" target_orientation_parameter="TargetOrientation" bounce_distance_parameter="BounceDistance" landing_surface_parameter="LandingSurface" script_event_id_parameter="scriptEventID" script_event_placement_parameter="scriptEventPlacement" unique_id="19" />
+              </EventContent>
+            </ScheduleOnEvent>
+          </ControllerTree>
+        </CustomController>
+        <MakeController unique_id="25">
+          <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="24">
+            <Choice weight="50" avoidRepeat="False">
+              <Controller target="y" controller="@ClipController(clip=a2o_throwObject_idle_active1_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_throwObject_idle_active1.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="21">
+                <TransitionClassList />
+              </Controller>
+            </Choice>
+            <Choice weight="50" avoidRepeat="False">
+              <Controller target="y" controller="@ClipController(clip=a2o_throwObject_idle_active2_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_throwObject_idle_active2.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="22">
+                <TransitionClassList />
+              </Controller>
+            </Choice>
+            <Choice weight="50" avoidRepeat="False">
+              <Controller target="y" controller="@ClipController(clip=a2o_throwObject_idle_active3_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_throwObject_idle_active3.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="23">
+                <TransitionClassList />
+              </Controller>
+            </Choice>
+          </RandomSelector>
+        </MakeController>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="Nailed" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="y:posture" unique_id="40">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <CustomController name="Custom Controller" target="y" overridePosture="false" track="normal" transition_class_in="Default" transition_class_out="Default" unique_id="39">
+          <TransitionClassList />
+          <ControllerTree>
+            <ScheduleOnEvent actor="carryObject" track="normal" event_id="100" unique_id="33">
+              <BaseContent>
+                <Blend1D mode="blend" type="static" transition_velocity="-1" parameter="ThrowAngle" unique_id="31">
+                  <Choice value="90">
+                    <Clip clip="a2o_throwObject_throw_left_x" ik_configuration="a2o_throwObject_Throw.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="28" />
+                  </Choice>
+                  <Choice value="0">
+                    <Clip clip="a2o_throwObject_throw_forward_x" ik_configuration="a2o_throwObject_Throw.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="29" />
+                  </Choice>
+                  <Choice value="-90">
+                    <Clip clip="a2o_throwObject_throw_right_x" ik_configuration="a2o_throwObject_Throw.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="30" />
+                  </Choice>
+                </Blend1D>
+              </BaseContent>
+              <EventContent>
+                <Ballistic tag_source_actor="y" target_translation_parameter="TargetTranslation" target_orientation_parameter="TargetOrientation" bounce_distance_parameter="BounceDistance" landing_surface_parameter="LandingSurface" script_event_id_parameter="scriptEventID" script_event_placement_parameter="scriptEventPlacement" unique_id="32" />
+              </EventContent>
+            </ScheduleOnEvent>
+          </ControllerTree>
+        </CustomController>
+        <MakeController unique_id="38">
+          <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="37">
+            <Choice weight="50" avoidRepeat="False">
+              <Controller target="y" controller="@ClipController(clip=a2o_throwObject_idle_active1_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_throwObject_idle_active1.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="34">
+                <TransitionClassList />
+              </Controller>
+            </Choice>
+            <Choice weight="50" avoidRepeat="False">
+              <Controller target="y" controller="@ClipController(clip=a2o_throwObject_idle_active2_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_throwObject_idle_active2.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="35">
+                <TransitionClassList />
+              </Controller>
+            </Choice>
+            <Choice weight="50" avoidRepeat="False">
+              <Controller target="y" controller="@ClipController(clip=a2o_throwObject_idle_active3_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_throwObject_idle_active3.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="36">
+                <TransitionClassList />
+              </Controller>
+            </Choice>
+          </RandomSelector>
+        </MakeController>
+      </Choice>
+    </PostureSelector>
+    <PostureSelector parameter="x:posture" unique_id="46">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <MakeController unique_id="45">
+          <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="44">
+            <Choice weight="50" avoidRepeat="False">
+              <Controller target="x" controller="@ClipController(clip=a2o_throwObject_idle_active1_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_throwObject_idle_active1.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="41">
+                <TransitionClassList />
+              </Controller>
+            </Choice>
+            <Choice weight="50" avoidRepeat="False">
+              <Controller target="x" controller="@ClipController(clip=a2o_throwObject_idle_active2_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_throwObject_idle_active2.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="42">
+                <TransitionClassList />
+              </Controller>
+            </Choice>
+            <Choice weight="50" avoidRepeat="False">
+              <Controller target="x" controller="@ClipController(clip=a2o_throwObject_idle_active3_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_throwObject_idle_active3.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="43">
+                <TransitionClassList />
+              </Controller>
+            </Choice>
+          </RandomSelector>
+        </MakeController>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="Nailed_Target" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="y:posture" unique_id="47">
+      <Choice value="-stand-FullBody" track="normal" mask="" />
+    </PostureSelector>
+    <PostureSelector parameter="x:posture" unique_id="51">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="50">
+          <Choice weight="50" avoidRepeat="True">
+            <Controller target="x" controller="@ClipController(clip=a2o_throwObject_hit_nailed1_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_throwObject_hit_nailed1.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="48">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
+          <Choice weight="50" avoidRepeat="True">
+            <Controller target="x" controller="@ClipController(clip=a2o_throwObject_hit_nailed2_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_throwObject_hit_nailed2.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="49">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
+        </RandomSelector>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="Throw" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="57">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <MakeController unique_id="56">
+          <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="55">
+            <Choice weight="50" avoidRepeat="False">
+              <Controller target="x" controller="@ClipController(clip=a2o_throwObject_idle_active1_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_throwObject_idle_active1.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="52">
+                <TransitionClassList />
+              </Controller>
+            </Choice>
+            <Choice weight="50" avoidRepeat="False">
+              <Controller target="x" controller="@ClipController(clip=a2o_throwObject_idle_active2_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_throwObject_idle_active2.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="53">
+                <TransitionClassList />
+              </Controller>
+            </Choice>
+            <Choice weight="50" avoidRepeat="False">
+              <Controller target="x" controller="@ClipController(clip=a2o_throwObject_idle_active3_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_throwObject_idle_active3.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="54">
+                <TransitionClassList />
+              </Controller>
+            </Choice>
+          </RandomSelector>
+        </MakeController>
+      </Choice>
+    </PostureSelector>
+    <PostureSelector parameter="y:posture" unique_id="70">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <CustomController name="Custom Controller" target="y" overridePosture="false" track="normal" transition_class_in="Default" transition_class_out="Default" unique_id="69">
+          <TransitionClassList />
+          <ControllerTree>
+            <ScheduleOnEvent actor="carryObject" track="normal" event_id="100" unique_id="63">
+              <BaseContent>
+                <Blend1D mode="blend" type="static" transition_velocity="-1" parameter="ThrowAngle" unique_id="61">
+                  <Choice value="90">
+                    <Clip clip="a2o_throwObject_throw_left_x" ik_configuration="a2o_throwObject_Throw.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="58" />
+                  </Choice>
+                  <Choice value="0">
+                    <Clip clip="a2o_throwObject_throw_forward_x" ik_configuration="a2o_throwObject_Throw.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="59" />
+                  </Choice>
+                  <Choice value="-90">
+                    <Clip clip="a2o_throwObject_throw_right_x" ik_configuration="a2o_throwObject_Throw.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="60" />
+                  </Choice>
+                </Blend1D>
+              </BaseContent>
+              <EventContent>
+                <Ballistic tag_source_actor="y" target_translation_parameter="TargetTranslation" target_orientation_parameter="TargetOrientation" bounce_distance_parameter="BounceDistance" landing_surface_parameter="LandingSurface" script_event_id_parameter="scriptEventID" script_event_placement_parameter="scriptEventPlacement" unique_id="62" />
+              </EventContent>
+            </ScheduleOnEvent>
+          </ControllerTree>
+        </CustomController>
+        <MakeController unique_id="68">
+          <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="67">
+            <Choice weight="50" avoidRepeat="False">
+              <Controller target="y" controller="@ClipController(clip=a2o_throwObject_idle_active1_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_throwObject_idle_active1.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="64">
+                <TransitionClassList />
+              </Controller>
+            </Choice>
+            <Choice weight="50" avoidRepeat="False">
+              <Controller target="y" controller="@ClipController(clip=a2o_throwObject_idle_active2_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_throwObject_idle_active2.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="65">
+                <TransitionClassList />
+              </Controller>
+            </Choice>
+            <Choice weight="50" avoidRepeat="False">
+              <Controller target="y" controller="@ClipController(clip=a2o_throwObject_idle_active3_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_throwObject_idle_active3.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="66">
+                <TransitionClassList />
+              </Controller>
+            </Choice>
+          </RandomSelector>
+        </MakeController>
+      </Choice>
+    </PostureSelector>
+  </State>
+</ASM>

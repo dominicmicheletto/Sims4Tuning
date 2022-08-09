@@ -1,0 +1,129 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="PetCatchToCarry" dcc="sage">
+  <Actor name="x" type="Sim" virtual="false" />
+  <Actor name="y" type="Sim" master="true" virtual="false" />
+  <Parameter name="RelativePickUpAngle" type="float" labels="" default="0" />
+  <Parameter name="routingSlot" type="enum" labels="1,2,0,3,4,5" default="1" />
+  <Parameter name="surfaceHeight" type="enum" labels="low,high,from_xevt" />
+  <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
+  <Parameter name="x:species" type="enum" labels="human,dog,smalldog,cat" default="human" />
+  <Parameter name="y:age" type="enum" labels="adult,elder" default="adult" />
+  <Parameter name="y:sex" type="enum" labels="male,female" default="male" />
+  <Parameter name="y:species" type="enum" labels="smalldog,cat,dog,human" default="smalldog" />
+  <IkConfiguration name="a2al_catchCarry.ma">
+    <SourceFile name="a2al_catchCarry.ma">
+      <MapNamespace namespace="y" actor="y" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2ac_catchCarry.ma">
+    <SourceFile name="a2ac_catchCarry.ma">
+      <MapNamespace namespace="y" actor="y" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="ac_loco_turnInPlace_R.ma">
+    <SourceFile name="ac_loco_turnInPlace_R.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a_idle_neutral_loop_3.ma">
+    <SourceFile name="a_idle_neutral_loop_3.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <PostureManifest actors="" />
+  <PostureManifest actors="x">
+    <Support family="stand" compatibility="FullBody" carry_left="-" carry_right="-" surface="-" />
+  </PostureManifest>
+  <PostureManifest actors="y" />
+  <State type="public" skippable="false" interrupt_this="false" name="CatchToCarry" focus="none" facialoverlays="false" tailoverlays="false" />
+  <State type="private" skippable="false" interrupt_this="false" name="turn" focus="none" facialoverlays="false" tailoverlays="true" />
+  <Connection from="CatchToCarry" to="exit" />
+  <Connection from="entry" to="turn" />
+  <Connection from="turn" to="CatchToCarry" />
+  <State name="CatchToCarry" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="false">
+    <description />
+    <ParameterSelector parameter="y:species" unique_id="5">
+      <Choice value="smalldog">
+        <Controller target="x" controller="@ClipController(clip=a2al_smallDog_catchCarry_pickup_low_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2al_catchCarry.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="1">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+        <Controller target="y" controller="@ClipController(clip=a2al_smallDog_catchCarry_pickup_low_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2al_catchCarry.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="2">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
+      <Choice value="cat">
+        <Controller target="x" controller="@ClipController(clip=a2ac_cat_catchCarry_pickup_low_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2ac_catchCarry.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="3">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+        <Controller target="y" controller="@ClipController(clip=a2ac_cat_catchCarry_pickup_low_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2ac_catchCarry.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="4">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
+      <Choice value="dog" />
+      <Choice value="human" />
+    </ParameterSelector>
+  </State>
+  <State name="turn" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <ParameterSelector parameter="surfaceHeight" unique_id="19">
+      <Choice value="low">
+        <PostureSelector parameter="x:posture" unique_id="8">
+          <Choice value="-stand-FullBody" track="normal" mask="">
+            <MakeController unique_id="7">
+              <Controller target="x" controller="@ClipController(clip=a_idle_neutral_loop_1_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_idle_neutral_loop_3.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="6">
+                <TransitionClassList />
+              </Controller>
+            </MakeController>
+          </Choice>
+        </PostureSelector>
+        <CustomController name="Turn To Face" target="y" overridePosture="false" track="normal" transition_class_in="Default" transition_class_out="Default" unique_id="18">
+          <TransitionClassList />
+          <ControllerTree>
+            <Blend1D mode="blend" type="static" transition_velocity="-1" parameter="RelativePickUpAngle" unique_id="17">
+              <Choice value="-180">
+                <Clip clip="ac_loco_2step_turnInPlace_180_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="9" />
+              </Choice>
+              <Choice value="-90" low="true">
+                <Clip clip="ac_loco_2step_turnInPlace_90_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="10" />
+              </Choice>
+              <Choice value="-90">
+                <Clip clip="ac_loco_1step_turnInPlace_90_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="11" />
+              </Choice>
+              <Choice value="0" low="true">
+                <Clip clip="ac_loco_1Step_turnInPlace_0_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="12" />
+              </Choice>
+              <Choice value="0">
+                <Clip clip="ac_loco_1Step_turnInPlace_0_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="True" start_frame_offset="0" end_frame_offset="0" unique_id="13" />
+              </Choice>
+              <Choice value="90" low="true">
+                <Clip clip="ac_loco_1step_turnInPlace_90_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="True" start_frame_offset="0" end_frame_offset="0" unique_id="14" />
+              </Choice>
+              <Choice value="90">
+                <Clip clip="ac_loco_2step_turnInPlace_90_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="True" start_frame_offset="0" end_frame_offset="0" unique_id="15" />
+              </Choice>
+              <Choice value="180">
+                <Clip clip="ac_loco_2step_turnInPlace_180_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="True" start_frame_offset="0" end_frame_offset="0" unique_id="16" />
+              </Choice>
+            </Blend1D>
+          </ControllerTree>
+        </CustomController>
+      </Choice>
+      <Choice value="high">
+        <Reference target="8" />
+        <Reference target="18" />
+      </Choice>
+      <Choice value="from_xevt" />
+    </ParameterSelector>
+  </State>
+</ASM>

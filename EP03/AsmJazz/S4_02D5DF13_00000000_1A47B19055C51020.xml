@@ -1,0 +1,66 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="marketStall_Buy">
+  <Actor name="x" type="Sim" master="true" virtual="false" />
+  <Actor name="y" type="Sim" virtual="false" />
+  <Actor name="MarketStand" type="Object" virtual="true" />
+  <Parameter name="x:age" template="age" type="enum" labels="baby,unsupported_age,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="x:sex" template="sex" type="enum" labels="male,female" default="male" />
+  <Parameter name="x:carryState" template="carryState" type="enum" labels="none,left,right,both" default="right" />
+  <Parameter name="y:age" template="age" type="enum" labels="baby,unsupported_age,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="y:sex" template="sex" type="enum" labels="male,female" default="male" />
+  <PostureManifest actors="x,y">
+    <Support family="stand" compatibility="FullBody" carry_left="*" carry_right="-" surface="*" />
+    <Support family="stand" compatibility="FullBody" carry_left="-" carry_right="*" surface="*" />
+    <Support family="stand" compatibility="UpperBody" carry_left="*" carry_right="-" surface="*" />
+    <Support family="stand" compatibility="UpperBody" carry_left="-" carry_right="*" surface="*" />
+  </PostureManifest>
+  <State type="public" skippable="false" interrupt_this="false" name="Buy" focus="full body" facialoverlays="false" />
+  <State type="private" skippable="false" interrupt_this="false" name="Mirror" focus="full body" facialoverlays="false" />
+  <Connection from="Buy" to="exit" />
+  <Connection from="entry" to="Mirror" />
+  <Connection from="Mirror" to="Buy" />
+  <State name="Buy">
+    <description />
+    <PostureSelector parameter="y:posture">
+      <Choice value="-stand-FullBody">
+        <Controller target="y" controller="@ClipController(clip=a2a_marketStall_buyAsset_y, loop_count=#1)" overridePosture="false" mask="" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_marketStall_buyAsset.ma" focus="undefined" id="29df16e5-6672-40f2-8252-4e5d9747876a">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
+      <Choice value="-stand-UpperBody">
+        <Controller target="y" controller="@ClipController(clip=a2a_marketStall_buyAsset_y, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_marketStall_buyAsset.ma" focus="undefined" id="29df16e5-6672-40f2-8252-4e5d9747876a">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
+    </PostureSelector>
+    <PostureSelector parameter="x:posture">
+      <Choice value="-stand-FullBody">
+        <Controller target="x" controller="@ClipController(clip=a2a_marketStall_buyAsset_x, loop_count=#1)" overridePosture="false" mask="" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_marketStall_buyAsset.ma" focus="undefined" id="86fe6021-1806-4e33-87b9-153e8c4e4588">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
+      <Choice value="-stand-UpperBody">
+        <Controller target="x" controller="@ClipController(clip=a2a_marketStall_buyAsset_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_marketStall_buyAsset.ma" focus="undefined" id="86fe6021-1806-4e33-87b9-153e8c4e4588">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="Mirror">
+    <description />
+    <ParameterSelector parameter="x:carryState">
+      <Choice value="left">
+        <SetMirror target="x" mirror="true" />
+        <SetMirror target="y" mirror="true" />
+      </Choice>
+    </ParameterSelector>
+  </State>
+</ASM>

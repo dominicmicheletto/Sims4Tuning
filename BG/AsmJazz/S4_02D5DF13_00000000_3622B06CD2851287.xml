@@ -1,0 +1,224 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="MonkeyBar_Play_Posture" dcc="sage">
+  <Actor name="x" type="Sim" master="true" virtual="false" />
+  <Actor name="monkeyBars" type="Object" virtual="true" />
+  <Actor name="sitTemplate" type="Object" virtual="true" />
+  <Parameter name="transitionPosture" type="enum" labels="stand,sit,sitIntimate,bed_Sleep,bed_Intimate,bed_Woohoo,bed_Relax,bed_Nap,bed_Undercovers,monkeyBar_play,monkeyBar_hangOut,shower,shower_wooHoo,computer,Bathtub_Bubblebath,bathTub_TakeBath" default="stand" />
+  <Parameter name="isMirrored" type="bool" labels="" default="False" />
+  <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
+  <Parameter name="x:mood" type="enum" labels="happy,confident,angry,sad,bored,embarrassed,uncomfortable,playful,tense,focused,energized,flirty,fine,inspired,dazed" default="happy" />
+  <IkConfiguration name="c2o_monkeyBars_play_posture.ma">
+    <SourceFile name="c2o_monkeyBars_play_posture.ma">
+      <MapNamespace namespace="monkeyBars" actor="monkeyBars" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="c2o_monkeyBars_trans_stand_to_play.ma">
+    <SourceFile name="c2o_monkeyBars_trans_stand_to_play.ma">
+      <MapNamespace namespace="monkeyBars" actor="monkeyBars" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="c2o_monkeyBars_trans_play_to_HangOut.ma">
+    <SourceFile name="c2o_monkeyBars_trans_play_to_HangOut.ma">
+      <MapNamespace namespace="monkeyBars" actor="monkeyBars" />
+      <MapNamespace namespace="sitTemplate" actor="sitTemplate" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="c2o_monkeyBars_trans_play_to_hangOut_mirrored.ma">
+    <SourceFile name="c2o_monkeyBars_trans_play_to_hangOut_mirrored.ma">
+      <MapNamespace namespace="monkeyBars" actor="monkeyBars" />
+      <MapNamespace namespace="sitTemplate" actor="sitTemplate" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <PostureManifest>
+    <Provide name="monkeyBar_play" family="none" compatibility="FullBody" carry_left="*" carry_right="*" surface="*" />
+  </PostureManifest>
+  <State type="public" countlooptime="false" disableautostop="false" skippable="true" interrupt_this="true" name="Play_Posture" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="Unmirror" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="get out" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="get_in" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <Connection from="Play_Posture" to="get out" />
+  <Connection from="Unmirror" to="Play_Posture" />
+  <Connection from="entry" to="get_in" />
+  <Connection from="get out" to="exit" />
+  <Connection from="get_in" to="Unmirror" />
+  <State name="Play_Posture" type="public" countlooptime="false" disableautostop="false" skippable="true" interrupt_this="true" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <MakeController>
+      <Controller target="x" controller="@ClipController(clip=c2o_monkeyBars_play_posture_x, loop_count=#1)" overridePosture="false" mask="" track="low" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c2o_monkeyBars_play_posture.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="1">
+        <TransitionClassList>
+          <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+        </TransitionClassList>
+      </Controller>
+    </MakeController>
+  </State>
+  <State name="Unmirror" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <SetMirror target="sitTemplate" mirror="false" unique_id="2" />
+    <SetMirror target="x" mirror="false" unique_id="3" />
+  </State>
+  <State name="get out" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <ParameterSelector parameter="transitionPosture" unique_id="17">
+      <Choice value="stand">
+        <ParameterSelector parameter="x:mood" unique_id="12">
+          <Choice value="happy">
+            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="10">
+              <Choice weight="17" avoidRepeat="False">
+                <ParameterSelector parameter="isMirrored" unique_id="6">
+                  <Choice value="false">
+                    <Controller target="x" controller="@ClipController(clip=c2o_monkeyBars_trans_play_to_stand_jump_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c2o_monkeyBars_trans_stand_to_play.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="4">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                  </Choice>
+                  <Choice value="true">
+                    <SetMirror target="x" mirror="true" unique_id="5" />
+                    <Reference target="4" />
+                  </Choice>
+                </ParameterSelector>
+              </Choice>
+              <Choice weight="100" avoidRepeat="False">
+                <ParameterSelector parameter="isMirrored" unique_id="9">
+                  <Choice value="false">
+                    <Controller target="x" controller="@ClipController(clip=c2o_monkeyBars_trans_play_to_stand_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c2o_monkeyBars_trans_stand_to_play.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="7">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                  </Choice>
+                  <Choice value="true">
+                    <SetMirror target="x" mirror="true" unique_id="8" />
+                    <Reference target="7" />
+                  </Choice>
+                </ParameterSelector>
+              </Choice>
+            </RandomSelector>
+          </Choice>
+          <Choice value="confident">
+            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="11">
+              <Choice weight="100" avoidRepeat="False">
+                <Reference target="6" />
+              </Choice>
+              <Choice weight="17" avoidRepeat="False">
+                <Reference target="9" />
+              </Choice>
+            </RandomSelector>
+          </Choice>
+          <Choice value="angry">
+            <Reference target="10" />
+          </Choice>
+          <Choice value="sad">
+            <Reference target="10" />
+          </Choice>
+          <Choice value="bored">
+            <Reference target="10" />
+          </Choice>
+          <Choice value="embarrassed">
+            <Reference target="10" />
+          </Choice>
+          <Choice value="uncomfortable">
+            <Reference target="10" />
+          </Choice>
+          <Choice value="playful">
+            <Reference target="11" />
+          </Choice>
+          <Choice value="tense">
+            <Reference target="10" />
+          </Choice>
+          <Choice value="focused">
+            <Reference target="10" />
+          </Choice>
+          <Choice value="energized">
+            <Reference target="11" />
+          </Choice>
+          <Choice value="flirty">
+            <Reference target="10" />
+          </Choice>
+          <Choice value="fine">
+            <Reference target="10" />
+          </Choice>
+          <Choice value="inspired">
+            <Reference target="10" />
+          </Choice>
+          <Choice value="dazed">
+            <Reference target="10" />
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+      <Choice value="sit" />
+      <Choice value="sitIntimate" />
+      <Choice value="bed_Sleep" />
+      <Choice value="bed_Intimate" />
+      <Choice value="bed_Woohoo" />
+      <Choice value="bed_Relax" />
+      <Choice value="bed_Nap" />
+      <Choice value="bed_Undercovers" />
+      <Choice value="monkeyBar_play" />
+      <Choice value="monkeyBar_hangOut">
+        <ParameterSelector parameter="isMirrored" unique_id="16">
+          <Choice value="false">
+            <Controller target="x" controller="@ClipController(clip=c2o_monkeyBar_trans_play_to_hangOut_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c2o_monkeyBars_trans_play_to_HangOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="13">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice value="true">
+            <SetMirror target="x" mirror="true" unique_id="15" />
+            <Controller target="x" controller="@ClipController(clip=c2o_monkeyBar_trans_play_to_hangOut_mirrored_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c2o_monkeyBars_trans_play_to_hangOut_mirrored.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="14">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+      <Choice value="shower" />
+      <Choice value="shower_wooHoo" />
+      <Choice value="computer" />
+      <Choice value="Bathtub_Bubblebath" />
+      <Choice value="bathTub_TakeBath" />
+    </ParameterSelector>
+  </State>
+  <State name="get_in" type="public" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <ParameterSelector parameter="isMirrored" unique_id="21">
+      <Choice value="false">
+        <ParameterSelector parameter="transitionPosture" unique_id="19">
+          <Choice value="stand">
+            <Controller target="x" controller="@ClipController(clip=c2o_monkeyBars_trans_stand_to_play_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c2o_monkeyBars_trans_stand_to_play.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="18">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice value="sit" />
+          <Choice value="sitIntimate" />
+          <Choice value="bed_Sleep" />
+          <Choice value="bed_Intimate" />
+          <Choice value="bed_Woohoo" />
+          <Choice value="bed_Relax" />
+          <Choice value="bed_Nap" />
+          <Choice value="bed_Undercovers" />
+          <Choice value="monkeyBar_play" />
+          <Choice value="monkeyBar_hangOut" />
+          <Choice value="shower" />
+          <Choice value="shower_wooHoo" />
+          <Choice value="computer" />
+          <Choice value="Bathtub_Bubblebath" />
+          <Choice value="bathTub_TakeBath" />
+        </ParameterSelector>
+      </Choice>
+      <Choice value="true">
+        <SetMirror target="x" mirror="true" unique_id="20" />
+        <Reference target="19" />
+      </Choice>
+    </ParameterSelector>
+  </State>
+</ASM>

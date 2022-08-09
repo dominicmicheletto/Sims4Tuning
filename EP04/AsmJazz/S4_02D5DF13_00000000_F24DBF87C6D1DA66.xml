@@ -1,0 +1,236 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="Cat_Emotions_Idle_LayDown" dcc="sage">
+  <Actor name="x" type="Sim" master="true" virtual="false" />
+  <Actor name="postureObject" type="Object" virtual="true" />
+  <Parameter name="x:age" type="enum" labels="baby,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
+  <Parameter name="x:species" type="enum" labels="human,dog,smalldog,cat" default="human" />
+  <Parameter name="x:mood" type="enum" labels="happy,confident,angry,sad,bored,embarrassed,uncomfortable,playful,tense,focused,energized,flirty,fine,inspired,dazed" default="happy" />
+  <Parameter name="x:carryState" type="enum" labels="none,left,right,both" default="none" />
+  <Parameter name="x:is_reacting" type="bool" labels="" default="False" />
+  <Parameter name="postureObject:isMirroredPart" type="bool" labels="" default="False" />
+  <IkConfiguration name="ac_idle_happy_kneading_layDown.ma">
+    <SourceFile name="ac_idle_happy_kneading_layDown.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="ac_react_happy_perkUp_layDown.ma">
+    <SourceFile name="ac_react_happy_perkUp_layDown.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="ac_react_drowsy_yawn_layDown.ma">
+    <SourceFile name="ac_react_drowsy_yawn_layDown.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="ac_react_anxious_whineOneShot_layDown.ma">
+    <SourceFile name="ac_react_anxious_whineOneShot_layDown.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="ac_react_hyper_meow_noisy_layDown.ma">
+    <SourceFile name="ac_react_hyper_meow_noisy_layDown.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="ac_idle_drowsy_lookAround_layDown.ma">
+    <SourceFile name="ac_idle_drowsy_lookAround_layDown.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="ac_react_inHeat_whineOneShot_layDown.ma">
+    <SourceFile name="ac_react_inHeat_whineOneShot_layDown.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="ac_pregnancy_inHeat_layDown.ma">
+    <SourceFile name="ac_pregnancy_inHeat_layDown.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <PostureManifest actors="" />
+  <PostureManifest actors="x">
+    <Support family="layDown" compatibility="FullBody" carry_left="*" carry_right="*" surface="*" />
+  </PostureManifest>
+  <State type="public" skippable="false" interrupt_this="false" name="EmotionsIdle" focus="full body" facialoverlays="false" tailoverlays="false" />
+  <State type="private" skippable="false" interrupt_this="false" name="mirror" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <Connection from="EmotionsIdle" to="exit" />
+  <Connection from="entry" to="mirror" />
+  <Connection from="mirror" to="EmotionsIdle" />
+  <State name="EmotionsIdle" type="public" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="false">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="27">
+      <Choice value="-layDown-FullBody" track="normal" mask="">
+        <ParameterSelector parameter="x:mood" unique_id="26">
+          <Choice value="happy">
+            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="7">
+              <Choice weight="50" avoidRepeat="True">
+                <ParameterSelector parameter="x:carryState" unique_id="5">
+                  <Choice value="none">
+                    <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="3">
+                      <Choice weight="50" avoidRepeat="False">
+                        <Controller target="x" controller="@ClipController(clip=ac_react_happy_perkUp_layDown_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ac_react_happy_perkUp_layDown.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="1">
+                          <TransitionClassList />
+                        </Controller>
+                      </Choice>
+                      <Choice weight="50" avoidRepeat="False">
+                        <Controller target="x" controller="@ClipController(clip=ac_react_happy_perkUp_purr_layDown_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ac_react_happy_perkUp_layDown.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="2">
+                          <TransitionClassList />
+                        </Controller>
+                      </Choice>
+                    </RandomSelector>
+                  </Choice>
+                  <Choice value="left">
+                    <Reference target="3" />
+                  </Choice>
+                  <Choice value="right">
+                    <Controller target="x" controller="@ClipController(clip=ac_react_happy_perkUp_carryAudio_layDown_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ac_react_happy_perkUp_layDown.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="4">
+                      <TransitionClassList />
+                    </Controller>
+                  </Choice>
+                  <Choice value="both">
+                    <Reference target="4" />
+                  </Choice>
+                </ParameterSelector>
+              </Choice>
+              <Choice weight="50" avoidRepeat="True">
+                <Controller target="x" controller="@ClipController(clip=ac_idle_happy_kneading_layDown_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ac_idle_happy_kneading_layDown.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="6">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+            </RandomSelector>
+          </Choice>
+          <Choice value="confident" />
+          <Choice value="angry" />
+          <Choice value="sad" />
+          <Choice value="bored">
+            <ParameterSelector parameter="x:carryState" unique_id="12">
+              <Choice value="none">
+                <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="10">
+                  <Choice weight="57" avoidRepeat="True">
+                    <Controller target="x" controller="@ClipController(clip=ac_react_drowsy_yawn_layDown_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ac_react_drowsy_yawn_layDown.ma" focus="body only" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="8">
+                      <TransitionClassList />
+                    </Controller>
+                  </Choice>
+                  <Choice weight="59" avoidRepeat="True">
+                    <Controller target="x" controller="@ClipController(clip=ac_idle_drowsy_lookAround_layDown_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ac_idle_drowsy_lookAround_layDown.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="9">
+                      <TransitionClassList />
+                    </Controller>
+                  </Choice>
+                </RandomSelector>
+              </Choice>
+              <Choice value="left">
+                <Reference target="10" />
+              </Choice>
+              <Choice value="right">
+                <Controller target="x" controller="@ClipController(clip=ac_idle_drowsy_lookAround_carryAudio_layDown_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ac_idle_drowsy_lookAround_layDown.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="11">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+              <Choice value="both">
+                <Reference target="11" />
+              </Choice>
+            </ParameterSelector>
+          </Choice>
+          <Choice value="embarrassed" />
+          <Choice value="uncomfortable">
+            <ParameterSelector parameter="x:carryState" unique_id="15">
+              <Choice value="none">
+                <Controller target="x" controller="@ClipController(clip=ac_react_anxious_whineOneShot_layDown_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ac_react_anxious_whineOneShot_layDown.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="13">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+              <Choice value="left">
+                <Reference target="13" />
+              </Choice>
+              <Choice value="right">
+                <Controller target="x" controller="@ClipController(clip=ac_react_anxious_whineOneShot_carryAudio_layDown_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ac_react_anxious_whineOneShot_layDown.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="14">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+              <Choice value="both">
+                <Reference target="14" />
+              </Choice>
+            </ParameterSelector>
+          </Choice>
+          <Choice value="playful" />
+          <Choice value="tense">
+            <Reference target="15" />
+          </Choice>
+          <Choice value="focused" />
+          <Choice value="energized">
+            <ParameterSelector parameter="x:carryState" unique_id="18">
+              <Choice value="none">
+                <Controller target="x" controller="@ClipController(clip=ac_react_hyper_meow_noisy_layDown_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ac_react_hyper_meow_noisy_layDown.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="16">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+              <Choice value="left">
+                <Reference target="16" />
+              </Choice>
+              <Choice value="right">
+                <Controller target="x" controller="@ClipController(clip=ac_react_hyper_meow_noisy_carryAudio_layDown_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ac_react_hyper_meow_noisy_layDown.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="17">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+              <Choice value="both">
+                <Reference target="17" />
+              </Choice>
+            </ParameterSelector>
+          </Choice>
+          <Choice value="flirty">
+            <ParameterSelector parameter="x:carryState" unique_id="25">
+              <Choice value="none">
+                <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="21">
+                  <Choice weight="50" avoidRepeat="False">
+                    <Controller target="x" controller="@ClipController(clip=ac_react_inHeat_whineOneShot_layDown_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ac_react_inHeat_whineOneShot_layDown.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="19">
+                      <TransitionClassList />
+                    </Controller>
+                  </Choice>
+                  <Choice weight="50" avoidRepeat="False">
+                    <Controller target="x" controller="@ClipController(clip=ac_pregnancy_inHeat_howl_layDown_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ac_pregnancy_inHeat_layDown.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="20">
+                      <TransitionClassList />
+                    </Controller>
+                  </Choice>
+                </RandomSelector>
+              </Choice>
+              <Choice value="left">
+                <Reference target="21" />
+              </Choice>
+              <Choice value="right">
+                <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="24">
+                  <Choice weight="50" avoidRepeat="False">
+                    <Controller target="x" controller="@ClipController(clip=ac_react_inHeat_whineOneShot_carryAudio_layDown_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ac_react_inHeat_whineOneShot_layDown.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="22">
+                      <TransitionClassList />
+                    </Controller>
+                  </Choice>
+                  <Choice weight="50" avoidRepeat="False">
+                    <Controller target="x" controller="@ClipController(clip=ac_pregnancy_inHeat_howl_carryAudio_layDown_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ac_pregnancy_inHeat_layDown.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="23">
+                      <TransitionClassList />
+                    </Controller>
+                  </Choice>
+                </RandomSelector>
+              </Choice>
+              <Choice value="both">
+                <Reference target="24" />
+              </Choice>
+            </ParameterSelector>
+          </Choice>
+          <Choice value="fine" />
+          <Choice value="inspired" />
+          <Choice value="dazed" />
+        </ParameterSelector>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="mirror" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <ParameterSelector parameter="postureObject:isMirroredPart" unique_id="29">
+      <Choice value="false" />
+      <Choice value="true">
+        <SetMirror target="x" mirror="true" unique_id="28" />
+      </Choice>
+    </ParameterSelector>
+  </State>
+</ASM>

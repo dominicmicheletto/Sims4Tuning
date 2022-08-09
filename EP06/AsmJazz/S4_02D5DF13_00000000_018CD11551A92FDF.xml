@@ -1,0 +1,185 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="StreamingDrone_Actions" dcc="sage">
+  <Actor name="drone" type="Object" master="true" virtual="false" />
+  <Parameter name="drone:Drone" type="enum" labels="highEnd,lowEnd" default="lowEnd" />
+  <IkConfiguration name="o_streamingDrone_idle.ma">
+    <SourceFile name="o_streamingDrone_idle.ma">
+      <MapNamespace namespace="drone" actor="drone" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="o_streamingDrone_land.ma">
+    <SourceFile name="o_streamingDrone_land.ma">
+      <MapNamespace namespace="drone" actor="drone" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="o_streamingDrone_launch.ma">
+    <SourceFile name="o_streamingDrone_launch.ma">
+      <MapNamespace namespace="drone" actor="drone" />
+    </SourceFile>
+  </IkConfiguration>
+  <PostureManifest actors="" />
+  <State type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" name="Broken" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="Land_Broken" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="Land_Normal" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="Launch" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" name="Low_Battery" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" name="OnGround" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" name="hover" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="hub" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <Connection from="Broken" to="hub" />
+  <Connection from="Land_Broken" to="OnGround" />
+  <Connection from="Land_Normal" to="OnGround" />
+  <Connection from="Launch" to="hub" />
+  <Connection from="Low_Battery" to="hub" />
+  <Connection from="OnGround" to="Launch" />
+  <Connection from="entry" to="hub" />
+  <Connection from="hover" to="hub" />
+  <Connection from="hub" to="Broken" />
+  <Connection from="hub" to="Land_Broken" />
+  <Connection from="hub" to="Land_Normal" />
+  <Connection from="hub" to="Low_Battery" />
+  <Connection from="hub" to="OnGround" />
+  <Connection from="hub" to="exit" />
+  <Connection from="hub" to="hover" />
+  <State name="Broken" type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <MakeController>
+      <ParameterSelector parameter="drone:Drone" unique_id="7">
+        <Choice value="highEnd">
+          <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="3">
+            <Choice weight="50" avoidRepeat="True">
+              <Controller target="drone" controller="@ClipController(clip=o_streamingDrone_idle1_break_highEnd_drone, loop_count=#1)" overridePosture="false" mask="" track="lowplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="o_streamingDrone_idle.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="1">
+                <TransitionClassList />
+              </Controller>
+            </Choice>
+            <Choice weight="50" avoidRepeat="True">
+              <Controller target="drone" controller="@ClipController(clip=o_streamingDrone_idle2_break_highEnd_drone, loop_count=#1)" overridePosture="false" mask="" track="lowplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="o_streamingDrone_idle.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="2">
+                <TransitionClassList />
+              </Controller>
+            </Choice>
+          </RandomSelector>
+        </Choice>
+        <Choice value="lowEnd">
+          <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="6">
+            <Choice weight="50" avoidRepeat="True">
+              <Controller target="drone" controller="@ClipController(clip=o_streamingDrone_idle1_break_lowEnd_drone, loop_count=#1)" overridePosture="false" mask="" track="lowplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="o_streamingDrone_idle.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="4">
+                <TransitionClassList />
+              </Controller>
+            </Choice>
+            <Choice weight="50" avoidRepeat="True">
+              <Controller target="drone" controller="@ClipController(clip=o_streamingDrone_idle2_break_lowEnd_drone, loop_count=#1)" overridePosture="false" mask="" track="lowplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="o_streamingDrone_idle.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="5">
+                <TransitionClassList />
+              </Controller>
+            </Choice>
+          </RandomSelector>
+        </Choice>
+      </ParameterSelector>
+    </MakeController>
+  </State>
+  <State name="Land_Broken" type="public" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <ParameterSelector parameter="drone:Drone" unique_id="10">
+      <Choice value="highEnd">
+        <Controller target="drone" controller="@ClipController(clip=o_streamingDrone_land_break_highEnd_drone, loop_count=#1)" overridePosture="false" mask="" track="lowplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="o_streamingDrone_land.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="8">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+      <Choice value="lowEnd">
+        <Controller target="drone" controller="@ClipController(clip=o_streamingDrone_land_break_lowEnd_drone, loop_count=#1)" overridePosture="false" mask="" track="lowplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="o_streamingDrone_land.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="9">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+    </ParameterSelector>
+  </State>
+  <State name="Land_Normal" type="public" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <ParameterSelector parameter="drone:Drone" unique_id="13">
+      <Choice value="highEnd">
+        <Controller target="drone" controller="@ClipController(clip=o_streamingDrone_land_normal_highEnd_drone, loop_count=#1)" overridePosture="false" mask="" track="lowplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="o_streamingDrone_land.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="11">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+      <Choice value="lowEnd">
+        <Controller target="drone" controller="@ClipController(clip=o_streamingDrone_land_normal_lowEnd_drone, loop_count=#1)" overridePosture="false" mask="" track="lowplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="o_streamingDrone_land.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="12">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+    </ParameterSelector>
+  </State>
+  <State name="Launch" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <ParameterSelector parameter="drone:Drone" unique_id="16">
+      <Choice value="highEnd">
+        <Controller target="drone" controller="@ClipController(clip=o_streamingDrone_launch_highEnd_drone, loop_count=#1)" overridePosture="false" mask="" track="lowplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="o_streamingDrone_launch.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="14">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="false" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
+      <Choice value="lowEnd">
+        <Controller target="drone" controller="@ClipController(clip=o_streamingDrone_launch_lowEnd_drone, loop_count=#1)" overridePosture="false" mask="" track="lowplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="o_streamingDrone_launch.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="15">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+    </ParameterSelector>
+  </State>
+  <State name="Low_Battery" type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <MakeController>
+      <ParameterSelector parameter="drone:Drone" unique_id="23">
+        <Choice value="highEnd">
+          <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="19">
+            <Choice weight="50" avoidRepeat="True">
+              <Controller target="drone" controller="@ClipController(clip=o_streamingDrone_idle1_lowBattery_highEnd_drone, loop_count=#1)" overridePosture="false" mask="" track="lowplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="o_streamingDrone_idle.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="17">
+                <TransitionClassList />
+              </Controller>
+            </Choice>
+            <Choice weight="50" avoidRepeat="False">
+              <Controller target="drone" controller="@ClipController(clip=o_streamingDrone_idle2_lowBattery_highEnd_drone, loop_count=#1)" overridePosture="false" mask="" track="lowplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="o_streamingDrone_idle.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="18">
+                <TransitionClassList />
+              </Controller>
+            </Choice>
+          </RandomSelector>
+        </Choice>
+        <Choice value="lowEnd">
+          <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="22">
+            <Choice weight="50" avoidRepeat="True">
+              <Controller target="drone" controller="@ClipController(clip=o_streamingDrone_idle1_lowBattery_lowEnd_drone, loop_count=#1)" overridePosture="false" mask="" track="lowplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="o_streamingDrone_idle.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="20">
+                <TransitionClassList />
+              </Controller>
+            </Choice>
+            <Choice weight="50" avoidRepeat="False">
+              <Controller target="drone" controller="@ClipController(clip=o_streamingDrone_idle2_lowBattery_lowEnd_drone, loop_count=#1)" overridePosture="false" mask="" track="lowplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="o_streamingDrone_idle.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="21">
+                <TransitionClassList />
+              </Controller>
+            </Choice>
+          </RandomSelector>
+        </Choice>
+      </ParameterSelector>
+    </MakeController>
+  </State>
+  <State name="OnGround" type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <MakeController />
+  </State>
+  <State name="hover" type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <MakeController>
+      <ParameterSelector parameter="drone:Drone" unique_id="26">
+        <Choice value="highEnd">
+          <Controller target="drone" controller="@ClipController(clip=o_streamingDrone_idle_hover_highEnd_drone, loop_count=#1)" overridePosture="false" mask="" track="lowplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="o_streamingDrone_idle.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="24">
+            <TransitionClassList />
+          </Controller>
+        </Choice>
+        <Choice value="lowEnd">
+          <Controller target="drone" controller="@ClipController(clip=o_streamingDrone_idle_hover_lowEnd_drone, loop_count=#1)" overridePosture="false" mask="" track="lowplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="o_streamingDrone_idle.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="25">
+            <TransitionClassList />
+          </Controller>
+        </Choice>
+      </ParameterSelector>
+    </MakeController>
+  </State>
+  <State name="hub" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+  </State>
+</ASM>

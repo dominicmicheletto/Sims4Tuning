@@ -1,0 +1,452 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="JungleGym_Actions" dcc="sage">
+  <Actor name="x" type="Sim" master="true" virtual="false" />
+  <Actor name="jungleGym" type="Object" virtual="false" />
+  <Parameter name="routingSlot" type="enum" labels="1,2" default="1" />
+  <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="child" />
+  <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
+  <Parameter name="jungleGym:objectName" type="enum" labels="pirateship,spaceship" default="pirateship" />
+  <Parameter name="jungleGym:subroot" type="enum" labels="0,1,2,3,4" default="0" />
+  <IkConfiguration name="c2o_jungleGym_pirateShip_cannon.ma">
+    <SourceFile name="c2o_jungleGym_pirateShip_cannon.ma">
+      <MapNamespace namespace="jungleGym" actor="jungleGym" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="c2o_jungleGym_pirateShip_wheel.ma">
+    <SourceFile name="c2o_jungleGym_pirateShip_wheel.ma">
+      <MapNamespace namespace="jungleGym" actor="jungleGym" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="c2o_jungleGym_pirateShip_crowsNest.ma">
+    <SourceFile name="c2o_jungleGym_pirateShip_crowsNest.ma">
+      <MapNamespace namespace="jungleGym" actor="jungleGym" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="c2o_jungleGym_idle.ma">
+    <SourceFile name="c2o_jungleGym_idle.ma">
+      <MapNamespace namespace="jungleGym" actor="jungleGym" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="c2o_jungleGymSpaceship_engineer.ma">
+    <SourceFile name="c2o_jungleGymSpaceship_engineer.ma">
+      <MapNamespace namespace="jungleGym" actor="jungleGym" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="c2o_jungleGym_react_point.ma">
+    <SourceFile name="c2o_jungleGym_react_point.ma">
+      <MapNamespace namespace="jungleGym" actor="jungleGym" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="c2o_jungleGym_react_jumpAround.ma">
+    <SourceFile name="c2o_jungleGym_react_jumpAround.ma">
+      <MapNamespace namespace="jungleGym" actor="jungleGym" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <PostureManifest actors="" />
+  <PostureManifest actors="x">
+    <Support name="junglegym" family="none" compatibility="FullBody" carry_left="-" carry_right="-" surface="*" />
+  </PostureManifest>
+  <State type="public" skippable="false" interrupt_this="false" name="ActiveActions" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="Hub" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" name="PassiveActions" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="Reactions" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="track offset" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <Connection from="ActiveActions" to="Hub" />
+  <Connection from="Hub" to="ActiveActions" />
+  <Connection from="Hub" to="PassiveActions" />
+  <Connection from="Hub" to="Reactions" />
+  <Connection from="Hub" to="exit" />
+  <Connection from="PassiveActions" to="Hub" />
+  <Connection from="Reactions" to="Hub" />
+  <Connection from="entry" to="track offset" />
+  <Connection from="track offset" to="Hub" />
+  <State name="ActiveActions" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="32">
+      <Choice value="junglegym--FullBody" track="normal" mask="">
+        <ParameterSelector parameter="jungleGym:objectName" unique_id="31">
+          <Choice value="pirateship">
+            <ParameterSelector parameter="jungleGym:subroot" unique_id="13">
+              <Choice value="0">
+                <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="5">
+                  <Choice weight="100" avoidRepeat="False">
+                    <Controller target="x" controller="@ClipController(clip=c2o_jungleGymBoat_cannon_strafe_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c2o_jungleGym_pirateShip_cannon.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="1">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                    <Controller target="jungleGym" controller="@ClipController(clip=c2o_jungleGymBoat_cannon_strafe_jungleGym, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c2o_jungleGym_pirateShip_cannon.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="2">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                  </Choice>
+                  <Choice weight="100" avoidRepeat="False">
+                    <Controller target="x" controller="@ClipController(clip=c2o_jungleGymBoat_cannon_shoot_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c2o_jungleGym_pirateShip_cannon.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="3">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                    <Controller target="jungleGym" controller="@ClipController(clip=c2o_jungleGymBoat_cannon_shoot_jungleGym, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c2o_jungleGym_pirateShip_cannon.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="4">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                  </Choice>
+                </RandomSelector>
+              </Choice>
+              <Choice value="1">
+                <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="6">
+                  <Choice weight="100" avoidRepeat="False">
+                    <Reference target="1" />
+                    <Reference target="2" />
+                  </Choice>
+                  <Choice weight="100" avoidRepeat="False">
+                    <Reference target="3" />
+                    <Reference target="4" />
+                  </Choice>
+                </RandomSelector>
+              </Choice>
+              <Choice value="2">
+                <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="11">
+                  <Choice weight="100" avoidRepeat="False">
+                    <Controller target="x" controller="@ClipController(clip=c2o_jungleGymBoat_wheel_spinWheel_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c2o_jungleGym_pirateShip_wheel.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="7">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                    <Controller target="jungleGym" controller="@ClipController(clip=c2o_jungleGymBoat_wheel_spinWheel_jungleGym, loop_count=#1)" overridePosture="true" mask="" track="high" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c2o_jungleGym_pirateShip_wheel.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="8">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                  </Choice>
+                  <Choice weight="100" avoidRepeat="False">
+                    <Controller target="jungleGym" controller="@ClipController(clip=c2o_jungleGymBoat_wheel_evade_jungleGym, loop_count=#1)" overridePosture="true" mask="" track="high" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c2o_jungleGym_pirateShip_wheel.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="9">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                    <Controller target="x" controller="@ClipController(clip=c2o_jungleGymBoat_wheel_evade_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c2o_jungleGym_pirateShip_wheel.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="10">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                  </Choice>
+                </RandomSelector>
+              </Choice>
+              <Choice value="3">
+                <Controller target="x" controller="@ClipController(clip=c2o_jungleGymBoat_pointAtKraken_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c2o_jungleGym_pirateShip_crowsNest.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="12">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+              </Choice>
+              <Choice value="4" />
+            </ParameterSelector>
+          </Choice>
+          <Choice value="spaceship">
+            <ParameterSelector parameter="jungleGym:subroot" unique_id="30">
+              <Choice value="0">
+                <ParameterSelector parameter="routingSlot" unique_id="19">
+                  <Choice value="1">
+                    <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="18">
+                      <Choice weight="100" avoidRepeat="False">
+                        <Controller target="jungleGym" controller="@ClipController(clip=c2o_jungleGymSpaceship_wheel_evade_jungleGym, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c2o_jungleGym_pirateShip_wheel.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="14">
+                          <TransitionClassList>
+                            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                          </TransitionClassList>
+                        </Controller>
+                        <Controller target="x" controller="@ClipController(clip=c2o_jungleGymSpaceship_wheel_evade_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c2o_jungleGym_pirateShip_wheel.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="15">
+                          <TransitionClassList>
+                            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                          </TransitionClassList>
+                        </Controller>
+                      </Choice>
+                      <Choice weight="100" avoidRepeat="False">
+                        <Controller target="jungleGym" controller="@ClipController(clip=c2o_jungleGymSpaceship_wheel_spinWheel_jungleGym, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c2o_jungleGym_pirateShip_wheel.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="16">
+                          <TransitionClassList>
+                            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                          </TransitionClassList>
+                        </Controller>
+                        <Controller target="x" controller="@ClipController(clip=c2o_jungleGymSpaceship_wheel_spinWheel_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c2o_jungleGym_pirateShip_wheel.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="17">
+                          <TransitionClassList>
+                            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                          </TransitionClassList>
+                        </Controller>
+                      </Choice>
+                    </RandomSelector>
+                  </Choice>
+                  <Choice value="2">
+                    <Reference target="18" />
+                  </Choice>
+                </ParameterSelector>
+              </Choice>
+              <Choice value="1">
+                <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="24">
+                  <Choice weight="100" avoidRepeat="False">
+                    <Controller target="jungleGym" controller="@ClipController(clip=c2o_jungleGymSpaceship_cannon_shoot_jungleGym, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c2o_jungleGym_pirateShip_cannon.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="20">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                    <Controller target="x" controller="@ClipController(clip=c2o_jungleGymSpaceship_cannon_shoot_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c2o_jungleGym_pirateShip_cannon.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="21">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                  </Choice>
+                  <Choice weight="100" avoidRepeat="False">
+                    <Controller target="x" controller="@ClipController(clip=c2o_jungleGymSpaceship_cannon_strafe_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c2o_jungleGym_pirateShip_cannon.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="22">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                    <Controller target="jungleGym" controller="@ClipController(clip=c2o_jungleGymSpaceship_cannon_strafe_jungleGym, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c2o_jungleGym_pirateShip_cannon.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="23">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                  </Choice>
+                </RandomSelector>
+              </Choice>
+              <Choice value="2">
+                <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="29">
+                  <Choice weight="100" avoidRepeat="False">
+                    <Controller target="x" controller="@ClipController(clip=c2o_jungleGymSpaceship_engineer_togglePushbutton_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c2o_jungleGymSpaceship_engineer.ma" focus="none" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="25">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                    <Controller target="jungleGym" controller="@ClipController(clip=c2o_jungleGymSpaceship_engineer_togglePushbutton_jungleGym, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c2o_jungleGymSpaceship_engineer.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="26">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                  </Choice>
+                  <Choice weight="50" avoidRepeat="False">
+                    <Controller target="x" controller="@ClipController(clip=c2o_jungleGymSpaceship_engineer_tapScreen_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c2o_jungleGymSpaceship_engineer.ma" focus="none" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="27">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                    <Controller target="jungleGym" controller="@ClipController(clip=c2o_jungleGymSpaceship_engineer_tapScreen_jungleGym, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c2o_jungleGymSpaceship_engineer.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="28">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                  </Choice>
+                </RandomSelector>
+              </Choice>
+              <Choice value="3" />
+              <Choice value="4" />
+            </ParameterSelector>
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="Hub" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+  </State>
+  <State name="PassiveActions" type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <MakeController>
+      <PostureSelector parameter="x:posture" unique_id="43">
+        <Choice value="junglegym--FullBody" track="normal" mask="">
+          <ParameterSelector parameter="jungleGym:objectName" unique_id="42">
+            <Choice value="pirateship">
+              <ParameterSelector parameter="jungleGym:subroot" unique_id="40">
+                <Choice value="0">
+                  <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="37">
+                    <Choice weight="100" avoidRepeat="True">
+                      <Controller target="x" controller="@ClipController(clip=c2o_jungleGym_idle_chestOutInPride_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c2o_jungleGym_idle.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="33">
+                        <TransitionClassList>
+                          <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                        </TransitionClassList>
+                      </Controller>
+                    </Choice>
+                    <Choice weight="100" avoidRepeat="True">
+                      <Controller target="x" controller="@ClipController(clip=c2o_jungleGym_idle_lookToDistance_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c2o_jungleGym_idle.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="34">
+                        <TransitionClassList>
+                          <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                        </TransitionClassList>
+                      </Controller>
+                    </Choice>
+                    <Choice weight="100" avoidRepeat="True">
+                      <Controller target="x" controller="@ClipController(clip=c2o_jungleGym_idle_giveOrders_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c2o_jungleGym_idle.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="35">
+                        <TransitionClassList>
+                          <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                        </TransitionClassList>
+                      </Controller>
+                    </Choice>
+                    <Choice weight="100" avoidRepeat="True">
+                      <Controller target="x" controller="@ClipController(clip=c2o_jungleGym_idle_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c2o_jungleGym_idle.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="36">
+                        <TransitionClassList>
+                          <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                        </TransitionClassList>
+                      </Controller>
+                    </Choice>
+                  </RandomSelector>
+                </Choice>
+                <Choice value="1">
+                  <Reference target="37" />
+                </Choice>
+                <Choice value="2">
+                  <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="38">
+                    <Choice weight="100" avoidRepeat="True">
+                      <Reference target="33" />
+                    </Choice>
+                    <Choice weight="100" avoidRepeat="True">
+                      <Reference target="34" />
+                    </Choice>
+                    <Choice weight="100" avoidRepeat="True">
+                      <Reference target="35" />
+                    </Choice>
+                    <Choice weight="100" avoidRepeat="True">
+                      <Reference target="36" />
+                    </Choice>
+                  </RandomSelector>
+                </Choice>
+                <Choice value="3">
+                  <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="39">
+                    <Choice weight="100" avoidRepeat="True">
+                      <Reference target="33" />
+                    </Choice>
+                    <Choice weight="100" avoidRepeat="True">
+                      <Reference target="34" />
+                    </Choice>
+                    <Choice weight="100" avoidRepeat="True">
+                      <Reference target="35" />
+                    </Choice>
+                    <Choice weight="100" avoidRepeat="True">
+                      <Reference target="36" />
+                    </Choice>
+                  </RandomSelector>
+                </Choice>
+                <Choice value="4" />
+              </ParameterSelector>
+            </Choice>
+            <Choice value="spaceship">
+              <ParameterSelector parameter="jungleGym:subroot" unique_id="41">
+                <Choice value="0">
+                  <Reference target="37" />
+                </Choice>
+                <Choice value="1">
+                  <Reference target="37" />
+                </Choice>
+                <Choice value="2">
+                  <Reference target="38" />
+                </Choice>
+                <Choice value="3" />
+                <Choice value="4" />
+              </ParameterSelector>
+            </Choice>
+          </ParameterSelector>
+        </Choice>
+      </PostureSelector>
+    </MakeController>
+  </State>
+  <State name="Reactions" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="53">
+      <Choice value="junglegym--FullBody" track="normal" mask="">
+        <ParameterSelector parameter="jungleGym:objectName" unique_id="52">
+          <Choice value="pirateship">
+            <ParameterSelector parameter="jungleGym:subroot" unique_id="47">
+              <Choice value="0">
+                <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="46">
+                  <Choice weight="100" avoidRepeat="True">
+                    <Controller target="x" controller="@ClipController(clip=c2o_jungleGym_react_jumpAround_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c2o_jungleGym_react_jumpAround.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="44">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                  </Choice>
+                  <Choice weight="100" avoidRepeat="True">
+                    <Controller target="x" controller="@ClipController(clip=c2o_jungleGym_react_point_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c2o_jungleGym_react_point.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="45">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                  </Choice>
+                </RandomSelector>
+              </Choice>
+              <Choice value="1">
+                <Reference target="46" />
+              </Choice>
+              <Choice value="2">
+                <Reference target="46" />
+              </Choice>
+              <Choice value="3">
+                <Reference target="46" />
+              </Choice>
+              <Choice value="4" />
+            </ParameterSelector>
+          </Choice>
+          <Choice value="spaceship">
+            <ParameterSelector parameter="jungleGym:subroot" unique_id="51">
+              <Choice value="0">
+                <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="50">
+                  <Choice weight="100" avoidRepeat="True">
+                    <Controller target="x" controller="@ClipController(clip=c2o_jungleGym_react_jumpAround_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c2o_jungleGym_react_jumpAround.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="48">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                  </Choice>
+                  <Choice weight="100" avoidRepeat="True">
+                    <Controller target="x" controller="@ClipController(clip=c2o_jungleGym_react_point_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c2o_jungleGym_react_point.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="49">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                  </Choice>
+                </RandomSelector>
+              </Choice>
+              <Choice value="1">
+                <Reference target="50" />
+              </Choice>
+              <Choice value="2">
+                <Reference target="50" />
+              </Choice>
+              <Choice value="3">
+                <Reference target="50" />
+              </Choice>
+              <Choice value="4">
+                <Reference target="50" />
+              </Choice>
+            </ParameterSelector>
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="track offset" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <ParameterSelector parameter="jungleGym:subroot" unique_id="59">
+      <Choice value="0">
+        <TrackOffset target="jungleGym" offset="1" unique_id="54" />
+      </Choice>
+      <Choice value="1">
+        <TrackOffset target="jungleGym" offset="2" unique_id="55" />
+      </Choice>
+      <Choice value="2">
+        <TrackOffset target="jungleGym" offset="3" unique_id="56" />
+      </Choice>
+      <Choice value="3">
+        <TrackOffset target="jungleGym" offset="4" unique_id="57" />
+      </Choice>
+      <Choice value="4">
+        <TrackOffset target="jungleGym" offset="5" unique_id="58" />
+      </Choice>
+    </ParameterSelector>
+  </State>
+</ASM>

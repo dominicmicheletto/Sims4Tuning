@@ -1,0 +1,315 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="Easel_Paint" dcc="sage">
+  <Actor name="x" type="Sim" master="true" virtual="false" />
+  <Actor name="PaintBrush" type="Prop" virtual="false" object_def_resource_key="c0db5ae7:00000000:000000000000332f#paintBrushGEN_01" />
+  <Actor name="canvas" type="Object" virtual="false" />
+  <Actor name="surface" type="Object" virtual="false" />
+  <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
+  <Parameter name="x:carryState" type="enum" labels="none,left,right,both" default="none" />
+  <Parameter name="x:statLevel" type="enum" labels="low,mediumLow,medium,mediumHigh,high" default="low" />
+  <Parameter name="canvas:Size" type="enum" labels="Normal,Large" default="Normal" />
+  <IkConfiguration name="a2o_easel_paint.ma">
+    <SourceFile name="a2o_easel_paint.ma">
+      <MapNamespace namespace="canvas" actor="canvas" />
+      <MapNamespace namespace="paintBrush" actor="PaintBrush" />
+      <MapNamespace namespace="surface" actor="surface" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_easel_idle.ma">
+    <SourceFile name="a2o_easel_idle.ma">
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="canvas" actor="canvas" />
+    </SourceFile>
+  </IkConfiguration>
+  <PostureManifest actors="" />
+  <PostureManifest actors="x">
+    <Support family="stand" compatibility="FullBody" carry_left="*" carry_right="-" surface="surface" />
+    <Support family="stand" compatibility="FullBody" carry_left="-" carry_right="*" surface="surface" />
+  </PostureManifest>
+  <State type="private" skippable="false" interrupt_this="false" name="GetIn" focus="none" facialoverlays="true" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="GetOut" focus="none" facialoverlays="true" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="Mirror" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="Paint" focus="none" facialoverlays="true" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="Paint_Passive" focus="none" facialoverlays="true" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="hub" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <Connection from="GetIn" to="hub" />
+  <Connection from="GetOut" to="exit" />
+  <Connection from="Mirror" to="GetIn" />
+  <Connection from="Paint" to="hub" />
+  <Connection from="Paint_Passive" to="hub" />
+  <Connection from="entry" to="Mirror" />
+  <Connection from="hub" to="GetOut" />
+  <Connection from="hub" to="Paint" />
+  <Connection from="hub" to="Paint_Passive" />
+  <State name="GetIn" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="true" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="2">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2o_easel_paint_getIn_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_easel_paint.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="1">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+            <Transition transition_class_name="Locomotion" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="GetOut" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="true" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="4">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2o_easel_paint_getOut_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_easel_paint.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="3">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="Mirror" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <ParameterSelector parameter="x:carryState" unique_id="6">
+      <Choice value="none" />
+      <Choice value="left">
+        <SetMirror target="x" mirror="true" unique_id="5" />
+      </Choice>
+      <Choice value="right" />
+      <Choice value="both" />
+    </ParameterSelector>
+  </State>
+  <State name="Paint" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="true" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="26">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <ParameterSelector parameter="canvas:Size" unique_id="25">
+          <Choice value="Normal">
+            <ParameterSelector parameter="x:statLevel" unique_id="16">
+              <Choice value="low">
+                <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="11">
+                  <Choice weight="100" avoidRepeat="True">
+                    <Controller target="x" controller="@ClipController(clip=a2o_easel_paint_boldStroke_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_easel_paint.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="9">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                    <MakeController unique_id="8">
+                      <Controller target="x" controller="@ClipController(clip=a2o_easel_idle_breath_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_easel_idle.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="7">
+                        <TransitionClassList>
+                          <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                        </TransitionClassList>
+                      </Controller>
+                    </MakeController>
+                  </Choice>
+                  <Choice weight="100" avoidRepeat="True">
+                    <Controller target="x" controller="@ClipController(clip=a2o_easel_paint_carfulStroke_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_easel_paint.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="10">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                    <Reference target="8" />
+                  </Choice>
+                </RandomSelector>
+              </Choice>
+              <Choice value="mediumLow">
+                <Reference target="11" />
+              </Choice>
+              <Choice value="medium">
+                <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="13">
+                  <Choice weight="50" avoidRepeat="True">
+                    <Controller target="x" controller="@ClipController(clip=a2o_easel_paint_dab_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_easel_paint.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="12">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                    <Reference target="8" />
+                  </Choice>
+                  <Choice weight="100" avoidRepeat="True">
+                    <Reference target="9" />
+                    <Reference target="8" />
+                  </Choice>
+                  <Choice weight="100" avoidRepeat="True">
+                    <Reference target="10" />
+                    <Reference target="8" />
+                  </Choice>
+                </RandomSelector>
+              </Choice>
+              <Choice value="mediumHigh">
+                <Reference target="13" />
+              </Choice>
+              <Choice value="high">
+                <RandomSelector repeatweight="0" allow_empty_choices="False" unique_id="15">
+                  <Choice weight="100" avoidRepeat="True">
+                    <Reference target="12" />
+                    <Reference target="8" />
+                  </Choice>
+                  <Choice weight="50" avoidRepeat="True">
+                    <Reference target="9" />
+                    <Reference target="8" />
+                  </Choice>
+                  <Choice weight="50" avoidRepeat="True">
+                    <Reference target="10" />
+                    <Reference target="8" />
+                  </Choice>
+                  <Choice weight="100" avoidRepeat="True">
+                    <Controller target="x" controller="@ClipController(clip=a2o_easel_paint_highSkill_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_easel_paint.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="14">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                    <Reference target="8" />
+                  </Choice>
+                </RandomSelector>
+              </Choice>
+            </ParameterSelector>
+          </Choice>
+          <Choice value="Large">
+            <ParameterSelector parameter="x:statLevel" unique_id="24">
+              <Choice value="low">
+                <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="19">
+                  <Choice weight="100" avoidRepeat="True">
+                    <Reference target="9" />
+                    <Reference target="8" />
+                  </Choice>
+                  <Choice weight="100" avoidRepeat="True">
+                    <Reference target="10" />
+                    <Reference target="8" />
+                  </Choice>
+                  <Choice weight="100" avoidRepeat="True">
+                    <Controller target="x" controller="@ClipController(clip=a2o_easel_paint_boldStroke_large_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_easel_paint.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="17">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                    <Reference target="8" />
+                  </Choice>
+                  <Choice weight="100" avoidRepeat="True">
+                    <Controller target="x" controller="@ClipController(clip=a2o_easel_paint_carfulStroke_large_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_easel_paint.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="18">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                    <Reference target="8" />
+                  </Choice>
+                </RandomSelector>
+              </Choice>
+              <Choice value="mediumLow">
+                <Reference target="19" />
+              </Choice>
+              <Choice value="medium">
+                <RandomSelector repeatweight="0" allow_empty_choices="False" unique_id="21">
+                  <Choice weight="50" avoidRepeat="True">
+                    <Reference target="12" />
+                    <Reference target="8" />
+                  </Choice>
+                  <Choice weight="100" avoidRepeat="True">
+                    <Reference target="9" />
+                    <Reference target="8" />
+                  </Choice>
+                  <Choice weight="100" avoidRepeat="True">
+                    <Reference target="10" />
+                    <Reference target="8" />
+                  </Choice>
+                  <Choice weight="50" avoidRepeat="True">
+                    <Controller target="x" controller="@ClipController(clip=a2o_easel_paint_dab_Large_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_easel_paint.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="20">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                    <Reference target="8" />
+                  </Choice>
+                  <Choice weight="100" avoidRepeat="True">
+                    <Reference target="17" />
+                    <Reference target="8" />
+                  </Choice>
+                  <Choice weight="100" avoidRepeat="True">
+                    <Reference target="18" />
+                    <Reference target="8" />
+                  </Choice>
+                </RandomSelector>
+              </Choice>
+              <Choice value="mediumHigh">
+                <Reference target="21" />
+              </Choice>
+              <Choice value="high">
+                <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="23">
+                  <Choice weight="100" avoidRepeat="True">
+                    <Reference target="12" />
+                    <Reference target="8" />
+                  </Choice>
+                  <Choice weight="50" avoidRepeat="True">
+                    <Reference target="9" />
+                    <Reference target="8" />
+                  </Choice>
+                  <Choice weight="50" avoidRepeat="True">
+                    <Reference target="10" />
+                    <Reference target="8" />
+                  </Choice>
+                  <Choice weight="100" avoidRepeat="True">
+                    <Reference target="14" />
+                    <Reference target="8" />
+                  </Choice>
+                  <Choice weight="100" avoidRepeat="True">
+                    <Controller target="x" controller="@ClipController(clip=a2o_easel_paint_highSkill_large_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_easel_paint.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="22">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                    <Reference target="8" />
+                  </Choice>
+                  <Choice weight="100" avoidRepeat="True">
+                    <Reference target="20" />
+                    <Reference target="8" />
+                  </Choice>
+                  <Choice weight="50" avoidRepeat="True">
+                    <Reference target="17" />
+                    <Reference target="8" />
+                  </Choice>
+                  <Choice weight="50" avoidRepeat="True">
+                    <Reference target="18" />
+                    <Reference target="8" />
+                  </Choice>
+                </RandomSelector>
+              </Choice>
+            </ParameterSelector>
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="Paint_Passive" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="true" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="32">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="31">
+          <Choice weight="100" avoidRepeat="False">
+            <Controller target="x" controller="@ClipController(clip=a2o_easel_idle_judge_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_easel_idle.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="29">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+            <MakeController unique_id="28">
+              <Controller target="x" controller="@ClipController(clip=a2o_easel_idle_breath_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_easel_idle.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="27">
+                <TransitionClassList>
+                  <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                </TransitionClassList>
+              </Controller>
+            </MakeController>
+          </Choice>
+          <Choice weight="100" avoidRepeat="False">
+            <Controller target="x" controller="@ClipController(clip=a2o_easel_idle_measure_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_easel_idle.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="30">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+            <Reference target="28" />
+          </Choice>
+        </RandomSelector>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="hub" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+  </State>
+</ASM>

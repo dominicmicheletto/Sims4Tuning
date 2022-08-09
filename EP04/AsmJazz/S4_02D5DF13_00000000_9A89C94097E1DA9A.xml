@@ -1,0 +1,59 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="PetBall_GiveBall" dcc="sage">
+  <Actor name="x" type="Sim" master="true" virtual="false" />
+  <Actor name="y" type="Sim" virtual="false" />
+  <Actor name="carryObject" type="Object" virtual="false" />
+  <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="x:species" type="enum" labels="human,dog,smalldog,cat" default="dog" />
+  <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
+  <Parameter name="y:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="y:species" type="enum" labels="human,dog,smalldog,cat" default="human" />
+  <Parameter name="y:sex" type="enum" labels="male,female" default="male" />
+  <Parameter name="y:trait_LeftHanded" type="bool" labels="" default="False" />
+  <IkConfiguration name="ad2a_petball_dog2sim.ma">
+    <SourceFile name="ad2a_petball_dog2sim.ma">
+      <MapNamespace namespace="y" actor="y" />
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="carryObject" actor="carryObject" />
+    </SourceFile>
+  </IkConfiguration>
+  <PostureManifest actors="" />
+  <PostureManifest actors="y">
+    <Support family="stand" compatibility="FullBody" carry_left="-" carry_right="-" surface="*" />
+  </PostureManifest>
+  <PostureManifest actors="x">
+    <Support name="stand" family="none" compatibility="FullBody" carry_left="-" carry_right="carryObject" surface="*" />
+  </PostureManifest>
+  <State type="public" skippable="false" interrupt_this="false" name="GiveBall" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="mirror" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <Connection from="GiveBall" to="exit" />
+  <Connection from="entry" to="mirror" />
+  <Connection from="mirror" to="GiveBall" />
+  <State name="GiveBall" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="y:posture" unique_id="2">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <Controller target="y" controller="@ClipController(clip=ad2a_toyBall_giveBall_y, loop_count=#1)" overridePosture="true" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ad2a_petball_dog2sim.ma" focus="none" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="1">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+    </PostureSelector>
+    <PostureSelector parameter="x:posture" unique_id="4">
+      <Choice value="stand--FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=ad2a_toyBall_giveBall_x, loop_count=#1)" overridePosture="true" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ad2a_petball_dog2sim.ma" focus="none" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="3">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="mirror" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <ParameterSelector parameter="y:trait_LeftHanded" unique_id="7">
+      <Choice value="false" />
+      <Choice value="true">
+        <SetMirror target="x" mirror="true" unique_id="6" />
+        <SetMirror target="y" mirror="true" unique_id="5" />
+      </Choice>
+    </ParameterSelector>
+  </State>
+</ASM>

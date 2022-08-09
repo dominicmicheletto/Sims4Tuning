@@ -1,0 +1,87 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="BeachCombing_Survey" dcc="sage">
+  <Actor name="x" type="Sim" master="true" virtual="false" />
+  <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
+  <Parameter name="x:carryState" type="enum" labels="none,left,right,both" default="none" />
+  <IkConfiguration name="a_beachCombing_survey.ma">
+    <SourceFile name="a_beachCombing_survey.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="c_beachCombing_survey_upperbody.ma">
+    <SourceFile name="c_beachCombing_survey_upperbody.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <PostureManifest actors="" />
+  <PostureManifest actors="x">
+    <Support family="stand" compatibility="FullBody" carry_left="*" carry_right="-" surface="*" />
+    <Support family="stand" compatibility="FullBody" carry_left="-" carry_right="*" surface="*" />
+  </PostureManifest>
+  <State type="private" skippable="false" interrupt_this="false" name="Mirror" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="Survey_FullBody" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="Survey_UpperBody" focus="none" facialoverlays="false" tailoverlays="true" />
+  <Connection from="Mirror" to="Survey_FullBody" />
+  <Connection from="Mirror" to="Survey_UpperBody" />
+  <Connection from="Survey_FullBody" to="exit" />
+  <Connection from="Survey_UpperBody" to="exit" />
+  <Connection from="entry" to="Mirror" />
+  <State name="Mirror" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <ParameterSelector parameter="x:carryState" unique_id="2">
+      <Choice value="none" />
+      <Choice value="left" />
+      <Choice value="right">
+        <SetMirror target="x" mirror="true" unique_id="1" />
+      </Choice>
+      <Choice value="both" />
+    </ParameterSelector>
+  </State>
+  <State name="Survey_FullBody" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="4">
+      <Choice value="-stand-FullBody" track="normalplus" mask="">
+        <Controller target="x" controller="@ClipController(clip=a_beachCombing_survey_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="True" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_beachCombing_survey.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="3">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.5333334" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.5333334" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="Survey_UpperBody" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <ParameterSelector parameter="x:age" unique_id="9">
+      <Choice value="baby" />
+      <Choice value="toddler" />
+      <Choice value="child">
+        <PostureSelector parameter="x:posture" unique_id="6">
+          <Choice value="-stand-FullBody" track="locomotionoverlay" mask="Trackmask_c_BeachCombing_Survey_Upperbody">
+            <Controller target="x" controller="@ClipController(clip=c_beachCombing_survey_upperbody_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c_beachCombing_survey_upperbody.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="5">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
+        </PostureSelector>
+      </Choice>
+      <Choice value="teen">
+        <PostureSelector parameter="x:posture" unique_id="8">
+          <Choice value="-stand-FullBody" track="locomotionoverlay" mask="Trackmask_BeachCombing_Survey_Upperbody">
+            <Controller target="x" controller="@ClipController(clip=a_beachCombing_survey_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="True" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_beachCombing_survey.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="7">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
+        </PostureSelector>
+      </Choice>
+      <Choice value="youngadult">
+        <Reference target="8" />
+      </Choice>
+      <Choice value="adult">
+        <Reference target="8" />
+      </Choice>
+      <Choice value="elder">
+        <Reference target="8" />
+      </Choice>
+    </ParameterSelector>
+  </State>
+</ASM>

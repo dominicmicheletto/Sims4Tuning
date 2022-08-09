@@ -1,0 +1,658 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="ClayBlob_Mold" dcc="sage">
+  <Actor name="sitTemplate" type="Object" virtual="true" />
+  <Actor name="x" type="Sim" master="true" virtual="false" />
+  <Actor name="clayBlob" type="Object" virtual="false" />
+  <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
+  <Parameter name="x:mood" type="enum" labels="happy,confident,angry,sad,bored,embarrassed,uncomfortable,playful,tense,focused,energized,flirty,fine,inspired,dazed" default="confident" />
+  <Parameter name="clayBlob:carryTrack" type="enum" labels="left,right" default="right" />
+  <IkConfiguration name="a2o_clayBlob_mold_sad_seated.ma">
+    <SourceFile name="a2o_clayBlob_mold_sad_seated.ma">
+      <MapNamespace namespace="ClayBlob" actor="clayBlob" />
+      <MapNamespace namespace="sitTemplate" actor="sitTemplate" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_clayBlob_mold_sad.ma">
+    <SourceFile name="a2o_clayBlob_mold_sad.ma">
+      <MapNamespace namespace="ClayBlob" actor="clayBlob" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_clayBlob_mold.ma">
+    <SourceFile name="a2o_clayBlob_mold.ma">
+      <MapNamespace namespace="ClayBlob" actor="clayBlob" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_clayBlob_mold_seated.ma">
+    <SourceFile name="a2o_clayBlob_mold_seated.ma">
+      <MapNamespace namespace="ClayBlob" actor="clayBlob" />
+      <MapNamespace namespace="sitTemplate" actor="sitTemplate" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_clayBlob_mold_happy_seated.ma">
+    <SourceFile name="a2o_clayBlob_mold_happy_seated.ma">
+      <MapNamespace namespace="ClayBlob" actor="clayBlob" />
+      <MapNamespace namespace="sitTemplate" actor="sitTemplate" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_clayBlob_mold_happy.ma">
+    <SourceFile name="a2o_clayBlob_mold_happy.ma">
+      <MapNamespace namespace="ClayBlob" actor="clayBlob" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_clayBlob_mold_angry_seated.ma">
+    <SourceFile name="a2o_clayBlob_mold_angry_seated.ma">
+      <MapNamespace namespace="ClayBlob" actor="clayBlob" />
+      <MapNamespace namespace="sitTemplate" actor="sitTemplate" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_clayBlob_mold_angry.ma">
+    <SourceFile name="a2o_clayBlob_mold_angry.ma">
+      <MapNamespace namespace="ClayBlob" actor="clayBlob" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <PostureManifest actors="" />
+  <PostureManifest actors="x">
+    <Support family="stand" compatibility="FullBody" carry_left="-" carry_right="clayBlob" surface="*" />
+    <Support family="stand" compatibility="FullBody" carry_left="clayBlob" carry_right="-" surface="*" />
+    <Support family="stand" compatibility="UpperBody" carry_left="-" carry_right="clayBlob" surface="*" />
+    <Support family="stand" compatibility="UpperBody" carry_left="clayBlob" carry_right="-" surface="*" />
+    <Support family="sit" compatibility="FullBody" carry_left="-" carry_right="clayBlob" surface="-" />
+    <Support family="sit" compatibility="FullBody" carry_left="clayBlob" carry_right="-" surface="-" />
+    <Support family="sit" compatibility="UpperBody" carry_left="-" carry_right="clayBlob" surface="-" />
+    <Support family="sit" compatibility="UpperBody" carry_left="clayBlob" carry_right="-" surface="-" />
+  </PostureManifest>
+  <State type="private" skippable="false" interrupt_this="false" name="Cancel" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="Finish" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="Mold" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="mirror" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="start" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <Connection from="Cancel" to="exit" />
+  <Connection from="Finish" to="exit" />
+  <Connection from="Mold" to="Cancel" />
+  <Connection from="Mold" to="Finish" />
+  <Connection from="entry" to="mirror" />
+  <Connection from="mirror" to="start" />
+  <Connection from="start" to="Mold" />
+  <State name="Cancel" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="11">
+      <Choice value="-sit-FullBody" track="carryinteraction" mask="">
+        <ParameterSelector parameter="x:mood" unique_id="5">
+          <Choice value="happy">
+            <Controller target="x" controller="@ClipController(clip=a2o_clayBlob_happy_stop_seated_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_clayBlob_mold_happy_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="1">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice value="confident">
+            <Controller target="x" controller="@ClipController(clip=a2o_clayBlob_stop_seated_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_clayBlob_mold_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="2">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice value="angry">
+            <Controller target="x" controller="@ClipController(clip=a2o_clayBlob_angry_stop_seated_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_clayBlob_mold_angry_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="3">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice value="sad">
+            <Controller target="x" controller="@ClipController(clip=a2o_clayBlob_sad_stop_seated_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_clayBlob_mold_sad_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="4">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice value="bored">
+            <Reference target="2" />
+          </Choice>
+          <Choice value="embarrassed">
+            <Reference target="2" />
+          </Choice>
+          <Choice value="uncomfortable">
+            <Reference target="2" />
+          </Choice>
+          <Choice value="playful">
+            <Reference target="2" />
+          </Choice>
+          <Choice value="tense">
+            <Reference target="1" />
+          </Choice>
+          <Choice value="focused">
+            <Reference target="3" />
+          </Choice>
+          <Choice value="energized">
+            <Reference target="2" />
+          </Choice>
+          <Choice value="flirty">
+            <Reference target="2" />
+          </Choice>
+          <Choice value="fine">
+            <Reference target="2" />
+          </Choice>
+          <Choice value="inspired">
+            <Reference target="2" />
+          </Choice>
+          <Choice value="dazed">
+            <Reference target="1" />
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+      <Choice value="-sit-UpperBody" track="carryinteraction" mask="Trackmask_UpperBody">
+        <Reference target="5" />
+      </Choice>
+      <Choice value="-stand-FullBody" track="carryinteraction" mask="">
+        <ParameterSelector parameter="x:mood" unique_id="10">
+          <Choice value="happy">
+            <Controller target="x" controller="@ClipController(clip=a2o_clayBlob_happy_stop_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_clayBlob_mold_happy.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="6">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice value="confident">
+            <Controller target="x" controller="@ClipController(clip=a2o_clayBlob_stop_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_clayBlob_mold.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="7">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice value="angry">
+            <Controller target="x" controller="@ClipController(clip=a2o_clayBlob_angry_stop_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_clayBlob_mold_angry.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="8">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice value="sad">
+            <Controller target="x" controller="@ClipController(clip=a2o_clayBlob_sad_stop_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_clayBlob_mold_sad.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="9">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice value="bored">
+            <Reference target="7" />
+          </Choice>
+          <Choice value="embarrassed">
+            <Reference target="7" />
+          </Choice>
+          <Choice value="uncomfortable">
+            <Reference target="7" />
+          </Choice>
+          <Choice value="playful">
+            <Reference target="6" />
+          </Choice>
+          <Choice value="tense">
+            <Reference target="8" />
+          </Choice>
+          <Choice value="focused">
+            <Reference target="7" />
+          </Choice>
+          <Choice value="energized">
+            <Reference target="7" />
+          </Choice>
+          <Choice value="flirty">
+            <Reference target="7" />
+          </Choice>
+          <Choice value="fine">
+            <Reference target="7" />
+          </Choice>
+          <Choice value="inspired">
+            <Reference target="6" />
+          </Choice>
+          <Choice value="dazed">
+            <Reference target="7" />
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+      <Choice value="-stand-UpperBody" track="carryinteraction" mask="Trackmask_UpperBody">
+        <Reference target="10" />
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="Finish" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="22">
+      <Choice value="-sit-FullBody" track="carryinteraction" mask="">
+        <ParameterSelector parameter="x:mood" unique_id="16">
+          <Choice value="happy">
+            <Controller target="x" controller="@ClipController(clip=a2o_clayBlob_happy_createObject_stop_seated_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_clayBlob_mold_happy_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="12">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice value="confident">
+            <Controller target="x" controller="@ClipController(clip=a2o_clayBlob_createObject_stop_seated_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_clayBlob_mold_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="13">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice value="angry">
+            <Controller target="x" controller="@ClipController(clip=a2o_clayBlob_angry_createObject_stop_seated_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_clayBlob_mold_angry_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="14">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice value="sad">
+            <Controller target="x" controller="@ClipController(clip=a2o_clayBlob_sad_createObject_stop_seated_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_clayBlob_mold_sad_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="15">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice value="bored">
+            <Reference target="13" />
+          </Choice>
+          <Choice value="embarrassed">
+            <Reference target="13" />
+          </Choice>
+          <Choice value="uncomfortable">
+            <Reference target="13" />
+          </Choice>
+          <Choice value="playful">
+            <Reference target="12" />
+          </Choice>
+          <Choice value="tense">
+            <Reference target="14" />
+          </Choice>
+          <Choice value="focused">
+            <Reference target="13" />
+          </Choice>
+          <Choice value="energized">
+            <Reference target="13" />
+          </Choice>
+          <Choice value="flirty">
+            <Reference target="13" />
+          </Choice>
+          <Choice value="fine">
+            <Reference target="13" />
+          </Choice>
+          <Choice value="inspired">
+            <Reference target="12" />
+          </Choice>
+          <Choice value="dazed">
+            <Reference target="13" />
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+      <Choice value="-sit-UpperBody" track="carryinteraction" mask="Trackmask_UpperBody">
+        <Reference target="16" />
+      </Choice>
+      <Choice value="-stand-FullBody" track="carryinteraction" mask="">
+        <ParameterSelector parameter="x:mood" unique_id="21">
+          <Choice value="happy">
+            <Controller target="x" controller="@ClipController(clip=a2o_clayBlob_happy_createObject_stop_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_clayBlob_mold_happy.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="17">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice value="confident">
+            <Controller target="x" controller="@ClipController(clip=a2o_clayBlob_createObject_stop_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_clayBlob_mold.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="18">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice value="angry">
+            <Controller target="x" controller="@ClipController(clip=a2o_clayBlob_angry_createObject_stop_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_clayBlob_mold_angry.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="19">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice value="sad">
+            <Controller target="x" controller="@ClipController(clip=a2o_clayBlob_sad_createObject_stop_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_clayBlob_mold_sad.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="20">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice value="bored">
+            <Reference target="18" />
+          </Choice>
+          <Choice value="embarrassed">
+            <Reference target="18" />
+          </Choice>
+          <Choice value="uncomfortable">
+            <Reference target="18" />
+          </Choice>
+          <Choice value="playful">
+            <Reference target="17" />
+          </Choice>
+          <Choice value="tense">
+            <Reference target="19" />
+          </Choice>
+          <Choice value="focused">
+            <Reference target="18" />
+          </Choice>
+          <Choice value="energized">
+            <Reference target="18" />
+          </Choice>
+          <Choice value="flirty">
+            <Reference target="18" />
+          </Choice>
+          <Choice value="fine">
+            <Reference target="18" />
+          </Choice>
+          <Choice value="inspired">
+            <Reference target="17" />
+          </Choice>
+          <Choice value="dazed">
+            <Reference target="18" />
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+      <Choice value="-stand-UpperBody" track="carryinteraction" mask="Trackmask_UpperBody">
+        <Reference target="21" />
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="Mold" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="33">
+      <Choice value="-sit-FullBody" track="carryinteraction" mask="">
+        <ParameterSelector parameter="x:mood" unique_id="27">
+          <Choice value="happy">
+            <Controller target="x" controller="@ClipController(clip=a2o_clayBlob_happy_mold_seated_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_clayBlob_mold_happy_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="23">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="false" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice value="confident">
+            <Controller target="x" controller="@ClipController(clip=a2o_clayBlob_mold_seated_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_clayBlob_mold_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="24">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="false" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice value="angry">
+            <Controller target="x" controller="@ClipController(clip=a2o_clayBlob_angry_mold_seated_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_clayBlob_mold_angry_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="25">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="false" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice value="sad">
+            <Controller target="x" controller="@ClipController(clip=a2o_clayBlob_sad_mold_seated_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_clayBlob_mold_sad_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="26">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="false" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice value="bored">
+            <Reference target="24" />
+          </Choice>
+          <Choice value="embarrassed">
+            <Reference target="24" />
+          </Choice>
+          <Choice value="uncomfortable">
+            <Reference target="24" />
+          </Choice>
+          <Choice value="playful">
+            <Reference target="23" />
+          </Choice>
+          <Choice value="tense">
+            <Reference target="25" />
+          </Choice>
+          <Choice value="focused">
+            <Reference target="24" />
+          </Choice>
+          <Choice value="energized">
+            <Reference target="24" />
+          </Choice>
+          <Choice value="flirty">
+            <Reference target="24" />
+          </Choice>
+          <Choice value="fine">
+            <Reference target="24" />
+          </Choice>
+          <Choice value="inspired">
+            <Reference target="23" />
+          </Choice>
+          <Choice value="dazed">
+            <Reference target="24" />
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+      <Choice value="-sit-UpperBody" track="carryinteraction" mask="Trackmask_UpperBody">
+        <Reference target="27" />
+      </Choice>
+      <Choice value="-stand-FullBody" track="carryinteraction" mask="">
+        <ParameterSelector parameter="x:mood" unique_id="32">
+          <Choice value="happy">
+            <Controller target="x" controller="@ClipController(clip=a2o_clayBlob_happy_mold_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_clayBlob_mold_happy.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="28">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="false" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice value="confident">
+            <Controller target="x" controller="@ClipController(clip=a2o_clayBlob_mold_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_clayBlob_mold.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="29">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="false" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice value="angry">
+            <Controller target="x" controller="@ClipController(clip=a2o_clayBlob_angry_mold_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_clayBlob_mold_angry.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="30">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="false" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice value="sad">
+            <Controller target="x" controller="@ClipController(clip=a2o_clayBlob_sad_mold_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_clayBlob_mold_sad.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="31">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="false" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice value="bored">
+            <Reference target="29" />
+          </Choice>
+          <Choice value="embarrassed">
+            <Reference target="29" />
+          </Choice>
+          <Choice value="uncomfortable">
+            <Reference target="29" />
+          </Choice>
+          <Choice value="playful">
+            <Reference target="28" />
+          </Choice>
+          <Choice value="tense">
+            <Reference target="30" />
+          </Choice>
+          <Choice value="focused">
+            <Reference target="29" />
+          </Choice>
+          <Choice value="energized">
+            <Reference target="29" />
+          </Choice>
+          <Choice value="flirty">
+            <Reference target="29" />
+          </Choice>
+          <Choice value="fine">
+            <Reference target="29" />
+          </Choice>
+          <Choice value="inspired">
+            <Reference target="28" />
+          </Choice>
+          <Choice value="dazed">
+            <Reference target="29" />
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+      <Choice value="-stand-UpperBody" track="carryinteraction" mask="Trackmask_UpperBody">
+        <Reference target="32" />
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="mirror" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <ParameterSelector parameter="clayBlob:carryTrack" unique_id="35">
+      <Choice value="left">
+        <SetMirror target="x" mirror="true" unique_id="34" />
+      </Choice>
+      <Choice value="right" />
+    </ParameterSelector>
+  </State>
+  <State name="start" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="46">
+      <Choice value="-sit-FullBody" track="carryinteraction" mask="">
+        <ParameterSelector parameter="x:mood" unique_id="40">
+          <Choice value="happy">
+            <Controller target="x" controller="@ClipController(clip=a2o_clayBlob_happy_start_seated_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_clayBlob_mold_happy_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="36">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice value="confident">
+            <Controller target="x" controller="@ClipController(clip=a2o_clayBlob_start_seated_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_clayBlob_mold_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="37">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice value="angry">
+            <Controller target="x" controller="@ClipController(clip=a2o_clayBlob_angry_start_seated_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_clayBlob_mold_angry_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="38">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice value="sad">
+            <Controller target="x" controller="@ClipController(clip=a2o_clayBlob_sad_start_seated_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_clayBlob_mold_sad_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="39">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice value="bored">
+            <Reference target="37" />
+          </Choice>
+          <Choice value="embarrassed">
+            <Reference target="37" />
+          </Choice>
+          <Choice value="uncomfortable">
+            <Reference target="37" />
+          </Choice>
+          <Choice value="playful">
+            <Reference target="36" />
+          </Choice>
+          <Choice value="tense">
+            <Reference target="38" />
+          </Choice>
+          <Choice value="focused">
+            <Reference target="37" />
+          </Choice>
+          <Choice value="energized">
+            <Reference target="37" />
+          </Choice>
+          <Choice value="flirty">
+            <Reference target="37" />
+          </Choice>
+          <Choice value="fine">
+            <Reference target="37" />
+          </Choice>
+          <Choice value="inspired">
+            <Reference target="36" />
+          </Choice>
+          <Choice value="dazed">
+            <Reference target="37" />
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+      <Choice value="-sit-UpperBody" track="carryinteraction" mask="Trackmask_UpperBody">
+        <Reference target="40" />
+      </Choice>
+      <Choice value="-stand-FullBody" track="carryinteraction" mask="">
+        <ParameterSelector parameter="x:mood" unique_id="45">
+          <Choice value="happy">
+            <Controller target="x" controller="@ClipController(clip=a2o_clayBlob_happy_start_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_clayBlob_mold_happy.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="41">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice value="confident">
+            <Controller target="x" controller="@ClipController(clip=a2o_clayBlob_start_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_clayBlob_mold.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="42">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice value="angry">
+            <Controller target="x" controller="@ClipController(clip=a2o_clayBlob_angry_start_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_clayBlob_mold_angry.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="43">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice value="sad">
+            <Controller target="x" controller="@ClipController(clip=a2o_clayBlob_sad_start_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_clayBlob_mold_sad.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="44">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice value="bored">
+            <Reference target="42" />
+          </Choice>
+          <Choice value="embarrassed">
+            <Reference target="42" />
+          </Choice>
+          <Choice value="uncomfortable">
+            <Reference target="42" />
+          </Choice>
+          <Choice value="playful">
+            <Reference target="41" />
+          </Choice>
+          <Choice value="tense">
+            <Reference target="43" />
+          </Choice>
+          <Choice value="focused">
+            <Reference target="42" />
+          </Choice>
+          <Choice value="energized">
+            <Reference target="42" />
+          </Choice>
+          <Choice value="flirty">
+            <Reference target="42" />
+          </Choice>
+          <Choice value="fine">
+            <Reference target="42" />
+          </Choice>
+          <Choice value="inspired">
+            <Reference target="41" />
+          </Choice>
+          <Choice value="dazed">
+            <Reference target="42" />
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+      <Choice value="-stand-UpperBody" track="carryinteraction" mask="Trackmask_UpperBody">
+        <Reference target="45" />
+      </Choice>
+    </PostureSelector>
+  </State>
+</ASM>

@@ -1,0 +1,314 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="minorPetCage_cageInteractions" dcc="sage">
+  <Actor name="x" type="Sim" virtual="false" />
+  <Actor name="minorPetCage" type="Object" master="true" virtual="false" />
+  <Actor name="foodBag" type="Prop" virtual="false" object_def_resource_key="c0db5ae7:00000000:000000000002e1c1#foodCupPet_SP14PETrodent_set1" />
+  <Actor name="treat" type="Prop" virtual="false" object_def_resource_key="c0db5ae7:00000000:000000000002e289#treatPet_SP14GENrodentIntelligence_set1" />
+  <Actor name="sponge" type="Prop" virtual="false" object_def_resource_key="c0db5ae7:00000000:0000000000001229#spongeGEN_01_prop" />
+  <Actor name="beddingBag" type="Prop" virtual="false" object_def_resource_key="c0db5ae7:00000000:000000000002e1c3#petBedding_SP14PETrodent_set1" />
+  <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
+  <Parameter name="x:species" type="enum" labels="human,dog,smalldog,cat" default="human" />
+  <IkConfiguration name="a2o_minorPet_cleanCage.ma">
+    <SourceFile name="a2o_minorPet_cleanCage.ma">
+      <MapNamespace namespace="sponge" actor="sponge" />
+      <MapNamespace namespace="beddingBag" actor="beddingBag" />
+      <MapNamespace namespace="minorPetCage" actor="minorPetCage" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_minorPet_fillFood.ma">
+    <SourceFile name="a2o_minorPet_fillFood.ma">
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="minorPetCage" actor="minorPetCage" />
+      <MapNamespace namespace="foodBag" actor="foodBag" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_minorPet_playWith_hug.ma">
+    <SourceFile name="a2o_minorPet_playWith_hug.ma">
+      <MapNamespace namespace="minorPetCage" actor="minorPetCage" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_minorPet_playWith_kiss.ma">
+    <SourceFile name="a2o_minorPet_playWith_kiss.ma">
+      <MapNamespace namespace="minorPetCage" actor="minorPetCage" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_minorPet_playWith_pet.ma">
+    <SourceFile name="a2o_minorPet_playWith_pet.ma">
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="minorPetCage" actor="minorPetCage" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_minorPet_playWith_start_stop.ma">
+    <SourceFile name="a2o_minorPet_playWith_start_stop.ma">
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="minorPetCage" actor="minorPetCage" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_minorPet_playWith_fail.ma">
+    <SourceFile name="a2o_minorPet_playWith_fail.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_minorPet_release.ma">
+    <SourceFile name="a2o_minorPet_release.ma">
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="minorPetCage" actor="minorPetCage" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_minorPet_feedTreat.ma">
+    <SourceFile name="a2o_minorPet_feedTreat.ma">
+      <MapNamespace namespace="treat" actor="treat" />
+      <MapNamespace namespace="minorPetCage" actor="minorPetCage" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_minorPet_playWith_holdUp.ma">
+    <SourceFile name="a2o_minorPet_playWith_holdUp.ma">
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="minorPetCage" actor="minorPetCage" />
+    </SourceFile>
+  </IkConfiguration>
+  <PostureManifest actors="">
+    <Support family="stand" compatibility="FullBody" carry_left="-" carry_right="-" surface="*" />
+    <Support family="stand" compatibility="UpperBody" carry_left="-" carry_right="-" surface="*" />
+  </PostureManifest>
+  <State type="public" skippable="false" interrupt_this="false" name="CleanCage" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="FeedTreat_Fail" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="FeedTreat_Success" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="FillFood" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="PlayWith" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="PlayWithFail" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="Release" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="hub" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="pickUp" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="playWithSuccess" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="putDown" focus="none" facialoverlays="false" tailoverlays="true" />
+  <Connection from="CleanCage" to="hub" />
+  <Connection from="FeedTreat_Fail" to="hub" />
+  <Connection from="FeedTreat_Success" to="hub" />
+  <Connection from="FillFood" to="hub" />
+  <Connection from="PlayWith" to="PlayWithFail" />
+  <Connection from="PlayWith" to="playWithSuccess" />
+  <Connection from="PlayWith" to="putDown" />
+  <Connection from="PlayWithFail" to="hub" />
+  <Connection from="Release" to="hub" />
+  <Connection from="entry" to="hub" />
+  <Connection from="hub" to="CleanCage" />
+  <Connection from="hub" to="FeedTreat_Fail" />
+  <Connection from="hub" to="FeedTreat_Success" />
+  <Connection from="hub" to="FillFood" />
+  <Connection from="hub" to="Release" />
+  <Connection from="hub" to="exit" />
+  <Connection from="hub" to="pickUp" />
+  <Connection from="pickUp" to="PlayWith" />
+  <Connection from="playWithSuccess" to="hub" />
+  <Connection from="putDown" to="hub" />
+  <State name="CleanCage" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="4">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2o_minorPetCage_cleanCage_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_minorPet_cleanCage.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="1">
+          <TransitionClassList />
+        </Controller>
+        <Controller target="minorPetCage" controller="@ClipController(clip=a2o_minorPetCage_cleanCage_minorPetCage, loop_count=#1)" overridePosture="false" mask="minorPetCage_beddingTray" track="normalplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_minorPet_cleanCage.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="3">
+          <TransitionClassList />
+        </Controller>
+        <Stop target="minorPetCage" track="normalplus" blend_in="0" unique_id="2" />
+      </Choice>
+      <Choice value="-stand-UpperBody" track="normal" mask="Trackmask_UpperBody">
+        <Reference target="1" />
+        <Reference target="3" />
+        <Reference target="2" />
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="FeedTreat_Fail" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="7">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <Controller target="minorPetCage" controller="@ClipController(clip=a2o_minorPetCage_feedTreat_fail_minorPetCage, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_minorPet_feedTreat.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="5">
+          <TransitionClassList />
+        </Controller>
+        <Controller target="x" controller="@ClipController(clip=a2o_minorPetCage_feedTreat_fail_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_minorPet_feedTreat.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="6">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+      <Choice value="-stand-UpperBody" track="normal" mask="Trackmask_UpperBody">
+        <Reference target="5" />
+        <Reference target="6" />
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="FeedTreat_Success" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="10">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2o_minorPetCage_feedTreat_success_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_minorPet_feedTreat.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="8">
+          <TransitionClassList />
+        </Controller>
+        <Controller target="minorPetCage" controller="@ClipController(clip=a2o_minorPetCage_feedTreat_success_minorPetCage, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_minorPet_feedTreat.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="9">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+      <Choice value="-stand-UpperBody" track="normal" mask="Trackmask_UpperBody">
+        <Reference target="8" />
+        <Reference target="9" />
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="FillFood" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="14">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <Controller target="minorPetCage" controller="@ClipController(clip=a2o_minorPetCage_fillFood_minorPetCage, loop_count=#1)" overridePosture="false" mask="minorPetCage_foodContainer" track="normalplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_minorPet_fillFood.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="12">
+          <TransitionClassList />
+        </Controller>
+        <Stop target="minorPetCage" track="normalplus" blend_in="0" unique_id="11" />
+        <Controller target="x" controller="@ClipController(clip=a2o_minorPetCage_fillFood_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_minorPet_fillFood.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="13">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+      <Choice value="-stand-UpperBody" track="normal" mask="Trackmask_UpperBody">
+        <Reference target="12" />
+        <Reference target="11" />
+        <Reference target="13" />
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="PlayWith" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="24">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="23">
+          <Choice weight="56" avoidRepeat="True">
+            <Controller target="x" controller="@ClipController(clip=a2o_minorPet_playWith_hug_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_minorPet_playWith_hug.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="15">
+              <TransitionClassList />
+            </Controller>
+            <Controller target="minorPetCage" controller="@ClipController(clip=a2o_minorPet_playWith_hug_minorPetCage, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_minorPet_playWith_hug.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="16">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
+          <Choice weight="55" avoidRepeat="True">
+            <Controller target="minorPetCage" controller="@ClipController(clip=a2o_minorPet_playWith_kiss_minorPetCage, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_minorPet_playWith_kiss.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="17">
+              <TransitionClassList />
+            </Controller>
+            <Controller target="x" controller="@ClipController(clip=a2o_minorPet_playWith_kiss_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_minorPet_playWith_kiss.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="18">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
+          <Choice weight="55" avoidRepeat="True">
+            <Controller target="x" controller="@ClipController(clip=a2o_minorPet_playWith_pet_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_minorPet_playWith_pet.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="19">
+              <TransitionClassList />
+            </Controller>
+            <Controller target="minorPetCage" controller="@ClipController(clip=a2o_minorPet_playWith_pet_minorPetCage, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_minorPet_playWith_pet.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="20">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
+          <Choice weight="54" avoidRepeat="True">
+            <Controller target="x" controller="@ClipController(clip=a2o_minorPet_playWith_holdUp_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_minorPet_playWith_holdUp.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="21">
+              <TransitionClassList />
+            </Controller>
+            <Controller target="minorPetCage" controller="@ClipController(clip=a2o_minorPet_playWith_holdUp_minorPetCage, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_minorPet_playWith_holdUp.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="22">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
+        </RandomSelector>
+      </Choice>
+      <Choice value="-stand-UpperBody" track="normal" mask="Trackmask_UpperBody">
+        <Reference target="23" />
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="PlayWithFail" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="27">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2o_minorPet_playWith_fail_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_minorPet_playWith_fail.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="25">
+          <TransitionClassList />
+        </Controller>
+        <Controller target="minorPetCage" controller="@ClipController(clip=a2o_minorPet_playWith_fail_minorPetCage, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_minorPet_playWith_fail.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="26">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+      <Choice value="-stand-UpperBody" track="normal" mask="Trackmask_UpperBody">
+        <Reference target="25" />
+        <Reference target="26" />
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="Release" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="30">
+      <Choice value="-stand-FullBody" track="carryinteraction" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2o_minorPet_release_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_minorPet_release.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="28">
+          <TransitionClassList />
+        </Controller>
+        <Controller target="minorPetCage" controller="@ClipController(clip=a2o_minorPet_release_minorPetCage, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_minorPet_release.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="29">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+      <Choice value="-stand-UpperBody" track="carryinteraction" mask="Trackmask_UpperBody">
+        <Reference target="28" />
+        <Reference target="29" />
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="hub" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+  </State>
+  <State name="pickUp" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="33">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <Controller target="minorPetCage" controller="@ClipController(clip=a2o_minorPet_playWith_start_minorPetCage, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_minorPet_playWith_start_stop.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="31">
+          <TransitionClassList />
+        </Controller>
+        <Controller target="x" controller="@ClipController(clip=a2o_minorPet_playWith_start_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_minorPet_playWith_start_stop.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="32">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+      <Choice value="-stand-UpperBody" track="normal" mask="Trackmask_UpperBody">
+        <Reference target="31" />
+        <Reference target="32" />
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="playWithSuccess" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="36">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <Controller target="minorPetCage" controller="@ClipController(clip=a2o_minorPet_playWith_stop_minorPetCage, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_minorPet_playWith_start_stop.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="34">
+          <TransitionClassList />
+        </Controller>
+        <Controller target="x" controller="@ClipController(clip=a2o_minorPet_playWith_stop_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_minorPet_playWith_start_stop.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="35">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+      <Choice value="-stand-UpperBody" track="normal" mask="Trackmask_UpperBody">
+        <Reference target="34" />
+        <Reference target="35" />
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="putDown" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="39">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2o_minorPet_playWith_stop_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_minorPet_playWith_start_stop.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="37">
+          <TransitionClassList />
+        </Controller>
+        <Controller target="minorPetCage" controller="@ClipController(clip=a2o_minorPet_playWith_stop_minorPetCage, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_minorPet_playWith_start_stop.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="38">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+      <Choice value="-stand-UpperBody" track="normal" mask="Trackmask_UpperBody">
+        <Reference target="37" />
+        <Reference target="38" />
+      </Choice>
+    </PostureSelector>
+  </State>
+</ASM>

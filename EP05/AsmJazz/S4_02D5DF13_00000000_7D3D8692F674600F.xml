@@ -1,0 +1,184 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="WeatherController_Actions" dcc="sage">
+  <Actor name="x" type="Sim" master="true" virtual="false" />
+  <Actor name="WeatherController" type="Object" virtual="false" />
+  <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
+  <IkConfiguration name="a2o_weatherController_operate.ma">
+    <SourceFile name="a2o_weatherController_operate.ma">
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="WeatherController" actor="WeatherController" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_weatherController_bigPull.ma">
+    <SourceFile name="a2o_weatherController_bigPull.ma">
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="WeatherController" actor="WeatherController" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_weatherController_success.ma">
+    <SourceFile name="a2o_weatherController_success.ma">
+      <MapNamespace namespace="WeatherController" actor="WeatherController" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_weatherController_failure.ma">
+    <SourceFile name="a2o_weatherController_failure.ma">
+      <MapNamespace namespace="WeatherController" actor="WeatherController" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_weatherController_electrocuteFail.ma">
+    <SourceFile name="a2o_weatherController_electrocuteFail.ma">
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="WeatherController" actor="WeatherController" />
+    </SourceFile>
+  </IkConfiguration>
+  <PostureManifest actors="" />
+  <PostureManifest actors="x">
+    <Support family="stand" compatibility="FullBody" carry_left="-" carry_right="-" surface="*" />
+  </PostureManifest>
+  <State type="private" skippable="false" interrupt_this="false" name="Big_Lever_Pull" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="Electrocute_Fail" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="Fail" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="Start" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="Succeed" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="Use" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="quickStop" focus="none" facialoverlays="false" tailoverlays="true" />
+  <Connection from="Big_Lever_Pull" to="Electrocute_Fail" />
+  <Connection from="Big_Lever_Pull" to="Fail" />
+  <Connection from="Big_Lever_Pull" to="Succeed" />
+  <Connection from="Electrocute_Fail" to="exit" />
+  <Connection from="Fail" to="exit" />
+  <Connection from="Start" to="Use" />
+  <Connection from="Succeed" to="exit" />
+  <Connection from="Use" to="Big_Lever_Pull" />
+  <Connection from="Use" to="quickStop" />
+  <Connection from="entry" to="Start" />
+  <Connection from="quickStop" to="exit" />
+  <State name="Big_Lever_Pull" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="2">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2o_weatherController_bigPull_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_weatherController_bigPull.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="1">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+    </PostureSelector>
+    <Controller target="WeatherController" controller="@ClipController(clip=a2o_weatherController_bigPull_weatherController, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_weatherController_bigPull.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="3">
+      <TransitionClassList />
+    </Controller>
+  </State>
+  <State name="Electrocute_Fail" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="5">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2o_weatherController_electrocute_fail_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_weatherController_electrocuteFail.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="4">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+    </PostureSelector>
+    <Stop target="WeatherController" track="normalplus" blend_in="8" unique_id="6" />
+    <Controller target="WeatherController" controller="@ClipController(clip=a2o_weatherController_electrocute_fail_weatherController, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_weatherController_electrocuteFail.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="7">
+      <TransitionClassList />
+    </Controller>
+  </State>
+  <State name="Fail" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <Controller target="WeatherController" controller="@ClipController(clip=a2o_weatherController_fail_react_weatherController, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_weatherController_failure.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="8">
+      <TransitionClassList />
+    </Controller>
+    <PostureSelector parameter="x:posture" unique_id="10">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2o_weatherController_fail_react_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_weatherController_failure.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="9">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+    </PostureSelector>
+    <Stop target="WeatherController" track="normalplus" blend_in="8" unique_id="11" />
+  </State>
+  <State name="Start" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="13">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2o_weatherController_start_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_weatherController_operate.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="12">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+    </PostureSelector>
+    <Controller target="WeatherController" controller="@ClipController(clip=a2o_weatherController_start_weatherController, loop_count=#1)" overridePosture="false" mask="" track="normalplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_weatherController_operate.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="15">
+      <TransitionClassList />
+    </Controller>
+    <Controller target="WeatherController" controller="@ClipController(clip=a2o_weatherController_loop_weatherController, loop_count=#0)" overridePosture="true" mask="Trackmask_WeatherController" track="normalplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_weatherController_operate.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="14">
+      <TransitionClassList />
+    </Controller>
+  </State>
+  <State name="Succeed" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <Stop target="WeatherController" track="normalplus" blend_in="8" unique_id="16" />
+    <Controller target="WeatherController" controller="@ClipController(clip=a2o_weatherController_succeed_react_weatherController, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_weatherController_success.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="17">
+      <TransitionClassList />
+    </Controller>
+    <PostureSelector parameter="x:posture" unique_id="19">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2o_weatherController_succeed_react_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_weatherController_success.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="18">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="Use" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="29">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="28">
+          <Choice weight="100" avoidRepeat="True">
+            <Controller target="WeatherController" controller="@ClipController(clip=a2o_weatherController_operateLoop_pullLevers_weatherController, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_weatherController_operate.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="20">
+              <TransitionClassList />
+            </Controller>
+            <Controller target="x" controller="@ClipController(clip=a2o_weatherController_operateLoop_pullLevers_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_weatherController_operate.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="23">
+              <TransitionClassList />
+            </Controller>
+            <MakeController unique_id="22">
+              <Controller target="x" controller="@ClipController(clip=a2o_weatherController_softPosture_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_weatherController_operate.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="21">
+                <TransitionClassList />
+              </Controller>
+            </MakeController>
+          </Choice>
+          <Choice weight="68" avoidRepeat="True">
+            <Controller target="x" controller="@ClipController(clip=a2o_weatherController_operateLoop_turnHandle_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_weatherController_operate.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="24">
+              <TransitionClassList />
+            </Controller>
+            <Reference target="22" />
+            <Controller target="WeatherController" controller="@ClipController(clip=a2o_weatherController_operateLoop_turnHandle_weatherController, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_weatherController_operate.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="25">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
+          <Choice weight="28" avoidRepeat="True">
+            <Controller target="x" controller="@ClipController(clip=a2o_weatherController_operateLoop_think_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_weatherController_operate.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="26">
+              <TransitionClassList />
+            </Controller>
+            <Reference target="22" />
+            <Controller target="WeatherController" controller="@ClipController(clip=a2o_weatherController_operateLoop_think_weatherController, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_weatherController_operate.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="27">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
+        </RandomSelector>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="quickStop" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="31">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2o_weatherController_quickStop_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_weatherController_operate.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="30">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+    </PostureSelector>
+    <Controller target="WeatherController" controller="@ClipController(clip=a2o_weatherController_quickStop_weatherController, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_weatherController_operate.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="32">
+      <TransitionClassList />
+    </Controller>
+    <Stop target="WeatherController" track="normalplus" blend_in="8" unique_id="33" />
+  </State>
+</ASM>

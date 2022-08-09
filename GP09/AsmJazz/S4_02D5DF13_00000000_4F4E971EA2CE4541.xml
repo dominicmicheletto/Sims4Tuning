@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="Sabacc_Collect_Winnings" dcc="sage">
+  <Actor name="x" type="Sim" master="true" virtual="false" />
+  <Actor name="sitTemplate" type="Object" virtual="true" />
+  <Actor name="surface" type="Object" virtual="false" />
+  <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
+  <IkConfiguration name="a2o_sabacc_collectWinnings_seated.ma">
+    <SourceFile name="a2o_sabacc_collectWinnings_seated.ma">
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="sitTemplate" actor="sitTemplate" />
+    </SourceFile>
+  </IkConfiguration>
+  <PostureManifest actors="" />
+  <PostureManifest actors="x">
+    <Support name="sit" family="none" compatibility="FullBody" carry_left="-" carry_right="-" surface="surface" />
+    <Support name="sit" family="none" compatibility="UpperBody" carry_left="-" carry_right="-" surface="surface" />
+  </PostureManifest>
+  <State type="public" skippable="false" interrupt_this="false" name="Collect Winnings" focus="none" facialoverlays="false" tailoverlays="true" />
+  <Connection from="Collect Winnings" to="exit" />
+  <Connection from="entry" to="Collect Winnings" />
+  <State name="Collect Winnings" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="2">
+      <Choice value="sit--FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2o_sabacc_collectWinnings_seated_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_sabacc_collectWinnings_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="1">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+      <Choice value="sit--UpperBody" track="normal" mask="">
+        <Reference target="1" />
+      </Choice>
+    </PostureSelector>
+  </State>
+</ASM>

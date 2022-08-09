@@ -1,0 +1,80 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="Pet_Obstacle_Flags" dcc="sage">
+  <Actor name="x" type="Sim" master="true" virtual="false" />
+  <Actor name="Obstacle" type="Object" virtual="false" />
+  <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
+  <Parameter name="x:species" type="enum" labels="human,dog,smalldog,cat" default="human" />
+  <Parameter name="Obstacle:isMirroredPart" type="bool" labels="" default="False" />
+  <Parameter name="Obstacle:objectPosition" type="vector3" labels="" default="0,0,0" />
+  <Parameter name="Obstacle:objectOrientation" type="quaternion" labels="" default="0,0,0,1" />
+  <PostureManifest actors="">
+    <Support family="stand" compatibility="FullBody" carry_left="*" carry_right="*" surface="*" />
+  </PostureManifest>
+  <State type="public" skippable="false" interrupt_this="false" name="Weave_Fail" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="Weave_Succeed" focus="none" facialoverlays="false" tailoverlays="true" />
+  <Connection from="Weave_Fail" to="exit" />
+  <Connection from="Weave_Succeed" to="exit" />
+  <Connection from="entry" to="Weave_Fail" />
+  <Connection from="entry" to="Weave_Succeed" />
+  <State name="Weave_Fail" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="5">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <ParameterSelector parameter="x:species" unique_id="4">
+          <Choice value="human" />
+          <Choice value="dog">
+            <ParameterSelector parameter="Obstacle:isMirroredPart" unique_id="3">
+              <Choice value="false">
+                <FollowPath path="Obstacle_Flags_Fail" default_walkstyle="Default" walkstyle_override_param="x:age" reference_actor="Obstacle" reference_translation_param="Obstacle:objectPosition" reference_orientation_param="Obstacle:objectOrientation" trigger_posture_transition_event="False" reverse_path="False" target="x" overridePosture="false" track="normal" transition_class_in="Default" transition_class_out="Default" unique_id="1">
+                  <TransitionClassList />
+                </FollowPath>
+              </Choice>
+              <Choice value="true">
+                <FollowPath path="Obstacle_Flags_Fail_reverse" default_walkstyle="Default" walkstyle_override_param="x:age" reference_actor="Obstacle" reference_translation_param="Obstacle:objectPosition" reference_orientation_param="Obstacle:objectOrientation" trigger_posture_transition_event="False" reverse_path="True" target="x" overridePosture="false" track="normal" transition_class_in="Default" transition_class_out="Default" unique_id="2">
+                  <TransitionClassList />
+                </FollowPath>
+              </Choice>
+            </ParameterSelector>
+          </Choice>
+          <Choice value="smalldog">
+            <Reference target="3" />
+          </Choice>
+          <Choice value="cat">
+            <Reference target="3" />
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="Weave_Succeed" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="10">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <ParameterSelector parameter="x:species" unique_id="9">
+          <Choice value="human" />
+          <Choice value="dog">
+            <ParameterSelector parameter="Obstacle:isMirroredPart" unique_id="8">
+              <Choice value="false">
+                <FollowPath path="Obstacle_Flags_Succeed" default_walkstyle="Default" walkstyle_override_param="x:age" reference_actor="Obstacle" reference_translation_param="Obstacle:objectPosition" reference_orientation_param="Obstacle:objectOrientation" trigger_posture_transition_event="False" reverse_path="False" target="x" overridePosture="false" track="normal" transition_class_in="Default" transition_class_out="Default" unique_id="6">
+                  <TransitionClassList />
+                </FollowPath>
+              </Choice>
+              <Choice value="true">
+                <FollowPath path="Obstacle_Flags_Succeed_Reverse" default_walkstyle="Default" walkstyle_override_param="x:age" reference_actor="Obstacle" reference_translation_param="Obstacle:objectPosition" reference_orientation_param="Obstacle:objectOrientation" trigger_posture_transition_event="False" reverse_path="True" target="x" overridePosture="false" track="normal" transition_class_in="Default" transition_class_out="Default" unique_id="7">
+                  <TransitionClassList />
+                </FollowPath>
+              </Choice>
+            </ParameterSelector>
+          </Choice>
+          <Choice value="smalldog">
+            <Reference target="8" />
+          </Choice>
+          <Choice value="cat">
+            <Reference target="8" />
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+    </PostureSelector>
+  </State>
+</ASM>

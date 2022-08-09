@@ -1,0 +1,290 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="Holiday_Celebrate" dcc="sage">
+  <Actor name="x" type="Sim" master="true" virtual="false" />
+  <Actor name="sitTemplate" type="Object" virtual="true" />
+  <Actor name="hornParty" type="Prop" virtual="false" object_def_resource_key="c0db5ae7:00000000:000000000000557e#hornPartyGEN_01" />
+  <Actor name="confettiPopper" type="Prop" virtual="false" object_def_resource_key="c0db5ae7:00000000:0000000000005581#popperGEN_01" />
+  <Actor name="noiseMaker" type="Prop" virtual="false" object_def_resource_key="c0db5ae7:00000000:0000000000005584#noiseMakerGEN_01" />
+  <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
+  <Parameter name="x:carryState" type="enum" labels="none,left,right,both" default="none" />
+  <IkConfiguration name="a_holiday_singTune.ma">
+    <SourceFile name="a_holiday_singTune.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a_holiday_singTune_seated.ma">
+    <SourceFile name="a_holiday_singTune_seated.ma">
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="sitTemplate" actor="sitTemplate" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a_holiday_confettiPopper.ma">
+    <SourceFile name="a_holiday_confettiPopper.ma">
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="confettiPopper" actor="confettiPopper" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a_holiday_confettiHandful.ma">
+    <SourceFile name="a_holiday_confettiHandful.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a_holiday_confettiHandful_seated.ma">
+    <SourceFile name="a_holiday_confettiHandful_seated.ma">
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="sitTemplate" actor="sitTemplate" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a_holiday_confettiPopper_seated.ma">
+    <SourceFile name="a_holiday_confettiPopper_seated.ma">
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="sitTemplate" actor="sitTemplate" />
+      <MapNamespace namespace="confettiPopper" actor="confettiPopper" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a_holiday_blowPartyHorn_seated.ma">
+    <SourceFile name="a_holiday_blowPartyHorn_seated.ma">
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="sitTemplate" actor="sitTemplate" />
+      <MapNamespace namespace="hornParty" actor="hornParty" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a_holiday_blowPartyHorn.ma">
+    <SourceFile name="a_holiday_blowPartyHorn.ma">
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="hornParty" actor="hornParty" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a_holiday_spinNoisemaker_seated.ma">
+    <SourceFile name="a_holiday_spinNoisemaker_seated.ma">
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="sitTemplate" actor="sitTemplate" />
+      <MapNamespace namespace="noiseMaker" actor="noiseMaker" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a_holiday_spinNoisemaker.ma">
+    <SourceFile name="a_holiday_spinNoisemaker.ma">
+      <MapNamespace namespace="noiseMaker" actor="noiseMaker" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <PostureManifest actors="" />
+  <PostureManifest actors="x">
+    <Support family="stand" compatibility="FullBody" carry_left="*" carry_right="-" surface="*" />
+    <Support family="stand" compatibility="FullBody" carry_left="-" carry_right="*" surface="*" />
+    <Support family="stand" compatibility="UpperBody" carry_left="*" carry_right="-" surface="*" />
+    <Support family="stand" compatibility="UpperBody" carry_left="-" carry_right="*" surface="*" />
+    <Support family="sit" compatibility="FullBody" carry_left="*" carry_right="-" surface="*" />
+    <Support family="sit" compatibility="FullBody" carry_left="-" carry_right="*" surface="*" />
+    <Support family="sit" compatibility="UpperBody" carry_left="*" carry_right="-" surface="*" />
+    <Support family="sit" compatibility="UpperBody" carry_left="-" carry_right="*" surface="*" />
+  </PostureManifest>
+  <State type="public" skippable="false" interrupt_this="false" name="Confetti" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="Horn" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="NoiseMaker" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="Sing" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="mirror" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <Connection from="Confetti" to="exit" />
+  <Connection from="Horn" to="exit" />
+  <Connection from="NoiseMaker" to="exit" />
+  <Connection from="Sing" to="exit" />
+  <Connection from="entry" to="Confetti" />
+  <Connection from="entry" to="Horn" />
+  <Connection from="entry" to="Sing" />
+  <Connection from="entry" to="mirror" />
+  <Connection from="mirror" to="NoiseMaker" />
+  <State name="Confetti" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="11">
+      <Choice value="-sit-FullBody" track="normal" mask="">
+        <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="5">
+          <Choice weight="50" avoidRepeat="True">
+            <Controller target="x" controller="@ClipController(clip=a_holiday_confettiHandful_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_holiday_confettiHandful_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="1">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
+          <Choice weight="50" avoidRepeat="True">
+            <ParameterSelector parameter="x:carryState" unique_id="4">
+              <Choice value="none">
+                <Controller target="x" controller="@ClipController(clip=a_holiday_confettiPopper_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_holiday_confettiPopper_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="2">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+              <Choice value="left">
+                <SetMirror target="x" mirror="true" unique_id="3" />
+                <Reference target="1" />
+              </Choice>
+              <Choice value="right">
+                <Reference target="1" />
+              </Choice>
+              <Choice value="both" />
+            </ParameterSelector>
+          </Choice>
+        </RandomSelector>
+      </Choice>
+      <Choice value="-sit-UpperBody" track="normal" mask="Trackmask_UpperBody">
+        <Reference target="5" />
+      </Choice>
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="10">
+          <Choice weight="50" avoidRepeat="True">
+            <ParameterSelector parameter="x:carryState" unique_id="9">
+              <Choice value="none">
+                <Controller target="x" controller="@ClipController(clip=a_holiday_confettiPopper_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_holiday_confettiPopper.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="6">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+              <Choice value="left">
+                <SetMirror target="x" mirror="true" unique_id="8" />
+                <Controller target="x" controller="@ClipController(clip=a_holiday_confettiHandful_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_holiday_confettiHandful.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="7">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+              <Choice value="right">
+                <Reference target="7" />
+              </Choice>
+              <Choice value="both" />
+            </ParameterSelector>
+          </Choice>
+          <Choice weight="50" avoidRepeat="True">
+            <Reference target="7" />
+          </Choice>
+        </RandomSelector>
+      </Choice>
+      <Choice value="-stand-UpperBody" track="normal" mask="Trackmask_UpperBody">
+        <Reference target="10" />
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="Horn" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="20">
+      <Choice value="-sit-FullBody" track="normal" mask="">
+        <ParameterSelector parameter="x:carryState" unique_id="15">
+          <Choice value="none">
+            <Controller target="x" controller="@ClipController(clip=a_holiday_blowPartyHorn_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_holiday_blowPartyHorn_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="12">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
+          <Choice value="left">
+            <SetMirror target="x" mirror="true" unique_id="14" />
+            <Controller target="x" controller="@ClipController(clip=a_holiday_confettiHandful_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_holiday_confettiHandful_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="13">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
+          <Choice value="right">
+            <Reference target="13" />
+          </Choice>
+          <Choice value="both" />
+        </ParameterSelector>
+      </Choice>
+      <Choice value="-sit-UpperBody" track="normal" mask="Trackmask_UpperBody">
+        <Reference target="15" />
+      </Choice>
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <ParameterSelector parameter="x:carryState" unique_id="19">
+          <Choice value="none">
+            <Controller target="x" controller="@ClipController(clip=a_holiday_blowPartyHorn_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_holiday_blowPartyHorn.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="16">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
+          <Choice value="left">
+            <SetMirror target="x" mirror="true" unique_id="18" />
+            <Controller target="x" controller="@ClipController(clip=a_holiday_confettiHandful_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_holiday_confettiHandful.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="17">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
+          <Choice value="right">
+            <Reference target="17" />
+          </Choice>
+          <Choice value="both" />
+        </ParameterSelector>
+      </Choice>
+      <Choice value="-stand-UpperBody" track="normal" mask="Trackmask_UpperBody">
+        <Reference target="19" />
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="NoiseMaker" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="23">
+      <Choice value="-sit-FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a_holiday_spinNoisemaker_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_holiday_spinNoisemaker_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="21">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+      <Choice value="-sit-UpperBody" track="normal" mask="Trackmask_UpperBody">
+        <Reference target="21" />
+      </Choice>
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a_holiday_spinNoisemaker_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_holiday_spinNoisemaker.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="22">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+      <Choice value="-stand-UpperBody" track="normal" mask="Trackmask_UpperBody">
+        <Reference target="22" />
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="Sing" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="32">
+      <Choice value="-sit-FullBody" track="normal" mask="">
+        <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="27">
+          <Choice weight="50" avoidRepeat="False">
+            <Controller target="x" controller="@ClipController(clip=a_holiday_singTune_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_holiday_singTune_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="24">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
+          <Choice weight="50" avoidRepeat="False">
+            <Controller target="x" controller="@ClipController(clip=a_holiday_singTune02_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_holiday_singTune_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="25">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
+          <Choice weight="50" avoidRepeat="False">
+            <Controller target="x" controller="@ClipController(clip=a_holiday_singTune03_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_holiday_singTune_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="26">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
+        </RandomSelector>
+      </Choice>
+      <Choice value="-sit-UpperBody" track="normal" mask="Trackmask_UpperBody">
+        <Reference target="27" />
+      </Choice>
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="31">
+          <Choice weight="50" avoidRepeat="False">
+            <Controller target="x" controller="@ClipController(clip=a_holiday_singTune02_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_holiday_singTune.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="28">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
+          <Choice weight="50" avoidRepeat="False">
+            <Controller target="x" controller="@ClipController(clip=a_holiday_singTune03_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_holiday_singTune.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="29">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
+          <Choice weight="50" avoidRepeat="False">
+            <Controller target="x" controller="@ClipController(clip=a_holiday_singTune_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_holiday_singTune.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="30">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
+        </RandomSelector>
+      </Choice>
+      <Choice value="-stand-UpperBody" track="normal" mask="Trackmask_UpperBody">
+        <Reference target="31" />
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="mirror" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <ParameterSelector parameter="x:carryState" unique_id="34">
+      <Choice value="none" />
+      <Choice value="left">
+        <SetMirror target="x" mirror="true" unique_id="33" />
+      </Choice>
+      <Choice value="right" />
+      <Choice value="both" />
+    </ParameterSelector>
+  </State>
+</ASM>

@@ -1,0 +1,224 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="WardrobeFittingPedestal_Fitting" dcc="sage">
+  <Actor name="x" type="Sim" master="true" virtual="false" />
+  <Actor name="pedestalWardrobe" type="Object" virtual="true" />
+  <Actor name="y" type="Sim" virtual="false" />
+  <Actor name="colorSwatchFan" type="Prop" virtual="false" object_def_resource_key="c0db5ae7:00000000:0000000000030317#toolSwatchFanGEN" />
+  <Actor name="colorSwatch" type="Prop" virtual="false" object_def_resource_key="c0db5ae7:00000000:0000000000030314#toolSwatchGEN_set1" />
+  <Parameter name="x:age" type="enum" labels="child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
+  <Parameter name="x:species" type="enum" labels="human,dog,smalldog,cat" default="human" />
+  <Parameter name="pedestalWardrobe:isMirroredPart" type="bool" labels="" default="False" />
+  <Parameter name="y:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="y:sex" type="enum" labels="male,female" default="male" />
+  <Parameter name="y:species" type="enum" labels="human,dog,smalldog,cat" default="human" />
+  <IkConfiguration name="a2a_wardrobeFittingPedestal_fitting_start_breathe_stop.ma">
+    <SourceFile name="a2a_wardrobeFittingPedestal_fitting_start_breathe_stop.ma">
+      <MapNamespace namespace="y" actor="y" />
+      <MapNamespace namespace="pedestalWardrobe" actor="pedestalWardrobe" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2a_wardrobeFittingPedestal_fitting_loops.ma">
+    <SourceFile name="a2a_wardrobeFittingPedestal_fitting_loops.ma">
+      <MapNamespace namespace="toolSwatch" actor="colorSwatch" />
+      <MapNamespace namespace="y" actor="y" />
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="toolSwatchFan" actor="colorSwatchFan" />
+      <MapNamespace namespace="pedestalWardrobe" actor="pedestalWardrobe" />
+    </SourceFile>
+  </IkConfiguration>
+  <PostureManifest actors="" />
+  <PostureManifest actors="x,y">
+    <Support name="WardrobePedestal" family="none" compatibility="FullBody" carry_left="-" carry_right="-" surface="*" />
+  </PostureManifest>
+  <State type="public" skippable="false" interrupt_this="false" name="ColorSwatch" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="Hub" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="Measure" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="Mirror" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="Start" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="Stop" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" name="Think" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="Think_Start" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="Think_Stop" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <Connection from="ColorSwatch" to="Hub" />
+  <Connection from="Hub" to="ColorSwatch" />
+  <Connection from="Hub" to="Measure" />
+  <Connection from="Hub" to="Stop" />
+  <Connection from="Hub" to="Think_Start" />
+  <Connection from="Measure" to="Hub" />
+  <Connection from="Mirror" to="Start" />
+  <Connection from="Start" to="Hub" />
+  <Connection from="Stop" to="exit" />
+  <Connection from="Think" to="Think_Stop" />
+  <Connection from="Think_Start" to="Think" />
+  <Connection from="Think_Stop" to="Hub" />
+  <Connection from="entry" to="Mirror" />
+  <State name="ColorSwatch" type="public" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="y:posture" unique_id="4">
+      <Choice value="WardrobePedestal--FullBody" track="normal" mask="">
+        <Controller target="y" controller="@ClipController(clip=a2a_wardrobeFittingPedestal_fitting_colorswatch_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_wardrobeFittingPedestal_fitting_loops.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="3">
+          <TransitionClassList />
+        </Controller>
+        <MakeController unique_id="2">
+          <Controller target="y" controller="@ClipController(clip=a2a_wardrobeFittingPedestal_fitting_breath_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_wardrobeFittingPedestal_fitting_start_breathe_stop.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="1">
+            <TransitionClassList />
+          </Controller>
+        </MakeController>
+      </Choice>
+    </PostureSelector>
+    <PostureSelector parameter="x:posture" unique_id="8">
+      <Choice value="WardrobePedestal--FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2a_wardrobeFittingPedestal_fitting_colorswatch_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_wardrobeFittingPedestal_fitting_loops.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="7">
+          <TransitionClassList />
+        </Controller>
+        <MakeController unique_id="6">
+          <Controller target="x" controller="@ClipController(clip=a2a_wardrobeFittingPedestal_fitting_breath_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_wardrobeFittingPedestal_fitting_start_breathe_stop.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="5">
+            <TransitionClassList />
+          </Controller>
+        </MakeController>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="Hub" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="9">
+      <Choice value="WardrobePedestal--FullBody" track="normal" mask="" />
+    </PostureSelector>
+  </State>
+  <State name="Measure" type="public" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="y:posture" unique_id="13">
+      <Choice value="WardrobePedestal--FullBody" track="normal" mask="">
+        <Controller target="y" controller="@ClipController(clip=a2a_wardrobeFittingPedestal_fitting_measure_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_wardrobeFittingPedestal_fitting_loops.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="12">
+          <TransitionClassList />
+        </Controller>
+        <MakeController unique_id="11">
+          <Controller target="y" controller="@ClipController(clip=a2a_wardrobeFittingPedestal_fitting_breath_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_wardrobeFittingPedestal_fitting_start_breathe_stop.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="10">
+            <TransitionClassList />
+          </Controller>
+        </MakeController>
+      </Choice>
+    </PostureSelector>
+    <PostureSelector parameter="x:posture" unique_id="17">
+      <Choice value="WardrobePedestal--FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2a_wardrobeFittingPedestal_fitting_measure_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_wardrobeFittingPedestal_fitting_loops.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="16">
+          <TransitionClassList />
+        </Controller>
+        <MakeController unique_id="15">
+          <Controller target="x" controller="@ClipController(clip=a2a_wardrobeFittingPedestal_fitting_breath_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_wardrobeFittingPedestal_fitting_start_breathe_stop.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="14">
+            <TransitionClassList />
+          </Controller>
+        </MakeController>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="Mirror" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <ParameterSelector parameter="pedestalWardrobe:isMirroredPart" unique_id="20">
+      <Choice value="false" />
+      <Choice value="true">
+        <SetMirror target="x" mirror="true" unique_id="18" />
+        <SetMirror target="y" mirror="true" unique_id="19" />
+      </Choice>
+    </ParameterSelector>
+  </State>
+  <State name="Start" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="22">
+      <Choice value="WardrobePedestal--FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2a_wardrobeFittingPedestal_fitting_start_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_wardrobeFittingPedestal_fitting_start_breathe_stop.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="21">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+    </PostureSelector>
+    <PostureSelector parameter="y:posture" unique_id="24">
+      <Choice value="WardrobePedestal--FullBody" track="normal" mask="">
+        <Controller target="y" controller="@ClipController(clip=a2a_wardrobeFittingPedestal_fitting_start_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_wardrobeFittingPedestal_fitting_start_breathe_stop.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="23">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="Stop" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="y:posture" unique_id="26">
+      <Choice value="WardrobePedestal--FullBody" track="normal" mask="">
+        <Controller target="y" controller="@ClipController(clip=a2a_wardrobeFittingPedestal_fitting_stop_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_wardrobeFittingPedestal_fitting_start_breathe_stop.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="25">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+    </PostureSelector>
+    <PostureSelector parameter="x:posture" unique_id="28">
+      <Choice value="WardrobePedestal--FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2a_wardrobeFittingPedestal_fitting_stop_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_wardrobeFittingPedestal_fitting_start_breathe_stop.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="27">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="Think" type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <MakeController>
+      <PostureSelector parameter="y:posture" unique_id="30">
+        <Choice value="WardrobePedestal--FullBody" track="normal" mask="">
+          <Controller target="y" controller="@ClipController(clip=a2a_wardrobeFittingPedestal_fitting_think_loop_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_wardrobeFittingPedestal_fitting_loops.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="29">
+            <TransitionClassList />
+          </Controller>
+        </Choice>
+      </PostureSelector>
+      <PostureSelector parameter="x:posture" unique_id="32">
+        <Choice value="WardrobePedestal--FullBody" track="normal" mask="">
+          <Controller target="x" controller="@ClipController(clip=a2a_wardrobeFittingPedestal_fitting_think_loop_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_wardrobeFittingPedestal_fitting_loops.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="31">
+            <TransitionClassList />
+          </Controller>
+        </Choice>
+      </PostureSelector>
+    </MakeController>
+  </State>
+  <State name="Think_Start" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="34">
+      <Choice value="WardrobePedestal--FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2a_wardrobeFittingPedestal_fitting_think_start_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_wardrobeFittingPedestal_fitting_loops.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="33">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+    </PostureSelector>
+    <PostureSelector parameter="y:posture" unique_id="36">
+      <Choice value="WardrobePedestal--FullBody" track="normal" mask="">
+        <Controller target="y" controller="@ClipController(clip=a2a_wardrobeFittingPedestal_fitting_think_start_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_wardrobeFittingPedestal_fitting_loops.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="35">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="Think_Stop" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="y:posture" unique_id="40">
+      <Choice value="WardrobePedestal--FullBody" track="normal" mask="">
+        <Controller target="y" controller="@ClipController(clip=a2a_wardrobeFittingPedestal_fitting_think_stop_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_wardrobeFittingPedestal_fitting_loops.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="39">
+          <TransitionClassList />
+        </Controller>
+        <MakeController unique_id="38">
+          <Controller target="y" controller="@ClipController(clip=a2a_wardrobeFittingPedestal_fitting_breath_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_wardrobeFittingPedestal_fitting_start_breathe_stop.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="37">
+            <TransitionClassList />
+          </Controller>
+        </MakeController>
+      </Choice>
+    </PostureSelector>
+    <PostureSelector parameter="x:posture" unique_id="44">
+      <Choice value="WardrobePedestal--FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2a_wardrobeFittingPedestal_fitting_think_stop_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_wardrobeFittingPedestal_fitting_loops.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="43">
+          <TransitionClassList />
+        </Controller>
+        <MakeController unique_id="42">
+          <Controller target="x" controller="@ClipController(clip=a2a_wardrobeFittingPedestal_fitting_breath_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_wardrobeFittingPedestal_fitting_start_breathe_stop.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="41">
+            <TransitionClassList />
+          </Controller>
+        </MakeController>
+      </Choice>
+    </PostureSelector>
+  </State>
+</ASM>

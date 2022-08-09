@@ -1,0 +1,545 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="VerticalGarden_MeatWall" dcc="sage">
+  <Actor name="x" type="Sim" master="true" virtual="false" />
+  <Actor name="gardenWall" type="Object" virtual="false" />
+  <Actor name="gardenShoot" type="Prop" virtual="false" object_def_resource_key="c0db5ae7:00000000:00000000000057c5#gardenShootGEN_01" />
+  <Actor name="gardenShears" type="Prop" virtual="false" object_def_resource_key="c0db5ae7:00000000:00000000000056d9#toolClipperGEN_01" />
+  <Actor name="trowel" type="Prop" virtual="false" object_def_resource_key="c0db5ae7:00000000:000000000000a69d#toolTrowelGEN_01_set1" />
+  <Actor name="fertilizer" type="Prop" virtual="false" object_def_resource_key="c0db5ae7:00000000:000000000000563d#jarGENFertilizer_01" />
+  <Actor name="waterCan" type="Prop" virtual="false" object_def_resource_key="c0db5ae7:00000000:0000000000005632#waterCanGEN_01" />
+  <Actor name="sprayBottle" type="Prop" virtual="false" object_def_resource_key="c0db5ae7:00000000:00000000000029bd#bottleSprayGEN_01" />
+  <Actor name="sprayCan" type="Prop" virtual="false" object_def_resource_key="c0db5ae7:00000000:000000000000571d#toolBugSprayGEN_01" />
+  <Actor name="plant" type="Object" virtual="false" />
+  <Actor name="toolKnife" type="Prop" virtual="false" object_def_resource_key="c0db5ae7:00000000:0000000000001fbb#toolKnifeChefGEN_01_prop" />
+  <Actor name="foodPlate" type="Prop" virtual="false" object_def_resource_key="c0db5ae7:00000000:0000000000001c02#foodPlateGEN_01_prop" />
+  <Parameter name="surfaceHeight" type="enum" labels="high,highPlus" />
+  <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
+  <Parameter name="x:mood" type="enum" labels="happy,confident,angry,sad,bored,embarrassed,uncomfortable,playful,tense,focused,energized,flirty,fine,inspired,dazed" default="fine" />
+  <Parameter name="x:statLevel" type="enum" labels="low,mediumLow,medium,mediumHigh,high" default="low" />
+  <IkConfiguration name="a2o_verticalGarden_water_low.ma">
+    <SourceFile name="a2o_verticalGarden_water_low.ma">
+      <MapNamespace namespace="gardenWall" actor="gardenWall" />
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="waterCan" actor="waterCan" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_verticalGarden_spray_low.ma">
+    <SourceFile name="a2o_verticalGarden_spray_low.ma">
+      <MapNamespace namespace="gardenWall" actor="gardenWall" />
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="sprayCan" actor="sprayCan" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_verticalGarden_massage.ma">
+    <SourceFile name="a2o_verticalGarden_massage.ma">
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="gardenMeatWall" actor="plant" />
+      <MapNamespace namespace="gardenWall" actor="gardenWall" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_verticalGarden_harvest.ma">
+    <SourceFile name="a2o_verticalGarden_harvest.ma">
+      <MapNamespace namespace="gardenWall" actor="gardenWall" />
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="gardenMeatWall" actor="plant" />
+      <MapNamespace namespace="toolKnife" actor="toolKnife" />
+      <MapNamespace namespace="foodPlate" actor="foodPlate" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_verticalGarden_waterSpray_centerHigh.ma">
+    <SourceFile name="a2o_verticalGarden_waterSpray_centerHigh.ma">
+      <MapNamespace namespace="sprayBottle" actor="sprayBottle" />
+      <MapNamespace namespace="gardenWall" actor="gardenWall" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <PostureManifest actors="" />
+  <PostureManifest actors="x">
+    <Support family="stand" compatibility="FullBody" carry_left="-" carry_right="-" surface="gardenWall" />
+  </PostureManifest>
+  <State type="public" skippable="false" interrupt_this="false" name="Harvest_HealthyFull" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="Harvest_Unhealthy" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="Massage_Healthy" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="Massage_HealthyFull" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="Massage_Mature_GetIn" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="Massage_Mature_GetOut" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="Massage_Sprout_GetIn" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="Massage_Sprout_GetOut" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" name="Spray_Mature" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="Spray_Mature_GetIn" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="Spray_Mature_GetOut" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" name="Spray_Sprout" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="Spray_Sprout_GetIn" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="Spray_Sprout_GetOut" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" name="Water_Mature" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="Water_Mature_GetIn" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="Water_Mature_GetOut" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" name="Water_Sprout" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="Water_Sprout_GetIn" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="Water_Sprout_GetOut" focus="none" facialoverlays="false" tailoverlays="true" />
+  <Connection from="Harvest_HealthyFull" to="exit" />
+  <Connection from="Harvest_Unhealthy" to="exit" />
+  <Connection from="Massage_Healthy" to="Massage_Sprout_GetOut" />
+  <Connection from="Massage_HealthyFull" to="Massage_Mature_GetOut" />
+  <Connection from="Massage_Mature_GetIn" to="Massage_HealthyFull" />
+  <Connection from="Massage_Mature_GetOut" to="exit" />
+  <Connection from="Massage_Sprout_GetIn" to="Massage_Healthy" />
+  <Connection from="Massage_Sprout_GetOut" to="exit" />
+  <Connection from="Spray_Mature" to="Spray_Mature_GetOut" />
+  <Connection from="Spray_Mature_GetIn" to="Spray_Mature" />
+  <Connection from="Spray_Mature_GetOut" to="exit" />
+  <Connection from="Spray_Sprout" to="Spray_Sprout_GetOut" />
+  <Connection from="Spray_Sprout_GetIn" to="Spray_Sprout" />
+  <Connection from="Spray_Sprout_GetOut" to="exit" />
+  <Connection from="Water_Mature" to="Water_Mature_GetOut" />
+  <Connection from="Water_Mature_GetIn" to="Water_Mature" />
+  <Connection from="Water_Mature_GetOut" to="exit" />
+  <Connection from="Water_Sprout" to="Water_Sprout_GetOut" />
+  <Connection from="Water_Sprout_GetIn" to="Water_Sprout" />
+  <Connection from="Water_Sprout_GetOut" to="exit" />
+  <Connection from="entry" to="Harvest_HealthyFull" />
+  <Connection from="entry" to="Harvest_Unhealthy" />
+  <Connection from="entry" to="Massage_Mature_GetIn" />
+  <Connection from="entry" to="Massage_Sprout_GetIn" />
+  <Connection from="entry" to="Spray_Mature_GetIn" />
+  <Connection from="entry" to="Spray_Sprout_GetIn" />
+  <Connection from="entry" to="Water_Mature_GetIn" />
+  <Connection from="entry" to="Water_Sprout_GetIn" />
+  <State name="Harvest_HealthyFull" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="7">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <ParameterSelector parameter="x:statLevel" unique_id="6">
+          <Choice value="low">
+            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="3">
+              <Choice weight="50" avoidRepeat="False">
+                <Controller target="x" controller="@ClipController(clip=a2o_verticalGarden_harvest_meatWall_low_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_verticalGarden_harvest.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="1">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+              <Choice weight="50" avoidRepeat="False">
+                <Controller target="x" controller="@ClipController(clip=a2o_verticalGarden_harvest_meatWall_high_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_verticalGarden_harvest.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="2">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+            </RandomSelector>
+          </Choice>
+          <Choice value="mediumLow">
+            <Reference target="3" />
+          </Choice>
+          <Choice value="medium">
+            <Reference target="3" />
+          </Choice>
+          <Choice value="mediumHigh">
+            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="5">
+              <Choice weight="58" avoidRepeat="False">
+                <Reference target="1" />
+              </Choice>
+              <Choice weight="51" avoidRepeat="False">
+                <Controller target="x" controller="@ClipController(clip=a2o_verticalGarden_harvest_meatWall_highSkill_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_verticalGarden_harvest.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="4">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+            </RandomSelector>
+          </Choice>
+          <Choice value="high">
+            <Reference target="4" />
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="Harvest_Unhealthy" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="9">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2o_verticalGarden_harvest_meatWall_unhealthy_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_verticalGarden_harvest.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="8">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="Massage_Healthy" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="11">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2o_verticalGarden_massage_low_loop_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_verticalGarden_massage.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="10">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="false" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.5333334" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="Massage_HealthyFull" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="13">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2o_verticalGarden_massage_high_loop_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_verticalGarden_massage.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="12">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="false" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.5333334" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="Massage_Mature_GetIn" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="15">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2o_verticalGarden_massage_high_start_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_verticalGarden_massage.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="14">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="Massage_Mature_GetOut" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="17">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2o_verticalGarden_massage_high_stop_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_verticalGarden_massage.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="16">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.5333334" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="Massage_Sprout_GetIn" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="19">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2o_verticalGarden_massage_low_start_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_verticalGarden_massage.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="18">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="Massage_Sprout_GetOut" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="21">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2o_verticalGarden_massage_low_stop_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_verticalGarden_massage.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="20">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="Spray_Mature" type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <MakeController>
+      <PostureSelector parameter="x:posture" unique_id="25">
+        <Choice value="-stand-FullBody" track="normal" mask="">
+          <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="24">
+            <Choice weight="50" avoidRepeat="False">
+              <Controller target="x" controller="@ClipController(clip=a2o_verticalGarden_spray_center_loop_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_verticalGarden_waterSpray_centerHigh.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="22">
+                <TransitionClassList>
+                  <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                </TransitionClassList>
+              </Controller>
+            </Choice>
+            <Choice weight="52" avoidRepeat="False">
+              <Controller target="x" controller="@ClipController(clip=a2o_verticalGarden_spray_high_loop_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_verticalGarden_waterSpray_centerHigh.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="23">
+                <TransitionClassList>
+                  <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                </TransitionClassList>
+              </Controller>
+            </Choice>
+          </RandomSelector>
+        </Choice>
+      </PostureSelector>
+    </MakeController>
+  </State>
+  <State name="Spray_Mature_GetIn" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="29">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="28">
+          <Choice weight="77" avoidRepeat="False">
+            <Controller target="x" controller="@ClipController(clip=a2o_verticalGarden_spray_center_start_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_verticalGarden_waterSpray_centerHigh.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="26">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
+          <Choice weight="69" avoidRepeat="False">
+            <Controller target="x" controller="@ClipController(clip=a2o_verticalGarden_spray_high_start_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_verticalGarden_waterSpray_centerHigh.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="27">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
+        </RandomSelector>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="Spray_Mature_GetOut" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="33">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="32">
+          <Choice weight="68" avoidRepeat="False">
+            <Controller target="x" controller="@ClipController(clip=a2o_verticalGarden_spray_center_stop_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_verticalGarden_waterSpray_centerHigh.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="30">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
+          <Choice weight="67" avoidRepeat="False">
+            <Controller target="x" controller="@ClipController(clip=a2o_verticalGarden_spray_high_stop_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_verticalGarden_waterSpray_centerHigh.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="31">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
+        </RandomSelector>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="Spray_Sprout" type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <MakeController>
+      <PostureSelector parameter="x:posture" unique_id="38">
+        <Choice value="-stand-FullBody" track="normal" mask="">
+          <ParameterSelector parameter="x:mood" unique_id="37">
+            <Choice value="happy">
+              <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="36">
+                <Choice weight="100" avoidRepeat="False">
+                  <Controller target="x" controller="@ClipController(clip=a2o_verticalGarden_spray_low_whistle_loop_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_verticalGarden_spray_low.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="34">
+                    <TransitionClassList>
+                      <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                    </TransitionClassList>
+                  </Controller>
+                </Choice>
+                <Choice weight="100" avoidRepeat="False">
+                  <Controller target="x" controller="@ClipController(clip=a2o_verticalGarden_spray_low_loop_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_verticalGarden_spray_low.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="35">
+                    <TransitionClassList>
+                      <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                    </TransitionClassList>
+                  </Controller>
+                </Choice>
+              </RandomSelector>
+            </Choice>
+            <Choice value="confident">
+              <Reference target="36" />
+            </Choice>
+            <Choice value="angry">
+              <Reference target="35" />
+            </Choice>
+            <Choice value="sad">
+              <Reference target="35" />
+            </Choice>
+            <Choice value="bored">
+              <Reference target="35" />
+            </Choice>
+            <Choice value="embarrassed">
+              <Reference target="35" />
+            </Choice>
+            <Choice value="uncomfortable">
+              <Reference target="35" />
+            </Choice>
+            <Choice value="playful">
+              <Reference target="36" />
+            </Choice>
+            <Choice value="tense">
+              <Reference target="35" />
+            </Choice>
+            <Choice value="focused">
+              <Reference target="35" />
+            </Choice>
+            <Choice value="energized">
+              <Reference target="35" />
+            </Choice>
+            <Choice value="flirty">
+              <Reference target="35" />
+            </Choice>
+            <Choice value="fine">
+              <Reference target="35" />
+            </Choice>
+            <Choice value="inspired">
+              <Reference target="36" />
+            </Choice>
+            <Choice value="dazed">
+              <Reference target="35" />
+            </Choice>
+          </ParameterSelector>
+        </Choice>
+      </PostureSelector>
+    </MakeController>
+  </State>
+  <State name="Spray_Sprout_GetIn" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="40">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2o_verticalGarden_spray_low_start_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_verticalGarden_spray_low.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="39">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="Spray_Sprout_GetOut" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="42">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2o_verticalGarden_spray_low_stop_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_verticalGarden_spray_low.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="41">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="Water_Mature" type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <MakeController>
+      <PostureSelector parameter="x:posture" unique_id="46">
+        <Choice value="-stand-FullBody" track="normal" mask="">
+          <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="45">
+            <Choice weight="51" avoidRepeat="False">
+              <Controller target="x" controller="@ClipController(clip=a2o_verticalGarden_water_center_loop_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_verticalGarden_waterSpray_centerHigh.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="43">
+                <TransitionClassList>
+                  <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                </TransitionClassList>
+              </Controller>
+            </Choice>
+            <Choice weight="49" avoidRepeat="False">
+              <Controller target="x" controller="@ClipController(clip=a2o_verticalGarden_water_high_loop_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_verticalGarden_waterSpray_centerHigh.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="44">
+                <TransitionClassList>
+                  <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                </TransitionClassList>
+              </Controller>
+            </Choice>
+          </RandomSelector>
+        </Choice>
+      </PostureSelector>
+    </MakeController>
+  </State>
+  <State name="Water_Mature_GetIn" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="50">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="49">
+          <Choice weight="48" avoidRepeat="False">
+            <Controller target="x" controller="@ClipController(clip=a2o_verticalGarden_water_center_start_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_verticalGarden_waterSpray_centerHigh.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="47">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
+          <Choice weight="50" avoidRepeat="False">
+            <Controller target="x" controller="@ClipController(clip=a2o_verticalGarden_water_high_start_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_verticalGarden_waterSpray_centerHigh.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="48">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
+        </RandomSelector>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="Water_Mature_GetOut" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="54">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="53">
+          <Choice weight="69" avoidRepeat="False">
+            <Controller target="x" controller="@ClipController(clip=a2o_verticalGarden_water_center_stop_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_verticalGarden_waterSpray_centerHigh.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="51">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
+          <Choice weight="77" avoidRepeat="False">
+            <Controller target="x" controller="@ClipController(clip=a2o_verticalGarden_water_high_stop_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_verticalGarden_waterSpray_centerHigh.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="52">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
+        </RandomSelector>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="Water_Sprout" type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <MakeController>
+      <PostureSelector parameter="x:posture" unique_id="59">
+        <Choice value="-stand-FullBody" track="normal" mask="">
+          <ParameterSelector parameter="x:mood" unique_id="58">
+            <Choice value="happy">
+              <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="57">
+                <Choice weight="100" avoidRepeat="False">
+                  <Controller target="x" controller="@ClipController(clip=a2o_verticalGarden_water_whistle_low_loop_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_verticalGarden_water_low.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="55">
+                    <TransitionClassList>
+                      <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                    </TransitionClassList>
+                  </Controller>
+                </Choice>
+                <Choice weight="100" avoidRepeat="False">
+                  <Controller target="x" controller="@ClipController(clip=a2o_verticalGarden_water_low_loop_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_verticalGarden_water_low.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="56">
+                    <TransitionClassList>
+                      <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                    </TransitionClassList>
+                  </Controller>
+                </Choice>
+              </RandomSelector>
+            </Choice>
+            <Choice value="confident">
+              <Reference target="57" />
+            </Choice>
+            <Choice value="angry">
+              <Reference target="56" />
+            </Choice>
+            <Choice value="sad">
+              <Reference target="56" />
+            </Choice>
+            <Choice value="bored">
+              <Reference target="56" />
+            </Choice>
+            <Choice value="embarrassed">
+              <Reference target="56" />
+            </Choice>
+            <Choice value="uncomfortable">
+              <Reference target="56" />
+            </Choice>
+            <Choice value="playful">
+              <Reference target="57" />
+            </Choice>
+            <Choice value="tense">
+              <Reference target="56" />
+            </Choice>
+            <Choice value="focused">
+              <Reference target="56" />
+            </Choice>
+            <Choice value="energized">
+              <Reference target="56" />
+            </Choice>
+            <Choice value="flirty">
+              <Reference target="56" />
+            </Choice>
+            <Choice value="fine">
+              <Reference target="56" />
+            </Choice>
+            <Choice value="inspired">
+              <Reference target="57" />
+            </Choice>
+            <Choice value="dazed">
+              <Reference target="56" />
+            </Choice>
+          </ParameterSelector>
+        </Choice>
+      </PostureSelector>
+    </MakeController>
+  </State>
+  <State name="Water_Sprout_GetIn" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="61">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2o_verticalGarden_water_low_start_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_verticalGarden_water_low.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="60">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="Water_Sprout_GetOut" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="63">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2o_verticalGarden_water_low_stop_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_verticalGarden_water_low.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="62">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
+    </PostureSelector>
+  </State>
+</ASM>

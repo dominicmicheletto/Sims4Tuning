@@ -1,0 +1,824 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="Bathtub_MudSoakBath_Posture" dcc="sage">
+  <Actor name="x" type="Sim" master="true" virtual="false" />
+  <Actor name="bathtub" type="Object" virtual="true" />
+  <Parameter name="routingSlot" type="enum" labels="1,2" default="2" />
+  <Parameter name="transitionPosture" type="enum" labels="stand,sit,sitIntimate,bed_Sleep,bed_Intimate,bed_Woohoo,bed_Relax,bed_Nap,bed_Undercovers,monkeyBar_play,monkeyBar_hangOut,shower,shower_wooHoo,computer,Bathtub_Bubblebath,bathTub_TakeBath,stargaze,hotTub_sit,hotTub_stand,meditation,levitate,massageChair_Reclined,massageChair_MassageFoot_L,massageChair_MassageFoot_R,foosballTable" default="stand" />
+  <Parameter name="mudsoak" type="enum" labels="Mud,MudDirty,RosePetalSoak,MuscleReleaseSoak,Citrus,milkHoneySoak,milkHoneySoakDirty,FrenchLavenderFoamBath" default="milkHoneySoakDirty" />
+  <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="child" />
+  <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
+  <Parameter name="bathtub:objectName" type="enum" labels="Shower,Bathtub,ShowerTubDoor,ShowerTubCurtain" default="Bathtub" />
+  <IkConfiguration name="a2o_bathtub_mudSoakBath_idles.ma">
+    <SourceFile name="a2o_bathtub_mudSoakBath_idles.ma">
+      <MapNamespace namespace="bathtub" actor="bathtub" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_bathtub_mudSoakBath_getInOut.ma">
+    <SourceFile name="a2o_bathtub_mudSoakBath_getInOut.ma">
+      <MapNamespace namespace="bathtub" actor="bathtub" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_bathtub_mudSoakBath_getInOut_mirrored.ma">
+    <SourceFile name="a2o_bathtub_mudSoakBath_getInOut_mirrored.ma">
+      <MapNamespace namespace="bathtub" actor="bathtub" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_showerTub_mudSoakBath_getInOut.ma">
+    <SourceFile name="a2o_showerTub_mudSoakBath_getInOut.ma">
+      <MapNamespace namespace="bathtub" actor="bathtub" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_showerTub_mudSoakBath_getInOut_curtain.ma">
+    <SourceFile name="a2o_showerTub_mudSoakBath_getInOut_curtain.ma">
+      <MapNamespace namespace="bathtub" actor="bathtub" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <PostureManifest>
+    <Provide name="bathtub_mudSoakBath" family="none" compatibility="FullBody" carry_left="-" carry_right="-" surface="*" />
+  </PostureManifest>
+  <State type="public" skippable="false" interrupt_this="false" name="GetIn" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="GetOut" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" name="bathtub_mudSoakBath_Posture" focus="none" facialoverlays="false" tailoverlays="true" />
+  <Connection from="GetIn" to="bathtub_mudSoakBath_Posture" />
+  <Connection from="GetOut" to="exit" />
+  <Connection from="bathtub_mudSoakBath_Posture" to="GetOut" />
+  <Connection from="entry" to="GetIn" />
+  <State name="GetIn" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <ParameterSelector parameter="transitionPosture" unique_id="77">
+      <Choice value="stand">
+        <ParameterSelector parameter="bathtub:objectName" unique_id="76">
+          <Choice value="Shower" />
+          <Choice value="Bathtub">
+            <ParameterSelector parameter="mudsoak" unique_id="41">
+              <Choice value="Mud">
+                <ParameterSelector parameter="routingSlot" unique_id="5">
+                  <Choice value="1">
+                    <Controller target="x" controller="@ClipController(clip=a2o_bathtub_mudBath_getIn_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bathtub_mudSoakBath_getInOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="1">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                    <Controller target="bathtub" controller="@ClipController(clip=a2o_bathtub_mudBath_getIn_bathtub, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bathtub_mudSoakBath_getInOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="2">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                  </Choice>
+                  <Choice value="2">
+                    <Controller target="x" controller="@ClipController(clip=a2o_bathtub_mudBath_getIn_mirrored_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bathtub_mudSoakBath_getInOut_mirrored.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="3">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                    <Controller target="bathtub" controller="@ClipController(clip=a2o_bathtub_mudBath_getIn_mirrored_bathtub, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bathtub_mudSoakBath_getInOut_mirrored.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="4">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                  </Choice>
+                </ParameterSelector>
+              </Choice>
+              <Choice value="MudDirty">
+                <ParameterSelector parameter="routingSlot" unique_id="10">
+                  <Choice value="1">
+                    <Controller target="bathtub" controller="@ClipController(clip=a2o_bathtub_mudBath_dirty_getIn_bathtub, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bathtub_mudSoakBath_getInOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="6">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                    <Controller target="x" controller="@ClipController(clip=a2o_bathtub_mudBath_dirty_getIn_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bathtub_mudSoakBath_getInOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="7">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                  </Choice>
+                  <Choice value="2">
+                    <Controller target="bathtub" controller="@ClipController(clip=a2o_bathtub_mudBath_dirty_getIn_mirrored_bathtub, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bathtub_mudSoakBath_getInOut_mirrored.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="8">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                    <Controller target="x" controller="@ClipController(clip=a2o_bathtub_mudBath_dirty_getIn_mirrored_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bathtub_mudSoakBath_getInOut_mirrored.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="9">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                  </Choice>
+                </ParameterSelector>
+              </Choice>
+              <Choice value="RosePetalSoak">
+                <ParameterSelector parameter="routingSlot" unique_id="15">
+                  <Choice value="1">
+                    <Controller target="x" controller="@ClipController(clip=a2o_bathtub_soakBath_rosePetalSoak_getIn_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bathtub_mudSoakBath_getInOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="11">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                    <Controller target="bathtub" controller="@ClipController(clip=a2o_bathtub_soakBath_rosePetalSoak_getIn_bathtub, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bathtub_mudSoakBath_getInOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="12">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                  </Choice>
+                  <Choice value="2">
+                    <Controller target="bathtub" controller="@ClipController(clip=a2o_bathtub_soakBath_rosePetalSoak_getIn_mirrored_bathtub, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bathtub_mudSoakBath_getInOut_mirrored.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="13">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                    <Controller target="x" controller="@ClipController(clip=a2o_bathtub_soakBath_rosePetalSoak_getIn_mirrored_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bathtub_mudSoakBath_getInOut_mirrored.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="14">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                  </Choice>
+                </ParameterSelector>
+              </Choice>
+              <Choice value="MuscleReleaseSoak">
+                <ParameterSelector parameter="routingSlot" unique_id="20">
+                  <Choice value="1">
+                    <Controller target="bathtub" controller="@ClipController(clip=a2o_bathtub_soakBath_muscleReleaseSoak_getIn_bathtub, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bathtub_mudSoakBath_getInOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="16">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                    <Controller target="x" controller="@ClipController(clip=a2o_bathtub_soakBath_muscleReleaseSoak_getIn_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bathtub_mudSoakBath_getInOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="17">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                  </Choice>
+                  <Choice value="2">
+                    <Controller target="x" controller="@ClipController(clip=a2o_bathtub_soakBath_muscleReleaseSoak_getIn_mirrored_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bathtub_mudSoakBath_getInOut_mirrored.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="18">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                    <Controller target="bathtub" controller="@ClipController(clip=a2o_bathtub_soakBath_muscleReleaseSoak_getIn_mirrored_bathtub, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bathtub_mudSoakBath_getInOut_mirrored.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="19">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                  </Choice>
+                </ParameterSelector>
+              </Choice>
+              <Choice value="Citrus">
+                <ParameterSelector parameter="routingSlot" unique_id="25">
+                  <Choice value="1">
+                    <Controller target="x" controller="@ClipController(clip=a2o_bathtub_soakBath_citrusSoak_getIn_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bathtub_mudSoakBath_getInOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="21">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                    <Controller target="bathtub" controller="@ClipController(clip=a2o_bathtub_soakBath_citrusSoak_getIn_bathtub, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bathtub_mudSoakBath_getInOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="22">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                  </Choice>
+                  <Choice value="2">
+                    <Controller target="bathtub" controller="@ClipController(clip=a2o_bathtub_soakBath_citrusSoak_getIn_mirrored_bathtub, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bathtub_mudSoakBath_getInOut_mirrored.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="23">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                    <Controller target="x" controller="@ClipController(clip=a2o_bathtub_soakBath_citrusSoak_getIn_mirrored_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bathtub_mudSoakBath_getInOut_mirrored.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="24">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                  </Choice>
+                </ParameterSelector>
+              </Choice>
+              <Choice value="milkHoneySoak">
+                <ParameterSelector parameter="routingSlot" unique_id="30">
+                  <Choice value="1">
+                    <Controller target="x" controller="@ClipController(clip=a2o_bathtub_soakBath_milkHoneyBath_getIn_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bathtub_mudSoakBath_getInOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="26">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                    <Controller target="bathtub" controller="@ClipController(clip=a2o_bathtub_soakBath_milkHoneyBath_getIn_bathtub, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bathtub_mudSoakBath_getInOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="27">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                  </Choice>
+                  <Choice value="2">
+                    <Controller target="x" controller="@ClipController(clip=a2o_bathtub_soakBath_milkHoneyBath_getIn_mirrored_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bathtub_mudSoakBath_getInOut_mirrored.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="28">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                    <Controller target="bathtub" controller="@ClipController(clip=a2o_bathtub_soakBath_milkHoneyBath_getIn_mirrored_bathtub, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bathtub_mudSoakBath_getInOut_mirrored.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="29">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                  </Choice>
+                </ParameterSelector>
+              </Choice>
+              <Choice value="milkHoneySoakDirty">
+                <ParameterSelector parameter="routingSlot" unique_id="35">
+                  <Choice value="1">
+                    <Controller target="bathtub" controller="@ClipController(clip=a2o_bathtub_soakBath_milkHoneyBath_dirty_getIn_bathtub, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bathtub_mudSoakBath_getInOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="31">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                    <Controller target="x" controller="@ClipController(clip=a2o_bathtub_soakBath_milkHoneyBath_dirty_getIn_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bathtub_mudSoakBath_getInOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="32">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                  </Choice>
+                  <Choice value="2">
+                    <Controller target="bathtub" controller="@ClipController(clip=a2o_bathtub_soakBath_milkHoneyBath_dirty_getIn_mirrored_bathtub, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bathtub_mudSoakBath_getInOut_mirrored.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="33">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                    <Controller target="x" controller="@ClipController(clip=a2o_bathtub_soakBath_milkHoneyBath_dirty_getIn_mirrored_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bathtub_mudSoakBath_getInOut_mirrored.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="34">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                  </Choice>
+                </ParameterSelector>
+              </Choice>
+              <Choice value="FrenchLavenderFoamBath">
+                <ParameterSelector parameter="routingSlot" unique_id="40">
+                  <Choice value="1">
+                    <Controller target="bathtub" controller="@ClipController(clip=a2o_bathtub_soakBath_frenchLavenderFoamBath_getIn_bathtub, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bathtub_mudSoakBath_getInOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="36">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                    <Controller target="x" controller="@ClipController(clip=a2o_bathtub_soakBath_frenchLavenderFoamBath_getIn_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bathtub_mudSoakBath_getInOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="37">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                  </Choice>
+                  <Choice value="2">
+                    <Controller target="bathtub" controller="@ClipController(clip=a2o_bathtub_soakBath_frenchLavenderFoamBath_getIn_mirrored_bathtub, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bathtub_mudSoakBath_getInOut_mirrored.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="38">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                    <Controller target="x" controller="@ClipController(clip=a2o_bathtub_soakBath_frenchLavenderFoamBath_getIn_mirrored_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bathtub_mudSoakBath_getInOut_mirrored.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="39">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                  </Choice>
+                </ParameterSelector>
+              </Choice>
+            </ParameterSelector>
+          </Choice>
+          <Choice value="ShowerTubDoor">
+            <ParameterSelector parameter="mudsoak" unique_id="58">
+              <Choice value="Mud">
+                <Controller target="bathtub" controller="@ClipController(clip=a2o_showerTub_mudBath_getIn_bathtub, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_showerTub_mudSoakBath_getInOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="42">
+                  <TransitionClassList />
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=a2o_showerTub_mudBath_getIn_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_showerTub_mudSoakBath_getInOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="43">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+              <Choice value="MudDirty">
+                <Controller target="bathtub" controller="@ClipController(clip=a2o_showerTub_mudBath_dirty_getIn_bathtub, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_showerTub_mudSoakBath_getInOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="44">
+                  <TransitionClassList />
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=a2o_showerTub_mudBath_dirty_getIn_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_showerTub_mudSoakBath_getInOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="45">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+              <Choice value="RosePetalSoak">
+                <Controller target="x" controller="@ClipController(clip=a2o_showerTub_soakBath_rosePetalSoak_getIn_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_showerTub_mudSoakBath_getInOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="46">
+                  <TransitionClassList />
+                </Controller>
+                <Controller target="bathtub" controller="@ClipController(clip=a2o_showerTub_soakBath_rosePetalSoak_getIn_bathtub, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_showerTub_mudSoakBath_getInOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="47">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+              <Choice value="MuscleReleaseSoak">
+                <Controller target="bathtub" controller="@ClipController(clip=a2o_showerTub_soakBath_muscleReleaseSoak_getIn_bathtub, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_showerTub_mudSoakBath_getInOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="48">
+                  <TransitionClassList />
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=a2o_showerTub_soakBath_muscleReleaseSoak_getIn_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_showerTub_mudSoakBath_getInOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="49">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+              <Choice value="Citrus">
+                <Controller target="bathtub" controller="@ClipController(clip=a2o_showerTub_soakBath_citrusSoak_getIn_bathtub, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_showerTub_mudSoakBath_getInOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="50">
+                  <TransitionClassList />
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=a2o_showerTub_soakBath_citrusSoak_getIn_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_showerTub_mudSoakBath_getInOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="51">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+              <Choice value="milkHoneySoak">
+                <Controller target="x" controller="@ClipController(clip=a2o_showerTub_soakBath_milkHoneyBath_getIn_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_showerTub_mudSoakBath_getInOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="52">
+                  <TransitionClassList />
+                </Controller>
+                <Controller target="bathtub" controller="@ClipController(clip=a2o_showerTub_soakBath_milkHoneyBath_getIn_bathtub, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_showerTub_mudSoakBath_getInOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="53">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+              <Choice value="milkHoneySoakDirty">
+                <Controller target="x" controller="@ClipController(clip=a2o_showerTub_soakBath_milkHoneyBath_dirty_getIn_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_showerTub_mudSoakBath_getInOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="54">
+                  <TransitionClassList />
+                </Controller>
+                <Controller target="bathtub" controller="@ClipController(clip=a2o_showerTub_soakBath_milkHoneyBath_dirty_getIn_bathtub, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_showerTub_mudSoakBath_getInOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="55">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+              <Choice value="FrenchLavenderFoamBath">
+                <Controller target="x" controller="@ClipController(clip=a2o_showerTub_soakBath_frenchLavenderFoamBath_getIn_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_showerTub_mudSoakBath_getInOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="56">
+                  <TransitionClassList />
+                </Controller>
+                <Controller target="bathtub" controller="@ClipController(clip=a2o_showerTub_soakBath_frenchLavenderFoamBath_getIn_bathtub, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_showerTub_mudSoakBath_getInOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="57">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+            </ParameterSelector>
+          </Choice>
+          <Choice value="ShowerTubCurtain">
+            <ParameterSelector parameter="mudsoak" unique_id="75">
+              <Choice value="Mud">
+                <Controller target="x" controller="@ClipController(clip=a2o_showerTub_mudBath_getIn_curtain_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_showerTub_mudSoakBath_getInOut_curtain.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="59">
+                  <TransitionClassList />
+                </Controller>
+                <Controller target="bathtub" controller="@ClipController(clip=a2o_showerTub_mudBath_getIn_curtain_bathtub, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_showerTub_mudSoakBath_getInOut_curtain.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="60">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+              <Choice value="MudDirty">
+                <Controller target="bathtub" controller="@ClipController(clip=a2o_showerTub_mudBath_dirty_getIn_curtain_bathtub, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_showerTub_mudSoakBath_getInOut_curtain.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="61">
+                  <TransitionClassList />
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=a2o_showerTub_mudBath_dirty_getIn_curtain_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_showerTub_mudSoakBath_getInOut_curtain.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="62">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+              <Choice value="RosePetalSoak">
+                <Controller target="bathtub" controller="@ClipController(clip=a2o_showerTub_soakBath_rosePetalSoak_getIn_curtain_bathtub, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_showerTub_mudSoakBath_getInOut_curtain.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="63">
+                  <TransitionClassList />
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=a2o_showerTub_soakBath_rosePetalSoak_getIn_curtain_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_showerTub_mudSoakBath_getInOut_curtain.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="64">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+              <Choice value="MuscleReleaseSoak">
+                <Controller target="x" controller="@ClipController(clip=a2o_showerTub_soakBath_muscleReleaseSoak_getIn_curtain_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_showerTub_mudSoakBath_getInOut_curtain.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="65">
+                  <TransitionClassList />
+                </Controller>
+                <Controller target="bathtub" controller="@ClipController(clip=a2o_showerTub_soakBath_muscleReleaseSoak_getIn_curtain_bathtub, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_showerTub_mudSoakBath_getInOut_curtain.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="66">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+              <Choice value="Citrus">
+                <Controller target="bathtub" controller="@ClipController(clip=a2o_showerTub_soakBath_citrusSoak_getIn_curtain_bathtub, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_showerTub_mudSoakBath_getInOut_curtain.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="67">
+                  <TransitionClassList />
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=a2o_showerTub_soakBath_citrusSoak_getIn_curtain_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_showerTub_mudSoakBath_getInOut_curtain.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="68">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+              <Choice value="milkHoneySoak">
+                <Controller target="bathtub" controller="@ClipController(clip=a2o_showerTub_soakBath_milkHoneyBath_getIn_curtain_bathtub, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_showerTub_mudSoakBath_getInOut_curtain.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="69">
+                  <TransitionClassList />
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=a2o_showerTub_soakBath_milkHoneyBath_getIn_curtain_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_showerTub_mudSoakBath_getInOut_curtain.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="70">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+              <Choice value="milkHoneySoakDirty">
+                <Controller target="x" controller="@ClipController(clip=a2o_showerTub_soakBath_milkHoneyBath_dirty_getIn_curtain_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_showerTub_mudSoakBath_getInOut_curtain.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="71">
+                  <TransitionClassList />
+                </Controller>
+                <Controller target="bathtub" controller="@ClipController(clip=a2o_showerTub_soakBath_milkHoneyBath_dirty_getIn_curtain_bathtub, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_showerTub_mudSoakBath_getInOut_curtain.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="72">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+              <Choice value="FrenchLavenderFoamBath">
+                <Controller target="bathtub" controller="@ClipController(clip=a2o_showerTub_soakBath_frenchLavenderFoamBath_getIn_curtain_bathtub, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_showerTub_mudSoakBath_getInOut_curtain.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="73">
+                  <TransitionClassList />
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=a2o_showerTub_soakBath_frenchLavenderFoamBath_getIn_curtain_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_showerTub_mudSoakBath_getInOut_curtain.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="74">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+            </ParameterSelector>
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+      <Choice value="sit" />
+      <Choice value="sitIntimate" />
+      <Choice value="bed_Sleep" />
+      <Choice value="bed_Intimate" />
+      <Choice value="bed_Woohoo" />
+      <Choice value="bed_Relax" />
+      <Choice value="bed_Nap" />
+      <Choice value="bed_Undercovers" />
+      <Choice value="monkeyBar_play" />
+      <Choice value="monkeyBar_hangOut" />
+      <Choice value="shower" />
+      <Choice value="shower_wooHoo" />
+      <Choice value="computer" />
+      <Choice value="Bathtub_Bubblebath" />
+      <Choice value="bathTub_TakeBath" />
+      <Choice value="stargaze" />
+      <Choice value="hotTub_sit" />
+      <Choice value="hotTub_stand" />
+      <Choice value="meditation" />
+      <Choice value="levitate" />
+      <Choice value="massageChair_Reclined" />
+      <Choice value="massageChair_MassageFoot_L" />
+      <Choice value="massageChair_MassageFoot_R" />
+      <Choice value="foosballTable" />
+    </ParameterSelector>
+  </State>
+  <State name="GetOut" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <ParameterSelector parameter="transitionPosture" unique_id="139">
+      <Choice value="stand">
+        <ParameterSelector parameter="bathtub:objectName" unique_id="138">
+          <Choice value="Shower" />
+          <Choice value="Bathtub">
+            <ParameterSelector parameter="mudsoak" unique_id="109">
+              <Choice value="Mud">
+                <ParameterSelector parameter="routingSlot" unique_id="83">
+                  <Choice value="1">
+                    <Controller target="x" controller="@ClipController(clip=a2o_bathtub_mudBath_getOut_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bathtub_mudSoakBath_getInOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="78">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                    <Controller target="bathtub" controller="@ClipController(clip=a2o_bathtub_mudBath_getOut_bathtub, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bathtub_mudSoakBath_getInOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="80">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                    <Stop target="bathtub" track="low" blend_in="-1" unique_id="79" />
+                  </Choice>
+                  <Choice value="2">
+                    <Controller target="bathtub" controller="@ClipController(clip=a2o_bathtub_mudBath_getOut_mirrored_bathtub, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bathtub_mudSoakBath_getInOut_mirrored.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="81">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                    <Reference target="79" />
+                    <Controller target="x" controller="@ClipController(clip=a2o_bathtub_mudBath_getOut_mirrored_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bathtub_mudSoakBath_getInOut_mirrored.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="82">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                  </Choice>
+                </ParameterSelector>
+              </Choice>
+              <Choice value="MudDirty">
+                <Reference target="83" />
+              </Choice>
+              <Choice value="RosePetalSoak">
+                <ParameterSelector parameter="routingSlot" unique_id="88">
+                  <Choice value="1">
+                    <Controller target="x" controller="@ClipController(clip=a2o_bathtub_soakBath_rosePetalSoak_getOut_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bathtub_mudSoakBath_getInOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="84">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                    <Controller target="bathtub" controller="@ClipController(clip=a2o_bathtub_soakBath_rosePetalSoak_getOut_bathtub, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bathtub_mudSoakBath_getInOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="85">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                    <Reference target="79" />
+                  </Choice>
+                  <Choice value="2">
+                    <Controller target="x" controller="@ClipController(clip=a2o_bathtub_soakBath_rosePetalSoak_getOut_mirrored_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bathtub_mudSoakBath_getInOut_mirrored.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="86">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                    <Controller target="bathtub" controller="@ClipController(clip=a2o_bathtub_soakBath_rosePetalSoak_getOut_mirrored_bathtub, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bathtub_mudSoakBath_getInOut_mirrored.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="87">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                    <Reference target="79" />
+                  </Choice>
+                </ParameterSelector>
+              </Choice>
+              <Choice value="MuscleReleaseSoak">
+                <ParameterSelector parameter="routingSlot" unique_id="93">
+                  <Choice value="1">
+                    <Controller target="bathtub" controller="@ClipController(clip=a2o_bathtub_soakBath_muscleReleaseSoak_getOut_bathtub, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bathtub_mudSoakBath_getInOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="89">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                    <Reference target="79" />
+                    <Controller target="x" controller="@ClipController(clip=a2o_bathtub_soakBath_muscleReleaseSoak_getOut_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bathtub_mudSoakBath_getInOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="90">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                  </Choice>
+                  <Choice value="2">
+                    <Controller target="bathtub" controller="@ClipController(clip=a2o_bathtub_soakBath_muscleReleaseSoak_getOut_mirrored_bathtub, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bathtub_mudSoakBath_getInOut_mirrored.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="91">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                    <Reference target="79" />
+                    <Controller target="x" controller="@ClipController(clip=a2o_bathtub_soakBath_muscleReleaseSoak_getOut_mirrored_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bathtub_mudSoakBath_getInOut_mirrored.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="92">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                  </Choice>
+                </ParameterSelector>
+              </Choice>
+              <Choice value="Citrus">
+                <ParameterSelector parameter="routingSlot" unique_id="98">
+                  <Choice value="1">
+                    <Controller target="x" controller="@ClipController(clip=a2o_bathtub_soakBath_citrusSoak_getOut_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bathtub_mudSoakBath_getInOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="94">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                    <Controller target="bathtub" controller="@ClipController(clip=a2o_bathtub_soakBath_citrusSoak_getOut_bathtub, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bathtub_mudSoakBath_getInOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="95">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                    <Reference target="79" />
+                  </Choice>
+                  <Choice value="2">
+                    <Controller target="bathtub" controller="@ClipController(clip=a2o_bathtub_soakBath_citrusSoak_getOut_mirrored_bathtub, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bathtub_mudSoakBath_getInOut_mirrored.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="96">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                    <Reference target="79" />
+                    <Controller target="x" controller="@ClipController(clip=a2o_bathtub_soakBath_citrusSoak_getOut_mirrored_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bathtub_mudSoakBath_getInOut_mirrored.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="97">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                  </Choice>
+                </ParameterSelector>
+              </Choice>
+              <Choice value="milkHoneySoak">
+                <ParameterSelector parameter="routingSlot" unique_id="103">
+                  <Choice value="1">
+                    <Controller target="bathtub" controller="@ClipController(clip=a2o_bathtub_soakBath_milkHoneyBath_getOut_bathtub, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bathtub_mudSoakBath_getInOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="99">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                    <Reference target="79" />
+                    <Controller target="x" controller="@ClipController(clip=a2o_bathtub_soakBath_milkHoneyBath_getOut_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bathtub_mudSoakBath_getInOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="100">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                  </Choice>
+                  <Choice value="2">
+                    <Controller target="x" controller="@ClipController(clip=a2o_bathtub_soakBath_milkHoneyBath_getOut_mirrored_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bathtub_mudSoakBath_getInOut_mirrored.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="101">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                    <Controller target="bathtub" controller="@ClipController(clip=a2o_bathtub_soakBath_milkHoneyBath_getOut_mirrored_bathtub, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bathtub_mudSoakBath_getInOut_mirrored.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="102">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                    <Reference target="79" />
+                  </Choice>
+                </ParameterSelector>
+              </Choice>
+              <Choice value="milkHoneySoakDirty">
+                <Reference target="103" />
+              </Choice>
+              <Choice value="FrenchLavenderFoamBath">
+                <ParameterSelector parameter="routingSlot" unique_id="108">
+                  <Choice value="1">
+                    <Controller target="x" controller="@ClipController(clip=a2o_bathtub_soakBath_frenchLavenderFoamBath_getOut_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bathtub_mudSoakBath_getInOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="104">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                    <Controller target="bathtub" controller="@ClipController(clip=a2o_bathtub_soakBath_frenchLavenderFoamBath_getOut_bathtub, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bathtub_mudSoakBath_getInOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="105">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                    <Reference target="79" />
+                  </Choice>
+                  <Choice value="2">
+                    <Controller target="bathtub" controller="@ClipController(clip=a2o_bathtub_soakBath_frenchLavenderFoamBath_getOut_mirrored_bathtub, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bathtub_mudSoakBath_getInOut_mirrored.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="106">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                    <Reference target="79" />
+                    <Controller target="x" controller="@ClipController(clip=a2o_bathtub_soakBath_frenchLavenderFoamBath_getOut_mirrored_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bathtub_mudSoakBath_getInOut_mirrored.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="107">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                  </Choice>
+                </ParameterSelector>
+              </Choice>
+            </ParameterSelector>
+          </Choice>
+          <Choice value="ShowerTubDoor">
+            <ParameterSelector parameter="mudsoak" unique_id="123">
+              <Choice value="Mud">
+                <Controller target="x" controller="@ClipController(clip=a2o_showerTub_mudBath_getOut_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_showerTub_mudSoakBath_getInOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="110">
+                  <TransitionClassList />
+                </Controller>
+                <Controller target="bathtub" controller="@ClipController(clip=a2o_showerTub_mudBath_getOut_bathtub, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_showerTub_mudSoakBath_getInOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="112">
+                  <TransitionClassList />
+                </Controller>
+                <Stop target="bathtub" track="low" blend_in="-1" unique_id="111" />
+              </Choice>
+              <Choice value="MudDirty">
+                <Reference target="110" />
+                <Reference target="112" />
+                <Reference target="111" />
+              </Choice>
+              <Choice value="RosePetalSoak">
+                <Controller target="bathtub" controller="@ClipController(clip=a2o_showerTub_soakBath_rosePetalSoak_getOut_bathtub, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_showerTub_mudSoakBath_getInOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="113">
+                  <TransitionClassList />
+                </Controller>
+                <Reference target="111" />
+                <Controller target="x" controller="@ClipController(clip=a2o_showerTub_soakBath_rosePetalSoak_getOut_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_showerTub_mudSoakBath_getInOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="114">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+              <Choice value="MuscleReleaseSoak">
+                <Controller target="x" controller="@ClipController(clip=a2o_showerTub_soakBath_muscleReleaseSoak_getOut_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_showerTub_mudSoakBath_getInOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="115">
+                  <TransitionClassList />
+                </Controller>
+                <Controller target="bathtub" controller="@ClipController(clip=a2o_showerTub_soakBath_muscleReleaseSoak_getOut_bathtub, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_showerTub_mudSoakBath_getInOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="116">
+                  <TransitionClassList />
+                </Controller>
+                <Reference target="111" />
+              </Choice>
+              <Choice value="Citrus">
+                <Controller target="x" controller="@ClipController(clip=a2o_showerTub_soakBath_citrusSoak_getOut_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_showerTub_mudSoakBath_getInOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="117">
+                  <TransitionClassList />
+                </Controller>
+                <Controller target="bathtub" controller="@ClipController(clip=a2o_showerTub_soakBath_citrusSoak_getOut_bathtub, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_showerTub_mudSoakBath_getInOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="118">
+                  <TransitionClassList />
+                </Controller>
+                <Reference target="111" />
+              </Choice>
+              <Choice value="milkHoneySoak">
+                <Controller target="bathtub" controller="@ClipController(clip=a2o_showerTub_soakBath_milkHoneyBath_getOut_bathtub, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_showerTub_mudSoakBath_getInOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="119">
+                  <TransitionClassList />
+                </Controller>
+                <Reference target="111" />
+                <Controller target="x" controller="@ClipController(clip=a2o_showerTub_soakBath_milkHoneyBath_getOut_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_showerTub_mudSoakBath_getInOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="120">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+              <Choice value="milkHoneySoakDirty">
+                <Reference target="119" />
+                <Reference target="111" />
+                <Reference target="120" />
+              </Choice>
+              <Choice value="FrenchLavenderFoamBath">
+                <Controller target="x" controller="@ClipController(clip=a2o_showerTub_soakBath_frenchLavenderFoamBath_getOut_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_showerTub_mudSoakBath_getInOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="121">
+                  <TransitionClassList />
+                </Controller>
+                <Controller target="bathtub" controller="@ClipController(clip=a2o_showerTub_soakBath_frenchLavenderFoamBath_getOut_bathtub, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_showerTub_mudSoakBath_getInOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="122">
+                  <TransitionClassList />
+                </Controller>
+                <Reference target="111" />
+              </Choice>
+            </ParameterSelector>
+          </Choice>
+          <Choice value="ShowerTubCurtain">
+            <ParameterSelector parameter="mudsoak" unique_id="137">
+              <Choice value="Mud">
+                <Controller target="x" controller="@ClipController(clip=a2o_showerTub_mudBath_getOut_curtain_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_showerTub_mudSoakBath_getInOut_curtain.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="124">
+                  <TransitionClassList />
+                </Controller>
+                <Controller target="bathtub" controller="@ClipController(clip=a2o_showerTub_mudBath_getOut_curtain_bathtub, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_showerTub_mudSoakBath_getInOut_curtain.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="126">
+                  <TransitionClassList />
+                </Controller>
+                <Stop target="bathtub" track="low" blend_in="-1" unique_id="125" />
+              </Choice>
+              <Choice value="MudDirty">
+                <Reference target="124" />
+                <Reference target="126" />
+                <Reference target="125" />
+              </Choice>
+              <Choice value="RosePetalSoak">
+                <Controller target="bathtub" controller="@ClipController(clip=a2o_showerTub_soakBath_rosePetalSoak_getOut_curtain_bathtub, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_showerTub_mudSoakBath_getInOut_curtain.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="127">
+                  <TransitionClassList />
+                </Controller>
+                <Reference target="125" />
+                <Controller target="x" controller="@ClipController(clip=a2o_showerTub_soakBath_rosePetalSoak_getOut_curtain_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_showerTub_mudSoakBath_getInOut_curtain.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="128">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+              <Choice value="MuscleReleaseSoak">
+                <Controller target="bathtub" controller="@ClipController(clip=a2o_showerTub_soakBath_muscleReleaseSoak_getOut_curtain_bathtub, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_showerTub_mudSoakBath_getInOut_curtain.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="129">
+                  <TransitionClassList />
+                </Controller>
+                <Reference target="125" />
+                <Controller target="x" controller="@ClipController(clip=a2o_showerTub_soakBath_muscleReleaseSoak_getOut_curtain_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_showerTub_mudSoakBath_getInOut_curtain.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="130">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+              <Choice value="Citrus">
+                <Controller target="x" controller="@ClipController(clip=a2o_showerTub_soakBath_citrusSoak_getOut_curtain_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_showerTub_mudSoakBath_getInOut_curtain.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="131">
+                  <TransitionClassList />
+                </Controller>
+                <Controller target="bathtub" controller="@ClipController(clip=a2o_showerTub_soakBath_citrusSoak_getOut_curtain_bathtub, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_showerTub_mudSoakBath_getInOut_curtain.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="132">
+                  <TransitionClassList />
+                </Controller>
+                <Reference target="125" />
+              </Choice>
+              <Choice value="milkHoneySoak">
+                <Controller target="x" controller="@ClipController(clip=a2o_showerTub_soakBath_milkHoneyBath_getOut_curtain_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_showerTub_mudSoakBath_getInOut_curtain.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="133">
+                  <TransitionClassList />
+                </Controller>
+                <Controller target="bathtub" controller="@ClipController(clip=a2o_showerTub_soakBath_milkHoneyBath_getOut_curtain_bathtub, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_showerTub_mudSoakBath_getInOut_curtain.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="134">
+                  <TransitionClassList />
+                </Controller>
+                <Reference target="125" />
+              </Choice>
+              <Choice value="milkHoneySoakDirty">
+                <Reference target="133" />
+                <Reference target="134" />
+                <Reference target="125" />
+              </Choice>
+              <Choice value="FrenchLavenderFoamBath">
+                <Controller target="x" controller="@ClipController(clip=a2o_showerTub_soakBath_frenchLavenderFoamBath_getOut_curtain_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_showerTub_mudSoakBath_getInOut_curtain.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="135">
+                  <TransitionClassList />
+                </Controller>
+                <Controller target="bathtub" controller="@ClipController(clip=a2o_showerTub_soakBath_frenchLavenderFoamBath_getOut_curtain_bathtub, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_showerTub_mudSoakBath_getInOut_curtain.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="136">
+                  <TransitionClassList />
+                </Controller>
+                <Reference target="125" />
+              </Choice>
+            </ParameterSelector>
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+      <Choice value="sit" />
+      <Choice value="sitIntimate" />
+      <Choice value="bed_Sleep" />
+      <Choice value="bed_Intimate" />
+      <Choice value="bed_Woohoo" />
+      <Choice value="bed_Relax" />
+      <Choice value="bed_Nap" />
+      <Choice value="bed_Undercovers" />
+      <Choice value="monkeyBar_play" />
+      <Choice value="monkeyBar_hangOut" />
+      <Choice value="shower" />
+      <Choice value="shower_wooHoo" />
+      <Choice value="computer" />
+      <Choice value="Bathtub_Bubblebath" />
+      <Choice value="bathTub_TakeBath" />
+      <Choice value="stargaze" />
+      <Choice value="hotTub_sit" />
+      <Choice value="hotTub_stand" />
+      <Choice value="meditation" />
+      <Choice value="levitate" />
+      <Choice value="massageChair_Reclined" />
+      <Choice value="massageChair_MassageFoot_L" />
+      <Choice value="massageChair_MassageFoot_R" />
+      <Choice value="foosballTable" />
+    </ParameterSelector>
+  </State>
+  <State name="bathtub_mudSoakBath_Posture" type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <MakeController>
+      <Controller target="x" controller="@ClipController(clip=a2o_bathtub_mudSoakBath_posture_x, loop_count=#1)" overridePosture="false" mask="" track="low" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bathtub_mudSoakBath_idles.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="140">
+        <TransitionClassList>
+          <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+        </TransitionClassList>
+      </Controller>
+      <Controller target="bathtub" controller="@ClipController(clip=a2o_bathtub_mudSoakBath_posture_bathtub, loop_count=#1)" overridePosture="false" mask="" track="low" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bathtub_mudSoakBath_idles.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="141">
+        <TransitionClassList>
+          <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+        </TransitionClassList>
+      </Controller>
+    </MakeController>
+  </State>
+</ASM>

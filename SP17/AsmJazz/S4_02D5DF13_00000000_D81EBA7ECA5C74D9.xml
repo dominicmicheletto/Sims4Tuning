@@ -1,0 +1,406 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="Knit" dcc="sage">
+  <Actor name="x" type="Sim" master="true" virtual="false" />
+  <Actor name="sitTemplate" type="Object" virtual="true" />
+  <Actor name="toolNeedleKnitting" type="Prop" virtual="false" object_def_resource_key="c0db5ae7:00000000:000000000003cfd5#toolNeedleKnitting_SP17GEN_set1" />
+  <Actor name="toolNeedleKnittingYarn" type="Prop" virtual="false" object_def_resource_key="c0db5ae7:00000000:000000000003d86b#toolNeedleKnittingYarn_SP17GEN_set1" />
+  <Actor name="toolNeedleKnittingSmall" type="Prop" virtual="false" object_def_resource_key="c0db5ae7:00000000:000000000003cfd7#toolNeedleKnittingSmall_SP17GEN_set1" />
+  <Actor name="toolNeedleKnittingYarnSmall" type="Prop" virtual="false" object_def_resource_key="c0db5ae7:00000000:000000000003d86a#toolNeedleKnittingYarnSmall_SP17GEN_set1" />
+  <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
+  <Parameter name="x:statLevel" type="enum" labels="low,mediumLow,medium,mediumHigh,high" default="low" />
+  <IkConfiguration name="a_knitting_lowSkill_All_seated.ma">
+    <SourceFile name="a_knitting_lowSkill_All_seated.ma">
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="sitTemplate" actor="sitTemplate" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="c_knitting_lowSkill_All_seated.ma">
+    <SourceFile name="c_knitting_lowSkill_All_seated.ma">
+      <MapNamespace namespace="sitTemplate" actor="sitTemplate" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a_knitting_highSkill_start_stop.ma">
+    <SourceFile name="a_knitting_highSkill_start_stop.ma">
+      <MapNamespace namespace="toolNeedleKnittingYarn" actor="toolNeedleKnittingYarn" />
+      <MapNamespace namespace="sitTemplate" actor="sitTemplate" />
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="toolNeedleKnitting" actor="toolNeedleKnitting" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="c_knitting_highSkill_All_seated.ma">
+    <SourceFile name="c_knitting_highSkill_All_seated.ma">
+      <MapNamespace namespace="sitTemplate" actor="sitTemplate" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a_knitting_highSkill_All_seated.ma">
+    <SourceFile name="a_knitting_highSkill_All_seated.ma">
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="sitTemplate" actor="sitTemplate" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="c_knitting_highSkill_start_stop.ma">
+    <SourceFile name="c_knitting_highSkill_start_stop.ma">
+      <MapNamespace namespace="toolNeedleKnittingYarnSmall" actor="toolNeedleKnittingYarnSmall" />
+      <MapNamespace namespace="sitTemplate" actor="sitTemplate" />
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="toolNeedleKnittingSmall" actor="toolNeedleKnittingSmall" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a_knitting_start_stop.ma">
+    <SourceFile name="a_knitting_start_stop.ma">
+      <MapNamespace namespace="toolNeedleKnittingYarn" actor="toolNeedleKnittingYarn" />
+      <MapNamespace namespace="sitTemplate" actor="sitTemplate" />
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="toolNeedleKnittingSmall" actor="toolNeedleKnittingSmall" />
+      <MapNamespace namespace="toolNeedleKnitting" actor="toolNeedleKnitting" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="c_knitting_start_stop.ma">
+    <SourceFile name="c_knitting_start_stop.ma">
+      <MapNamespace namespace="toolNeedleKnittingYarnSmall" actor="toolNeedleKnittingYarnSmall" />
+      <MapNamespace namespace="sitTemplate" actor="sitTemplate" />
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="toolNeedleKnittingSmall" actor="toolNeedleKnittingSmall" />
+    </SourceFile>
+  </IkConfiguration>
+  <PostureManifest actors="" />
+  <PostureManifest actors="x">
+    <Support family="sit" compatibility="FullBody" carry_left="-" carry_right="-" surface="-" />
+    <Support family="sit" compatibility="UpperBody" carry_left="-" carry_right="-" surface="-" />
+  </PostureManifest>
+  <State type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" name="Knit" focus="undefined" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="start" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="stop" focus="none" facialoverlays="false" tailoverlays="true" />
+  <Connection from="Knit" to="stop" />
+  <Connection from="entry" to="start" />
+  <Connection from="start" to="Knit" />
+  <Connection from="stop" to="exit" />
+  <State name="Knit" type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" focus="undefined" facialoverlays="false" tailoverlays="true">
+    <description />
+    <MakeController>
+      <PostureSelector parameter="x:posture" unique_id="20">
+        <Choice value="-sit-FullBody" track="normal" mask="">
+          <ParameterSelector parameter="x:statLevel" unique_id="19">
+            <Choice value="low">
+              <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="9">
+                <Choice weight="70" avoidRepeat="False">
+                  <Controller target="x" controller="@ClipController(clip=a_knitting_lowSkill_01_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_knitting_lowSkill_All_seated.ma" focus="head" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="1">
+                    <TransitionClassList />
+                  </Controller>
+                  <ParameterSelector parameter="x:age" unique_id="4">
+                    <Choice value="baby" />
+                    <Choice value="toddler" />
+                    <Choice value="child">
+                      <Controller target="toolNeedleKnittingYarnSmall" controller="@ClipController(clip=c_knitting_lowSkill_01_seated_toolNeedleKnittingYarnSmall, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c_knitting_lowSkill_All_seated.ma" focus="head" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="2">
+                        <TransitionClassList />
+                      </Controller>
+                    </Choice>
+                    <Choice value="teen">
+                      <Controller target="toolNeedleKnittingYarn" controller="@ClipController(clip=a_knitting_lowSkill_01_seated_toolNeedleKnittingYarn, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_knitting_lowSkill_All_seated.ma" focus="head" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="3">
+                        <TransitionClassList />
+                      </Controller>
+                    </Choice>
+                    <Choice value="youngadult">
+                      <Reference target="3" />
+                    </Choice>
+                    <Choice value="adult">
+                      <Reference target="3" />
+                    </Choice>
+                    <Choice value="elder">
+                      <Reference target="3" />
+                    </Choice>
+                  </ParameterSelector>
+                </Choice>
+                <Choice weight="28" avoidRepeat="True">
+                  <Controller target="x" controller="@ClipController(clip=a_knitting_lowSkill_02_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_knitting_lowSkill_All_seated.ma" focus="none" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="5">
+                    <TransitionClassList />
+                  </Controller>
+                  <ParameterSelector parameter="x:age" unique_id="8">
+                    <Choice value="baby" />
+                    <Choice value="toddler" />
+                    <Choice value="child">
+                      <Controller target="toolNeedleKnittingYarnSmall" controller="@ClipController(clip=c_knitting_lowSkill_02_seated_toolNeedleKnittingYarnSmall, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c_knitting_lowSkill_All_seated.ma" focus="none" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="6">
+                        <TransitionClassList />
+                      </Controller>
+                    </Choice>
+                    <Choice value="teen">
+                      <Controller target="toolNeedleKnittingYarn" controller="@ClipController(clip=a_knitting_lowSkill_02_seated_toolNeedleKnittingYarn, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_knitting_lowSkill_All_seated.ma" focus="none" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="7">
+                        <TransitionClassList />
+                      </Controller>
+                    </Choice>
+                    <Choice value="youngadult">
+                      <Reference target="7" />
+                    </Choice>
+                    <Choice value="adult">
+                      <Reference target="7" />
+                    </Choice>
+                    <Choice value="elder">
+                      <Reference target="7" />
+                    </Choice>
+                  </ParameterSelector>
+                </Choice>
+              </RandomSelector>
+            </Choice>
+            <Choice value="mediumLow">
+              <Reference target="9" />
+            </Choice>
+            <Choice value="medium">
+              <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="18">
+                <Choice weight="76" avoidRepeat="False">
+                  <ParameterSelector parameter="x:age" unique_id="12">
+                    <Choice value="baby" />
+                    <Choice value="toddler" />
+                    <Choice value="child">
+                      <Controller target="toolNeedleKnittingYarnSmall" controller="@ClipController(clip=c_knitting_highSkill_01_seated_toolNeedleKnittingYarnSmall, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c_knitting_highSkill_All_seated.ma" focus="head" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="10">
+                        <TransitionClassList />
+                      </Controller>
+                    </Choice>
+                    <Choice value="teen">
+                      <Controller target="toolNeedleKnittingYarn" controller="@ClipController(clip=a_knitting_highSkill_01_seated_toolNeedleKnittingYarn, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_knitting_highSkill_All_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="11">
+                        <TransitionClassList />
+                      </Controller>
+                    </Choice>
+                    <Choice value="youngadult">
+                      <Reference target="11" />
+                    </Choice>
+                    <Choice value="adult">
+                      <Reference target="11" />
+                    </Choice>
+                    <Choice value="elder">
+                      <Reference target="11" />
+                    </Choice>
+                  </ParameterSelector>
+                  <Controller target="x" controller="@ClipController(clip=a_knitting_highSkill_01_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_knitting_highSkill_All_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="13">
+                    <TransitionClassList />
+                  </Controller>
+                </Choice>
+                <Choice weight="33" avoidRepeat="True">
+                  <ParameterSelector parameter="x:age" unique_id="16">
+                    <Choice value="baby" />
+                    <Choice value="toddler" />
+                    <Choice value="child">
+                      <Controller target="toolNeedleKnittingYarnSmall" controller="@ClipController(clip=c_knitting_highSkill_02_seated_toolNeedleKnittingYarnSmall, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c_knitting_highSkill_All_seated.ma" focus="head" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="14">
+                        <TransitionClassList />
+                      </Controller>
+                    </Choice>
+                    <Choice value="teen">
+                      <Controller target="toolNeedleKnittingYarn" controller="@ClipController(clip=a_knitting_highSkill_02_seated_toolNeedleKnittingYarn, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_knitting_highSkill_All_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="15">
+                        <TransitionClassList />
+                      </Controller>
+                    </Choice>
+                    <Choice value="youngadult">
+                      <Reference target="15" />
+                    </Choice>
+                    <Choice value="adult">
+                      <Reference target="15" />
+                    </Choice>
+                    <Choice value="elder">
+                      <Reference target="15" />
+                    </Choice>
+                  </ParameterSelector>
+                  <Controller target="x" controller="@ClipController(clip=a_knitting_highSkill_02_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_knitting_highSkill_All_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="17">
+                    <TransitionClassList />
+                  </Controller>
+                </Choice>
+              </RandomSelector>
+            </Choice>
+            <Choice value="mediumHigh">
+              <Reference target="18" />
+            </Choice>
+            <Choice value="high">
+              <Reference target="18" />
+            </Choice>
+          </ParameterSelector>
+        </Choice>
+        <Choice value="-sit-UpperBody" track="normal" mask="Trackmask_UpperBody">
+          <Reference target="19" />
+        </Choice>
+      </PostureSelector>
+    </MakeController>
+  </State>
+  <State name="start" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="32">
+      <Choice value="-sit-FullBody" track="normal" mask="">
+        <ParameterSelector parameter="x:statLevel" unique_id="31">
+          <Choice value="low">
+            <ParameterSelector parameter="x:age" unique_id="25">
+              <Choice value="baby" />
+              <Choice value="toddler" />
+              <Choice value="child">
+                <Controller target="x" controller="@ClipController(clip=c_knitting_start_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c_knitting_start_stop.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="21">
+                  <TransitionClassList />
+                </Controller>
+                <Controller target="toolNeedleKnittingYarnSmall" controller="@ClipController(clip=c_knitting_start_seated_toolNeedleKnittingYarnSmall, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c_knitting_start_stop.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="22">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+              <Choice value="teen">
+                <Controller target="toolNeedleKnittingYarn" controller="@ClipController(clip=a_knitting_start_seated_toolNeedleKnittingYarn, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_knitting_start_stop.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="23">
+                  <TransitionClassList />
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=a_knitting_start_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_knitting_start_stop.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="24">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+              <Choice value="youngadult">
+                <Reference target="23" />
+                <Reference target="24" />
+              </Choice>
+              <Choice value="adult">
+                <Reference target="23" />
+                <Reference target="24" />
+              </Choice>
+              <Choice value="elder">
+                <Reference target="23" />
+                <Reference target="24" />
+              </Choice>
+            </ParameterSelector>
+          </Choice>
+          <Choice value="mediumLow">
+            <Reference target="25" />
+          </Choice>
+          <Choice value="medium">
+            <ParameterSelector parameter="x:age" unique_id="30">
+              <Choice value="baby" />
+              <Choice value="toddler" />
+              <Choice value="child">
+                <Controller target="x" controller="@ClipController(clip=c_knitting_highSkill_start_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c_knitting_highSkill_start_stop.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="26">
+                  <TransitionClassList />
+                </Controller>
+                <Controller target="toolNeedleKnittingYarnSmall" controller="@ClipController(clip=c_knitting_highSkill_start_seated_toolNeedleKnittingYarnSmall, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c_knitting_highSkill_start_stop.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="27">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+              <Choice value="teen">
+                <Controller target="x" controller="@ClipController(clip=a_knitting_highSkill_start_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_knitting_highSkill_start_stop.ma" focus="none" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="28">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <Controller target="toolNeedleKnittingYarn" controller="@ClipController(clip=a_knitting_highSkill_start_seated_toolNeedleKnittingYarn, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_knitting_highSkill_start_stop.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="29">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+              <Choice value="youngadult">
+                <Reference target="28" />
+                <Reference target="29" />
+              </Choice>
+              <Choice value="adult">
+                <Reference target="28" />
+                <Reference target="29" />
+              </Choice>
+              <Choice value="elder">
+                <Reference target="28" />
+                <Reference target="29" />
+              </Choice>
+            </ParameterSelector>
+          </Choice>
+          <Choice value="mediumHigh">
+            <Reference target="30" />
+          </Choice>
+          <Choice value="high">
+            <Reference target="30" />
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+      <Choice value="-sit-UpperBody" track="normal" mask="Trackmask_UpperBody">
+        <Reference target="31" />
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="stop" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="44">
+      <Choice value="-sit-FullBody" track="normal" mask="">
+        <ParameterSelector parameter="x:statLevel" unique_id="43">
+          <Choice value="low">
+            <ParameterSelector parameter="x:age" unique_id="37">
+              <Choice value="baby" />
+              <Choice value="toddler" />
+              <Choice value="child">
+                <Controller target="x" controller="@ClipController(clip=c_knitting_stop_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c_knitting_start_stop.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="33">
+                  <TransitionClassList />
+                </Controller>
+                <Controller target="toolNeedleKnittingYarnSmall" controller="@ClipController(clip=c_knitting_stop_seated_toolNeedleKnittingYarnSmall, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c_knitting_start_stop.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="34">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+              <Choice value="teen">
+                <Controller target="x" controller="@ClipController(clip=a_knitting_stop_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_knitting_start_stop.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="35">
+                  <TransitionClassList />
+                </Controller>
+                <Controller target="toolNeedleKnittingYarn" controller="@ClipController(clip=a_knitting_stop_seated_toolNeedleKnittingYarn, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_knitting_start_stop.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="36">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+              <Choice value="youngadult">
+                <Reference target="35" />
+                <Reference target="36" />
+              </Choice>
+              <Choice value="adult">
+                <Reference target="35" />
+                <Reference target="36" />
+              </Choice>
+              <Choice value="elder">
+                <Reference target="35" />
+                <Reference target="36" />
+              </Choice>
+            </ParameterSelector>
+          </Choice>
+          <Choice value="mediumLow">
+            <Reference target="37" />
+          </Choice>
+          <Choice value="medium">
+            <ParameterSelector parameter="x:age" unique_id="42">
+              <Choice value="baby" />
+              <Choice value="toddler" />
+              <Choice value="child">
+                <Controller target="toolNeedleKnittingYarnSmall" controller="@ClipController(clip=c_knitting_highSkill_stop_seated_toolNeedleKnittingYarnSmall, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c_knitting_highSkill_start_stop.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="38">
+                  <TransitionClassList />
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=c_knitting_highSkill_stop_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c_knitting_highSkill_start_stop.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="39">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+              <Choice value="teen">
+                <Controller target="x" controller="@ClipController(clip=a_knitting_highSkill_stop_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_knitting_highSkill_start_stop.ma" focus="none" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="40">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <Controller target="toolNeedleKnittingYarn" controller="@ClipController(clip=a_knitting_highSkill_stop_seated_toolNeedleKnittingYarn, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_knitting_highSkill_start_stop.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="41">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+              <Choice value="youngadult">
+                <Reference target="40" />
+                <Reference target="41" />
+              </Choice>
+              <Choice value="adult">
+                <Reference target="40" />
+                <Reference target="41" />
+              </Choice>
+              <Choice value="elder">
+                <Reference target="40" />
+                <Reference target="41" />
+              </Choice>
+            </ParameterSelector>
+          </Choice>
+          <Choice value="mediumHigh">
+            <Reference target="42" />
+          </Choice>
+          <Choice value="high">
+            <Reference target="42" />
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+      <Choice value="-sit-UpperBody" track="normal" mask="Trackmask_UpperBody">
+        <Reference target="43" />
+      </Choice>
+    </PostureSelector>
+  </State>
+</ASM>

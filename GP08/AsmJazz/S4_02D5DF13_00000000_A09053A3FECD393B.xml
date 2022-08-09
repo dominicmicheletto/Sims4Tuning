@@ -1,0 +1,216 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="SpellSystem_PracticeSpellcasting" dcc="sage">
+  <Actor name="x" type="Sim" master="true" virtual="false" />
+  <Actor name="magicWand" type="Prop" virtual="false" object_def_resource_key="c0db5ae7:00000000:00000000000365a3#magicWand_GP08GEN08_set1" />
+  <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
+  <Parameter name="x:CastingSpell_DeviceType" type="enum" labels="hand,wand" default="hand" />
+  <Parameter name="x:carryState" type="enum" labels="none,left,right,both" default="right" />
+  <IkConfiguration name="a_spellSystem_PracticeSpellcasting_start_idle_stop_hand.ma">
+    <SourceFile name="a_spellSystem_PracticeSpellcasting_start_idle_stop_hand.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a_spellSystem_PracticeSpellcasting_start_idle_stop_wand.ma">
+    <SourceFile name="a_spellSystem_PracticeSpellcasting_start_idle_stop_wand.ma">
+      <MapNamespace namespace="magicWand" actor="magicWand" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a_spellSystem_PracticeSpellcasting_loop1_hand.ma">
+    <SourceFile name="a_spellSystem_PracticeSpellcasting_loop1_hand.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a_spellSystem_PracticeSpellcasting_loop1_wand.ma">
+    <SourceFile name="a_spellSystem_PracticeSpellcasting_loop1_wand.ma">
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="magicWand" actor="magicWand" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a_spellSystem_PracticeSpellcasting_loop2_hand.ma">
+    <SourceFile name="a_spellSystem_PracticeSpellcasting_loop2_hand.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a_spellSystem_PracticeSpellcasting_loop2_wand.ma">
+    <SourceFile name="a_spellSystem_PracticeSpellcasting_loop2_wand.ma">
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="magicWand" actor="magicWand" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a_spellSystem_PracticeSpellcasting_loop3_hand.ma">
+    <SourceFile name="a_spellSystem_PracticeSpellcasting_loop3_hand.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a_spellSystem_PracticeSpellcasting_loop3_wand.ma">
+    <SourceFile name="a_spellSystem_PracticeSpellcasting_loop3_wand.ma">
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="magicWand" actor="magicWand" />
+    </SourceFile>
+  </IkConfiguration>
+  <PostureManifest actors="" />
+  <PostureManifest actors="x">
+    <Support family="stand" compatibility="FullBody" carry_left="*" carry_right="-" surface="*" />
+    <Support family="stand" compatibility="FullBody" carry_left="-" carry_right="*" surface="*" />
+  </PostureManifest>
+  <State type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" name="Breath_Idle" focus="none" facialoverlays="true" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="Hub" focus="none" facialoverlays="true" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="Mirror" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="Practice_Loop" focus="none" facialoverlays="true" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="Start" focus="none" facialoverlays="true" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="Stop" focus="none" facialoverlays="true" tailoverlays="true" />
+  <Connection from="Breath_Idle" to="Hub" />
+  <Connection from="Hub" to="Breath_Idle" />
+  <Connection from="Hub" to="Practice_Loop" />
+  <Connection from="Hub" to="Stop" />
+  <Connection from="Mirror" to="Start" />
+  <Connection from="Practice_Loop" to="Hub" />
+  <Connection from="Start" to="Hub" />
+  <Connection from="Stop" to="exit" />
+  <Connection from="entry" to="Mirror" />
+  <State name="Breath_Idle" type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" focus="none" facialoverlays="true" tailoverlays="true">
+    <description />
+    <MakeController>
+      <PostureSelector parameter="x:posture" unique_id="4">
+        <Choice value="-stand-FullBody" track="normal" mask="">
+          <ParameterSelector parameter="x:CastingSpell_DeviceType" unique_id="3">
+            <Choice value="hand">
+              <Controller target="x" controller="@ClipController(clip=a_spellSystem_PracticeSpellcasting_breathIdle_hand_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_spellSystem_PracticeSpellcasting_start_idle_stop_hand.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="1">
+                <TransitionClassList />
+              </Controller>
+            </Choice>
+            <Choice value="wand">
+              <Controller target="x" controller="@ClipController(clip=a_spellSystem_PracticeSpellcasting_breathIdle_wand_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_spellSystem_PracticeSpellcasting_start_idle_stop_wand.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="2">
+                <TransitionClassList />
+              </Controller>
+            </Choice>
+          </ParameterSelector>
+        </Choice>
+      </PostureSelector>
+    </MakeController>
+  </State>
+  <State name="Hub" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="true" tailoverlays="true">
+    <description />
+    <ParameterSelector parameter="x:age" unique_id="5">
+      <Choice value="baby" />
+      <Choice value="toddler" />
+      <Choice value="child" />
+      <Choice value="teen" />
+      <Choice value="youngadult" />
+      <Choice value="adult" />
+      <Choice value="elder" />
+    </ParameterSelector>
+  </State>
+  <State name="Mirror" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <ParameterSelector parameter="x:carryState" unique_id="7">
+      <Choice value="none" />
+      <Choice value="left" />
+      <Choice value="right">
+        <SetMirror target="x" mirror="true" unique_id="6" />
+      </Choice>
+      <Choice value="both" />
+    </ParameterSelector>
+  </State>
+  <State name="Practice_Loop" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="true" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="21">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <ParameterSelector parameter="x:CastingSpell_DeviceType" unique_id="20">
+          <Choice value="hand">
+            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="13">
+              <Choice weight="50" avoidRepeat="True">
+                <Controller target="x" controller="@ClipController(clip=a_spellSystem_PracticeSpellcasting_loop1_hand_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_spellSystem_PracticeSpellcasting_loop1_hand.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="10">
+                  <TransitionClassList />
+                </Controller>
+                <MakeController unique_id="9">
+                  <Controller target="x" controller="@ClipController(clip=a_spellSystem_PracticeSpellcasting_breathIdle_hand_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_spellSystem_PracticeSpellcasting_start_idle_stop_hand.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="8">
+                    <TransitionClassList />
+                  </Controller>
+                </MakeController>
+              </Choice>
+              <Choice weight="50" avoidRepeat="True">
+                <Controller target="x" controller="@ClipController(clip=a_spellSystem_PracticeSpellcasting_loop2_hand_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_spellSystem_PracticeSpellcasting_loop2_hand.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="11">
+                  <TransitionClassList />
+                </Controller>
+                <Reference target="9" />
+              </Choice>
+              <Choice weight="50" avoidRepeat="True">
+                <Controller target="x" controller="@ClipController(clip=a_spellSystem_PracticeSpellcasting_loop3_hand_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_spellSystem_PracticeSpellcasting_loop3_hand.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="12">
+                  <TransitionClassList />
+                </Controller>
+                <Reference target="9" />
+              </Choice>
+            </RandomSelector>
+          </Choice>
+          <Choice value="wand">
+            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="19">
+              <Choice weight="50" avoidRepeat="True">
+                <Controller target="x" controller="@ClipController(clip=a_spellSystem_PracticeSpellcasting_loop1_wand_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_spellSystem_PracticeSpellcasting_loop1_wand.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="16">
+                  <TransitionClassList />
+                </Controller>
+                <MakeController unique_id="15">
+                  <Controller target="x" controller="@ClipController(clip=a_spellSystem_PracticeSpellcasting_breathIdle_wand_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_spellSystem_PracticeSpellcasting_start_idle_stop_wand.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="14">
+                    <TransitionClassList />
+                  </Controller>
+                </MakeController>
+              </Choice>
+              <Choice weight="50" avoidRepeat="True">
+                <Controller target="x" controller="@ClipController(clip=a_spellSystem_PracticeSpellcasting_loop2_wand_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_spellSystem_PracticeSpellcasting_loop2_wand.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="17">
+                  <TransitionClassList />
+                </Controller>
+                <Reference target="15" />
+              </Choice>
+              <Choice weight="50" avoidRepeat="True">
+                <Controller target="x" controller="@ClipController(clip=a_spellSystem_PracticeSpellcasting_loop3_wand_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_spellSystem_PracticeSpellcasting_loop3_wand.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="18">
+                  <TransitionClassList />
+                </Controller>
+                <Reference target="15" />
+              </Choice>
+            </RandomSelector>
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="Start" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="true" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="25">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <ParameterSelector parameter="x:CastingSpell_DeviceType" unique_id="24">
+          <Choice value="hand">
+            <Controller target="x" controller="@ClipController(clip=a_spellSystem_PracticeSpellcasting_start_hand_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_spellSystem_PracticeSpellcasting_start_idle_stop_hand.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="22">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
+          <Choice value="wand">
+            <Controller target="x" controller="@ClipController(clip=a_spellSystem_PracticeSpellcasting_start_wand_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_spellSystem_PracticeSpellcasting_start_idle_stop_wand.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="23">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="Stop" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="true" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="29">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <ParameterSelector parameter="x:CastingSpell_DeviceType" unique_id="28">
+          <Choice value="hand">
+            <Controller target="x" controller="@ClipController(clip=a_spellSystem_PracticeSpellcasting_stop_hand_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_spellSystem_PracticeSpellcasting_start_idle_stop_hand.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="26">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
+          <Choice value="wand">
+            <Controller target="x" controller="@ClipController(clip=a_spellSystem_PracticeSpellcasting_stop_wand_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_spellSystem_PracticeSpellcasting_start_idle_stop_wand.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="27">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+    </PostureSelector>
+  </State>
+</ASM>

@@ -1,0 +1,48 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="PetExamTable_Canonicals" dcc="sage">
+  <Actor name="x" type="Sim" master="true" virtual="false" />
+  <Actor name="y" type="Sim" virtual="false" />
+  <Actor name="ExamTable" type="Object" virtual="true" />
+  <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
+  <Parameter name="x:species" type="enum" labels="human,dog,smalldog,cat" default="human" />
+  <Parameter name="x:walkstyle_override" type="uint" labels="" default="0" />
+  <Parameter name="y:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="y:sex" type="enum" labels="male,female" default="male" />
+  <Parameter name="y:species" type="enum" labels="human,dog,smalldog,cat" default="human" />
+  <Parameter name="ExamTable:objectOrientation" type="quaternion" labels="" default="0,0,0,1" />
+  <Parameter name="ExamTable:objectPosition" type="vector3" labels="" default="0,0,0" />
+  <IkConfiguration name="a2o_petExam_vet_postures.ma">
+    <SourceFile name="a2o_petExam_vet_postures.ma">
+      <MapNamespace namespace="examTable" actor="ExamTable" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <PostureManifest actors="" />
+  <PostureManifest actors="x">
+    <Support name="stand" family="none" compatibility="FullBody" carry_left="*" carry_right="*" surface="*" />
+  </PostureManifest>
+  <PostureManifest actors="y">
+    <Support name="PetExamTable_Pet" family="none" compatibility="FullBody" carry_left="*" carry_right="*" surface="*" />
+  </PostureManifest>
+  <State type="public" skippable="false" interrupt_this="false" name="getIn" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <Connection from="entry" to="getIn" />
+  <Connection from="getIn" to="exit" />
+  <State name="getIn" type="public" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="2">
+      <Choice value="stand--FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2o_petExam_vet_canonical_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_petExam_vet_postures.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="1">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+    </PostureSelector>
+    <PostureSelector parameter="y:posture" unique_id="4">
+      <Choice value="PetExamTable_Pet--FullBody" track="normal" mask="">
+        <FollowPath path="LargePet_VetExamTable_GetIn" default_walkstyle="Default" walkstyle_override_param="x:walkstyle_override" reference_actor="ExamTable" reference_translation_param="ExamTable:objectPosition" reference_orientation_param="ExamTable:objectOrientation" trigger_posture_transition_event="False" reverse_path="False" target="y" overridePosture="false" track="normal" transition_class_in="Default" transition_class_out="Default" unique_id="3">
+          <TransitionClassList />
+        </FollowPath>
+      </Choice>
+    </PostureSelector>
+  </State>
+</ASM>

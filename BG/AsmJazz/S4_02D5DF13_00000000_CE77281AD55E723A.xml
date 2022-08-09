@@ -1,0 +1,148 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="Sink_WashDishes" dcc="sage">
+  <Actor name="x" type="Sim" master="true" virtual="false" />
+  <Actor name="bowl" type="Prop" virtual="false" object_def_resource_key="c0db5ae7:00000000:0000000000001bec#foodBowlGen_01_prop" />
+  <Actor name="sponge" type="Prop" virtual="false" object_def_resource_key="c0db5ae7:00000000:0000000000001229#spongeGEN_01_prop" />
+  <Actor name="sink" type="Object" virtual="false" />
+  <Actor name="dirtyDish" type="Object" virtual="false" />
+  <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
+  <Parameter name="x:trait_Clumsy" type="bool" labels="" default="False" />
+  <Parameter name="dirtyDish:carryTrack" type="enum" labels="left,right" default="right" />
+  <Parameter name="dirtyDish:items" type="string" labels="" default="dirtydish" />
+  <IkConfiguration name="a2o_sink_washDishes.ma">
+    <SourceFile name="a2o_sink_washDishes.ma">
+      <MapNamespace namespace="bowl" actor="bowl" />
+      <MapNamespace namespace="sink" actor="sink" />
+      <MapNamespace namespace="sponge" actor="sponge" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_sink_washDishes_breakDish.ma">
+    <SourceFile name="a2o_sink_washDishes_breakDish.ma">
+      <MapNamespace namespace="bowl" actor="bowl" />
+      <MapNamespace namespace="sink" actor="sink" />
+      <MapNamespace namespace="sponge" actor="sponge" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <PostureManifest actors="" />
+  <PostureManifest actors="x">
+    <Support family="stand" compatibility="FullBody" carry_left="dirtyDish" carry_right="-" surface="*" />
+    <Support family="stand" compatibility="FullBody" carry_left="-" carry_right="dirtyDish" surface="*" />
+  </PostureManifest>
+  <State type="private" skippable="false" interrupt_this="false" name="GetIn" focus="none" facialoverlays="true" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="GetOut" focus="none" facialoverlays="true" tailoverlays="true" />
+  <State type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" name="WashDishes" focus="none" facialoverlays="true" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="mirror" focus="none" facialoverlays="false" tailoverlays="true" />
+  <Connection from="GetIn" to="WashDishes" />
+  <Connection from="GetOut" to="exit" />
+  <Connection from="WashDishes" to="GetOut" />
+  <Connection from="entry" to="mirror" />
+  <Connection from="mirror" to="GetIn" />
+  <State name="GetIn" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="true" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="4">
+      <Choice value="-stand-FullBody" track="carryinteraction" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2o_sink_{dirtyDish:items}_washDishes_start_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="3">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+        <MakeController unique_id="2">
+          <Controller target="x" controller="@ClipController(clip=a2o_sink_washDishes_loop1_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_sink_washDishes.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="1">
+            <TransitionClassList>
+              <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+            </TransitionClassList>
+          </Controller>
+        </MakeController>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="GetOut" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="true" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="10">
+      <Choice value="-stand-FullBody" track="carryinteraction" mask="">
+        <ParameterSelector parameter="x:age" unique_id="9">
+          <Choice value="baby">
+            <Controller target="x" controller="@ClipController(clip=a2o_sink_washDishes_stop_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_sink_washDishes.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="5">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice value="toddler">
+            <Reference target="5" />
+          </Choice>
+          <Choice value="child">
+            <Reference target="5" />
+          </Choice>
+          <Choice value="teen">
+            <ParameterSelector parameter="x:trait_Clumsy" unique_id="8">
+              <Choice value="false">
+                <Reference target="5" />
+              </Choice>
+              <Choice value="true">
+                <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="7">
+                  <Choice weight="100" avoidRepeat="False">
+                    <Reference target="5" />
+                  </Choice>
+                  <Choice weight="100" avoidRepeat="False">
+                    <Controller target="x" controller="@ClipController(clip=a2o_sink_washDish_breakDish_stop_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_sink_washDishes_breakDish.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="6">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                  </Choice>
+                </RandomSelector>
+              </Choice>
+            </ParameterSelector>
+          </Choice>
+          <Choice value="youngadult">
+            <Reference target="8" />
+          </Choice>
+          <Choice value="adult">
+            <Reference target="8" />
+          </Choice>
+          <Choice value="elder">
+            <Reference target="8" />
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="WashDishes" type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" focus="none" facialoverlays="true" tailoverlays="true">
+    <description />
+    <MakeController>
+      <PostureSelector parameter="x:posture" unique_id="14">
+        <Choice value="-stand-FullBody" track="carryinteraction" mask="">
+          <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="13">
+            <Choice weight="100" avoidRepeat="False">
+              <Controller target="x" controller="@ClipController(clip=a2o_sink_washDishes_loop1_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_sink_washDishes.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="11">
+                <TransitionClassList>
+                  <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                </TransitionClassList>
+              </Controller>
+            </Choice>
+            <Choice weight="100" avoidRepeat="False">
+              <Controller target="x" controller="@ClipController(clip=a2o_sink_washDishes_loop2_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_sink_washDishes.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="12">
+                <TransitionClassList>
+                  <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                </TransitionClassList>
+              </Controller>
+            </Choice>
+          </RandomSelector>
+        </Choice>
+      </PostureSelector>
+    </MakeController>
+  </State>
+  <State name="mirror" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <ParameterSelector parameter="dirtyDish:carryTrack" unique_id="16">
+      <Choice value="left">
+        <SetMirror target="x" mirror="true" unique_id="15" />
+      </Choice>
+      <Choice value="right" />
+    </ParameterSelector>
+  </State>
+</ASM>

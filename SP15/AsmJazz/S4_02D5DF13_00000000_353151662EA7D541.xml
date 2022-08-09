@@ -1,0 +1,93 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="Camera_Tripod_Interactions" dcc="sage">
+  <Actor name="x" type="Sim" master="true" virtual="false" />
+  <Actor name="photoTripod" type="Object" virtual="false" />
+  <Actor name="photoCamera" type="Prop" virtual="false" object_def_resource_key="c0db5ae7:00000000:0000000000012ab0#photoCamera_EP01GENCheap_set1" />
+  <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
+  <Parameter name="x:carryState" type="enum" labels="none,left,right,both" default="right" />
+  <IkConfiguration name="a2o_cameraTripod_takePicture.ma">
+    <SourceFile name="a2o_cameraTripod_takePicture.ma">
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="PhotoTripod" actor="photoTripod" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_cameraTripod_putAwayCamera.ma">
+    <SourceFile name="a2o_cameraTripod_putAwayCamera.ma">
+      <MapNamespace namespace="PhotoCamera" actor="photoCamera" />
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="PhotoTripod" actor="photoTripod" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_cameraTripod_selfie_setTimer.ma">
+    <SourceFile name="a2o_cameraTripod_selfie_setTimer.ma">
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="PhotoTripod" actor="photoTripod" />
+    </SourceFile>
+  </IkConfiguration>
+  <PostureManifest actors="" />
+  <PostureManifest actors="x">
+    <Support family="stand" compatibility="FullBody" carry_left="-" carry_right="-" surface="*" />
+    <Support family="stand" compatibility="UpperBody" carry_left="-" carry_right="-" surface="*" />
+  </PostureManifest>
+  <State type="public" skippable="false" interrupt_this="false" name="Put Away Camera" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="Set Timer" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="Take Picture" focus="none" facialoverlays="false" tailoverlays="true" />
+  <Connection from="Put Away Camera" to="exit" />
+  <Connection from="Set Timer" to="exit" />
+  <Connection from="Take Picture" to="exit" />
+  <Connection from="entry" to="Put Away Camera" />
+  <Connection from="entry" to="Set Timer" />
+  <Connection from="entry" to="Take Picture" />
+  <State name="Put Away Camera" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="3">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2o_cameraTripod_putAwayCamera_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_cameraTripod_putAwayCamera.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="1">
+          <TransitionClassList />
+        </Controller>
+        <Controller target="photoTripod" controller="@ClipController(clip=a2o_cameraTripod_putAwayCamera_photoTripod, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_cameraTripod_putAwayCamera.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="2">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+      <Choice value="-stand-UpperBody" track="normal" mask="Trackmask_UpperBody">
+        <Reference target="1" />
+        <Reference target="2" />
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="Set Timer" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="6">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <Controller target="photoTripod" controller="@ClipController(clip=a2o_cameraTripod_selfie_setTimer_photoTripod, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_cameraTripod_selfie_setTimer.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="4">
+          <TransitionClassList />
+        </Controller>
+        <Controller target="x" controller="@ClipController(clip=a2o_cameraTripod_selfie_setTimer_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_cameraTripod_selfie_setTimer.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="5">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+      <Choice value="-stand-UpperBody" track="normal" mask="Trackmask_UpperBody">
+        <Reference target="4" />
+        <Reference target="5" />
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="Take Picture" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="9">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <Controller target="photoTripod" controller="@ClipController(clip=a2o_cameraTripod_takePicture_photoTripod, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_cameraTripod_takePicture.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="7">
+          <TransitionClassList />
+        </Controller>
+        <Controller target="x" controller="@ClipController(clip=a2o_cameraTripod_takePicture_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_cameraTripod_takePicture.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="8">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+      <Choice value="-stand-UpperBody" track="normal" mask="Trackmask_UpperBody">
+        <Reference target="7" />
+        <Reference target="8" />
+      </Choice>
+    </PostureSelector>
+  </State>
+</ASM>

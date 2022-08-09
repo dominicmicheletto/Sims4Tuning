@@ -1,0 +1,199 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="enterGroup" dcc="sage">
+  <Actor name="x" type="Sim" master="true" virtual="false" />
+  <Actor name="sitTemplate" type="Object" virtual="true" />
+  <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
+  <Parameter name="x:carryState" type="enum" labels="none,left,right,both" default="right" />
+  <Parameter name="x:mood" type="enum" labels="happy,confident,angry,sad,bored,embarrassed,uncomfortable,playful,tense,focused,energized,flirty,fine,inspired,dazed" default="embarrassed" />
+  <IkConfiguration name="a_enterGroup_wave_small.ma">
+    <SourceFile name="a_enterGroup_wave_small.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a_enterGroup_wave_small_angry.ma">
+    <SourceFile name="a_enterGroup_wave_small_angry.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a_enterGroup_wave_small_bored.ma">
+    <SourceFile name="a_enterGroup_wave_small_bored.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a_enterGroup_wave_small_confident.ma">
+    <SourceFile name="a_enterGroup_wave_small_confident.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a_enterGroup_wave_small_embarrassed.ma">
+    <SourceFile name="a_enterGroup_wave_small_embarrassed.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a_enterGroup_wave_small_flirty_f.ma">
+    <SourceFile name="a_enterGroup_wave_small_flirty_f.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a_enterGroup_wave_small_flirty_m.ma">
+    <SourceFile name="a_enterGroup_wave_small_flirty_m.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a_enterGroup_wave_small_happy.ma">
+    <SourceFile name="a_enterGroup_wave_small_happy.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a_enterGroup_wave_small_sad.ma">
+    <SourceFile name="a_enterGroup_wave_small_sad.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a_enterGroup_wave_small_uncomfortable.ma">
+    <SourceFile name="a_enterGroup_wave_small_uncomfortable.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <PostureManifest actors="" />
+  <PostureManifest actors="x">
+    <Support family="stand" compatibility="UpperBody" carry_left="*" carry_right="*" surface="*" />
+    <Support family="stand" compatibility="FullBody" carry_left="*" carry_right="*" surface="*" />
+    <Support family="sit" compatibility="FullBody" carry_left="*" carry_right="*" surface="*" />
+    <Support family="sit" compatibility="UpperBody" carry_left="*" carry_right="*" surface="*" />
+    <Support family="movingStand" compatibility="UpperBody" carry_left="*" carry_right="*" surface="*" />
+  </PostureManifest>
+  <State type="private" skippable="false" interrupt_this="false" name="anim" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="mirror" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <Connection from="anim" to="exit" />
+  <Connection from="entry" to="mirror" />
+  <Connection from="mirror" to="anim" />
+  <State name="anim" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="14">
+      <Choice value="-movingStand-UpperBody" track="normal" mask="Trackmask_UpperBody">
+        <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="1">
+          <Choice weight="100" avoidRepeat="False" />
+          <Choice weight="100" avoidRepeat="False" />
+        </RandomSelector>
+      </Choice>
+      <Choice value="-sit-FullBody" track="normal" mask="">
+        <Reference target="1" />
+      </Choice>
+      <Choice value="-sit-UpperBody" track="normal" mask="Trackmask_UpperBody">
+        <Reference target="1" />
+      </Choice>
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <ParameterSelector parameter="x:mood" unique_id="13">
+          <Choice value="happy">
+            <Controller target="x" controller="@ClipController(clip=a_enterGroup_wave_small_happy_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_enterGroup_wave_small_happy.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="2">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice value="confident">
+            <Controller target="x" controller="@ClipController(clip=a_enterGroup_wave_small_confident_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_enterGroup_wave_small_confident.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="3">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice value="angry">
+            <Controller target="x" controller="@ClipController(clip=a_enterGroup_wave_small_angry_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_enterGroup_wave_small_angry.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="4">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice value="sad">
+            <Controller target="x" controller="@ClipController(clip=a_enterGroup_wave_small_sad_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_enterGroup_wave_small_sad.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="5">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice value="bored">
+            <Controller target="x" controller="@ClipController(clip=a_enterGroup_wave_small_bored_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_enterGroup_wave_small_bored.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="6">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice value="embarrassed">
+            <Controller target="x" controller="@ClipController(clip=a_enterGroup_wave_small_embarrassed_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_enterGroup_wave_small_embarrassed.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="7">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice value="uncomfortable">
+            <Controller target="x" controller="@ClipController(clip=a_enterGroup_wave_small_uncomfortable_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_enterGroup_wave_small_uncomfortable.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="8">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice value="playful">
+            <Reference target="2" />
+          </Choice>
+          <Choice value="tense">
+            <Reference target="4" />
+          </Choice>
+          <Choice value="focused">
+            <Reference target="2" />
+          </Choice>
+          <Choice value="energized">
+            <Reference target="2" />
+          </Choice>
+          <Choice value="flirty">
+            <ParameterSelector parameter="x:sex" unique_id="11">
+              <Choice value="male">
+                <Controller target="x" controller="@ClipController(clip=a_enterGroup_wave_small_flirty_m_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_enterGroup_wave_small_flirty_m.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="9">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+              </Choice>
+              <Choice value="female">
+                <Controller target="x" controller="@ClipController(clip=a_enterGroup_wave_small_flirty_f_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_enterGroup_wave_small_flirty_f.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="10">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+              </Choice>
+            </ParameterSelector>
+          </Choice>
+          <Choice value="fine">
+            <Controller target="x" controller="@ClipController(clip=a_enterGroup_wave_small_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_enterGroup_wave_small.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="12">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice value="inspired">
+            <Reference target="3" />
+          </Choice>
+          <Choice value="dazed">
+            <Reference target="12" />
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+      <Choice value="-stand-UpperBody" track="normal" mask="Trackmask_UpperBody">
+        <Reference target="13" />
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="mirror" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <ParameterSelector parameter="x:carryState" unique_id="16">
+      <Choice value="none" />
+      <Choice value="left" />
+      <Choice value="right">
+        <SetMirror target="x" mirror="true" unique_id="15" />
+      </Choice>
+      <Choice value="both" />
+    </ParameterSelector>
+  </State>
+</ASM>

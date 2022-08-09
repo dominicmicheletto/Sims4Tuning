@@ -1,0 +1,304 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="fountain_playIn" dcc="sage">
+  <Actor name="x" type="Sim" master="true" virtual="false" />
+  <Actor name="y" type="Sim" virtual="false" />
+  <Actor name="fountainPark" type="Object" virtual="true" />
+  <Parameter name="direction" type="enum" labels="fromSimLeft,fromSimRight" default="fromSimLeft" />
+  <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
+  <Parameter name="x:subroot" type="enum" labels="8,9,10,11" default="8" />
+  <Parameter name="y:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="y:sex" type="enum" labels="male,female" default="male" />
+  <Parameter name="y:subroot" type="enum" labels="8,9,10,11" default="8" />
+  <IkConfiguration name="a2o_fountain_playIn_All.ma">
+    <SourceFile name="a2o_fountain_playIn_All.ma">
+      <MapNamespace namespace="fountainPark" actor="fountainPark" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2a_fountain_playInSocial_loop2.ma">
+    <SourceFile name="a2a_fountain_playInSocial_loop2.ma">
+      <MapNamespace namespace="fountainPark" actor="fountainPark" />
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="y" actor="y" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2a_fountain_playInSocial_loop1.ma">
+    <SourceFile name="a2a_fountain_playInSocial_loop1.ma">
+      <MapNamespace namespace="fountainPark" actor="fountainPark" />
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="y" actor="y" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_fountain_playIn_idle.ma">
+    <SourceFile name="a2o_fountain_playIn_idle.ma">
+      <MapNamespace namespace="fountainPark" actor="fountainPark" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <PostureManifest actors="" />
+  <PostureManifest actors="x,y">
+    <Support name="fountain" family="none" compatibility="FullBody" carry_left="-" carry_right="-" surface="*" />
+  </PostureManifest>
+  <State type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" name="Idle" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="PlaySolo" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="PlayTogether" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="hub" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <Connection from="Idle" to="hub" />
+  <Connection from="PlaySolo" to="hub" />
+  <Connection from="PlayTogether" to="hub" />
+  <Connection from="entry" to="hub" />
+  <Connection from="hub" to="Idle" />
+  <Connection from="hub" to="PlaySolo" />
+  <Connection from="hub" to="PlayTogether" />
+  <Connection from="hub" to="exit" />
+  <State name="Idle" type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <MakeController>
+      <PostureSelector parameter="y:posture" unique_id="2">
+        <Choice value="fountain--FullBody" track="normal" mask="">
+          <Controller target="y" controller="@ClipController(clip=a2o_fountain_playIn_idle_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_fountain_playIn_idle.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="1">
+            <TransitionClassList>
+              <Transition transition_class_name="Default" transition_duration_in="0.5333334" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.5333334" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+            </TransitionClassList>
+          </Controller>
+        </Choice>
+      </PostureSelector>
+      <PostureSelector parameter="x:posture" unique_id="4">
+        <Choice value="fountain--FullBody" track="normal" mask="">
+          <Controller target="x" controller="@ClipController(clip=a2o_fountain_playIn_idle_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_fountain_playIn_idle.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="3">
+            <TransitionClassList>
+              <Transition transition_class_name="Default" transition_duration_in="0.5333334" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.5333334" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+            </TransitionClassList>
+          </Controller>
+        </Choice>
+      </PostureSelector>
+    </MakeController>
+  </State>
+  <State name="PlaySolo" type="public" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="9">
+      <Choice value="fountain--FullBody" track="normal" mask="">
+        <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="8">
+          <Choice weight="100" avoidRepeat="False">
+            <Controller target="x" controller="@ClipController(clip=a2o_fountain_playIn_loop_tapDance_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_fountain_playIn_All.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="5">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice weight="100" avoidRepeat="False">
+            <Controller target="x" controller="@ClipController(clip=a2o_fountain_playIn_loop_jump_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_fountain_playIn_All.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="6">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice weight="100" avoidRepeat="False">
+            <Controller target="x" controller="@ClipController(clip=a2o_fountain_playIn_loop_steppyStep_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_fountain_playIn_All.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="7">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+        </RandomSelector>
+      </Choice>
+    </PostureSelector>
+    <PostureSelector parameter="y:posture" unique_id="14">
+      <Choice value="fountain--FullBody" track="normal" mask="">
+        <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="13">
+          <Choice weight="100" avoidRepeat="False">
+            <Controller target="y" controller="@ClipController(clip=a2o_fountain_playIn_loop_tapDance_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_fountain_playIn_All.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="10">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice weight="100" avoidRepeat="False">
+            <Controller target="y" controller="@ClipController(clip=a2o_fountain_playIn_loop_jump_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_fountain_playIn_All.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="11">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice weight="100" avoidRepeat="False">
+            <Controller target="y" controller="@ClipController(clip=a2o_fountain_playIn_loop_steppyStep_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_fountain_playIn_All.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="12">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+        </RandomSelector>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="PlayTogether" type="public" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <ParameterSelector parameter="x:subroot" unique_id="40">
+      <Choice value="8">
+        <ParameterSelector parameter="y:subroot" unique_id="36">
+          <Choice value="8" />
+          <Choice value="9">
+            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="23">
+              <Choice weight="100" avoidRepeat="False">
+                <PostureSelector parameter="x:posture" unique_id="16">
+                  <Choice value="fountain--FullBody" track="normal" mask="">
+                    <Controller target="x" controller="@ClipController(clip=a2a_fountain_playTogether_splashFeet_left_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_fountain_playInSocial_loop2.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="15">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                  </Choice>
+                </PostureSelector>
+                <PostureSelector parameter="y:posture" unique_id="18">
+                  <Choice value="fountain--FullBody" track="normal" mask="">
+                    <Controller target="y" controller="@ClipController(clip=a2a_fountain_playTogether_splashFeet_left_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_fountain_playInSocial_loop2.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="17">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                  </Choice>
+                </PostureSelector>
+              </Choice>
+              <Choice weight="100" avoidRepeat="False">
+                <PostureSelector parameter="y:posture" unique_id="20">
+                  <Choice value="fountain--FullBody" track="normal" mask="">
+                    <Controller target="y" controller="@ClipController(clip=a2a_fountain_playTogether_splashHands_left_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_fountain_playInSocial_loop1.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="19">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                  </Choice>
+                </PostureSelector>
+                <PostureSelector parameter="x:posture" unique_id="22">
+                  <Choice value="fountain--FullBody" track="normal" mask="">
+                    <Controller target="x" controller="@ClipController(clip=a2a_fountain_playTogether_splashHands_left_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_fountain_playInSocial_loop1.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="21">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                  </Choice>
+                </PostureSelector>
+              </Choice>
+            </RandomSelector>
+          </Choice>
+          <Choice value="10">
+            <PostureSelector parameter="y:posture" unique_id="28">
+              <Choice value="fountain--FullBody" track="normal" mask="">
+                <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="27">
+                  <Choice weight="100" avoidRepeat="False">
+                    <Controller target="y" controller="@ClipController(clip=a2o_fountain_playIn_loop_tapDance_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_fountain_playIn_All.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="24">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                  </Choice>
+                  <Choice weight="100" avoidRepeat="False">
+                    <Controller target="y" controller="@ClipController(clip=a2o_fountain_playIn_loop_jump_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_fountain_playIn_All.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="25">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                  </Choice>
+                  <Choice weight="100" avoidRepeat="False">
+                    <Controller target="y" controller="@ClipController(clip=a2o_fountain_playIn_loop_steppyStep_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_fountain_playIn_All.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="26">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                  </Choice>
+                </RandomSelector>
+              </Choice>
+            </PostureSelector>
+            <PostureSelector parameter="x:posture" unique_id="33">
+              <Choice value="fountain--FullBody" track="normal" mask="">
+                <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="32">
+                  <Choice weight="100" avoidRepeat="False">
+                    <Controller target="x" controller="@ClipController(clip=a2o_fountain_playIn_loop_tapDance_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_fountain_playIn_All.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="29">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                  </Choice>
+                  <Choice weight="100" avoidRepeat="False">
+                    <Controller target="x" controller="@ClipController(clip=a2o_fountain_playIn_loop_jump_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_fountain_playIn_All.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="30">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                  </Choice>
+                  <Choice weight="100" avoidRepeat="False">
+                    <Controller target="x" controller="@ClipController(clip=a2o_fountain_playIn_loop_steppyStep_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_fountain_playIn_All.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="31">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                  </Choice>
+                </RandomSelector>
+              </Choice>
+            </PostureSelector>
+          </Choice>
+          <Choice value="11">
+            <SetMirror target="x" mirror="true" unique_id="35" />
+            <SetMirror target="y" mirror="true" unique_id="34" />
+            <Reference target="23" />
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+      <Choice value="9">
+        <ParameterSelector parameter="y:subroot" unique_id="37">
+          <Choice value="8">
+            <Reference target="35" />
+            <Reference target="34" />
+            <Reference target="23" />
+          </Choice>
+          <Choice value="9" />
+          <Choice value="10">
+            <Reference target="23" />
+          </Choice>
+          <Choice value="11">
+            <Reference target="28" />
+            <Reference target="33" />
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+      <Choice value="10">
+        <ParameterSelector parameter="y:subroot" unique_id="38">
+          <Choice value="8">
+            <Reference target="28" />
+            <Reference target="33" />
+          </Choice>
+          <Choice value="9">
+            <Reference target="35" />
+            <Reference target="34" />
+            <Reference target="23" />
+          </Choice>
+          <Choice value="10" />
+          <Choice value="11">
+            <Reference target="23" />
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+      <Choice value="11">
+        <ParameterSelector parameter="y:subroot" unique_id="39">
+          <Choice value="8">
+            <Reference target="23" />
+          </Choice>
+          <Choice value="9">
+            <Reference target="28" />
+            <Reference target="33" />
+          </Choice>
+          <Choice value="10">
+            <Reference target="35" />
+            <Reference target="34" />
+            <Reference target="23" />
+          </Choice>
+          <Choice value="11" />
+        </ParameterSelector>
+      </Choice>
+    </ParameterSelector>
+  </State>
+  <State name="hub" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+  </State>
+</ASM>

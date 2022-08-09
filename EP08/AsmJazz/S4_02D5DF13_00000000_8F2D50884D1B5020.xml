@@ -1,0 +1,614 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="Bot_Actions" dcc="sage">
+  <Actor name="Bot" type="Object" master="true" virtual="false" />
+  <Parameter name="surfaceHeight" type="enum" labels="low,high,highPlus" />
+  <Parameter name="Bot:Height" type="enum" labels="High,Medium,Low" default="Medium" />
+  <Parameter name="Bot:isBroken" type="bool" labels="" default="True" />
+  <IkConfiguration name="o_bot_angles_GetIn.ma">
+    <SourceFile name="o_bot_angles_GetIn.ma">
+      <MapNamespace namespace="Bot" actor="Bot" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="o_bot_angles_GetOut.ma">
+    <SourceFile name="o_bot_angles_GetOut.ma" />
+  </IkConfiguration>
+  <IkConfiguration name="o_bot_angles_Idles.ma">
+    <SourceFile name="o_bot_angles_Idles.ma" />
+  </IkConfiguration>
+  <IkConfiguration name="o_bot_launch.ma">
+    <SourceFile name="o_bot_launch.ma">
+      <MapNamespace namespace="Bot" actor="Bot" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="o_bot_land.ma">
+    <SourceFile name="o_bot_land.ma">
+      <MapNamespace namespace="Bot" actor="Bot" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="o_bot_shakeWiggle.ma">
+    <SourceFile name="o_bot_shakeWiggle.ma">
+      <MapNamespace namespace="Bot" actor="Bot" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="o_bot_scan.ma">
+    <SourceFile name="o_bot_scan.ma">
+      <MapNamespace namespace="Bot" actor="Bot" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="o_bot_dance_getInGetOut.ma">
+    <SourceFile name="o_bot_dance_getInGetOut.ma">
+      <MapNamespace namespace="Bot" actor="Bot" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="o_bot_dance_spin.ma">
+    <SourceFile name="o_bot_dance_spin.ma" />
+  </IkConfiguration>
+  <IkConfiguration name="o_bot_sad_reaction.ma">
+    <SourceFile name="o_bot_sad_reaction.ma">
+      <MapNamespace namespace="Bot" actor="Bot" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="o_bot_idle.ma">
+    <SourceFile name="o_bot_idle.ma" />
+  </IkConfiguration>
+  <IkConfiguration name="o_bot_dance_flip.ma">
+    <SourceFile name="o_bot_dance_flip.ma" />
+  </IkConfiguration>
+  <IkConfiguration name="o_bot_repair_electrocuted.ma">
+    <SourceFile name="o_bot_repair_electrocuted.ma">
+      <MapNamespace namespace="Bot" actor="Bot" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="o_bot_verticalGarden_waterSpray.ma">
+    <SourceFile name="o_bot_verticalGarden_waterSpray.ma">
+      <MapNamespace namespace="Bot" actor="Bot" />
+    </SourceFile>
+  </IkConfiguration>
+  <PostureManifest actors="" />
+  <State type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" name="Broken" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" name="Cleaner_Hose" focus="none" facialoverlays="false" tailoverlays="false" />
+  <State type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" name="Cleaner_Vaccum" focus="none" facialoverlays="false" tailoverlays="false" />
+  <State type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" name="Cleaner_Vaccum_Low" focus="none" facialoverlays="false" tailoverlays="false" />
+  <State type="public" skippable="false" interrupt_this="false" name="Dance_Flip" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" name="Dance_Idle" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="Dance_Spin" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="Electrocute" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" name="Garden_Bug_Spray" focus="none" facialoverlays="false" tailoverlays="false" />
+  <State type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" name="Garden_Bug_Spray_Low" focus="none" facialoverlays="false" tailoverlays="false" />
+  <State type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" name="Garden_Vaccum" focus="none" facialoverlays="false" tailoverlays="false" />
+  <State type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" name="Garden_Vaccum_Low" focus="none" facialoverlays="false" tailoverlays="false" />
+  <State type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" name="Garden_Water" focus="none" facialoverlays="false" tailoverlays="false" />
+  <State type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" name="Hover" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="In_Cleaner_Hose" focus="none" facialoverlays="false" tailoverlays="false" />
+  <State type="private" skippable="false" interrupt_this="false" name="In_Cleaner_Vaccum" focus="none" facialoverlays="false" tailoverlays="false" />
+  <State type="private" skippable="false" interrupt_this="false" name="In_Cleaner_Vaccum_Low" focus="none" facialoverlays="false" tailoverlays="false" />
+  <State type="private" skippable="false" interrupt_this="false" name="In_Garden_Bug_Spray" focus="none" facialoverlays="false" tailoverlays="false" />
+  <State type="private" skippable="false" interrupt_this="false" name="In_Garden_Bug_Spray_Low" focus="none" facialoverlays="false" tailoverlays="false" />
+  <State type="private" skippable="false" interrupt_this="false" name="In_Garden_Vaccum" focus="none" facialoverlays="false" tailoverlays="false" />
+  <State type="private" skippable="false" interrupt_this="false" name="In_Garden_Vaccum_Low" focus="none" facialoverlays="false" tailoverlays="false" />
+  <State type="private" skippable="false" interrupt_this="false" name="In_Garden_Water" focus="none" facialoverlays="false" tailoverlays="false" />
+  <State type="private" skippable="false" interrupt_this="false" name="In_Repair" focus="none" facialoverlays="false" tailoverlays="false" />
+  <State type="private" skippable="false" interrupt_this="false" name="In_Repair_High" focus="none" facialoverlays="false" tailoverlays="false" />
+  <State type="public" skippable="false" interrupt_this="false" name="Land" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="Launch" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" name="Low_Battery" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" name="OnGround" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="Out_Cleaner_Hose" focus="none" facialoverlays="false" tailoverlays="false" />
+  <State type="private" skippable="false" interrupt_this="false" name="Out_Cleaner_Vaccum" focus="none" facialoverlays="false" tailoverlays="false" />
+  <State type="private" skippable="false" interrupt_this="false" name="Out_Cleaner_Vaccum_Low" focus="none" facialoverlays="false" tailoverlays="false" />
+  <State type="private" skippable="false" interrupt_this="false" name="Out_Garden_Bug_Spray" focus="none" facialoverlays="false" tailoverlays="false" />
+  <State type="private" skippable="false" interrupt_this="false" name="Out_Garden_Bug_Spray_Low" focus="none" facialoverlays="false" tailoverlays="false" />
+  <State type="private" skippable="false" interrupt_this="false" name="Out_Garden_Vaccum" focus="none" facialoverlays="false" tailoverlays="false" />
+  <State type="private" skippable="false" interrupt_this="false" name="Out_Garden_Vaccum_Low" focus="none" facialoverlays="false" tailoverlays="false" />
+  <State type="private" skippable="false" interrupt_this="false" name="Out_Garden_Water" focus="none" facialoverlays="false" tailoverlays="false" />
+  <State type="private" skippable="false" interrupt_this="false" name="Out_Repair" focus="none" facialoverlays="false" tailoverlays="false" />
+  <State type="private" skippable="false" interrupt_this="false" name="Out_Repair_High" focus="none" facialoverlays="false" tailoverlays="false" />
+  <State type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" name="Repair" focus="none" facialoverlays="false" tailoverlays="false" />
+  <State type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" name="Repair_High" focus="none" facialoverlays="false" tailoverlays="false" />
+  <State type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" name="Scan" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="Sell_Sad" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" name="Shake_Wiggle" focus="full body" facialoverlays="false" tailoverlays="false" />
+  <State type="private" skippable="false" interrupt_this="false" name="Start" focus="none" facialoverlays="false" tailoverlays="false" />
+  <State type="private" skippable="false" interrupt_this="false" name="Stop" focus="none" facialoverlays="false" tailoverlays="false" />
+  <State type="private" skippable="false" interrupt_this="false" name="hub" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <Connection from="Broken" to="hub" />
+  <Connection from="Cleaner_Hose" to="Out_Cleaner_Hose" />
+  <Connection from="Cleaner_Vaccum" to="Out_Cleaner_Vaccum" />
+  <Connection from="Cleaner_Vaccum_Low" to="Out_Cleaner_Vaccum_Low" />
+  <Connection from="Dance_Flip" to="Dance_Idle" />
+  <Connection from="Dance_Idle" to="Dance_Flip" />
+  <Connection from="Dance_Idle" to="Dance_Spin" />
+  <Connection from="Dance_Idle" to="Stop" />
+  <Connection from="Dance_Spin" to="Dance_Idle" />
+  <Connection from="Electrocute" to="hub" />
+  <Connection from="Garden_Bug_Spray" to="Out_Garden_Bug_Spray" />
+  <Connection from="Garden_Bug_Spray_Low" to="Out_Garden_Bug_Spray_Low" />
+  <Connection from="Garden_Vaccum" to="Out_Garden_Vaccum" />
+  <Connection from="Garden_Vaccum_Low" to="Out_Garden_Vaccum_Low" />
+  <Connection from="Garden_Water" to="Out_Garden_Water" />
+  <Connection from="Hover" to="hub" />
+  <Connection from="In_Cleaner_Hose" to="Cleaner_Hose" />
+  <Connection from="In_Cleaner_Vaccum" to="Cleaner_Vaccum" />
+  <Connection from="In_Cleaner_Vaccum_Low" to="Cleaner_Vaccum_Low" />
+  <Connection from="In_Garden_Bug_Spray" to="Garden_Bug_Spray" />
+  <Connection from="In_Garden_Bug_Spray_Low" to="Garden_Bug_Spray_Low" />
+  <Connection from="In_Garden_Vaccum" to="Garden_Vaccum" />
+  <Connection from="In_Garden_Vaccum_Low" to="Garden_Vaccum_Low" />
+  <Connection from="In_Garden_Water" to="Garden_Water" />
+  <Connection from="In_Repair" to="Repair" />
+  <Connection from="In_Repair_High" to="Repair_High" />
+  <Connection from="Land" to="OnGround" />
+  <Connection from="Launch" to="hub" />
+  <Connection from="Low_Battery" to="hub" />
+  <Connection from="OnGround" to="Launch" />
+  <Connection from="Out_Cleaner_Hose" to="hub" />
+  <Connection from="Out_Cleaner_Vaccum" to="hub" />
+  <Connection from="Out_Cleaner_Vaccum_Low" to="hub" />
+  <Connection from="Out_Garden_Bug_Spray" to="hub" />
+  <Connection from="Out_Garden_Bug_Spray_Low" to="hub" />
+  <Connection from="Out_Garden_Vaccum" to="hub" />
+  <Connection from="Out_Garden_Vaccum_Low" to="hub" />
+  <Connection from="Out_Garden_Water" to="hub" />
+  <Connection from="Out_Repair" to="hub" />
+  <Connection from="Out_Repair_High" to="hub" />
+  <Connection from="Repair" to="Electrocute" />
+  <Connection from="Repair" to="Out_Repair" />
+  <Connection from="Repair_High" to="Electrocute" />
+  <Connection from="Repair_High" to="Out_Repair_High" />
+  <Connection from="Scan" to="hub" />
+  <Connection from="Sell_Sad" to="hub" />
+  <Connection from="Shake_Wiggle" to="hub" />
+  <Connection from="Start" to="Dance_Idle" />
+  <Connection from="Stop" to="hub" />
+  <Connection from="entry" to="hub" />
+  <Connection from="hub" to="Broken" />
+  <Connection from="hub" to="Hover" />
+  <Connection from="hub" to="In_Cleaner_Hose" />
+  <Connection from="hub" to="In_Cleaner_Vaccum" />
+  <Connection from="hub" to="In_Cleaner_Vaccum_Low" />
+  <Connection from="hub" to="In_Garden_Bug_Spray" />
+  <Connection from="hub" to="In_Garden_Bug_Spray_Low" />
+  <Connection from="hub" to="In_Garden_Vaccum" />
+  <Connection from="hub" to="In_Garden_Vaccum_Low" />
+  <Connection from="hub" to="In_Garden_Water" />
+  <Connection from="hub" to="In_Repair" />
+  <Connection from="hub" to="In_Repair_High" />
+  <Connection from="hub" to="Land" />
+  <Connection from="hub" to="Low_Battery" />
+  <Connection from="hub" to="OnGround" />
+  <Connection from="hub" to="Scan" />
+  <Connection from="hub" to="Sell_Sad" />
+  <Connection from="hub" to="Shake_Wiggle" />
+  <Connection from="hub" to="Start" />
+  <Connection from="hub" to="exit" />
+  <State name="Broken" type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <MakeController>
+      <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="3">
+        <Choice weight="50" avoidRepeat="False">
+          <Controller target="Bot" controller="@ClipController(clip=o_bot_idle1_break_bot, loop_count=#1)" overridePosture="false" mask="" track="lowplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="o_bot_idle.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="1">
+            <TransitionClassList />
+          </Controller>
+        </Choice>
+        <Choice weight="50" avoidRepeat="False">
+          <Controller target="Bot" controller="@ClipController(clip=o_bot_idle2_break_bot, loop_count=#1)" overridePosture="false" mask="" track="lowplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="o_bot_idle.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="2">
+            <TransitionClassList />
+          </Controller>
+        </Choice>
+      </RandomSelector>
+    </MakeController>
+  </State>
+  <State name="Cleaner_Hose" type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" focus="none" facialoverlays="false" tailoverlays="false">
+    <description />
+    <MakeController>
+      <Controller target="Bot" controller="@ClipController(clip=o_bot_cleanerHose_loop_Med_bot, loop_count=#1)" overridePosture="false" mask="" track="lowplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="o_bot_angles_Idles.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="4">
+        <TransitionClassList />
+      </Controller>
+    </MakeController>
+  </State>
+  <State name="Cleaner_Vaccum" type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" focus="none" facialoverlays="false" tailoverlays="false">
+    <description />
+    <MakeController>
+      <Controller target="Bot" controller="@ClipController(clip=o_bot_cleanerVaccum_loop_Med_bot, loop_count=#1)" overridePosture="false" mask="" track="lowplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="o_bot_angles_Idles.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="5">
+        <TransitionClassList />
+      </Controller>
+    </MakeController>
+  </State>
+  <State name="Cleaner_Vaccum_Low" type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" focus="none" facialoverlays="false" tailoverlays="false">
+    <description />
+    <MakeController>
+      <Controller target="Bot" controller="@ClipController(clip=o_bot_cleanerVaccum_loop_Low_bot, loop_count=#1)" overridePosture="false" mask="" track="lowplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="o_bot_angles_Idles.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="6">
+        <TransitionClassList />
+      </Controller>
+    </MakeController>
+  </State>
+  <State name="Dance_Flip" type="public" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <Controller target="Bot" controller="@ClipController(clip=o_bot_dance_flip_bot, loop_count=#1)" overridePosture="false" mask="" track="lowplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="o_bot_dance_flip.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="7">
+      <TransitionClassList>
+        <Transition transition_class_name="Default" transition_duration_in="0.5333334" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.5333334" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+      </TransitionClassList>
+    </Controller>
+  </State>
+  <State name="Dance_Idle" type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <MakeController>
+      <Controller target="Bot" controller="@ClipController(clip=o_bot_dance_idle_bot, loop_count=#1)" overridePosture="false" mask="" track="lowplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="o_bot_dance_getInGetOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="8">
+        <TransitionClassList>
+          <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+        </TransitionClassList>
+      </Controller>
+    </MakeController>
+  </State>
+  <State name="Dance_Spin" type="public" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <Controller target="Bot" controller="@ClipController(clip=o_bot_dance_spin_bot, loop_count=#1)" overridePosture="false" mask="" track="lowplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="o_bot_dance_spin.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="9">
+      <TransitionClassList>
+        <Transition transition_class_name="Default" transition_duration_in="0.5333334" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.5333334" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+      </TransitionClassList>
+    </Controller>
+  </State>
+  <State name="Electrocute" type="public" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <Controller target="Bot" controller="@ClipController(clip=o_bot_repair_electrocuted_bot, loop_count=#1)" overridePosture="false" mask="" track="lowplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="o_bot_repair_electrocuted.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="10">
+      <TransitionClassList />
+    </Controller>
+  </State>
+  <State name="Garden_Bug_Spray" type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" focus="none" facialoverlays="false" tailoverlays="false">
+    <description />
+    <MakeController>
+      <ParameterSelector parameter="surfaceHeight" unique_id="14">
+        <Choice value="low">
+          <Controller target="Bot" controller="@ClipController(clip=o_bot_gardenBugSpray_loop_Med_bot, loop_count=#1)" overridePosture="false" mask="" track="lowplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="o_bot_angles_Idles.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="11">
+            <TransitionClassList />
+          </Controller>
+        </Choice>
+        <Choice value="high">
+          <Controller target="Bot" controller="@ClipController(clip=o_bot_verticalGarden_spray_loop_low_bot, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="o_bot_verticalGarden_waterSpray.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="12">
+            <TransitionClassList />
+          </Controller>
+        </Choice>
+        <Choice value="highPlus">
+          <Controller target="Bot" controller="@ClipController(clip=o_bot_verticalGarden_spray_loop_high_bot, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="o_bot_verticalGarden_waterSpray.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="13">
+            <TransitionClassList />
+          </Controller>
+        </Choice>
+      </ParameterSelector>
+    </MakeController>
+  </State>
+  <State name="Garden_Bug_Spray_Low" type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" focus="none" facialoverlays="false" tailoverlays="false">
+    <description />
+    <MakeController>
+      <Controller target="Bot" controller="@ClipController(clip=o_bot_gardenBugSpray_loop_Low_bot, loop_count=#1)" overridePosture="false" mask="" track="lowplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="o_bot_angles_Idles.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="15">
+        <TransitionClassList />
+      </Controller>
+    </MakeController>
+  </State>
+  <State name="Garden_Vaccum" type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" focus="none" facialoverlays="false" tailoverlays="false">
+    <description />
+    <MakeController>
+      <Controller target="Bot" controller="@ClipController(clip=o_bot_gardenVaccum_loop_Med_bot, loop_count=#1)" overridePosture="false" mask="" track="lowplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="o_bot_angles_Idles.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="16">
+        <TransitionClassList />
+      </Controller>
+    </MakeController>
+  </State>
+  <State name="Garden_Vaccum_Low" type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" focus="none" facialoverlays="false" tailoverlays="false">
+    <description />
+    <MakeController>
+      <Controller target="Bot" controller="@ClipController(clip=o_bot_gardenVaccum_loop_Low_bot, loop_count=#1)" overridePosture="false" mask="" track="lowplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="o_bot_angles_Idles.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="17">
+        <TransitionClassList />
+      </Controller>
+    </MakeController>
+  </State>
+  <State name="Garden_Water" type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" focus="none" facialoverlays="false" tailoverlays="false">
+    <description />
+    <MakeController>
+      <ParameterSelector parameter="surfaceHeight" unique_id="21">
+        <Choice value="low">
+          <Controller target="Bot" controller="@ClipController(clip=o_bot_gardenWater_loop_Med_bot, loop_count=#1)" overridePosture="false" mask="" track="lowplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="o_bot_angles_Idles.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="18">
+            <TransitionClassList />
+          </Controller>
+        </Choice>
+        <Choice value="high">
+          <Controller target="Bot" controller="@ClipController(clip=o_bot_verticalGarden_water_loop_low_bot, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="o_bot_verticalGarden_waterSpray.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="19">
+            <TransitionClassList />
+          </Controller>
+        </Choice>
+        <Choice value="highPlus">
+          <Controller target="Bot" controller="@ClipController(clip=o_bot_verticalGarden_water_loop_high_bot, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="o_bot_verticalGarden_waterSpray.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="20">
+            <TransitionClassList />
+          </Controller>
+        </Choice>
+      </ParameterSelector>
+    </MakeController>
+  </State>
+  <State name="Hover" type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <MakeController>
+      <Controller target="Bot" controller="@ClipController(clip=o_bot_idle_hover_bot, loop_count=#1)" overridePosture="false" mask="" track="lowplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="o_bot_idle.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="22">
+        <TransitionClassList />
+      </Controller>
+    </MakeController>
+  </State>
+  <State name="In_Cleaner_Hose" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="false">
+    <description />
+    <Controller target="Bot" controller="@ClipController(clip=o_bot_cleanerHose_getIn_Med_bot, loop_count=#1)" overridePosture="false" mask="" track="lowplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="o_bot_angles_GetIn.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="23">
+      <TransitionClassList />
+    </Controller>
+  </State>
+  <State name="In_Cleaner_Vaccum" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="false">
+    <description />
+    <Controller target="Bot" controller="@ClipController(clip=o_bot_cleanerVaccum_getIn_Med_bot, loop_count=#1)" overridePosture="false" mask="" track="lowplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="o_bot_angles_GetIn.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="24">
+      <TransitionClassList />
+    </Controller>
+  </State>
+  <State name="In_Cleaner_Vaccum_Low" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="false">
+    <description />
+    <Controller target="Bot" controller="@ClipController(clip=o_bot_cleanerVaccum_getIn_Low_bot, loop_count=#1)" overridePosture="false" mask="" track="lowplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="o_bot_angles_GetIn.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="25">
+      <TransitionClassList />
+    </Controller>
+  </State>
+  <State name="In_Garden_Bug_Spray" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="false">
+    <description />
+    <ParameterSelector parameter="surfaceHeight" unique_id="29">
+      <Choice value="low">
+        <Controller target="Bot" controller="@ClipController(clip=o_bot_gardenBugSpray_getIn_Med_bot, loop_count=#1)" overridePosture="false" mask="" track="lowplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="o_bot_angles_GetIn.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="26">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+      <Choice value="high">
+        <Controller target="Bot" controller="@ClipController(clip=o_bot_verticalGarden_spray_getIn_low_bot, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="o_bot_verticalGarden_waterSpray.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="27">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+      <Choice value="highPlus">
+        <Controller target="Bot" controller="@ClipController(clip=o_bot_verticalGarden_spray_getIn_high_bot, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="o_bot_verticalGarden_waterSpray.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="28">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+    </ParameterSelector>
+  </State>
+  <State name="In_Garden_Bug_Spray_Low" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="false">
+    <description />
+    <Controller target="Bot" controller="@ClipController(clip=o_bot_gardenBugSpray_getIn_Low_bot, loop_count=#1)" overridePosture="false" mask="" track="lowplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="o_bot_angles_GetIn.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="30">
+      <TransitionClassList />
+    </Controller>
+  </State>
+  <State name="In_Garden_Vaccum" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="false">
+    <description />
+    <Controller target="Bot" controller="@ClipController(clip=o_bot_gardenVaccum_getIn_Med_bot, loop_count=#1)" overridePosture="false" mask="" track="lowplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="o_bot_angles_GetIn.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="31">
+      <TransitionClassList />
+    </Controller>
+  </State>
+  <State name="In_Garden_Vaccum_Low" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="false">
+    <description />
+    <Controller target="Bot" controller="@ClipController(clip=o_bot_gardenVaccum_getIn_Low_bot, loop_count=#1)" overridePosture="false" mask="" track="lowplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="o_bot_angles_GetIn.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="32">
+      <TransitionClassList />
+    </Controller>
+  </State>
+  <State name="In_Garden_Water" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="false">
+    <description />
+    <ParameterSelector parameter="surfaceHeight" unique_id="36">
+      <Choice value="low">
+        <Controller target="Bot" controller="@ClipController(clip=o_bot_gardenWater_getIn_Med_bot, loop_count=#1)" overridePosture="false" mask="" track="lowplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="o_bot_angles_GetIn.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="33">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+      <Choice value="high">
+        <Controller target="Bot" controller="@ClipController(clip=o_bot_verticalGarden_water_getIn_low_bot, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="o_bot_verticalGarden_waterSpray.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="34">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+      <Choice value="highPlus">
+        <Controller target="Bot" controller="@ClipController(clip=o_bot_verticalGarden_water_getIn_high_bot, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="o_bot_verticalGarden_waterSpray.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="35">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+    </ParameterSelector>
+  </State>
+  <State name="In_Repair" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="false">
+    <description />
+    <Controller target="Bot" controller="@ClipController(clip=o_bot_repair_getIn_Med_bot, loop_count=#1)" overridePosture="false" mask="" track="lowplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="o_bot_angles_GetIn.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="37">
+      <TransitionClassList />
+    </Controller>
+  </State>
+  <State name="In_Repair_High" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="false">
+    <description />
+    <Controller target="Bot" controller="@ClipController(clip=o_bot_repair_getIn_High_bot, loop_count=#1)" overridePosture="false" mask="" track="lowplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="o_bot_angles_GetIn.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="38">
+      <TransitionClassList />
+    </Controller>
+  </State>
+  <State name="Land" type="public" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <ParameterSelector parameter="Bot:isBroken" unique_id="41">
+      <Choice value="false">
+        <Controller target="Bot" controller="@ClipController(clip=o_bot_land_normal_bot, loop_count=#1)" overridePosture="false" mask="" track="lowplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="o_bot_land.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="39">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+      <Choice value="true">
+        <Controller target="Bot" controller="@ClipController(clip=o_bot_land_break_bot, loop_count=#1)" overridePosture="false" mask="" track="lowplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="o_bot_land.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="40">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+    </ParameterSelector>
+  </State>
+  <State name="Launch" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <Controller target="Bot" controller="@ClipController(clip=o_bot_launch_bot, loop_count=#1)" overridePosture="false" mask="" track="lowplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="o_bot_launch.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="42">
+      <TransitionClassList />
+    </Controller>
+  </State>
+  <State name="Low_Battery" type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <MakeController>
+      <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="45">
+        <Choice weight="50" avoidRepeat="False">
+          <Controller target="Bot" controller="@ClipController(clip=o_bot_idle1_lowBattery_bot, loop_count=#1)" overridePosture="false" mask="" track="lowplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="o_bot_idle.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="43">
+            <TransitionClassList />
+          </Controller>
+        </Choice>
+        <Choice weight="50" avoidRepeat="False">
+          <Controller target="Bot" controller="@ClipController(clip=o_bot_idle2_lowBattery_bot, loop_count=#1)" overridePosture="false" mask="" track="lowplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="o_bot_idle.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="44">
+            <TransitionClassList />
+          </Controller>
+        </Choice>
+      </RandomSelector>
+    </MakeController>
+  </State>
+  <State name="OnGround" type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <MakeController />
+  </State>
+  <State name="Out_Cleaner_Hose" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="false">
+    <description />
+    <Controller target="Bot" controller="@ClipController(clip=o_bot_cleanerHose_getOut_Med_bot, loop_count=#1)" overridePosture="false" mask="" track="lowplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="o_bot_angles_GetOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="46">
+      <TransitionClassList />
+    </Controller>
+  </State>
+  <State name="Out_Cleaner_Vaccum" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="false">
+    <description />
+    <Controller target="Bot" controller="@ClipController(clip=o_bot_cleanerVaccum_getOut_Med_bot, loop_count=#1)" overridePosture="false" mask="" track="lowplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="o_bot_angles_GetOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="47">
+      <TransitionClassList />
+    </Controller>
+  </State>
+  <State name="Out_Cleaner_Vaccum_Low" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="false">
+    <description />
+    <Controller target="Bot" controller="@ClipController(clip=o_bot_cleanerVaccum_getOut_Low_bot, loop_count=#1)" overridePosture="false" mask="" track="lowplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="o_bot_angles_GetOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="48">
+      <TransitionClassList />
+    </Controller>
+  </State>
+  <State name="Out_Garden_Bug_Spray" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="false">
+    <description />
+    <ParameterSelector parameter="surfaceHeight" unique_id="52">
+      <Choice value="low">
+        <Controller target="Bot" controller="@ClipController(clip=o_bot_gardenBugSpray_getOut_Med_bot, loop_count=#1)" overridePosture="false" mask="" track="lowplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="o_bot_angles_GetOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="49">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+      <Choice value="high">
+        <Controller target="Bot" controller="@ClipController(clip=o_bot_verticalGarden_spray_getOut_low_bot, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="o_bot_verticalGarden_waterSpray.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="50">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+      <Choice value="highPlus">
+        <Controller target="Bot" controller="@ClipController(clip=o_bot_verticalGarden_spray_getOut_high_bot, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="o_bot_verticalGarden_waterSpray.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="51">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+    </ParameterSelector>
+  </State>
+  <State name="Out_Garden_Bug_Spray_Low" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="false">
+    <description />
+    <Controller target="Bot" controller="@ClipController(clip=o_bot_gardenBugSpray_getOut_Low_bot, loop_count=#1)" overridePosture="false" mask="" track="lowplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="o_bot_angles_GetOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="53">
+      <TransitionClassList />
+    </Controller>
+  </State>
+  <State name="Out_Garden_Vaccum" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="false">
+    <description />
+    <Controller target="Bot" controller="@ClipController(clip=o_bot_gardenVaccum_getOut_Med_bot, loop_count=#1)" overridePosture="false" mask="" track="lowplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="o_bot_angles_GetOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="54">
+      <TransitionClassList />
+    </Controller>
+  </State>
+  <State name="Out_Garden_Vaccum_Low" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="false">
+    <description />
+    <Controller target="Bot" controller="@ClipController(clip=o_bot_gardenVaccum_getOut_Low_bot, loop_count=#1)" overridePosture="false" mask="" track="lowplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="o_bot_angles_GetOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="55">
+      <TransitionClassList />
+    </Controller>
+  </State>
+  <State name="Out_Garden_Water" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="false">
+    <description />
+    <ParameterSelector parameter="surfaceHeight" unique_id="59">
+      <Choice value="low">
+        <Controller target="Bot" controller="@ClipController(clip=o_bot_gardenWater_getOut_Med_bot, loop_count=#1)" overridePosture="false" mask="" track="lowplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="o_bot_angles_GetOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="56">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+      <Choice value="high">
+        <Controller target="Bot" controller="@ClipController(clip=o_bot_verticalGarden_water_getOut_low_bot, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="o_bot_verticalGarden_waterSpray.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="57">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+      <Choice value="highPlus">
+        <Controller target="Bot" controller="@ClipController(clip=o_bot_verticalGarden_water_getOut_high_bot, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="o_bot_verticalGarden_waterSpray.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="58">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+    </ParameterSelector>
+  </State>
+  <State name="Out_Repair" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="false">
+    <description />
+    <Controller target="Bot" controller="@ClipController(clip=o_bot_repair_getOut_Med_bot, loop_count=#1)" overridePosture="false" mask="" track="lowplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="o_bot_angles_GetOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="60">
+      <TransitionClassList />
+    </Controller>
+  </State>
+  <State name="Out_Repair_High" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="false">
+    <description />
+    <Controller target="Bot" controller="@ClipController(clip=o_bot_repair_getOut_High_bot, loop_count=#1)" overridePosture="false" mask="" track="lowplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="o_bot_angles_GetOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="61">
+      <TransitionClassList />
+    </Controller>
+  </State>
+  <State name="Repair" type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" focus="none" facialoverlays="false" tailoverlays="false">
+    <description />
+    <MakeController>
+      <Controller target="Bot" controller="@ClipController(clip=o_bot_repair_loop_Med_bot, loop_count=#1)" overridePosture="false" mask="" track="lowplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="o_bot_angles_Idles.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="62">
+        <TransitionClassList />
+      </Controller>
+    </MakeController>
+  </State>
+  <State name="Repair_High" type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" focus="none" facialoverlays="false" tailoverlays="false">
+    <description />
+    <MakeController>
+      <Controller target="Bot" controller="@ClipController(clip=o_bot_repair_loop_High_bot, loop_count=#1)" overridePosture="false" mask="" track="lowplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="o_bot_angles_Idles.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="63">
+        <TransitionClassList />
+      </Controller>
+    </MakeController>
+  </State>
+  <State name="Scan" type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <MakeController>
+      <Controller target="Bot" controller="@ClipController(clip=o_bot_scan_bot, loop_count=#1)" overridePosture="false" mask="" track="lowplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="o_bot_scan.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="64">
+        <TransitionClassList />
+      </Controller>
+    </MakeController>
+  </State>
+  <State name="Sell_Sad" type="public" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <Controller target="Bot" controller="@ClipController(clip=o_bot_sad_reaction_bot, loop_count=#1)" overridePosture="false" mask="" track="lowplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="o_bot_sad_reaction.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="65">
+      <TransitionClassList />
+    </Controller>
+  </State>
+  <State name="Shake_Wiggle" type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" focus="full body" facialoverlays="false" tailoverlays="false">
+    <description />
+    <MakeController>
+      <Controller target="Bot" controller="@ClipController(clip=o_bot_shakeWiggle_bot, loop_count=#1)" overridePosture="false" mask="" track="lowplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="o_bot_shakeWiggle.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="66">
+        <TransitionClassList />
+      </Controller>
+    </MakeController>
+  </State>
+  <State name="Start" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="false">
+    <description />
+    <Controller target="Bot" controller="@ClipController(clip=o_bot_dance_getIn_bot, loop_count=#1)" overridePosture="false" mask="" track="lowplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="NoBlendLoop" ik_configuration="o_bot_dance_getInGetOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="69">
+      <TransitionClassList>
+        <Transition transition_class_name="NoBlendLoop" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+      </TransitionClassList>
+    </Controller>
+    <MakeController unique_id="68">
+      <Controller target="Bot" controller="@ClipController(clip=o_bot_dance_softPosture_bot, loop_count=#1)" overridePosture="false" mask="" track="low" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="o_bot_dance_getInGetOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="67">
+        <TransitionClassList />
+      </Controller>
+    </MakeController>
+  </State>
+  <State name="Stop" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="false">
+    <description />
+    <Stop target="Bot" track="low" blend_in="0" unique_id="70" />
+    <Controller target="Bot" controller="@ClipController(clip=o_bot_dance_getOut_bot, loop_count=#1)" overridePosture="false" mask="" track="lowplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="NoBlendLoop" transition_class_out="Default" ik_configuration="o_bot_dance_getInGetOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="71">
+      <TransitionClassList>
+        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+      </TransitionClassList>
+    </Controller>
+  </State>
+  <State name="hub" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+  </State>
+</ASM>

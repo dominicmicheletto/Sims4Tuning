@@ -1,0 +1,131 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="MurphyBed_Swallow_TwoSims" dcc="sage">
+  <Actor name="x" type="Sim" master="true" virtual="false" />
+  <Actor name="bed" type="Object" virtual="false" />
+  <Actor name="y" type="Sim" virtual="false" />
+  <Actor name="bedIKRef" type="Object" virtual="true" />
+  <Actor name="bedIKRef1" type="Object" virtual="false" />
+  <Parameter name="isMirrored" type="bool" labels="" default="False" />
+  <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
+  <Parameter name="y:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="y:sex" type="enum" labels="male,female" default="male" />
+  <IkConfiguration name="a2o_murphyBed_brokenBed_swallowed.ma">
+    <SourceFile name="a2o_murphyBed_brokenBed_swallowed.ma">
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="y" actor="y" />
+      <MapNamespace namespace="bed" actor="bed" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="c2o_murphyBed_brokenBed_swallowed.ma">
+    <SourceFile name="c2o_murphyBed_brokenBed_swallowed.ma">
+      <MapNamespace namespace="bed" actor="bed" />
+    </SourceFile>
+  </IkConfiguration>
+  <PostureManifest actors="" />
+  <PostureManifest actors="x,y">
+    <Support name="bed_Sleep" family="none" compatibility="FullBody" carry_left="-" carry_right="-" surface="*" />
+  </PostureManifest>
+  <State type="private" skippable="false" interrupt_this="false" name="Mirror" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="MurphyBed_Swallow_TwoSims" focus="none" facialoverlays="false" tailoverlays="true" />
+  <Connection from="Mirror" to="MurphyBed_Swallow_TwoSims" />
+  <Connection from="MurphyBed_Swallow_TwoSims" to="exit" />
+  <Connection from="entry" to="Mirror" />
+  <State name="Mirror" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <ParameterSelector parameter="isMirrored" unique_id="4">
+      <Choice value="false" />
+      <Choice value="true">
+        <SetMirror target="bed" mirror="true" unique_id="3" />
+        <SetMirror target="x" mirror="true" unique_id="2" />
+        <SetMirror target="y" mirror="true" unique_id="1" />
+      </Choice>
+    </ParameterSelector>
+  </State>
+  <State name="MurphyBed_Swallow_TwoSims" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="8">
+      <Choice value="bed_Sleep--FullBody" track="normal" mask="">
+        <PostureSelector parameter="y:posture" unique_id="7">
+          <Choice value="bed_Sleep--FullBody" track="normal" mask="">
+            <Controller target="x" controller="@ClipController(clip=a2a_murphyBed_brokenBed_swallowed_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_murphyBed_brokenBed_swallowed.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="5">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+            <Controller target="y" controller="@ClipController(clip=a2a_murphyBed_brokenBed_swallowed_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_murphyBed_brokenBed_swallowed.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="6">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+        </PostureSelector>
+      </Choice>
+    </PostureSelector>
+    <ParameterSelector parameter="x:age" unique_id="15">
+      <Choice value="baby" />
+      <Choice value="toddler" />
+      <Choice value="child">
+        <ParameterSelector parameter="y:age" unique_id="11">
+          <Choice value="baby" />
+          <Choice value="toddler" />
+          <Choice value="child">
+            <Controller target="bed" controller="@ClipController(clip=c2c_murphyBed_brokenBed_swallowed_bed, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c2o_murphyBed_brokenBed_swallowed.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="9">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
+          <Choice value="teen">
+            <Controller target="bed" controller="@ClipController(clip=c2a_murphyBed_brokenBed_swallowed_bed, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_murphyBed_brokenBed_swallowed.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="10">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
+          <Choice value="youngadult">
+            <Reference target="10" />
+          </Choice>
+          <Choice value="adult">
+            <Reference target="10" />
+          </Choice>
+          <Choice value="elder">
+            <Reference target="10" />
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+      <Choice value="teen">
+        <ParameterSelector parameter="y:age" unique_id="14">
+          <Choice value="baby" />
+          <Choice value="toddler" />
+          <Choice value="child">
+            <Controller target="bed" controller="@ClipController(clip=a2c_murphyBed_brokenBed_swallowed_bed, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_murphyBed_brokenBed_swallowed.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="12">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
+          <Choice value="teen">
+            <Controller target="bed" controller="@ClipController(clip=a2a_murphyBed_brokenBed_swallowed_bed, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_murphyBed_brokenBed_swallowed.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="13">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice value="youngadult">
+            <Reference target="13" />
+          </Choice>
+          <Choice value="adult">
+            <Reference target="13" />
+          </Choice>
+          <Choice value="elder">
+            <Reference target="13" />
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+      <Choice value="youngadult">
+        <Reference target="14" />
+      </Choice>
+      <Choice value="adult">
+        <Reference target="14" />
+      </Choice>
+      <Choice value="elder">
+        <Reference target="14" />
+      </Choice>
+    </ParameterSelector>
+  </State>
+</ASM>

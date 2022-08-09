@@ -1,0 +1,105 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="Dumpster_EmptyDish" dcc="sage">
+  <Actor name="x" type="Sim" master="true" virtual="false" />
+  <Actor name="dumpster" type="Object" virtual="false" />
+  <Actor name="dumpable" type="Object" virtual="false" />
+  <Actor name="fork" type="Prop" virtual="false" object_def_resource_key="c0db5ae7:00000000:0000000000001c24#toolForkGEN_01_prop" />
+  <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
+  <Parameter name="dumpable:carryTrack" type="enum" labels="left,right" default="right" />
+  <Parameter name="dumpable:items" type="string" labels="" default="dirtyDishes" />
+  <IkConfiguration name="a2o_dumpster_emptyDish_pot.ma">
+    <SourceFile name="a2o_dumpster_emptyDish_pot.ma">
+      <MapNamespace namespace="dumpster" actor="dumpster" />
+      <MapNamespace namespace="dumpable" actor="dumpable" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_dumpster_emptyDish_fryingPan.ma">
+    <SourceFile name="a2o_dumpster_emptyDish_fryingPan.ma">
+      <MapNamespace namespace="dumpster" actor="dumpster" />
+      <MapNamespace namespace="dumpable" actor="dumpable" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <PostureManifest actors="" />
+  <PostureManifest actors="x">
+    <Support family="stand" compatibility="FullBody" carry_left="-" carry_right="dumpable" surface="dumpster" />
+    <Support family="stand" compatibility="FullBody" carry_left="dumpable" carry_right="-" surface="dumpster" />
+  </PostureManifest>
+  <State type="public" skippable="false" interrupt_this="false" name="Empty_Dish" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="Empty_Pan" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="Empty_Pot" focus="none" facialoverlays="false" tailoverlays="true" />
+  <Connection from="Empty_Dish" to="exit" />
+  <Connection from="Empty_Pan" to="exit" />
+  <Connection from="Empty_Pot" to="exit" />
+  <Connection from="entry" to="Empty_Dish" />
+  <Connection from="entry" to="Empty_Pan" />
+  <Connection from="entry" to="Empty_Pot" />
+  <State name="Empty_Dish" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="6">
+      <Choice value="-stand-FullBody" track="carryinteraction" mask="">
+        <ParameterSelector parameter="dumpable:carryTrack" unique_id="5">
+          <Choice value="left">
+            <Controller target="dumpster" controller="@ClipController(clip=a2o_dumpster_emptyDish_{dumpable:items}_mirrored_dumpster, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="1">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+            <SetMirror target="x" mirror="true" unique_id="3" />
+            <Controller target="x" controller="@ClipController(clip=a2o_dumpster_emptyDish_{dumpable:items}_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="2">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice value="right">
+            <Controller target="dumpster" controller="@ClipController(clip=a2o_dumpster_emptyDish_{dumpable:items}_dumpster, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="4">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+            <Reference target="2" />
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="Empty_Pan" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="10">
+      <Choice value="-stand-FullBody" track="carryinteraction" mask="">
+        <ParameterSelector parameter="dumpable:carryTrack" unique_id="9">
+          <Choice value="left" />
+          <Choice value="right">
+            <Controller target="x" controller="@ClipController(clip=a2o_dumpster_emptyDish_fryingPan_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_dumpster_emptyDish_fryingPan.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="7">
+              <TransitionClassList />
+            </Controller>
+            <Controller target="dumpster" controller="@ClipController(clip=a2o_dumpster_emptyDish_fryingPan_dumpster, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_dumpster_emptyDish_fryingPan.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="8">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="Empty_Pot" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="14">
+      <Choice value="-stand-FullBody" track="carryinteraction" mask="">
+        <ParameterSelector parameter="dumpable:carryTrack" unique_id="13">
+          <Choice value="left" />
+          <Choice value="right">
+            <Controller target="dumpster" controller="@ClipController(clip=a2o_dumpster_emptyDish_pot_dumpster, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_dumpster_emptyDish_pot.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="11">
+              <TransitionClassList />
+            </Controller>
+            <Controller target="x" controller="@ClipController(clip=a2o_dumpster_emptyDish_pot_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_dumpster_emptyDish_pot.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="12">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+    </PostureSelector>
+  </State>
+</ASM>

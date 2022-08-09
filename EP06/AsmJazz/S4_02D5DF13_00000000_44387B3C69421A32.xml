@@ -1,0 +1,201 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="dollyCamera_Sim" dcc="sage">
+  <Actor name="x" type="Sim" master="true" virtual="false" />
+  <Actor name="cameraFilmDolly" type="Object" virtual="true" />
+  <Actor name="script" type="Prop" virtual="false" object_def_resource_key="c0db5ae7:00000000:0000000000031677#paper_EP06GENactingScript" />
+  <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
+  <Parameter name="x:mood" type="enum" labels="happy,confident,angry,sad,bored,embarrassed,uncomfortable,playful,tense,focused,energized,flirty,fine,inspired,dazed" default="happy" />
+  <Parameter name="x:statLevel" type="enum" labels="low,mediumLow,medium,mediumHigh,high" default="medium" />
+  <IkConfiguration name="a2o_dollyCamera_actions.ma">
+    <SourceFile name="a2o_dollyCamera_actions.ma">
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="cameraFilmDolly" actor="cameraFilmDolly" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_dollyCamera_scriptReview.ma">
+    <SourceFile name="a2o_dollyCamera_scriptReview.ma">
+      <MapNamespace namespace="script" actor="script" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_scriptReview_read.ma">
+    <SourceFile name="a2o_scriptReview_read.ma">
+      <MapNamespace namespace="script" actor="script" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <PostureManifest actors="" />
+  <PostureManifest actors="x">
+    <Support name="standExclusive" family="none" compatibility="FullBody" carry_left="-" carry_right="-" surface="-" />
+    <Support name="standExclusive" family="none" compatibility="UpperBody" carry_left="-" carry_right="-" surface="-" />
+  </PostureManifest>
+  <State type="public" skippable="false" interrupt_this="false" name="CheckScript" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="hub" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" name="idle" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="loop01" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="loop02" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="loop03" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="loop04" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="script_start" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="script_stop" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="start" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="stop" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <Connection from="CheckScript" to="script_stop" />
+  <Connection from="entry" to="start" />
+  <Connection from="hub" to="idle" />
+  <Connection from="hub" to="loop01" />
+  <Connection from="hub" to="loop02" />
+  <Connection from="hub" to="loop03" />
+  <Connection from="hub" to="loop04" />
+  <Connection from="hub" to="script_start" />
+  <Connection from="hub" to="stop" />
+  <Connection from="idle" to="hub" />
+  <Connection from="loop01" to="hub" />
+  <Connection from="loop02" to="hub" />
+  <Connection from="loop03" to="hub" />
+  <Connection from="loop04" to="hub" />
+  <Connection from="script_start" to="CheckScript" />
+  <Connection from="script_stop" to="hub" />
+  <Connection from="start" to="hub" />
+  <Connection from="stop" to="exit" />
+  <State name="CheckScript" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="3">
+      <Choice value="standExclusive--FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2o_scriptReview_read_readLines_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_scriptReview_read.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="2">
+          <TransitionClassList />
+        </Controller>
+        <Controller target="x" controller="@ClipController(clip=a2o_scriptReview_read_weightShift_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_scriptReview_read.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="1">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+      <Choice value="standExclusive--UpperBody" track="normal" mask="">
+        <Reference target="2" />
+        <Reference target="1" />
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="hub" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+  </State>
+  <State name="idle" type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <MakeController>
+      <PostureSelector parameter="x:posture" unique_id="5">
+        <Choice value="standExclusive--FullBody" track="normal" mask="">
+          <Controller target="x" controller="@ClipController(clip=a2o_dollyCamera_idle_read_look_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_dollyCamera_actions.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="4">
+            <TransitionClassList />
+          </Controller>
+        </Choice>
+        <Choice value="standExclusive--UpperBody" track="normal" mask="">
+          <Reference target="4" />
+        </Choice>
+      </PostureSelector>
+    </MakeController>
+  </State>
+  <State name="loop01" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="7">
+      <Choice value="standExclusive--FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2o_dollyCamera_type_mild_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_dollyCamera_actions.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="6">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+      <Choice value="standExclusive--UpperBody" track="normal" mask="">
+        <Reference target="6" />
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="loop02" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="9">
+      <Choice value="standExclusive--FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2o_dollyCamera_type_mild_read_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_dollyCamera_actions.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="8">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+      <Choice value="standExclusive--UpperBody" track="normal" mask="">
+        <Reference target="8" />
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="loop03" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="11">
+      <Choice value="standExclusive--FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2o_dollyCamera_control01_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_dollyCamera_actions.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="10">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+      <Choice value="standExclusive--UpperBody" track="normal" mask="">
+        <Reference target="10" />
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="loop04" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="13">
+      <Choice value="standExclusive--FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2o_dollyCamera_control02_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_dollyCamera_actions.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="12">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+      <Choice value="standExclusive--UpperBody" track="normal" mask="">
+        <Reference target="12" />
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="script_start" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="15">
+      <Choice value="standExclusive--FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2o_dollyCamera_scriptReview_read_start_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_dollyCamera_scriptReview.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="14">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+      <Choice value="standExclusive--UpperBody" track="normal" mask="">
+        <Reference target="14" />
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="script_stop" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="17">
+      <Choice value="standExclusive--FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2o_dollyCamera_scriptReview_read_stop_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_dollyCamera_scriptReview.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="16">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+      <Choice value="standExclusive--UpperBody" track="normal" mask="">
+        <Reference target="16" />
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="start" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="19">
+      <Choice value="standExclusive--FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2o_dollyCamera_start_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_dollyCamera_actions.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="18">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+      <Choice value="standExclusive--UpperBody" track="normal" mask="">
+        <Reference target="18" />
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="stop" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="21">
+      <Choice value="standExclusive--FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2o_dollyCamera_stop_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_dollyCamera_actions.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="20">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+      <Choice value="standExclusive--UpperBody" track="normal" mask="">
+        <Reference target="20" />
+      </Choice>
+    </PostureSelector>
+  </State>
+</ASM>

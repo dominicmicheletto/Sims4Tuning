@@ -1,0 +1,52 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="GetPut_Cooler_Get" dcc="sage">
+  <Actor name="x" type="Sim" master="true" virtual="false" />
+  <Actor name="carryObject" type="Object" virtual="false" />
+  <Actor name="surface" type="Object" virtual="false" />
+  <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
+  <Parameter name="carryObject:carryTrack" type="enum" labels="left,right" default="right" />
+  <Parameter name="carryObject:carryObject" type="string" labels="" default="drinkTumbler" />
+  <IkConfiguration name="a2o_cooler_get.ma">
+    <SourceFile name="a2o_cooler_get.ma">
+      <MapNamespace namespace="carryObject" actor="carryObject" />
+      <MapNamespace namespace="surface" actor="surface" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <PostureManifest actors="" />
+  <PostureManifest actors="x">
+    <Support family="stand" compatibility="FullBody" carry_left="-" carry_right="-" surface="-" />
+  </PostureManifest>
+  <State type="public" skippable="false" interrupt_this="false" name="Get" focus="none" facialoverlays="true" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="Mirror" focus="none" facialoverlays="false" tailoverlays="true" />
+  <Connection from="Get" to="exit" />
+  <Connection from="Mirror" to="Get" />
+  <Connection from="entry" to="Mirror" />
+  <State name="Get" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="true" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="3">
+      <Choice value="-stand-FullBody" track="carryinteraction" mask="">
+        <Controller target="surface" controller="@ClipController(clip=a2o_carryObject_carry_pickUp_cooler_surface, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_cooler_get.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="1">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.03333334" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.1333333" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+        <Controller target="x" controller="@ClipController(clip=a2o_{carryObject:carryObject}_carry_pickUp_cooler_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="2">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.03333334" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.06666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="Mirror" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <ParameterSelector parameter="carryObject:carryTrack" unique_id="5">
+      <Choice value="left">
+        <SetMirror target="x" mirror="true" unique_id="4" />
+      </Choice>
+      <Choice value="right" />
+    </ParameterSelector>
+  </State>
+</ASM>

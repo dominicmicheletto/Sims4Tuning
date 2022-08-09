@@ -1,0 +1,212 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="makingMess" dcc="sage">
+  <Actor name="x" type="Sim" master="true" virtual="false" />
+  <Actor name="paintMuralMakingAMess" type="Object" virtual="false" />
+  <Actor name="paintMixingCup" type="Prop" virtual="false" object_def_resource_key="c0db5ae7:00000000:0000000000028479#paintMixingCup_GP05GEN" />
+  <Actor name="paintTube" type="Prop" virtual="false" object_def_resource_key="c0db5ae7:00000000:0000000000028478#paintTube_GP05GEN" />
+  <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="child" />
+  <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
+  <IkConfiguration name="c_makingMess_all.ma">
+    <SourceFile name="c_makingMess_all.ma">
+      <MapNamespace namespace="paintMuralMakingAMess" actor="paintMuralMakingAMess" />
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="paintTube" actor="paintTube" />
+      <MapNamespace namespace="paintMixingCup" actor="paintMixingCup" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="c_makingMess_flour_all.ma">
+    <SourceFile name="c_makingMess_flour_all.ma">
+      <MapNamespace namespace="paintMuralMakingAMess" actor="paintMuralMakingAMess" />
+      <MapNamespace namespace="paintTube" actor="paintTube" />
+      <MapNamespace namespace="paintMixingCup" actor="paintMixingCup" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <PostureManifest actors="" />
+  <PostureManifest actors="x">
+    <Support family="stand" compatibility="FullBody" carry_left="-" carry_right="-" surface="*" />
+    <Support family="stand" compatibility="UpperBody" carry_left="-" carry_right="-" surface="*" />
+  </PostureManifest>
+  <State type="public" skippable="false" interrupt_this="false" name="makingMess" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="makingMessFlour" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="start" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="startFlour" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="stop" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="stopFlour" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <Connection from="entry" to="start" />
+  <Connection from="entry" to="startFlour" />
+  <Connection from="makingMess" to="stop" />
+  <Connection from="makingMessFlour" to="stopFlour" />
+  <Connection from="start" to="makingMess" />
+  <Connection from="startFlour" to="makingMessFlour" />
+  <Connection from="stop" to="exit" />
+  <Connection from="stopFlour" to="exit" />
+  <State name="makingMess" type="public" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="5">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <ParameterSelector parameter="x:age" unique_id="4">
+          <Choice value="baby" />
+          <Choice value="toddler">
+            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="3">
+              <Choice weight="50" avoidRepeat="False">
+                <Controller target="x" controller="@ClipController(clip=c_makingMess_loop01_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c_makingMess_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="1">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+              <Choice weight="50" avoidRepeat="False">
+                <Controller target="x" controller="@ClipController(clip=c_makingMess_loop02_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c_makingMess_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="2">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+            </RandomSelector>
+          </Choice>
+          <Choice value="child">
+            <Reference target="3" />
+          </Choice>
+          <Choice value="teen" />
+          <Choice value="youngadult" />
+          <Choice value="adult" />
+          <Choice value="elder" />
+        </ParameterSelector>
+      </Choice>
+      <Choice value="-stand-UpperBody" track="normal" mask="Trackmask_UpperBody">
+        <Reference target="4" />
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="makingMessFlour" type="public" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="10">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <ParameterSelector parameter="x:age" unique_id="9">
+          <Choice value="baby" />
+          <Choice value="toddler">
+            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="8">
+              <Choice weight="50" avoidRepeat="False">
+                <Controller target="x" controller="@ClipController(clip=c_makingMess_flour_loop01_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c_makingMess_flour_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="6">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+              <Choice weight="50" avoidRepeat="False">
+                <Controller target="x" controller="@ClipController(clip=c_makingMess_flour_loop02_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c_makingMess_flour_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="7">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+            </RandomSelector>
+          </Choice>
+          <Choice value="child">
+            <Reference target="8" />
+          </Choice>
+          <Choice value="teen" />
+          <Choice value="youngadult" />
+          <Choice value="adult" />
+          <Choice value="elder" />
+        </ParameterSelector>
+      </Choice>
+      <Choice value="-stand-UpperBody" track="normal" mask="Trackmask_UpperBody">
+        <Reference target="9" />
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="start" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="13">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <ParameterSelector parameter="x:age" unique_id="12">
+          <Choice value="baby" />
+          <Choice value="toddler">
+            <Controller target="x" controller="@ClipController(clip=c_makingMess_start_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c_makingMess_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="11">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
+          <Choice value="child">
+            <Reference target="11" />
+          </Choice>
+          <Choice value="teen" />
+          <Choice value="youngadult" />
+          <Choice value="adult" />
+          <Choice value="elder" />
+        </ParameterSelector>
+      </Choice>
+      <Choice value="-stand-UpperBody" track="normal" mask="Trackmask_UpperBody">
+        <Reference target="12" />
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="startFlour" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="16">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <ParameterSelector parameter="x:age" unique_id="15">
+          <Choice value="baby" />
+          <Choice value="toddler">
+            <Controller target="x" controller="@ClipController(clip=c_makingMess_flour_start_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c_makingMess_flour_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="14">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
+          <Choice value="child">
+            <Reference target="14" />
+          </Choice>
+          <Choice value="teen" />
+          <Choice value="youngadult" />
+          <Choice value="adult" />
+          <Choice value="elder" />
+        </ParameterSelector>
+      </Choice>
+      <Choice value="-stand-UpperBody" track="normal" mask="Trackmask_UpperBody">
+        <Reference target="15" />
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="stop" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="19">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <ParameterSelector parameter="x:age" unique_id="18">
+          <Choice value="baby" />
+          <Choice value="toddler">
+            <Controller target="x" controller="@ClipController(clip=c_makingMess_stop_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c_makingMess_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="17">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
+          <Choice value="child">
+            <Reference target="17" />
+          </Choice>
+          <Choice value="teen" />
+          <Choice value="youngadult" />
+          <Choice value="adult" />
+          <Choice value="elder" />
+        </ParameterSelector>
+      </Choice>
+      <Choice value="-stand-UpperBody" track="normal" mask="Trackmask_UpperBody">
+        <Reference target="18" />
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="stopFlour" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="22">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <ParameterSelector parameter="x:age" unique_id="21">
+          <Choice value="baby" />
+          <Choice value="toddler">
+            <Controller target="x" controller="@ClipController(clip=c_makingMess_flour_stop_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c_makingMess_flour_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="20">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
+          <Choice value="child">
+            <Reference target="20" />
+          </Choice>
+          <Choice value="teen" />
+          <Choice value="youngadult" />
+          <Choice value="adult" />
+          <Choice value="elder" />
+        </ParameterSelector>
+      </Choice>
+      <Choice value="-stand-UpperBody" track="normal" mask="Trackmask_UpperBody">
+        <Reference target="21" />
+      </Choice>
+    </PostureSelector>
+  </State>
+</ASM>

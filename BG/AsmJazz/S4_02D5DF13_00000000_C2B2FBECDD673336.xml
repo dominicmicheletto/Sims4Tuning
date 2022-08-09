@@ -1,0 +1,179 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="SwingSet_Soc_Push" dcc="sage">
+  <Actor name="x" type="Sim" master="true" virtual="false" />
+  <Actor name="y" type="Sim" virtual="false" />
+  <Actor name="sitTemplate" type="Object" virtual="true" />
+  <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
+  <Parameter name="x:species" type="enum" labels="human,dog,smalldog,cat" default="human" />
+  <Parameter name="y:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="y:sex" type="enum" labels="male,female" default="male" />
+  <Parameter name="y:species" type="enum" labels="human,dog,smalldog,cat" default="human" />
+  <Parameter name="sitTemplate:isMirroredPart" type="bool" labels="" default="False" />
+  <Parameter name="sitTemplate:subroot" type="enum" labels="0,1" />
+  <IkConfiguration name="a2a_soc_swingSet_swing_stop.ma">
+    <SourceFile name="a2a_soc_swingSet_swing_stop.ma">
+      <MapNamespace namespace="y" actor="y" />
+      <MapNamespace namespace="sitTemplate" actor="sitTemplate" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2a_soc_swingSet_swing_start.ma">
+    <SourceFile name="a2a_soc_swingSet_swing_start.ma">
+      <MapNamespace namespace="sitTemplate" actor="sitTemplate" />
+      <MapNamespace namespace="y" actor="y" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2a_soc_swingSet_swing_loop1.ma">
+    <SourceFile name="a2a_soc_swingSet_swing_loop1.ma">
+      <MapNamespace namespace="sitTemplate" actor="sitTemplate" />
+      <MapNamespace namespace="y" actor="y" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2a_soc_swingSet_swing_loop2.ma">
+    <SourceFile name="a2a_soc_swingSet_swing_loop2.ma">
+      <MapNamespace namespace="sitTemplate" actor="sitTemplate" />
+      <MapNamespace namespace="y" actor="y" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <PostureManifest actors="" />
+  <PostureManifest actors="x,y">
+    <Support name="SwingSet_Posture" family="none" compatibility="FullBody" carry_left="-" carry_right="-" surface="*" />
+  </PostureManifest>
+  <State type="public" countlooptime="true" disableautostop="false" skippable="false" interrupt_this="false" name="Push_Swing_idle" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="Push_Swing_start" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="Push_Swing_stop" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="mirror" focus="none" facialoverlays="false" tailoverlays="false" />
+  <State type="private" skippable="false" interrupt_this="false" name="track_offset" focus="none" facialoverlays="false" tailoverlays="true" />
+  <Connection from="Push_Swing_idle" to="Push_Swing_stop" />
+  <Connection from="Push_Swing_start" to="Push_Swing_idle" />
+  <Connection from="Push_Swing_stop" to="exit" />
+  <Connection from="entry" to="track_offset" />
+  <Connection from="mirror" to="Push_Swing_start" />
+  <Connection from="track_offset" to="mirror" />
+  <State name="Push_Swing_idle" type="public" countlooptime="true" disableautostop="false" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <MakeController>
+      <PostureSelector parameter="x:posture" unique_id="9">
+        <Choice value="SwingSet_Posture--FullBody" track="normal" mask="">
+          <PostureSelector parameter="y:posture" unique_id="8">
+            <Choice value="SwingSet_Posture--FullBody" track="normal" mask="">
+              <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="7">
+                <Choice weight="51" avoidRepeat="False">
+                  <Controller target="sitTemplate" controller="@ClipController(clip=a2a_soc_swingSet_swing_loop1_sitTemplate, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_soc_swingSet_swing_loop1.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" prefix_left_actor="y" prefix_right_actor="x" unique_id="1">
+                    <TransitionClassList>
+                      <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                    </TransitionClassList>
+                  </Controller>
+                  <Controller target="y" controller="@ClipController(clip=a2a_soc_swingSet_swing_loop1_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_soc_swingSet_swing_loop1.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" prefix_left_actor="y" prefix_right_actor="x" unique_id="2">
+                    <TransitionClassList>
+                      <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                    </TransitionClassList>
+                  </Controller>
+                  <Controller target="x" controller="@ClipController(clip=a2a_soc_swingSet_swing_loop1_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_soc_swingSet_swing_loop1.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" prefix_left_actor="y" prefix_right_actor="x" unique_id="3">
+                    <TransitionClassList>
+                      <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                    </TransitionClassList>
+                  </Controller>
+                </Choice>
+                <Choice weight="50" avoidRepeat="False">
+                  <Controller target="x" controller="@ClipController(clip=a2a_soc_swingSet_swing_loop2_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_soc_swingSet_swing_loop2.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" prefix_left_actor="y" prefix_right_actor="x" unique_id="4">
+                    <TransitionClassList>
+                      <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                    </TransitionClassList>
+                  </Controller>
+                  <Controller target="sitTemplate" controller="@ClipController(clip=a2a_soc_swingSet_swing_loop2_sitTemplate, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_soc_swingSet_swing_loop2.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" prefix_left_actor="y" prefix_right_actor="x" unique_id="5">
+                    <TransitionClassList>
+                      <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                    </TransitionClassList>
+                  </Controller>
+                  <Controller target="y" controller="@ClipController(clip=a2a_soc_swingSet_swing_loop2_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_soc_swingSet_swing_loop2.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" prefix_left_actor="y" prefix_right_actor="x" unique_id="6">
+                    <TransitionClassList>
+                      <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                    </TransitionClassList>
+                  </Controller>
+                </Choice>
+              </RandomSelector>
+            </Choice>
+          </PostureSelector>
+        </Choice>
+      </PostureSelector>
+    </MakeController>
+  </State>
+  <State name="Push_Swing_start" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="14">
+      <Choice value="SwingSet_Posture--FullBody" track="normal" mask="">
+        <PostureSelector parameter="y:posture" unique_id="13">
+          <Choice value="SwingSet_Posture--FullBody" track="normal" mask="">
+            <Controller target="sitTemplate" controller="@ClipController(clip=a2a_soc_swingSet_swing_start_sitTemplate, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_soc_swingSet_swing_start.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" prefix_left_actor="y" prefix_right_actor="x" unique_id="10">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+            <Controller target="y" controller="@ClipController(clip=a2a_soc_swingSet_swing_start_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_soc_swingSet_swing_start.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" prefix_left_actor="y" prefix_right_actor="x" unique_id="11">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+            <Controller target="x" controller="@ClipController(clip=a2a_soc_swingSet_swing_start_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_soc_swingSet_swing_start.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" prefix_left_actor="y" prefix_right_actor="x" unique_id="12">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+        </PostureSelector>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="Push_Swing_stop" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="19">
+      <Choice value="SwingSet_Posture--FullBody" track="normal" mask="">
+        <PostureSelector parameter="y:posture" unique_id="18">
+          <Choice value="SwingSet_Posture--FullBody" track="normal" mask="">
+            <Controller target="sitTemplate" controller="@ClipController(clip=a2a_soc_swingSet_swing_stop_sitTemplate, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_soc_swingSet_swing_stop.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" prefix_left_actor="y" prefix_right_actor="x" unique_id="15">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+            <Controller target="x" controller="@ClipController(clip=a2a_soc_swingSet_swing_stop_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_soc_swingSet_swing_stop.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" prefix_left_actor="y" prefix_right_actor="x" unique_id="16">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+            <Controller target="y" controller="@ClipController(clip=a2a_soc_swingSet_swing_stop_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_soc_swingSet_swing_stop.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" prefix_left_actor="y" prefix_right_actor="x" unique_id="17">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+        </PostureSelector>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="mirror" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="false">
+    <description />
+    <ParameterSelector parameter="sitTemplate:isMirroredPart" unique_id="22">
+      <Choice value="false" />
+      <Choice value="true">
+        <SetMirror target="y" mirror="true" unique_id="20" />
+        <SetMirror target="x" mirror="true" unique_id="21" />
+      </Choice>
+    </ParameterSelector>
+  </State>
+  <State name="track_offset" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <ParameterSelector parameter="sitTemplate:subroot" unique_id="25">
+      <Choice value="0">
+        <TrackOffset target="sitTemplate" offset="2" unique_id="23" />
+      </Choice>
+      <Choice value="1">
+        <TrackOffset target="sitTemplate" offset="5" unique_id="24" />
+      </Choice>
+    </ParameterSelector>
+  </State>
+</ASM>

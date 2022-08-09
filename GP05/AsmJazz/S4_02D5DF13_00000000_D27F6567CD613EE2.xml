@@ -1,0 +1,112 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="Bed_Child_TuckIn" dcc="sage">
+  <Actor name="x" type="Sim" master="true" virtual="false" />
+  <Actor name="bedIKRef" type="Object" virtual="true" />
+  <Actor name="y" type="Sim" virtual="false" />
+  <Actor name="bed" type="Object" virtual="false" />
+  <Parameter name="routingSlot" type="enum" labels="0,1" default="0" />
+  <Parameter name="isMirrored" type="bool" labels="" default="False" />
+  <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
+  <Parameter name="bedIKRef:isMirroredPart" type="bool" labels="" default="False" />
+  <Parameter name="bedIKRef:objectName" type="enum" labels="bedSingle,bedDouble" />
+  <Parameter name="y:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="y:sex" type="enum" labels="male,female" default="male" />
+  <IkConfiguration name="a2c_bed_child_tuckIn.ma">
+    <SourceFile name="a2c_bed_child_tuckIn.ma">
+      <MapNamespace namespace="bed" actor="bedIKRef" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="c2o_bed_posturesIdles_MASTER.ma">
+    <SourceFile name="c2o_bed_posturesIdles_MASTER.ma">
+      <MapNamespace namespace="bed" actor="bedIKRef" />
+    </SourceFile>
+  </IkConfiguration>
+  <PostureManifest actors="" />
+  <PostureManifest actors="x">
+    <Support family="stand" compatibility="FullBody" carry_left="-" carry_right="-" surface="*" />
+  </PostureManifest>
+  <PostureManifest actors="y">
+    <Support name="bed_Sleep" family="none" compatibility="FullBody" carry_left="-" carry_right="-" surface="*" />
+  </PostureManifest>
+  <State type="public" skippable="false" interrupt_this="false" name="Child_tuckIn" focus="none" facialoverlays="false" tailoverlays="true" />
+  <Connection from="Child_tuckIn" to="exit" />
+  <Connection from="entry" to="Child_tuckIn" />
+  <State name="Child_tuckIn" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <ParameterSelector parameter="routingSlot" unique_id="3">
+      <Choice value="0">
+        <Controller target="x" controller="@ClipController(clip=a2c_bed_child_tuckIn_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2c_bed_child_tuckIn.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="1">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+      <Choice value="1">
+        <SetMirror target="x" mirror="true" unique_id="2" />
+        <Reference target="1" />
+      </Choice>
+    </ParameterSelector>
+    <ParameterSelector parameter="bedIKRef:objectName" unique_id="22">
+      <Choice value="bedSingle">
+        <ParameterSelector parameter="bedIKRef:isMirroredPart" unique_id="12">
+          <Choice value="false">
+            <PostureSelector parameter="y:posture" unique_id="6">
+              <Choice value="bed_Sleep--FullBody" track="normal" mask="">
+                <Controller target="bed" controller="@ClipController(clip=c2o_bed_sleep_idle_breathe_bed, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c2o_bed_posturesIdles_MASTER.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" prefix_left_actor="y" unique_id="4">
+                  <TransitionClassList />
+                </Controller>
+                <Controller target="y" controller="@ClipController(clip=c2o_bed_sleep_idle_breathe_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c2o_bed_posturesIdles_MASTER.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="5">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+            </PostureSelector>
+          </Choice>
+          <Choice value="true">
+            <PostureSelector parameter="y:posture" unique_id="11">
+              <Choice value="bed_Sleep--FullBody" track="normal" mask="">
+                <SetMirror target="y" mirror="true" unique_id="8" />
+                <Controller target="y" controller="@ClipController(clip=c2o_bed_sleep_idle_breathe_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c2o_bed_posturesIdles_MASTER.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="7">
+                  <TransitionClassList />
+                </Controller>
+                <SetMirror target="bed" mirror="true" unique_id="10" />
+                <Controller target="bed" controller="@ClipController(clip=c2o_bed_sleep_idle_breathe_bed, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c2o_bed_posturesIdles_MASTER.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" prefix_left_actor="y" unique_id="9">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+            </PostureSelector>
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+      <Choice value="bedDouble">
+        <ParameterSelector parameter="routingSlot" unique_id="21">
+          <Choice value="0">
+            <PostureSelector parameter="y:posture" unique_id="15">
+              <Choice value="bed_Sleep--FullBody" track="normal" mask="">
+                <Controller target="y" controller="@ClipController(clip=c2o_bed_sleep_idle_breathe_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c2o_bed_posturesIdles_MASTER.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="13">
+                  <TransitionClassList />
+                </Controller>
+                <Controller target="bed" controller="@ClipController(clip=c2o_bed_sleep_idle_breathe_bed, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c2o_bed_posturesIdles_MASTER.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" prefix_left_actor="y" unique_id="14">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+            </PostureSelector>
+          </Choice>
+          <Choice value="1">
+            <PostureSelector parameter="y:posture" unique_id="20">
+              <Choice value="bed_Sleep--FullBody" track="normal" mask="">
+                <SetMirror target="bed" mirror="true" unique_id="17" />
+                <Controller target="bed" controller="@ClipController(clip=c2o_bed_sleep_idle_breathe_bed, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c2o_bed_posturesIdles_MASTER.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" prefix_left_actor="y" unique_id="16">
+                  <TransitionClassList />
+                </Controller>
+                <SetMirror target="y" mirror="true" unique_id="19" />
+                <Controller target="y" controller="@ClipController(clip=c2o_bed_sleep_idle_breathe_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c2o_bed_posturesIdles_MASTER.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="18">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+            </PostureSelector>
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+    </ParameterSelector>
+  </State>
+</ASM>

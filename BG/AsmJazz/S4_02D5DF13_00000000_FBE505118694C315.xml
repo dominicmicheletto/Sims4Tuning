@@ -1,0 +1,129 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="Bed_Nap_InteractionIdle" dcc="sage">
+  <Actor name="x" type="Sim" master="true" virtual="false" />
+  <Actor name="bed" type="Object" virtual="false" />
+  <Actor name="bedIKRef" type="Object" virtual="true" />
+  <Actor name="sitTemplate" type="Object" virtual="true" />
+  <Parameter name="isMirrored" type="bool" labels="" default="False" />
+  <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
+  <Parameter name="bed:objectName" type="enum" labels="bedSingle,bedDouble,toddlerBed" default="bedSingle" />
+  <IkConfiguration name="a2o_bed_posturesIdles_MASTER.ma">
+    <SourceFile name="a2o_bed_posturesIdles_MASTER.ma">
+      <MapNamespace namespace="bed" actor="bedIKRef" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="p2o_toddlerBed_nap_loopTwitch.ma">
+    <SourceFile name="p2o_toddlerBed_nap_loopTwitch.ma">
+      <MapNamespace namespace="bed" actor="bedIKRef" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <PostureManifest actors="" />
+  <PostureManifest actors="x">
+    <Support name="bed_Nap" family="none" compatibility="FullBody" carry_left="-" carry_right="-" surface="*" />
+  </PostureManifest>
+  <State type="public" skippable="true" interrupt_this="true" name="Bed_Nap_InteractionIdle" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="mirror" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="state" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <Connection from="Bed_Nap_InteractionIdle" to="state" />
+  <Connection from="entry" to="mirror" />
+  <Connection from="mirror" to="Bed_Nap_InteractionIdle" />
+  <Connection from="state" to="exit" />
+  <State name="Bed_Nap_InteractionIdle" type="public" skippable="true" interrupt_this="true" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="7">
+      <Choice value="bed_Nap--FullBody" track="normal" mask="">
+        <ParameterSelector parameter="x:age" unique_id="6">
+          <Choice value="baby">
+            <Controller target="bed" controller="@ClipController(clip=a2o_bed_nap_idle_breathe_bed, loop_count=#0)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bed_posturesIdles_MASTER.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="1">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+            <Controller target="x" controller="@ClipController(clip=a2o_bed_nap_idle_breathe_x, loop_count=#0)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bed_posturesIdles_MASTER.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="2">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice value="toddler">
+            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="5">
+              <Choice weight="100" avoidRepeat="True">
+                <Controller target="bed" controller="@ClipController(clip=p2o_bed_nap_idle_loopTwitch_bed, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p2o_toddlerBed_nap_loopTwitch.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="3">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=p2o_bed_nap_idle_loopTwitch_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p2o_toddlerBed_nap_loopTwitch.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="4">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+              </Choice>
+              <Choice weight="100" avoidRepeat="False">
+                <Reference target="1" />
+                <Reference target="2" />
+              </Choice>
+            </RandomSelector>
+          </Choice>
+          <Choice value="child">
+            <Reference target="1" />
+            <Reference target="2" />
+          </Choice>
+          <Choice value="teen">
+            <Reference target="1" />
+            <Reference target="2" />
+          </Choice>
+          <Choice value="youngadult">
+            <Reference target="1" />
+            <Reference target="2" />
+          </Choice>
+          <Choice value="adult">
+            <Reference target="1" />
+            <Reference target="2" />
+          </Choice>
+          <Choice value="elder">
+            <Reference target="1" />
+            <Reference target="2" />
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="mirror" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <ParameterSelector parameter="bed:objectName" unique_id="13">
+      <Choice value="bedSingle">
+        <ActorMask target="bed" mask="Trackmask_Bed" unique_id="12" />
+        <ParameterSelector parameter="isMirrored" unique_id="11">
+          <Choice value="false" />
+          <Choice value="true">
+            <TrackOffset target="bed" offset="5000" unique_id="10" />
+            <SetMirror target="bed" mirror="true" unique_id="9" />
+            <SetMirror target="x" mirror="true" unique_id="8" />
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+      <Choice value="bedDouble">
+        <Reference target="12" />
+        <Reference target="11" />
+      </Choice>
+      <Choice value="toddlerBed">
+        <Reference target="11" />
+      </Choice>
+    </ParameterSelector>
+  </State>
+  <State name="state" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <ParameterSelector parameter="isMirrored" unique_id="16">
+      <Choice value="false">
+        <Stop target="bed" track="normal" blend_in="0.2666667" unique_id="14" />
+      </Choice>
+      <Choice value="true">
+        <Stop target="bed" track="normalplus" blend_in="0.2666667" unique_id="15" />
+      </Choice>
+    </ParameterSelector>
+  </State>
+</ASM>

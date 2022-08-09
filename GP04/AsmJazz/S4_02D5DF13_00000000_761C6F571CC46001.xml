@@ -1,0 +1,251 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="Coffin_Sleep_InteractionIdle" dcc="sage">
+  <Actor name="x" type="Sim" master="true" virtual="false" />
+  <Actor name="coffin" type="Object" virtual="false" />
+  <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="x:mood" type="enum" labels="happy,confident,angry,sad,bored,embarrassed,uncomfortable,playful,tense,focused,energized,flirty,fine,inspired,dazed" default="happy" />
+  <Parameter name="x:isVampire" type="bool" labels="" default="False" />
+  <IkConfiguration name="a2o_coffin_sleep_getInOut_coffin.ma">
+    <SourceFile name="a2o_coffin_sleep_getInOut_coffin.ma">
+      <MapNamespace namespace="Coffin" actor="coffin" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_coffin_sleep_nightDaymare.ma">
+    <SourceFile name="a2o_coffin_sleep_nightDaymare.ma">
+      <MapNamespace namespace="coffin" actor="coffin" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <PostureManifest actors="">
+    <Support name="Coffin_Sleep" family="none" compatibility="FullBody" carry_left="-" carry_right="-" surface="*" />
+  </PostureManifest>
+  <State type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" name="Idle" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" name="Nightmares" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" name="Slumber" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="Start" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="Stop" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="hub" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <Connection from="Idle" to="hub" />
+  <Connection from="Nightmares" to="hub" />
+  <Connection from="Slumber" to="hub" />
+  <Connection from="Start" to="hub" />
+  <Connection from="Stop" to="exit" />
+  <Connection from="entry" to="Start" />
+  <Connection from="hub" to="Idle" />
+  <Connection from="hub" to="Nightmares" />
+  <Connection from="hub" to="Slumber" />
+  <Connection from="hub" to="Stop" />
+  <State name="Idle" type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <MakeController>
+      <PostureSelector parameter="x:posture" unique_id="7">
+        <Choice value="Coffin_Sleep--FullBody" track="normal" mask="">
+          <ParameterSelector parameter="x:age" unique_id="6">
+            <Choice value="baby" />
+            <Choice value="toddler" />
+            <Choice value="child">
+              <ParameterSelector parameter="x:mood" unique_id="5">
+                <Choice value="happy">
+                  <Controller target="x" controller="@ClipController(clip=a2o_coffin_sleep_idle_breathe_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_coffin_sleep_getInOut_coffin.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="1">
+                    <TransitionClassList />
+                  </Controller>
+                  <Controller target="coffin" controller="@ClipController(clip=a2o_coffin_sleep_idle_breathe_coffin, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_coffin_sleep_getInOut_coffin.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="2">
+                    <TransitionClassList />
+                  </Controller>
+                </Choice>
+                <Choice value="confident">
+                  <Reference target="1" />
+                  <Reference target="2" />
+                </Choice>
+                <Choice value="angry">
+                  <Reference target="1" />
+                  <Reference target="2" />
+                </Choice>
+                <Choice value="sad">
+                  <Controller target="x" controller="@ClipController(clip=a2o_coffin_sleep_cry_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_coffin_sleep_getInOut_coffin.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="3">
+                    <TransitionClassList />
+                  </Controller>
+                  <Controller target="coffin" controller="@ClipController(clip=a2o_coffin_sleep_cry_coffin, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_coffin_sleep_getInOut_coffin.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="4">
+                    <TransitionClassList />
+                  </Controller>
+                </Choice>
+                <Choice value="bored">
+                  <Reference target="1" />
+                  <Reference target="2" />
+                </Choice>
+                <Choice value="embarrassed">
+                  <Reference target="1" />
+                  <Reference target="2" />
+                </Choice>
+                <Choice value="uncomfortable">
+                  <Reference target="1" />
+                  <Reference target="2" />
+                </Choice>
+                <Choice value="playful">
+                  <Reference target="1" />
+                  <Reference target="2" />
+                </Choice>
+                <Choice value="tense">
+                  <Reference target="1" />
+                  <Reference target="2" />
+                </Choice>
+                <Choice value="focused">
+                  <Reference target="1" />
+                  <Reference target="2" />
+                </Choice>
+                <Choice value="energized">
+                  <Reference target="1" />
+                  <Reference target="2" />
+                </Choice>
+                <Choice value="flirty">
+                  <Reference target="1" />
+                  <Reference target="2" />
+                </Choice>
+                <Choice value="fine">
+                  <Reference target="1" />
+                  <Reference target="2" />
+                </Choice>
+                <Choice value="inspired">
+                  <Reference target="1" />
+                  <Reference target="2" />
+                </Choice>
+                <Choice value="dazed">
+                  <Reference target="1" />
+                  <Reference target="2" />
+                </Choice>
+              </ParameterSelector>
+            </Choice>
+            <Choice value="teen">
+              <Reference target="5" />
+            </Choice>
+            <Choice value="youngadult">
+              <Reference target="5" />
+            </Choice>
+            <Choice value="adult">
+              <Reference target="5" />
+            </Choice>
+            <Choice value="elder">
+              <Reference target="5" />
+            </Choice>
+          </ParameterSelector>
+        </Choice>
+      </PostureSelector>
+    </MakeController>
+  </State>
+  <State name="Nightmares" type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <MakeController>
+      <PostureSelector parameter="x:posture" unique_id="13">
+        <Choice value="Coffin_Sleep--FullBody" track="normal" mask="">
+          <ParameterSelector parameter="x:isVampire" unique_id="12">
+            <Choice value="false">
+              <Controller target="coffin" controller="@ClipController(clip=a2o_coffin_sleep_nightmare_coffin, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_coffin_sleep_nightDaymare.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="8">
+                <TransitionClassList />
+              </Controller>
+              <Controller target="x" controller="@ClipController(clip=a2o_coffin_sleep_nightmare_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_coffin_sleep_nightDaymare.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="9">
+                <TransitionClassList />
+              </Controller>
+            </Choice>
+            <Choice value="true">
+              <Controller target="x" controller="@ClipController(clip=a2o_coffin_sleep_daymare_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_coffin_sleep_nightDaymare.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="10">
+                <TransitionClassList />
+              </Controller>
+              <Controller target="coffin" controller="@ClipController(clip=a2o_coffin_sleep_daymare_coffin, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_coffin_sleep_nightDaymare.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="11">
+                <TransitionClassList />
+              </Controller>
+            </Choice>
+          </ParameterSelector>
+        </Choice>
+      </PostureSelector>
+    </MakeController>
+  </State>
+  <State name="Slumber" type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <MakeController>
+      <PostureSelector parameter="x:posture" unique_id="17">
+        <Choice value="Coffin_Sleep--FullBody" track="normal" mask="">
+          <ParameterSelector parameter="x:isVampire" unique_id="16">
+            <Choice value="false" />
+            <Choice value="true">
+              <Controller target="coffin" controller="@ClipController(clip=a2o_coffin_sleep_slumber_coffin, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_coffin_sleep_nightDaymare.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="14">
+                <TransitionClassList />
+              </Controller>
+              <Controller target="x" controller="@ClipController(clip=a2o_coffin_sleep_slumber_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_coffin_sleep_nightDaymare.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="15">
+                <TransitionClassList />
+              </Controller>
+            </Choice>
+          </ParameterSelector>
+        </Choice>
+      </PostureSelector>
+    </MakeController>
+  </State>
+  <State name="Start" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="21">
+      <Choice value="Coffin_Sleep--FullBody" track="normal" mask="">
+        <ParameterSelector parameter="x:mood" unique_id="20">
+          <Choice value="happy" />
+          <Choice value="confident" />
+          <Choice value="angry" />
+          <Choice value="sad">
+            <Controller target="x" controller="@ClipController(clip=a2o_coffin_sleep_cry_start_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_coffin_sleep_getInOut_coffin.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="18">
+              <TransitionClassList />
+            </Controller>
+            <Controller target="coffin" controller="@ClipController(clip=a2o_coffin_sleep_cry_start_coffin, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_coffin_sleep_getInOut_coffin.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="19">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
+          <Choice value="bored" />
+          <Choice value="embarrassed" />
+          <Choice value="uncomfortable" />
+          <Choice value="playful" />
+          <Choice value="tense" />
+          <Choice value="focused" />
+          <Choice value="energized" />
+          <Choice value="flirty" />
+          <Choice value="fine" />
+          <Choice value="inspired" />
+          <Choice value="dazed" />
+        </ParameterSelector>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="Stop" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="25">
+      <Choice value="Coffin_Sleep--FullBody" track="normal" mask="">
+        <ParameterSelector parameter="x:mood" unique_id="24">
+          <Choice value="happy" />
+          <Choice value="confident" />
+          <Choice value="angry" />
+          <Choice value="sad">
+            <Controller target="x" controller="@ClipController(clip=a2o_coffin_sleep_cry_stop_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_coffin_sleep_getInOut_coffin.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="22">
+              <TransitionClassList />
+            </Controller>
+            <Controller target="coffin" controller="@ClipController(clip=a2o_coffin_sleep_cry_stop_coffin, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_coffin_sleep_getInOut_coffin.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="23">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
+          <Choice value="bored" />
+          <Choice value="embarrassed" />
+          <Choice value="uncomfortable" />
+          <Choice value="playful" />
+          <Choice value="tense" />
+          <Choice value="focused" />
+          <Choice value="energized" />
+          <Choice value="flirty" />
+          <Choice value="fine" />
+          <Choice value="inspired" />
+          <Choice value="dazed" />
+        </ParameterSelector>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="hub" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="26">
+      <Choice value="Coffin_Sleep--FullBody" track="normal" mask="" />
+    </PostureSelector>
+  </State>
+</ASM>

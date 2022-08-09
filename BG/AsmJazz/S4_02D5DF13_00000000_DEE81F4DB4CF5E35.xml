@@ -1,0 +1,180 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="ToiletStall_UseSeated_Posture" dcc="sage">
+  <Actor name="x" type="Sim" master="true" virtual="false" />
+  <Actor name="sitTemplate" type="Object" virtual="true" />
+  <Parameter name="Door_state" type="enum" labels="DoorOpen,DoorClosed" default="DoorOpen" />
+  <Parameter name="censorGrid" type="bool" labels="" default="True" />
+  <Parameter name="isPranked" type="enum" labels="True,False" default="False" />
+  <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
+  <Parameter name="x:species" type="enum" labels="human,dog,smalldog,cat" default="human" />
+  <Parameter name="x:walkstyle_override" type="uint" labels="" default="0" />
+  <Parameter name="sitTemplate:objectPosition" type="vector3" labels="" default="0,0,0" />
+  <Parameter name="sitTemplate:objectOrientation" type="quaternion" labels="" default="0,0,0,1" />
+  <IkConfiguration name="a2o_chairDining_getInOut.ma">
+    <SourceFile name="a2o_chairDining_getInOut.ma">
+      <MapNamespace namespace="sitTemplate" actor="sitTemplate" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="o_toiletStall_open_close.ma">
+    <SourceFile name="o_toiletStall_open_close.ma" />
+  </IkConfiguration>
+  <IkConfiguration name="a2o_toiletStall_posture_seated.ma">
+    <SourceFile name="a2o_toiletStall_posture_seated.ma">
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="sitTemplate" actor="sitTemplate" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_toiletStall_pranked_reaction_notFacing_Toilet.ma">
+    <SourceFile name="a2o_toiletStall_pranked_reaction_notFacing_Toilet.ma">
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="sitTemplate" actor="sitTemplate" />
+    </SourceFile>
+  </IkConfiguration>
+  <PostureManifest>
+    <Provide name="toiletStall_sit" family="sit" compatibility="FullBody" carry_left="*" carry_right="*" surface="*" />
+    <Provide name="toiletStall_sit" family="sit" compatibility="UpperBody" carry_left="*" carry_right="*" surface="*" />
+  </PostureManifest>
+  <State type="private" skippable="false" interrupt_this="false" name="Door_Open" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="public" countlooptime="false" disableautostop="false" skippable="true" interrupt_this="true" name="Toilet_Sit_Posture" focus="full body" facialoverlays="true" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="useSeated_start" focus="full body" facialoverlays="true" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="useSeated_stop" focus="full body" facialoverlays="true" tailoverlays="true" />
+  <Connection from="Door_Open" to="useSeated_stop" />
+  <Connection from="Toilet_Sit_Posture" to="Door_Open" />
+  <Connection from="entry" to="useSeated_start" />
+  <Connection from="useSeated_start" to="Toilet_Sit_Posture" />
+  <Connection from="useSeated_stop" to="exit" />
+  <State name="Door_Open" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <ParameterSelector parameter="Door_state" unique_id="2">
+      <Choice value="DoorOpen" />
+      <Choice value="DoorClosed">
+        <Controller target="sitTemplate" controller="@ClipController(clip=o_toiletStall_doorOpen_toiletStall, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="o_toiletStall_open_close.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="1">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+    </ParameterSelector>
+  </State>
+  <State name="Toilet_Sit_Posture" type="public" countlooptime="false" disableautostop="false" skippable="true" interrupt_this="true" focus="full body" facialoverlays="true" tailoverlays="true">
+    <description />
+    <MakeController>
+      <Controller target="x" controller="@ClipController(clip=a2o_toiletStall_seated_posture_x, loop_count=#1)" overridePosture="false" mask="" track="low" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_toiletStall_posture_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="3">
+        <TransitionClassList />
+      </Controller>
+    </MakeController>
+  </State>
+  <State name="useSeated_start" type="public" skippable="false" interrupt_this="false" focus="full body" facialoverlays="true" tailoverlays="true">
+    <description />
+    <ParameterSelector parameter="Door_state" unique_id="7">
+      <Choice value="DoorOpen" />
+      <Choice value="DoorClosed">
+        <Controller target="sitTemplate" controller="@ClipController(clip=o_toiletStall_doorClose_toiletStall, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="o_toiletStall_open_close.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="6">
+          <TransitionClassList />
+        </Controller>
+        <MakeController unique_id="5">
+          <Controller target="sitTemplate" controller="@ClipController(clip=o_toiletStall_doorClosed_toiletStall, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="o_toiletStall_open_close.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="4">
+            <TransitionClassList />
+          </Controller>
+        </MakeController>
+      </Choice>
+    </ParameterSelector>
+    <ParameterSelector parameter="x:species" unique_id="13">
+      <Choice value="human">
+        <ParameterSelector parameter="x:age" unique_id="12">
+          <Choice value="baby" />
+          <Choice value="toddler" />
+          <Choice value="child">
+            <FollowPath path="ToiletStall_Adult_Child_GetIn_Seated" default_walkstyle="Default" walkstyle_override_param="x:walkstyle_override" reference_actor="sitTemplate" reference_translation_param="sitTemplate:objectPosition" reference_orientation_param="sitTemplate:objectOrientation" trigger_posture_transition_event="True" reverse_path="False" target="x" overridePosture="false" track="normal" transition_class_in="Default" transition_class_out="Default" unique_id="11">
+              <TransitionClassList />
+            </FollowPath>
+            <ParameterSelector parameter="censorGrid" unique_id="10">
+              <Choice value="false">
+                <Controller target="x" controller="@ClipController(clip=a2o_chairDining_getIn_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_chairDining_getInOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="8">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+              <Choice value="true">
+                <Controller target="x" controller="@ClipController(clip=a2o_toilet_getIn_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_chairDining_getInOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="9">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+              </Choice>
+            </ParameterSelector>
+          </Choice>
+          <Choice value="teen">
+            <Reference target="11" />
+            <Reference target="10" />
+          </Choice>
+          <Choice value="youngadult">
+            <Reference target="11" />
+            <Reference target="10" />
+          </Choice>
+          <Choice value="adult">
+            <Reference target="11" />
+            <Reference target="10" />
+          </Choice>
+          <Choice value="elder">
+            <Reference target="11" />
+            <Reference target="10" />
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+      <Choice value="dog" />
+      <Choice value="smalldog" />
+      <Choice value="cat" />
+    </ParameterSelector>
+  </State>
+  <State name="useSeated_stop" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="true" tailoverlays="true">
+    <description />
+    <ParameterSelector parameter="x:species" unique_id="20">
+      <Choice value="human">
+        <ParameterSelector parameter="x:age" unique_id="19">
+          <Choice value="baby" />
+          <Choice value="toddler" />
+          <Choice value="child">
+            <ParameterSelector parameter="isPranked" unique_id="18">
+              <Choice value="True">
+                <Controller target="x" controller="@ClipController(clip=a2o_toilet_getOut_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_chairDining_getInOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="16">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=a2o_toiletStall_notfacing_prank_reaction_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_toiletStall_pranked_reaction_notFacing_Toilet.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="15">
+                  <TransitionClassList />
+                </Controller>
+                <FollowPath path="ToiletStall_Adult_Child_GetOut_Seated" default_walkstyle="Default" walkstyle_override_param="Door_state" reference_actor="sitTemplate" reference_translation_param="sitTemplate:objectPosition" reference_orientation_param="sitTemplate:objectOrientation" trigger_posture_transition_event="True" reverse_path="False" target="x" overridePosture="false" track="normal" transition_class_in="Default" transition_class_out="Default" unique_id="14">
+                  <TransitionClassList />
+                </FollowPath>
+              </Choice>
+              <Choice value="False">
+                <Controller target="x" controller="@ClipController(clip=a2o_toilet_getOut_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_chairDining_getInOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="17">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <Reference target="14" />
+              </Choice>
+            </ParameterSelector>
+          </Choice>
+          <Choice value="teen">
+            <Reference target="18" />
+          </Choice>
+          <Choice value="youngadult">
+            <Reference target="18" />
+          </Choice>
+          <Choice value="adult">
+            <Reference target="18" />
+          </Choice>
+          <Choice value="elder">
+            <Reference target="18" />
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+      <Choice value="dog" />
+      <Choice value="smalldog" />
+      <Choice value="cat" />
+    </ParameterSelector>
+  </State>
+</ASM>

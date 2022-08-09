@@ -1,0 +1,97 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="TrooperBlaster_Carry" dcc="sage">
+  <Actor name="x" type="Sim" master="true" virtual="false" />
+  <Actor name="TrooperBlaster" type="Object" virtual="false" />
+  <IkConfiguration name="a2o_TrooperBlaster_carry.ma">
+    <SourceFile name="a2o_TrooperBlaster_carry.ma">
+      <MapNamespace namespace="blaster" actor="TrooperBlaster" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <PostureManifest actors="" />
+  <PostureManifest actors="x">
+    <Support name="stand" family="none" compatibility="FullBody" carry_left="*" carry_right="TrooperBlaster" surface="-" />
+    <Support name="stand" family="none" compatibility="UpperBody" carry_left="*" carry_right="TrooperBlaster" surface="-" />
+  </PostureManifest>
+  <State type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" name="Carry" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="CreateCarryBlaster" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="ExitCarryBlaster" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="pickup" focus="body only" facialoverlays="true" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="putDown" focus="none" facialoverlays="false" tailoverlays="true" />
+  <Connection from="Carry" to="putDown" />
+  <Connection from="CreateCarryBlaster" to="exit" />
+  <Connection from="ExitCarryBlaster" to="exit" />
+  <Connection from="entry" to="CreateCarryBlaster" />
+  <Connection from="entry" to="ExitCarryBlaster" />
+  <Connection from="entry" to="pickup" />
+  <Connection from="pickup" to="Carry" />
+  <Connection from="putDown" to="exit" />
+  <State name="Carry" type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <MakeController>
+      <PostureSelector parameter="x:posture" unique_id="2">
+        <Choice value="stand--FullBody" track="carryright" mask="Trackmask_Carry_Right">
+          <Controller target="x" controller="@ClipController(clip=a2o_TrooperBlaster_carry_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_TrooperBlaster_carry.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="1">
+            <TransitionClassList />
+          </Controller>
+        </Choice>
+        <Choice value="stand--UpperBody" track="carryright" mask="Trackmask_Carry_Right">
+          <Reference target="1" />
+        </Choice>
+      </PostureSelector>
+    </MakeController>
+  </State>
+  <State name="CreateCarryBlaster" type="public" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="4">
+      <Choice value="stand--FullBody" track="carryright" mask="Trackmask_Carry_Right">
+        <Controller target="x" controller="@ClipController(clip=a2o_TrooperBlaster_carry_pickUp_inventory_x, loop_count=#1)" overridePosture="false" mask="" track="carryright" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_TrooperBlaster_carry.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="3">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+      <Choice value="stand--UpperBody" track="carryright" mask="Trackmask_Carry_Right">
+        <Reference target="3" />
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="ExitCarryBlaster" type="public" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="6">
+      <Choice value="stand--FullBody" track="carryright" mask="Trackmask_Carry_Right">
+        <Controller target="x" controller="@ClipController(clip=a2o_TrooperBlaster_carry_putDown_inventory_x, loop_count=#1)" overridePosture="false" mask="" track="carryright" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_TrooperBlaster_carry.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="5">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+      <Choice value="stand--UpperBody" track="carryright" mask="Trackmask_Carry_Right">
+        <Reference target="5" />
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="pickup" type="public" skippable="false" interrupt_this="false" focus="body only" facialoverlays="true" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="8">
+      <Choice value="stand--FullBody" track="carryright" mask="Trackmask_Carry_Right">
+        <Controller target="x" controller="@ClipController(clip=a2o_TrooperBlaster_carry_pickUp_inventory_x, loop_count=#1)" overridePosture="false" mask="" track="carryright" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_TrooperBlaster_carry.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="7">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+      <Choice value="stand--UpperBody" track="carryright" mask="Trackmask_Carry_Right">
+        <Reference target="7" />
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="putDown" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="10">
+      <Choice value="stand--FullBody" track="carryright" mask="Trackmask_Carry_Right">
+        <Controller target="x" controller="@ClipController(clip=a2o_TrooperBlaster_carry_putDown_inventory_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_TrooperBlaster_carry.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="9">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+      <Choice value="stand--UpperBody" track="carryright" mask="Trackmask_Carry_Right">
+        <Reference target="9" />
+      </Choice>
+    </PostureSelector>
+    <Stop target="x" track="carryright" blend_in="-1" unique_id="11" />
+  </State>
+</ASM>

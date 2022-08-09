@@ -1,0 +1,69 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="Soc_swim_GS_SplashAt" dcc="sage">
+  <Actor name="x" type="Sim" master="true" virtual="false" />
+  <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
+  <Parameter name="x:species" type="enum" labels="human,dog,smalldog,cat" default="human" />
+  <Parameter name="x:isMermaid" type="bool" labels="" default="False" />
+  <IkConfiguration name="a2a_swim_soc_GS_splashAt.ma">
+    <SourceFile name="a2a_swim_soc_GS_splashAt.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2a_mermaid_swim_soc_GS_splashAt.ma">
+    <SourceFile name="a2a_mermaid_swim_soc_GS_splashAt.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="c2c_swim_soc_GS_splashAt.ma">
+    <SourceFile name="c2c_swim_soc_GS_splashAt.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <PostureManifest actors="" />
+  <PostureManifest actors="x">
+    <Support name="swim" family="none" compatibility="FullBody" carry_left="-" carry_right="-" surface="*" />
+  </PostureManifest>
+  <State type="public" skippable="false" interrupt_this="false" name="SplashAt" focus="upper body" facialoverlays="false" tailoverlays="false" />
+  <Connection from="SplashAt" to="exit" />
+  <Connection from="entry" to="SplashAt" />
+  <State name="SplashAt" type="public" skippable="false" interrupt_this="false" focus="upper body" facialoverlays="false" tailoverlays="false">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="6">
+      <Choice value="swim--FullBody" track="normal" mask="">
+        <ParameterSelector parameter="x:age" unique_id="5">
+          <Choice value="baby" />
+          <Choice value="toddler" />
+          <Choice value="child">
+            <Controller target="x" controller="@ClipController(clip=c2c_swim_soc_GS_splashAt_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c2c_swim_soc_GS_splashAt.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="1">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
+          <Choice value="teen">
+            <ParameterSelector parameter="x:isMermaid" unique_id="4">
+              <Choice value="false">
+                <Controller target="x" controller="@ClipController(clip=a2a_swim_soc_GS_splashAt_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_swim_soc_GS_splashAt.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="2">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+              <Choice value="true">
+                <Controller target="x" controller="@ClipController(clip=a2a_mermaid_swim_soc_GS_splashAt_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_mermaid_swim_soc_GS_splashAt.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="3">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+            </ParameterSelector>
+          </Choice>
+          <Choice value="youngadult">
+            <Reference target="4" />
+          </Choice>
+          <Choice value="adult">
+            <Reference target="4" />
+          </Choice>
+          <Choice value="elder">
+            <Reference target="4" />
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+    </PostureSelector>
+  </State>
+</ASM>

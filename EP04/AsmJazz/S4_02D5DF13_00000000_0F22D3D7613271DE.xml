@@ -1,0 +1,904 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="Dog_Locomotion_Reactions" dcc="sage">
+  <Actor name="x" type="Sim" master="true" virtual="false" />
+  <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
+  <Parameter name="x:species" type="enum" labels="human,dog,smalldog,cat" default="human" />
+  <Parameter name="x:carryState" type="enum" labels="none,left,right,both" default="right" />
+  <Parameter name="x:walkstyle" type="enum" labels="default,run,runGhost,trot,trotGhost,walk,walkDroopy,walkGhost,walkPanting" default="default" />
+  <IkConfiguration name="ad_react_angry_bark.ma">
+    <SourceFile name="ad_react_angry_bark.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="ad_react_excited_bark_noisy_x.ma">
+    <SourceFile name="ad_react_excited_bark_noisy_x.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="ad_react_sad_whimper.ma">
+    <SourceFile name="ad_react_sad_whimper.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="ad_react_sad_whine.ma">
+    <SourceFile name="ad_react_sad_whine.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="ad_react_drowsy_yawn.ma">
+    <SourceFile name="ad_react_drowsy_yawn.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="ad_react_angry_growl.ma">
+    <SourceFile name="ad_react_angry_growl.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="ad_react_angry_barkLooping.ma">
+    <SourceFile name="ad_react_angry_barkLooping.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="ad_react_neutral_bark.ma">
+    <SourceFile name="ad_react_neutral_bark.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="ad_react_happy_perkUp.ma">
+    <SourceFile name="ad_react_happy_perkUp.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="ad_react_curious_tiltHeadBothSides.ma">
+    <SourceFile name="ad_react_curious_tiltHeadBothSides.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="ad_idle_breathe_pant.ma">
+    <SourceFile name="ad_idle_breathe_pant.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="ad_idle_sniffAroundAir.ma">
+    <SourceFile name="ad_idle_sniffAroundAir.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="ad_react_excited_bark_noisyLooping_loop2_x.ma">
+    <SourceFile name="ad_react_excited_bark_noisyLooping_loop2_x.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="al_react_excited_bark_noisyLooping_loop2_x.ma">
+    <SourceFile name="al_react_excited_bark_noisyLooping_loop2_x.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <PostureManifest actors="">
+    <Support name="stand" family="none" compatibility="FullBody" carry_left="*" carry_right="*" surface="*" />
+  </PostureManifest>
+  <State type="public" skippable="false" interrupt_this="false" name="barkAngry" focus="full body" facialoverlays="false" tailoverlays="false" />
+  <State type="public" skippable="false" interrupt_this="false" name="barkNeutral" focus="full body" facialoverlays="false" tailoverlays="false" />
+  <State type="public" skippable="false" interrupt_this="false" name="barkNoisy" focus="full body" facialoverlays="false" tailoverlays="false" />
+  <State type="public" skippable="false" interrupt_this="false" name="curiousTiltHead" focus="full body" facialoverlays="false" tailoverlays="false" />
+  <State type="public" skippable="false" interrupt_this="false" name="growl" focus="full body" facialoverlays="false" tailoverlays="false" />
+  <State type="public" skippable="false" interrupt_this="false" name="happyPerkUp" focus="none" facialoverlays="false" tailoverlays="false" />
+  <State type="public" skippable="false" interrupt_this="false" name="pant" focus="full body" facialoverlays="false" tailoverlays="false" />
+  <State type="public" skippable="false" interrupt_this="false" name="sniffAir" focus="none" facialoverlays="false" tailoverlays="false" />
+  <State type="public" skippable="false" interrupt_this="false" name="sniffLow" focus="none" facialoverlays="false" tailoverlays="false" />
+  <State type="public" skippable="false" interrupt_this="false" name="whine" focus="none" facialoverlays="false" tailoverlays="false" />
+  <State type="public" skippable="false" interrupt_this="false" name="yawn" focus="none" facialoverlays="false" tailoverlays="false" />
+  <Connection from="barkAngry" to="exit" />
+  <Connection from="barkNeutral" to="exit" />
+  <Connection from="barkNoisy" to="exit" />
+  <Connection from="curiousTiltHead" to="exit" />
+  <Connection from="entry" to="barkAngry" />
+  <Connection from="entry" to="barkNeutral" />
+  <Connection from="entry" to="barkNoisy" />
+  <Connection from="entry" to="curiousTiltHead" />
+  <Connection from="entry" to="growl" />
+  <Connection from="entry" to="happyPerkUp" />
+  <Connection from="entry" to="pant" />
+  <Connection from="entry" to="sniffAir" />
+  <Connection from="entry" to="sniffLow" />
+  <Connection from="entry" to="whine" />
+  <Connection from="entry" to="yawn" />
+  <Connection from="growl" to="exit" />
+  <Connection from="happyPerkUp" to="exit" />
+  <Connection from="pant" to="exit" />
+  <Connection from="sniffAir" to="exit" />
+  <Connection from="sniffLow" to="exit" />
+  <Connection from="whine" to="exit" />
+  <Connection from="yawn" to="exit" />
+  <State name="barkAngry" type="public" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="false">
+    <description />
+    <ParameterSelector parameter="x:walkstyle" unique_id="17">
+      <Choice value="default">
+        <PostureSelector parameter="x:posture" unique_id="8">
+          <Choice value="stand--FullBody" track="locomotionoverlay" mask="Trackmask_Dog_Chest50_Head_Ears50">
+            <ParameterSelector parameter="x:carryState" unique_id="7">
+              <Choice value="none">
+                <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="3">
+                  <Choice weight="50" avoidRepeat="False">
+                    <Controller target="x" controller="@ClipController(clip=ad_react_angry_bark_x, loop_count=#1)" overridePosture="false" mask="" track="normalplus" mirror_conditional="False" suppress_footsteps="True" transition_class_in="Default" transition_class_out="Default" ik_configuration="ad_react_angry_bark.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="1">
+                      <TransitionClassList />
+                    </Controller>
+                  </Choice>
+                  <Choice weight="50" avoidRepeat="False">
+                    <Controller target="x" controller="@ClipController(clip=ad_react_angry_barkLooping_loop2_overlay_x, loop_count=#1)" overridePosture="false" mask="" track="normalplus" mirror_conditional="False" suppress_footsteps="True" transition_class_in="Default" transition_class_out="Default" ik_configuration="ad_react_angry_barkLooping.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="2">
+                      <TransitionClassList />
+                    </Controller>
+                  </Choice>
+                </RandomSelector>
+              </Choice>
+              <Choice value="left">
+                <Reference target="3" />
+              </Choice>
+              <Choice value="right">
+                <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="6">
+                  <Choice weight="50" avoidRepeat="False">
+                    <Controller target="x" controller="@ClipController(clip=ad_react_angry_bark_carryAudio_x, loop_count=#1)" overridePosture="false" mask="" track="normalplus" mirror_conditional="False" suppress_footsteps="True" transition_class_in="Default" transition_class_out="Default" ik_configuration="ad_react_angry_bark.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="4">
+                      <TransitionClassList />
+                    </Controller>
+                  </Choice>
+                  <Choice weight="50" avoidRepeat="False">
+                    <Controller target="x" controller="@ClipController(clip=ad_react_angry_barkLooping_loop2_overlay_carryAudio_x, loop_count=#1)" overridePosture="false" mask="" track="normalplus" mirror_conditional="False" suppress_footsteps="True" transition_class_in="Default" transition_class_out="Default" ik_configuration="ad_react_angry_barkLooping.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="5">
+                      <TransitionClassList />
+                    </Controller>
+                  </Choice>
+                </RandomSelector>
+              </Choice>
+              <Choice value="both">
+                <Reference target="6" />
+              </Choice>
+            </ParameterSelector>
+          </Choice>
+        </PostureSelector>
+      </Choice>
+      <Choice value="run">
+        <PostureSelector parameter="x:posture" unique_id="16">
+          <Choice value="stand--FullBody" track="locomotionoverlay" mask="Trackmask_Dog_HeadFace">
+            <ParameterSelector parameter="x:carryState" unique_id="15">
+              <Choice value="none">
+                <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="11">
+                  <Choice weight="50" avoidRepeat="False">
+                    <Controller target="x" controller="@ClipController(clip=ad_react_angry_bark_x, loop_count=#1)" overridePosture="false" mask="" track="normalplus" mirror_conditional="False" suppress_footsteps="True" transition_class_in="Default" transition_class_out="Default" ik_configuration="ad_react_angry_bark.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="9">
+                      <TransitionClassList />
+                    </Controller>
+                  </Choice>
+                  <Choice weight="50" avoidRepeat="False">
+                    <Controller target="x" controller="@ClipController(clip=ad_react_angry_barkLooping_loop2_overlay_x, loop_count=#1)" overridePosture="false" mask="" track="normalplus" mirror_conditional="False" suppress_footsteps="True" transition_class_in="Default" transition_class_out="Default" ik_configuration="ad_react_angry_barkLooping.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="10">
+                      <TransitionClassList />
+                    </Controller>
+                  </Choice>
+                </RandomSelector>
+              </Choice>
+              <Choice value="left">
+                <Reference target="11" />
+              </Choice>
+              <Choice value="right">
+                <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="14">
+                  <Choice weight="50" avoidRepeat="False">
+                    <Controller target="x" controller="@ClipController(clip=ad_react_angry_bark_carryAudio_x, loop_count=#1)" overridePosture="false" mask="" track="normalplus" mirror_conditional="False" suppress_footsteps="True" transition_class_in="Default" transition_class_out="Default" ik_configuration="ad_react_angry_bark.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="12">
+                      <TransitionClassList />
+                    </Controller>
+                  </Choice>
+                  <Choice weight="50" avoidRepeat="False">
+                    <Controller target="x" controller="@ClipController(clip=ad_react_angry_barkLooping_loop2_overlay_carryAudio_x, loop_count=#1)" overridePosture="false" mask="" track="normalplus" mirror_conditional="False" suppress_footsteps="True" transition_class_in="Default" transition_class_out="Default" ik_configuration="ad_react_angry_barkLooping.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="13">
+                      <TransitionClassList />
+                    </Controller>
+                  </Choice>
+                </RandomSelector>
+              </Choice>
+              <Choice value="both">
+                <Reference target="14" />
+              </Choice>
+            </ParameterSelector>
+          </Choice>
+        </PostureSelector>
+      </Choice>
+      <Choice value="runGhost">
+        <Reference target="16" />
+      </Choice>
+      <Choice value="trot">
+        <Reference target="8" />
+      </Choice>
+      <Choice value="trotGhost">
+        <Reference target="8" />
+      </Choice>
+      <Choice value="walk">
+        <Reference target="8" />
+      </Choice>
+      <Choice value="walkDroopy" />
+      <Choice value="walkGhost">
+        <Reference target="8" />
+      </Choice>
+      <Choice value="walkPanting">
+        <Reference target="8" />
+      </Choice>
+    </ParameterSelector>
+  </State>
+  <State name="barkNeutral" type="public" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="false">
+    <description />
+    <ParameterSelector parameter="x:walkstyle" unique_id="34">
+      <Choice value="default">
+        <PostureSelector parameter="x:posture" unique_id="25">
+          <Choice value="stand--FullBody" track="locomotionoverlay" mask="Trackmask_Dog_ChestHead">
+            <ParameterSelector parameter="x:carryState" unique_id="24">
+              <Choice value="none">
+                <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="20">
+                  <Choice weight="50" avoidRepeat="False">
+                    <Controller target="x" controller="@ClipController(clip=ad_react_neutral_bark_overlay1_x, loop_count=#1)" overridePosture="false" mask="" track="normalplus" mirror_conditional="False" suppress_footsteps="True" transition_class_in="Default" transition_class_out="Default" ik_configuration="ad_react_neutral_bark.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="18">
+                      <TransitionClassList />
+                    </Controller>
+                  </Choice>
+                  <Choice weight="50" avoidRepeat="False">
+                    <Controller target="x" controller="@ClipController(clip=ad_react_neutral_bark_overlay2_x, loop_count=#1)" overridePosture="false" mask="" track="normalplus" mirror_conditional="False" suppress_footsteps="True" transition_class_in="Default" transition_class_out="Default" ik_configuration="ad_react_neutral_bark.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="19">
+                      <TransitionClassList />
+                    </Controller>
+                  </Choice>
+                </RandomSelector>
+              </Choice>
+              <Choice value="left">
+                <Reference target="20" />
+              </Choice>
+              <Choice value="right">
+                <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="23">
+                  <Choice weight="50" avoidRepeat="False">
+                    <Controller target="x" controller="@ClipController(clip=ad_react_neutral_bark_overlay1_carryAudio_x, loop_count=#1)" overridePosture="false" mask="" track="normalplus" mirror_conditional="False" suppress_footsteps="True" transition_class_in="Default" transition_class_out="Default" ik_configuration="ad_react_neutral_bark.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="21">
+                      <TransitionClassList />
+                    </Controller>
+                  </Choice>
+                  <Choice weight="50" avoidRepeat="False">
+                    <Controller target="x" controller="@ClipController(clip=ad_react_neutral_bark_overlay2_carryAudio_x, loop_count=#1)" overridePosture="false" mask="" track="normalplus" mirror_conditional="False" suppress_footsteps="True" transition_class_in="Default" transition_class_out="Default" ik_configuration="ad_react_neutral_bark.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="22">
+                      <TransitionClassList />
+                    </Controller>
+                  </Choice>
+                </RandomSelector>
+              </Choice>
+              <Choice value="both">
+                <Reference target="23" />
+              </Choice>
+            </ParameterSelector>
+          </Choice>
+        </PostureSelector>
+      </Choice>
+      <Choice value="run">
+        <PostureSelector parameter="x:posture" unique_id="33">
+          <Choice value="stand--FullBody" track="locomotionoverlay" mask="Trackmask_Dog_HeadFace">
+            <ParameterSelector parameter="x:carryState" unique_id="32">
+              <Choice value="none">
+                <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="28">
+                  <Choice weight="50" avoidRepeat="False">
+                    <Controller target="x" controller="@ClipController(clip=ad_react_neutral_bark_overlay1_x, loop_count=#1)" overridePosture="false" mask="" track="normalplus" mirror_conditional="False" suppress_footsteps="True" transition_class_in="Default" transition_class_out="Default" ik_configuration="ad_react_neutral_bark.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="26">
+                      <TransitionClassList />
+                    </Controller>
+                  </Choice>
+                  <Choice weight="50" avoidRepeat="False">
+                    <Controller target="x" controller="@ClipController(clip=ad_react_neutral_bark_overlay2_x, loop_count=#1)" overridePosture="false" mask="" track="normalplus" mirror_conditional="False" suppress_footsteps="True" transition_class_in="Default" transition_class_out="Default" ik_configuration="ad_react_neutral_bark.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="27">
+                      <TransitionClassList />
+                    </Controller>
+                  </Choice>
+                </RandomSelector>
+              </Choice>
+              <Choice value="left">
+                <Reference target="28" />
+              </Choice>
+              <Choice value="right">
+                <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="31">
+                  <Choice weight="50" avoidRepeat="False">
+                    <Controller target="x" controller="@ClipController(clip=ad_react_neutral_bark_overlay1_carryAudio_x, loop_count=#1)" overridePosture="false" mask="" track="normalplus" mirror_conditional="False" suppress_footsteps="True" transition_class_in="Default" transition_class_out="Default" ik_configuration="ad_react_neutral_bark.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="29">
+                      <TransitionClassList />
+                    </Controller>
+                  </Choice>
+                  <Choice weight="50" avoidRepeat="False">
+                    <Controller target="x" controller="@ClipController(clip=ad_react_neutral_bark_overlay2_carryAudio_x, loop_count=#1)" overridePosture="false" mask="" track="normalplus" mirror_conditional="False" suppress_footsteps="True" transition_class_in="Default" transition_class_out="Default" ik_configuration="ad_react_neutral_bark.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="30">
+                      <TransitionClassList />
+                    </Controller>
+                  </Choice>
+                </RandomSelector>
+              </Choice>
+              <Choice value="both">
+                <Reference target="31" />
+              </Choice>
+            </ParameterSelector>
+          </Choice>
+        </PostureSelector>
+      </Choice>
+      <Choice value="runGhost">
+        <Reference target="33" />
+      </Choice>
+      <Choice value="trot">
+        <Reference target="25" />
+      </Choice>
+      <Choice value="trotGhost">
+        <Reference target="25" />
+      </Choice>
+      <Choice value="walk">
+        <Reference target="25" />
+      </Choice>
+      <Choice value="walkDroopy">
+        <Reference target="25" />
+      </Choice>
+      <Choice value="walkGhost">
+        <Reference target="25" />
+      </Choice>
+      <Choice value="walkPanting">
+        <Reference target="25" />
+      </Choice>
+    </ParameterSelector>
+  </State>
+  <State name="barkNoisy" type="public" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="false">
+    <description />
+    <ParameterSelector parameter="x:walkstyle" unique_id="55">
+      <Choice value="default">
+        <PostureSelector parameter="x:posture" unique_id="44">
+          <Choice value="stand--FullBody" track="locomotionoverlay" mask="Trackmask_Dog_Chest50_Head_Ears50">
+            <ParameterSelector parameter="x:carryState" unique_id="43">
+              <Choice value="none">
+                <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="38">
+                  <Choice weight="50" avoidRepeat="False">
+                    <Controller target="x" controller="@ClipController(clip=ad_react_excited_bark_noisy_overlay1_x, loop_count=#1)" overridePosture="false" mask="" track="normalplus" mirror_conditional="False" suppress_footsteps="True" transition_class_in="Default" transition_class_out="Default" ik_configuration="ad_react_excited_bark_noisy_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="35">
+                      <TransitionClassList />
+                    </Controller>
+                  </Choice>
+                  <Choice weight="50" avoidRepeat="False">
+                    <Controller target="x" controller="@ClipController(clip=ad_react_excited_bark_noisy_overlay2_x, loop_count=#1)" overridePosture="false" mask="" track="normalplus" mirror_conditional="False" suppress_footsteps="True" transition_class_in="Default" transition_class_out="Default" ik_configuration="ad_react_excited_bark_noisy_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="36">
+                      <TransitionClassList />
+                    </Controller>
+                  </Choice>
+                  <Choice weight="50" avoidRepeat="False">
+                    <Controller target="x" controller="@ClipController(clip=ad_react_excited_bark_noisyLooping_loop2_overlay_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ad_react_excited_bark_noisyLooping_loop2_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="37">
+                      <TransitionClassList />
+                    </Controller>
+                  </Choice>
+                </RandomSelector>
+              </Choice>
+              <Choice value="left">
+                <Reference target="38" />
+              </Choice>
+              <Choice value="right">
+                <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="42">
+                  <Choice weight="50" avoidRepeat="False">
+                    <Controller target="x" controller="@ClipController(clip=ad_react_excited_bark_noisy_overlay1_carryAudio_x, loop_count=#1)" overridePosture="false" mask="" track="normalplus" mirror_conditional="False" suppress_footsteps="True" transition_class_in="Default" transition_class_out="Default" ik_configuration="ad_react_excited_bark_noisy_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="39">
+                      <TransitionClassList />
+                    </Controller>
+                  </Choice>
+                  <Choice weight="50" avoidRepeat="False">
+                    <Controller target="x" controller="@ClipController(clip=ad_react_excited_bark_noisy_overlay2_carryAudio_x, loop_count=#1)" overridePosture="false" mask="" track="normalplus" mirror_conditional="False" suppress_footsteps="True" transition_class_in="Default" transition_class_out="Default" ik_configuration="ad_react_excited_bark_noisy_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="40">
+                      <TransitionClassList />
+                    </Controller>
+                  </Choice>
+                  <Choice weight="50" avoidRepeat="False">
+                    <Controller target="x" controller="@ClipController(clip=ad_react_excited_bark_noisyLooping_loop2_overlay_carryAudio_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ad_react_excited_bark_noisyLooping_loop2_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="41">
+                      <TransitionClassList />
+                    </Controller>
+                  </Choice>
+                </RandomSelector>
+              </Choice>
+              <Choice value="both">
+                <Reference target="42" />
+              </Choice>
+            </ParameterSelector>
+          </Choice>
+        </PostureSelector>
+      </Choice>
+      <Choice value="run">
+        <PostureSelector parameter="x:posture" unique_id="54">
+          <Choice value="stand--FullBody" track="locomotionoverlay" mask="Trackmask_Dog_HeadFace">
+            <ParameterSelector parameter="x:carryState" unique_id="53">
+              <Choice value="none">
+                <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="48">
+                  <Choice weight="50" avoidRepeat="False">
+                    <Controller target="x" controller="@ClipController(clip=ad_react_excited_bark_noisy_overlay1_x, loop_count=#1)" overridePosture="false" mask="Trackmask_Dog_Head50_Face_noEars" track="locomotionoverlay" mirror_conditional="False" suppress_footsteps="True" transition_class_in="Default" transition_class_out="Default" ik_configuration="ad_react_excited_bark_noisy_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="45">
+                      <TransitionClassList />
+                    </Controller>
+                  </Choice>
+                  <Choice weight="50" avoidRepeat="False">
+                    <Controller target="x" controller="@ClipController(clip=ad_react_excited_bark_noisy_overlay2_x, loop_count=#1)" overridePosture="false" mask="Trackmask_Dog_HeadFace" track="locomotionoverlay" mirror_conditional="False" suppress_footsteps="True" transition_class_in="Default" transition_class_out="Default" ik_configuration="ad_react_excited_bark_noisy_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="46">
+                      <TransitionClassList />
+                    </Controller>
+                  </Choice>
+                  <Choice weight="50" avoidRepeat="False">
+                    <Controller target="x" controller="@ClipController(clip=ad_react_excited_bark_noisyLooping_loop2_overlay_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ad_react_excited_bark_noisyLooping_loop2_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="47">
+                      <TransitionClassList />
+                    </Controller>
+                  </Choice>
+                </RandomSelector>
+              </Choice>
+              <Choice value="left">
+                <Reference target="48" />
+              </Choice>
+              <Choice value="right">
+                <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="52">
+                  <Choice weight="50" avoidRepeat="False">
+                    <Controller target="x" controller="@ClipController(clip=ad_react_excited_bark_noisy_overlay1_carryAudio_x, loop_count=#1)" overridePosture="true" mask="Trackmask_Dog_Head50_Face_noEars" track="locomotionoverlay" mirror_conditional="False" suppress_footsteps="True" transition_class_in="Default" transition_class_out="Default" ik_configuration="ad_react_excited_bark_noisy_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="49">
+                      <TransitionClassList />
+                    </Controller>
+                  </Choice>
+                  <Choice weight="50" avoidRepeat="False">
+                    <Controller target="x" controller="@ClipController(clip=ad_react_excited_bark_noisy_overlay2_carryAudio_x, loop_count=#1)" overridePosture="false" mask="" track="normalplus" mirror_conditional="False" suppress_footsteps="True" transition_class_in="Default" transition_class_out="Default" ik_configuration="ad_react_excited_bark_noisy_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="50">
+                      <TransitionClassList />
+                    </Controller>
+                  </Choice>
+                  <Choice weight="50" avoidRepeat="False">
+                    <Controller target="x" controller="@ClipController(clip=al_react_excited_bark_noisyLooping_loop2_overlay_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="al_react_excited_bark_noisyLooping_loop2_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="51">
+                      <TransitionClassList />
+                    </Controller>
+                  </Choice>
+                </RandomSelector>
+              </Choice>
+              <Choice value="both">
+                <Reference target="52" />
+              </Choice>
+            </ParameterSelector>
+          </Choice>
+        </PostureSelector>
+      </Choice>
+      <Choice value="runGhost">
+        <Reference target="54" />
+      </Choice>
+      <Choice value="trot">
+        <Reference target="44" />
+      </Choice>
+      <Choice value="trotGhost">
+        <Reference target="44" />
+      </Choice>
+      <Choice value="walk">
+        <Reference target="44" />
+      </Choice>
+      <Choice value="walkDroopy" />
+      <Choice value="walkGhost">
+        <Reference target="44" />
+      </Choice>
+      <Choice value="walkPanting">
+        <Reference target="44" />
+      </Choice>
+    </ParameterSelector>
+  </State>
+  <State name="curiousTiltHead" type="public" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="false">
+    <description />
+    <ParameterSelector parameter="x:walkstyle" unique_id="58">
+      <Choice value="default">
+        <PostureSelector parameter="x:posture" unique_id="57">
+          <Choice value="stand--FullBody" track="locomotionoverlay" mask="Trackmask_Dog_ChestHead">
+            <Controller target="x" controller="@ClipController(clip=ad_react_curious_tiltHeadBothSides_overlay_x, loop_count=#1)" overridePosture="false" mask="" track="normalplus" mirror_conditional="False" suppress_footsteps="True" transition_class_in="Default" transition_class_out="Default" ik_configuration="ad_react_curious_tiltHeadBothSides.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="56">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
+        </PostureSelector>
+      </Choice>
+      <Choice value="run" />
+      <Choice value="runGhost" />
+      <Choice value="trot">
+        <Reference target="57" />
+      </Choice>
+      <Choice value="trotGhost">
+        <Reference target="57" />
+      </Choice>
+      <Choice value="walk">
+        <Reference target="57" />
+      </Choice>
+      <Choice value="walkDroopy" />
+      <Choice value="walkGhost">
+        <Reference target="57" />
+      </Choice>
+      <Choice value="walkPanting">
+        <Reference target="57" />
+      </Choice>
+    </ParameterSelector>
+  </State>
+  <State name="growl" type="public" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="false">
+    <description />
+    <ParameterSelector parameter="x:walkstyle" unique_id="67">
+      <Choice value="default">
+        <PostureSelector parameter="x:posture" unique_id="62">
+          <Choice value="stand--FullBody" track="locomotionoverlay" mask="Trackmask_Dog_ChestHead">
+            <ParameterSelector parameter="x:carryState" unique_id="61">
+              <Choice value="none">
+                <Controller target="x" controller="@ClipController(clip=ad_react_angry_growl_overlay_x, loop_count=#1)" overridePosture="false" mask="" track="normalplus" mirror_conditional="False" suppress_footsteps="True" transition_class_in="Default" transition_class_out="Default" ik_configuration="ad_react_angry_growl.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="59">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+              <Choice value="left">
+                <Reference target="59" />
+              </Choice>
+              <Choice value="right">
+                <Controller target="x" controller="@ClipController(clip=ad_react_angry_growl_overlay_carryAudio_x, loop_count=#1)" overridePosture="false" mask="" track="normalplus" mirror_conditional="False" suppress_footsteps="True" transition_class_in="Default" transition_class_out="Default" ik_configuration="ad_react_angry_growl.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="60">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+              <Choice value="both">
+                <Reference target="60" />
+              </Choice>
+            </ParameterSelector>
+          </Choice>
+        </PostureSelector>
+      </Choice>
+      <Choice value="run">
+        <PostureSelector parameter="x:posture" unique_id="66">
+          <Choice value="stand--FullBody" track="locomotionoverlay" mask="Trackmask_Dog_HeadFace">
+            <ParameterSelector parameter="x:carryState" unique_id="65">
+              <Choice value="none">
+                <Controller target="x" controller="@ClipController(clip=ad_react_angry_growl_overlay_x, loop_count=#1)" overridePosture="false" mask="" track="normalplus" mirror_conditional="False" suppress_footsteps="True" transition_class_in="Default" transition_class_out="Default" ik_configuration="ad_react_angry_growl.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="63">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+              <Choice value="left">
+                <Reference target="63" />
+              </Choice>
+              <Choice value="right">
+                <Controller target="x" controller="@ClipController(clip=ad_react_angry_growl_overlay_carryAudio_x, loop_count=#1)" overridePosture="false" mask="" track="normalplus" mirror_conditional="False" suppress_footsteps="True" transition_class_in="Default" transition_class_out="Default" ik_configuration="ad_react_angry_growl.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="64">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+              <Choice value="both">
+                <Reference target="64" />
+              </Choice>
+            </ParameterSelector>
+          </Choice>
+        </PostureSelector>
+      </Choice>
+      <Choice value="runGhost">
+        <Reference target="66" />
+      </Choice>
+      <Choice value="trot">
+        <Reference target="62" />
+      </Choice>
+      <Choice value="trotGhost">
+        <Reference target="62" />
+      </Choice>
+      <Choice value="walk">
+        <Reference target="62" />
+      </Choice>
+      <Choice value="walkDroopy" />
+      <Choice value="walkGhost">
+        <Reference target="62" />
+      </Choice>
+      <Choice value="walkPanting" />
+    </ParameterSelector>
+  </State>
+  <State name="happyPerkUp" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="false">
+    <description />
+    <ParameterSelector parameter="x:walkstyle" unique_id="76">
+      <Choice value="default">
+        <PostureSelector parameter="x:posture" unique_id="71">
+          <Choice value="stand--FullBody" track="locomotionoverlay" mask="Trackmask_Dog_ChestHead">
+            <ParameterSelector parameter="x:carryState" unique_id="70">
+              <Choice value="none">
+                <Controller target="x" controller="@ClipController(clip=ad_react_happy_perkUp_x, loop_count=#1)" overridePosture="false" mask="" track="normalplus" mirror_conditional="False" suppress_footsteps="True" transition_class_in="Default" transition_class_out="Default" ik_configuration="ad_react_happy_perkUp.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="68">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+              <Choice value="left">
+                <Reference target="68" />
+              </Choice>
+              <Choice value="right">
+                <Controller target="x" controller="@ClipController(clip=ad_react_happy_perkUp_carryAudio_x, loop_count=#1)" overridePosture="false" mask="" track="normalplus" mirror_conditional="False" suppress_footsteps="True" transition_class_in="Default" transition_class_out="Default" ik_configuration="ad_react_happy_perkUp.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="69">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+              <Choice value="both">
+                <Reference target="69" />
+              </Choice>
+            </ParameterSelector>
+          </Choice>
+        </PostureSelector>
+      </Choice>
+      <Choice value="run">
+        <PostureSelector parameter="x:posture" unique_id="75">
+          <Choice value="stand--FullBody" track="locomotionoverlay" mask="Trackmask_Dog_HeadFace">
+            <ParameterSelector parameter="x:carryState" unique_id="74">
+              <Choice value="none">
+                <Controller target="x" controller="@ClipController(clip=ad_react_happy_perkUp_x, loop_count=#1)" overridePosture="false" mask="" track="normalplus" mirror_conditional="False" suppress_footsteps="True" transition_class_in="Default" transition_class_out="Default" ik_configuration="ad_react_happy_perkUp.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="72">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+              <Choice value="left">
+                <Reference target="72" />
+              </Choice>
+              <Choice value="right">
+                <Controller target="x" controller="@ClipController(clip=ad_react_happy_perkUp_carryAudio_x, loop_count=#1)" overridePosture="false" mask="" track="normalplus" mirror_conditional="False" suppress_footsteps="True" transition_class_in="Default" transition_class_out="Default" ik_configuration="ad_react_happy_perkUp.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="73">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+              <Choice value="both">
+                <Reference target="73" />
+              </Choice>
+            </ParameterSelector>
+          </Choice>
+        </PostureSelector>
+      </Choice>
+      <Choice value="runGhost">
+        <Reference target="75" />
+      </Choice>
+      <Choice value="trot">
+        <Reference target="71" />
+      </Choice>
+      <Choice value="trotGhost">
+        <Reference target="71" />
+      </Choice>
+      <Choice value="walk">
+        <Reference target="71" />
+      </Choice>
+      <Choice value="walkDroopy" />
+      <Choice value="walkGhost">
+        <Reference target="71" />
+      </Choice>
+      <Choice value="walkPanting">
+        <Reference target="71" />
+      </Choice>
+    </ParameterSelector>
+  </State>
+  <State name="pant" type="public" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="false">
+    <description />
+    <ParameterSelector parameter="x:walkstyle" unique_id="83">
+      <Choice value="default">
+        <PostureSelector parameter="x:posture" unique_id="79">
+          <Choice value="stand--FullBody" track="locomotionoverlay" mask="Trackmask_Dog_ChestHead">
+            <ParameterSelector parameter="x:carryState" unique_id="78">
+              <Choice value="none">
+                <Controller target="x" controller="@ClipController(clip=ad_idle_breathe_pantOneShot_overlay_x, loop_count=#1)" overridePosture="true" mask="Trackmask_Cat_ChestHead" track="normalplus" mirror_conditional="False" suppress_footsteps="True" transition_class_in="Default" transition_class_out="Default" ik_configuration="ad_idle_breathe_pant.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="77">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+              <Choice value="left">
+                <Reference target="77" />
+              </Choice>
+              <Choice value="right" />
+              <Choice value="both" />
+            </ParameterSelector>
+          </Choice>
+        </PostureSelector>
+      </Choice>
+      <Choice value="run">
+        <PostureSelector parameter="x:posture" unique_id="82">
+          <Choice value="stand--FullBody" track="locomotionoverlay" mask="Trackmask_Dog_HeadFace">
+            <ParameterSelector parameter="x:carryState" unique_id="81">
+              <Choice value="none">
+                <Controller target="x" controller="@ClipController(clip=ad_idle_breathe_pantOneShot_overlay_x, loop_count=#1)" overridePosture="true" mask="Trackmask_Cat_ChestHead" track="normalplus" mirror_conditional="False" suppress_footsteps="True" transition_class_in="Default" transition_class_out="Default" ik_configuration="ad_idle_breathe_pant.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="80">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+              <Choice value="left">
+                <Reference target="80" />
+              </Choice>
+              <Choice value="right" />
+              <Choice value="both" />
+            </ParameterSelector>
+          </Choice>
+        </PostureSelector>
+      </Choice>
+      <Choice value="runGhost">
+        <Reference target="82" />
+      </Choice>
+      <Choice value="trot">
+        <Reference target="79" />
+      </Choice>
+      <Choice value="trotGhost">
+        <Reference target="79" />
+      </Choice>
+      <Choice value="walk">
+        <Reference target="79" />
+      </Choice>
+      <Choice value="walkDroopy">
+        <Reference target="82" />
+      </Choice>
+      <Choice value="walkGhost">
+        <Reference target="79" />
+      </Choice>
+      <Choice value="walkPanting" />
+    </ParameterSelector>
+  </State>
+  <State name="sniffAir" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="false">
+    <description />
+    <ParameterSelector parameter="x:walkstyle" unique_id="86">
+      <Choice value="default">
+        <PostureSelector parameter="x:posture" unique_id="85">
+          <Choice value="stand--FullBody" track="locomotionoverlay" mask="Trackmask_Dog_ChestHead">
+            <Controller target="x" controller="@ClipController(clip=ad_idle_sniffAroundAir_overlay_x, loop_count=#1)" overridePosture="false" mask="" track="normalplus" mirror_conditional="False" suppress_footsteps="True" transition_class_in="Default" transition_class_out="Default" ik_configuration="ad_idle_sniffAroundAir.ma" focus="none" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="84">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
+        </PostureSelector>
+      </Choice>
+      <Choice value="run" />
+      <Choice value="runGhost" />
+      <Choice value="trot">
+        <Reference target="85" />
+      </Choice>
+      <Choice value="trotGhost">
+        <Reference target="85" />
+      </Choice>
+      <Choice value="walk">
+        <Reference target="85" />
+      </Choice>
+      <Choice value="walkDroopy" />
+      <Choice value="walkGhost">
+        <Reference target="85" />
+      </Choice>
+      <Choice value="walkPanting">
+        <Reference target="85" />
+      </Choice>
+    </ParameterSelector>
+  </State>
+  <State name="sniffLow" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="false">
+    <description />
+    <ParameterSelector parameter="x:walkstyle" unique_id="90">
+      <Choice value="default">
+        <PostureSelector parameter="x:posture" unique_id="89">
+          <Choice value="stand--FullBody" track="locomotionoverlay_additive" mask="Trackmask_Dog_ChestHeadSpine2">
+            <ParameterSelector parameter="x:carryState" unique_id="88">
+              <Choice value="none">
+                <Controller target="x" controller="@ClipController(clip=ad_loco_sniffLow_additive, loop_count=#1)" overridePosture="false" mask="" track="locomotionoverlay_additive" mirror_conditional="False" suppress_footsteps="True" transition_class_in="Default" transition_class_out="Default" ik_configuration="" focus="none" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="87">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+              <Choice value="left">
+                <Reference target="87" />
+              </Choice>
+              <Choice value="right" />
+              <Choice value="both" />
+            </ParameterSelector>
+          </Choice>
+        </PostureSelector>
+      </Choice>
+      <Choice value="run" />
+      <Choice value="runGhost" />
+      <Choice value="trot">
+        <Reference target="89" />
+      </Choice>
+      <Choice value="trotGhost">
+        <Reference target="89" />
+      </Choice>
+      <Choice value="walk">
+        <Reference target="89" />
+      </Choice>
+      <Choice value="walkDroopy">
+        <Reference target="89" />
+      </Choice>
+      <Choice value="walkGhost">
+        <Reference target="89" />
+      </Choice>
+      <Choice value="walkPanting">
+        <Reference target="89" />
+      </Choice>
+    </ParameterSelector>
+  </State>
+  <State name="whine" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="false">
+    <description />
+    <ParameterSelector parameter="x:walkstyle" unique_id="101">
+      <Choice value="default">
+        <PostureSelector parameter="x:posture" unique_id="95">
+          <Choice value="stand--FullBody" track="locomotionoverlay" mask="Trackmask_Dog_ChestHead">
+            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="94">
+              <Choice weight="50" avoidRepeat="False">
+                <Controller target="x" controller="@ClipController(clip=ad_react_sad_whimper_overlay_x, loop_count=#1)" overridePosture="false" mask="" track="normalplus" mirror_conditional="False" suppress_footsteps="True" transition_class_in="Default" transition_class_out="Default" ik_configuration="ad_react_sad_whimper.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="91">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+              <Choice weight="50" avoidRepeat="False">
+                <Controller target="x" controller="@ClipController(clip=ad_react_sad_whine_loop2_overlay1_x, loop_count=#1)" overridePosture="false" mask="" track="normalplus" mirror_conditional="False" suppress_footsteps="True" transition_class_in="Default" transition_class_out="Default" ik_configuration="ad_react_sad_whine.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="92">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+              <Choice weight="50" avoidRepeat="False">
+                <Controller target="x" controller="@ClipController(clip=ad_react_sad_whine_loop2_overlay2_x, loop_count=#1)" overridePosture="false" mask="" track="normalplus" mirror_conditional="False" suppress_footsteps="True" transition_class_in="Default" transition_class_out="Default" ik_configuration="ad_react_sad_whine.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="93">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+            </RandomSelector>
+          </Choice>
+        </PostureSelector>
+      </Choice>
+      <Choice value="run">
+        <PostureSelector parameter="x:posture" unique_id="100">
+          <Choice value="stand--FullBody" track="locomotionoverlay" mask="Trackmask_Dog_Head50_Face_noEars">
+            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="99">
+              <Choice weight="50" avoidRepeat="False">
+                <Controller target="x" controller="@ClipController(clip=ad_react_sad_whimper_overlay_x, loop_count=#1)" overridePosture="false" mask="" track="normalplus" mirror_conditional="False" suppress_footsteps="True" transition_class_in="Default" transition_class_out="Default" ik_configuration="ad_react_sad_whimper.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="96">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+              <Choice weight="50" avoidRepeat="False">
+                <Controller target="x" controller="@ClipController(clip=ad_react_sad_whine_loop2_overlay1_x, loop_count=#1)" overridePosture="false" mask="Trackmask_Dog_Head50_Face_noEars" track="locomotionoverlay" mirror_conditional="False" suppress_footsteps="True" transition_class_in="Default" transition_class_out="Default" ik_configuration="ad_react_sad_whine.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="97">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+              <Choice weight="50" avoidRepeat="False">
+                <Controller target="x" controller="@ClipController(clip=ad_react_sad_whine_loop2_overlay2_x, loop_count=#1)" overridePosture="false" mask="" track="normalplus" mirror_conditional="False" suppress_footsteps="True" transition_class_in="Default" transition_class_out="Default" ik_configuration="ad_react_sad_whine.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="98">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+            </RandomSelector>
+          </Choice>
+        </PostureSelector>
+      </Choice>
+      <Choice value="runGhost">
+        <Reference target="100" />
+      </Choice>
+      <Choice value="trot">
+        <Reference target="95" />
+      </Choice>
+      <Choice value="trotGhost">
+        <Reference target="95" />
+      </Choice>
+      <Choice value="walk">
+        <Reference target="95" />
+      </Choice>
+      <Choice value="walkDroopy">
+        <Reference target="100" />
+      </Choice>
+      <Choice value="walkGhost">
+        <Reference target="95" />
+      </Choice>
+      <Choice value="walkPanting">
+        <Reference target="95" />
+      </Choice>
+    </ParameterSelector>
+  </State>
+  <State name="yawn" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="false">
+    <description />
+    <ParameterSelector parameter="x:walkstyle" unique_id="108">
+      <Choice value="default">
+        <PostureSelector parameter="x:posture" unique_id="104">
+          <Choice value="stand--FullBody" track="locomotionoverlay" mask="Trackmask_Dog_ChestHead">
+            <ParameterSelector parameter="x:carryState" unique_id="103">
+              <Choice value="none">
+                <Controller target="x" controller="@ClipController(clip=ad_react_drowsy_yawn_x, loop_count=#1)" overridePosture="false" mask="" track="locomotionoverlay" mirror_conditional="False" suppress_footsteps="True" transition_class_in="Default" transition_class_out="Default" ik_configuration="ad_react_drowsy_yawn.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="102">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+              <Choice value="left">
+                <Reference target="102" />
+              </Choice>
+              <Choice value="right" />
+              <Choice value="both" />
+            </ParameterSelector>
+          </Choice>
+        </PostureSelector>
+      </Choice>
+      <Choice value="run">
+        <PostureSelector parameter="x:posture" unique_id="107">
+          <Choice value="stand--FullBody" track="locomotionoverlay" mask="Trackmask_Dog_HeadFace">
+            <ParameterSelector parameter="x:carryState" unique_id="106">
+              <Choice value="none">
+                <Controller target="x" controller="@ClipController(clip=ad_react_drowsy_yawn_x, loop_count=#1)" overridePosture="false" mask="" track="locomotionoverlay" mirror_conditional="False" suppress_footsteps="True" transition_class_in="Default" transition_class_out="Default" ik_configuration="ad_react_drowsy_yawn.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="105">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+              <Choice value="left">
+                <Reference target="105" />
+              </Choice>
+              <Choice value="right" />
+              <Choice value="both" />
+            </ParameterSelector>
+          </Choice>
+        </PostureSelector>
+      </Choice>
+      <Choice value="runGhost">
+        <Reference target="107" />
+      </Choice>
+      <Choice value="trot">
+        <Reference target="104" />
+      </Choice>
+      <Choice value="trotGhost">
+        <Reference target="104" />
+      </Choice>
+      <Choice value="walk">
+        <Reference target="104" />
+      </Choice>
+      <Choice value="walkDroopy">
+        <Reference target="107" />
+      </Choice>
+      <Choice value="walkGhost">
+        <Reference target="104" />
+      </Choice>
+      <Choice value="walkPanting">
+        <Reference target="104" />
+      </Choice>
+    </ParameterSelector>
+  </State>
+</ASM>

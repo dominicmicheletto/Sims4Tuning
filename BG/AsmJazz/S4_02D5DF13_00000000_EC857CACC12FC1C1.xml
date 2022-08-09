@@ -1,0 +1,721 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="Drink" dcc="sage">
+  <Actor name="x" type="Sim" master="true" virtual="false" />
+  <Actor name="consumable" type="Object" virtual="false" />
+  <Actor name="sitTemplate" type="Object" virtual="true" />
+  <Actor name="bathtub" type="Object" virtual="true" />
+  <Actor name="floatLounger" type="Object" virtual="false" />
+  <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="x:sex" type="enum" labels="male,female" default="female" />
+  <Parameter name="x:isMermaid" type="bool" labels="" default="False" />
+  <Parameter name="consumable:carryObject" type="string" labels="" default="drinkTumbler" />
+  <Parameter name="consumable:Quality" type="enum" labels="Quality_Poor,Quality_Normal,Quality_Outstanding" default="Quality_Normal" />
+  <Parameter name="consumable:carryTrack" type="enum" labels="left,right" default="right" />
+  <Parameter name="consumable:taste" type="enum" labels="spicy,normal" default="normal" />
+  <Parameter name="consumable:spoiled" type="enum" labels="notSpoiled,Spoiled" default="notSpoiled" />
+  <PostureManifest actors="" />
+  <PostureManifest actors="x">
+    <Support family="stand" compatibility="UpperBody" carry_left="consumable" carry_right="*" surface="*" />
+    <Support family="stand" compatibility="UpperBody" carry_left="*" carry_right="consumable" surface="*" />
+    <Support family="stand" compatibility="FullBody" carry_left="consumable" carry_right="*" surface="*" />
+    <Support family="stand" compatibility="FullBody" carry_left="*" carry_right="consumable" surface="*" />
+    <Support family="sit" compatibility="UpperBody" carry_left="consumable" carry_right="*" surface="-" />
+    <Support family="sit" compatibility="UpperBody" carry_left="*" carry_right="consumable" surface="-" />
+    <Support family="sit" compatibility="FullBody" carry_left="consumable" carry_right="*" surface="-" />
+    <Support family="sit" compatibility="FullBody" carry_left="*" carry_right="consumable" surface="-" />
+    <Support name="bathTub_TakeBath" family="none" compatibility="FullBody" carry_left="consumable" carry_right="-" surface="-" />
+    <Support name="bathTub_TakeBath" family="none" compatibility="FullBody" carry_left="-" carry_right="consumable" surface="-" />
+    <Support name="Bathtub_Bubblebath" family="none" compatibility="FullBody" carry_left="consumable" carry_right="-" surface="-" />
+    <Support name="Bathtub_Bubblebath" family="none" compatibility="FullBody" carry_left="-" carry_right="consumable" surface="-" />
+    <Support name="hotTub_sit" family="none" compatibility="FullBody" carry_left="consumable" carry_right="-" surface="*" />
+    <Support name="hotTub_sit" family="none" compatibility="FullBody" carry_left="-" carry_right="consumable" surface="*" />
+    <Support name="loungeChair_Lounging" family="none" compatibility="FullBody" carry_left="consumable" carry_right="-" surface="*" />
+    <Support name="loungeChair_Lounging" family="none" compatibility="FullBody" carry_left="-" carry_right="consumable" surface="*" />
+    <Support name="Float_LoungeChair" family="none" compatibility="FullBody" carry_left="consumable" carry_right="-" surface="*" />
+    <Support name="Float_LoungeChair" family="none" compatibility="FullBody" carry_left="-" carry_right="consumable" surface="*" />
+  </PostureManifest>
+  <State type="public" skippable="false" interrupt_this="false" name="ActiveActions" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="PassiveActions" focus="body only" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="mirror" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <Connection from="ActiveActions" to="PassiveActions" />
+  <Connection from="ActiveActions" to="exit" />
+  <Connection from="PassiveActions" to="ActiveActions" />
+  <Connection from="PassiveActions" to="exit" />
+  <Connection from="entry" to="mirror" />
+  <Connection from="mirror" to="ActiveActions" />
+  <Connection from="mirror" to="PassiveActions" />
+  <State name="ActiveActions" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="60">
+      <Choice value="Bathtub_Bubblebath--FullBody" track="normal" mask="">
+        <ParameterSelector parameter="x:age" unique_id="19">
+          <Choice value="baby" />
+          <Choice value="toddler">
+            <ParameterSelector parameter="consumable:spoiled" unique_id="8">
+              <Choice value="notSpoiled">
+                <ParameterSelector parameter="consumable:Quality" unique_id="7">
+                  <Choice value="Quality_Poor">
+                    <Controller target="bathtub" controller="@ClipController(clip=a2o_bathTub_{consumable:carryObject}_sip_poor_eww_bathtub, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="1">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                    <Controller target="x" controller="@ClipController(clip=a2o_bathTub_{consumable:carryObject}_sip_poor_eww_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="2">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                  </Choice>
+                  <Choice value="Quality_Normal">
+                    <Controller target="x" controller="@ClipController(clip=a2o_bathTub_{consumable:carryObject}_sip_normal_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="3">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                    <Controller target="bathtub" controller="@ClipController(clip=a2o_bathTub_{consumable:carryObject}_sip_normal_bathtub, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="4">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                  </Choice>
+                  <Choice value="Quality_Outstanding">
+                    <Controller target="x" controller="@ClipController(clip=a2o_bathTub_{consumable:carryObject}_sip_outstanding_omg_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="5">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                    <Controller target="bathtub" controller="@ClipController(clip=a2o_bathTub_{consumable:carryObject}_sip_outstanding_omg_bathtub, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="6">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                  </Choice>
+                </ParameterSelector>
+              </Choice>
+              <Choice value="Spoiled">
+                <Reference target="1" />
+                <Reference target="2" />
+              </Choice>
+            </ParameterSelector>
+          </Choice>
+          <Choice value="child">
+            <Reference target="8" />
+          </Choice>
+          <Choice value="teen">
+            <ParameterSelector parameter="x:isMermaid" unique_id="18">
+              <Choice value="false">
+                <Reference target="8" />
+              </Choice>
+              <Choice value="true">
+                <ActorMask target="x" mask="Trackmask_UpperBody" unique_id="17" />
+                <ParameterSelector parameter="consumable:spoiled" unique_id="16">
+                  <Choice value="notSpoiled">
+                    <ParameterSelector parameter="consumable:Quality" unique_id="15">
+                      <Choice value="Quality_Poor">
+                        <Controller target="bathtub" controller="@ClipController(clip=a2o_bathTub_{consumable:carryObject}_sip_poor_eww_bathtub, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="9">
+                          <TransitionClassList>
+                            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                          </TransitionClassList>
+                        </Controller>
+                        <Controller target="x" controller="@ClipController(clip=a2o_bathtub_mermaid_{consumable:carryObject}_sip_poor_eww_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="10">
+                          <TransitionClassList>
+                            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                          </TransitionClassList>
+                        </Controller>
+                      </Choice>
+                      <Choice value="Quality_Normal">
+                        <Controller target="x" controller="@ClipController(clip=a2o_bathtub_mermaid_{consumable:carryObject}_sip_normal_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="11">
+                          <TransitionClassList>
+                            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                          </TransitionClassList>
+                        </Controller>
+                        <Controller target="bathtub" controller="@ClipController(clip=a2o_bathTub_{consumable:carryObject}_sip_normal_bathtub, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="12">
+                          <TransitionClassList>
+                            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                          </TransitionClassList>
+                        </Controller>
+                      </Choice>
+                      <Choice value="Quality_Outstanding">
+                        <Controller target="bathtub" controller="@ClipController(clip=a2o_bathTub_{consumable:carryObject}_sip_outstanding_omg_bathtub, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="13">
+                          <TransitionClassList>
+                            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                          </TransitionClassList>
+                        </Controller>
+                        <Controller target="x" controller="@ClipController(clip=a2o_bathtub_mermaid_{consumable:carryObject}_sip_outstanding_omg_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="14">
+                          <TransitionClassList>
+                            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                          </TransitionClassList>
+                        </Controller>
+                      </Choice>
+                    </ParameterSelector>
+                  </Choice>
+                  <Choice value="Spoiled">
+                    <Reference target="9" />
+                    <Reference target="10" />
+                  </Choice>
+                </ParameterSelector>
+              </Choice>
+            </ParameterSelector>
+          </Choice>
+          <Choice value="youngadult">
+            <Reference target="18" />
+          </Choice>
+          <Choice value="adult">
+            <Reference target="18" />
+          </Choice>
+          <Choice value="elder">
+            <Reference target="18" />
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+      <Choice value="bathTub_TakeBath--FullBody" track="carryinteraction" mask="">
+        <Reference target="19" />
+      </Choice>
+      <Choice value="Float_LoungeChair--FullBody" track="carryinteraction" mask="">
+        <ParameterSelector parameter="x:age" unique_id="25">
+          <Choice value="baby" />
+          <Choice value="toddler" />
+          <Choice value="child" />
+          <Choice value="teen">
+            <ParameterSelector parameter="consumable:spoiled" unique_id="24">
+              <Choice value="notSpoiled">
+                <ParameterSelector parameter="consumable:Quality" unique_id="23">
+                  <Choice value="Quality_Poor">
+                    <Controller target="x" controller="@ClipController(clip=a2o_floatLounger_{consumable:carryObject}_sip_poor_eww_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="20">
+                      <TransitionClassList />
+                    </Controller>
+                  </Choice>
+                  <Choice value="Quality_Normal">
+                    <Controller target="x" controller="@ClipController(clip=a2o_floatLounger_{consumable:carryObject}_sip_normal_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="21">
+                      <TransitionClassList />
+                    </Controller>
+                  </Choice>
+                  <Choice value="Quality_Outstanding">
+                    <Controller target="x" controller="@ClipController(clip=a2o_floatLounger_{consumable:carryObject}_sip_outstanding_omg_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="22">
+                      <TransitionClassList />
+                    </Controller>
+                  </Choice>
+                </ParameterSelector>
+              </Choice>
+              <Choice value="Spoiled">
+                <Reference target="20" />
+              </Choice>
+            </ParameterSelector>
+          </Choice>
+          <Choice value="youngadult">
+            <Reference target="24" />
+          </Choice>
+          <Choice value="adult">
+            <Reference target="24" />
+          </Choice>
+          <Choice value="elder">
+            <Reference target="24" />
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+      <Choice value="hotTub_sit--FullBody" track="carryinteraction" mask="">
+        <ParameterSelector parameter="x:age" unique_id="44">
+          <Choice value="baby" />
+          <Choice value="toddler" />
+          <Choice value="child">
+            <ParameterSelector parameter="consumable:spoiled" unique_id="34">
+              <Choice value="notSpoiled">
+                <ParameterSelector parameter="consumable:taste" unique_id="33">
+                  <Choice value="spicy">
+                    <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="32">
+                      <Choice weight="100" avoidRepeat="False">
+                        <Controller target="x" controller="@ClipController(clip=c2o_hotTub_{consumable:carryObject}_sip_normal_seated_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="" focus="full body" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="27">
+                          <TransitionClassList>
+                            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                          </TransitionClassList>
+                        </Controller>
+                        <Controller target="x" controller="@ClipController(clip=c2o_hotTub_{consumable:carryObject}_sip_react_spicy_seated_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="26">
+                          <TransitionClassList>
+                            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                          </TransitionClassList>
+                        </Controller>
+                      </Choice>
+                      <Choice weight="50" avoidRepeat="False">
+                        <ParameterSelector parameter="consumable:Quality" unique_id="31">
+                          <Choice value="Quality_Poor">
+                            <Controller target="x" controller="@ClipController(clip=c2o_hotTub_{consumable:carryObject}_sip_poor_seated_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="28">
+                              <TransitionClassList>
+                                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                              </TransitionClassList>
+                            </Controller>
+                          </Choice>
+                          <Choice value="Quality_Normal">
+                            <Controller target="x" controller="@ClipController(clip=c2o_hotTub_{consumable:carryObject}_sip_normal_seated_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="" focus="full body" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="29">
+                              <TransitionClassList>
+                                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                              </TransitionClassList>
+                            </Controller>
+                          </Choice>
+                          <Choice value="Quality_Outstanding">
+                            <Controller target="x" controller="@ClipController(clip=c2o_hotTub_{consumable:carryObject}_sip_outstanding_seated_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="30">
+                              <TransitionClassList>
+                                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                              </TransitionClassList>
+                            </Controller>
+                          </Choice>
+                        </ParameterSelector>
+                      </Choice>
+                    </RandomSelector>
+                  </Choice>
+                  <Choice value="normal">
+                    <Reference target="31" />
+                  </Choice>
+                </ParameterSelector>
+              </Choice>
+              <Choice value="Spoiled">
+                <Reference target="28" />
+              </Choice>
+            </ParameterSelector>
+          </Choice>
+          <Choice value="teen">
+            <ParameterSelector parameter="consumable:spoiled" unique_id="43">
+              <Choice value="notSpoiled">
+                <ParameterSelector parameter="consumable:taste" unique_id="42">
+                  <Choice value="spicy">
+                    <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="41">
+                      <Choice weight="100" avoidRepeat="False">
+                        <Controller target="x" controller="@ClipController(clip=a2o_{consumable:carryObject}_sip_normal_seated_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="" focus="full body" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="36">
+                          <TransitionClassList>
+                            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                          </TransitionClassList>
+                        </Controller>
+                        <Controller target="x" controller="@ClipController(clip=a2o_{consumable:carryObject}_sip_react_spicy_seated_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="35">
+                          <TransitionClassList>
+                            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                          </TransitionClassList>
+                        </Controller>
+                      </Choice>
+                      <Choice weight="50" avoidRepeat="False">
+                        <ParameterSelector parameter="consumable:Quality" unique_id="40">
+                          <Choice value="Quality_Poor">
+                            <Controller target="x" controller="@ClipController(clip=a2o_{consumable:carryObject}_sip_poor_seated_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="37">
+                              <TransitionClassList>
+                                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                              </TransitionClassList>
+                            </Controller>
+                          </Choice>
+                          <Choice value="Quality_Normal">
+                            <Controller target="x" controller="@ClipController(clip=a2o_{consumable:carryObject}_sip_normal_seated_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="" focus="full body" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="38">
+                              <TransitionClassList>
+                                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                              </TransitionClassList>
+                            </Controller>
+                          </Choice>
+                          <Choice value="Quality_Outstanding">
+                            <Controller target="x" controller="@ClipController(clip=a2o_{consumable:carryObject}_sip_outstanding_seated_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="39">
+                              <TransitionClassList>
+                                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                              </TransitionClassList>
+                            </Controller>
+                          </Choice>
+                        </ParameterSelector>
+                      </Choice>
+                    </RandomSelector>
+                  </Choice>
+                  <Choice value="normal">
+                    <Reference target="40" />
+                  </Choice>
+                </ParameterSelector>
+              </Choice>
+              <Choice value="Spoiled">
+                <Reference target="37" />
+              </Choice>
+            </ParameterSelector>
+          </Choice>
+          <Choice value="youngadult">
+            <Reference target="43" />
+          </Choice>
+          <Choice value="adult">
+            <Reference target="43" />
+          </Choice>
+          <Choice value="elder">
+            <Reference target="43" />
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+      <Choice value="loungeChair_Lounging--FullBody" track="carryinteraction" mask="">
+        <ParameterSelector parameter="x:age" unique_id="50">
+          <Choice value="baby" />
+          <Choice value="toddler" />
+          <Choice value="child" />
+          <Choice value="teen">
+            <ParameterSelector parameter="consumable:spoiled" unique_id="49">
+              <Choice value="notSpoiled">
+                <ParameterSelector parameter="consumable:Quality" unique_id="48">
+                  <Choice value="Quality_Poor">
+                    <Controller target="x" controller="@ClipController(clip=a2o_loungeChair_{consumable:carryObject}_sip_poor_eww_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="45">
+                      <TransitionClassList />
+                    </Controller>
+                  </Choice>
+                  <Choice value="Quality_Normal">
+                    <Controller target="x" controller="@ClipController(clip=a2o_loungeChair_{consumable:carryObject}_sip_normal_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="46">
+                      <TransitionClassList />
+                    </Controller>
+                  </Choice>
+                  <Choice value="Quality_Outstanding">
+                    <Controller target="x" controller="@ClipController(clip=a2o_loungeChair_{consumable:carryObject}_sip_outstanding_omg_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="47">
+                      <TransitionClassList />
+                    </Controller>
+                  </Choice>
+                </ParameterSelector>
+              </Choice>
+              <Choice value="Spoiled">
+                <Reference target="45" />
+              </Choice>
+            </ParameterSelector>
+          </Choice>
+          <Choice value="youngadult">
+            <Reference target="49" />
+          </Choice>
+          <Choice value="adult">
+            <Reference target="49" />
+          </Choice>
+          <Choice value="elder">
+            <Reference target="49" />
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+      <Choice value="-sit-FullBody" track="carryinteraction" mask="">
+        <Reference target="43" />
+      </Choice>
+      <Choice value="-sit-UpperBody" track="carryinteraction" mask="Trackmask_UpperBody">
+        <Reference target="43" />
+      </Choice>
+      <Choice value="-stand-FullBody" track="carryinteraction" mask="">
+        <ParameterSelector parameter="consumable:spoiled" unique_id="59">
+          <Choice value="notSpoiled">
+            <ParameterSelector parameter="consumable:taste" unique_id="58">
+              <Choice value="spicy">
+                <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="57">
+                  <Choice weight="100" avoidRepeat="False">
+                    <Controller target="x" controller="@ClipController(clip=a2o_{consumable:carryObject}_sip_normal_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="" focus="full body" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="52">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                    <Controller target="x" controller="@ClipController(clip=a2o_{consumable:carryObject}_sip_react_spicy_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="51">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                  </Choice>
+                  <Choice weight="50" avoidRepeat="False">
+                    <ParameterSelector parameter="consumable:Quality" unique_id="56">
+                      <Choice value="Quality_Poor">
+                        <Controller target="x" controller="@ClipController(clip=a2o_{consumable:carryObject}_sip_poor_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="53">
+                          <TransitionClassList>
+                            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                          </TransitionClassList>
+                        </Controller>
+                      </Choice>
+                      <Choice value="Quality_Normal">
+                        <Controller target="x" controller="@ClipController(clip=a2o_{consumable:carryObject}_sip_normal_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="" focus="full body" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="54">
+                          <TransitionClassList>
+                            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                          </TransitionClassList>
+                        </Controller>
+                      </Choice>
+                      <Choice value="Quality_Outstanding">
+                        <Controller target="x" controller="@ClipController(clip=a2o_{consumable:carryObject}_sip_outstanding_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="55">
+                          <TransitionClassList>
+                            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                          </TransitionClassList>
+                        </Controller>
+                      </Choice>
+                    </ParameterSelector>
+                  </Choice>
+                </RandomSelector>
+              </Choice>
+              <Choice value="normal">
+                <Reference target="56" />
+              </Choice>
+            </ParameterSelector>
+          </Choice>
+          <Choice value="Spoiled">
+            <Reference target="53" />
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+      <Choice value="-stand-UpperBody" track="carryinteraction" mask="Trackmask_UpperBody">
+        <Reference target="59" />
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="PassiveActions" type="public" skippable="false" interrupt_this="false" focus="body only" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="98">
+      <Choice value="Bathtub_Bubblebath--FullBody" track="normal" mask="">
+        <ParameterSelector parameter="x:age" unique_id="77">
+          <Choice value="baby">
+            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="67">
+              <Choice weight="100" avoidRepeat="False">
+                <Controller target="bathtub" controller="@ClipController(clip=a2o_bathTub_{consumable:carryObject}_idle_breathe_bathTub, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="61">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=a2o_bathTub_{consumable:carryObject}_idle_breathe_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="62">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+              </Choice>
+              <Choice weight="100" avoidRepeat="False">
+                <Controller target="x" controller="@ClipController(clip=a2o_bathTub_{consumable:carryObject}_idle_lookInTo_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="63">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <Controller target="bathtub" controller="@ClipController(clip=a2o_bathTub_{consumable:carryObject}_idle_lookInTo_bathTub, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="64">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+              </Choice>
+              <Choice weight="100" avoidRepeat="False">
+                <Controller target="bathtub" controller="@ClipController(clip=a2o_bathTub_{consumable:carryObject}_idle_swirlDrink_bathTub, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="65">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=a2o_bathTub_{consumable:carryObject}_idle_swirlDrink_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="66">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+              </Choice>
+            </RandomSelector>
+          </Choice>
+          <Choice value="toddler">
+            <Reference target="67" />
+          </Choice>
+          <Choice value="child">
+            <Reference target="67" />
+          </Choice>
+          <Choice value="teen">
+            <ParameterSelector parameter="x:isMermaid" unique_id="76">
+              <Choice value="false">
+                <Reference target="67" />
+              </Choice>
+              <Choice value="true">
+                <ActorMask target="x" mask="Trackmask_UpperBody" unique_id="75" />
+                <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="74">
+                  <Choice weight="100" avoidRepeat="False">
+                    <Controller target="bathtub" controller="@ClipController(clip=a2o_bathTub_{consumable:carryObject}_idle_breathe_bathTub, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="68">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                    <Controller target="x" controller="@ClipController(clip=a2o_bathtub_mermaid_{consumable:carryObject}_idle_breathe_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="69">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                  </Choice>
+                  <Choice weight="100" avoidRepeat="False">
+                    <Controller target="x" controller="@ClipController(clip=a2o_bathtub_mermaid_{consumable:carryObject}_idle_lookInTo_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="70">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                    <Controller target="bathtub" controller="@ClipController(clip=a2o_bathTub_{consumable:carryObject}_idle_lookInTo_bathTub, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="71">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                  </Choice>
+                  <Choice weight="100" avoidRepeat="False">
+                    <Controller target="bathtub" controller="@ClipController(clip=a2o_bathTub_{consumable:carryObject}_idle_swirlDrink_bathTub, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="72">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                    <Controller target="x" controller="@ClipController(clip=a2o_bathtub_mermaid_{consumable:carryObject}_idle_swirlDrink_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="73">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                  </Choice>
+                </RandomSelector>
+              </Choice>
+            </ParameterSelector>
+          </Choice>
+          <Choice value="youngadult">
+            <Reference target="76" />
+          </Choice>
+          <Choice value="adult">
+            <Reference target="76" />
+          </Choice>
+          <Choice value="elder">
+            <Reference target="76" />
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+      <Choice value="bathTub_TakeBath--FullBody" track="carryinteraction" mask="">
+        <Reference target="77" />
+      </Choice>
+      <Choice value="Float_LoungeChair--FullBody" track="carryinteraction" mask="">
+        <ParameterSelector parameter="x:age" unique_id="82">
+          <Choice value="baby" />
+          <Choice value="toddler" />
+          <Choice value="child" />
+          <Choice value="teen">
+            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="81">
+              <Choice weight="50" avoidRepeat="False">
+                <Controller target="x" controller="@ClipController(clip=a2o_floatLounger_{consumable:carryObject}_idle_breathe_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="78">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+              <Choice weight="50" avoidRepeat="False">
+                <Controller target="x" controller="@ClipController(clip=a2o_floatLounger_{consumable:carryObject}_idle_lookInTo_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="79">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+              <Choice weight="50" avoidRepeat="False">
+                <Controller target="x" controller="@ClipController(clip=a2o_floatLounger_{consumable:carryObject}_idle_swirlDrink_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="80">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+            </RandomSelector>
+          </Choice>
+          <Choice value="youngadult">
+            <Reference target="81" />
+          </Choice>
+          <Choice value="adult">
+            <Reference target="81" />
+          </Choice>
+          <Choice value="elder">
+            <Reference target="81" />
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+      <Choice value="hotTub_sit--FullBody" track="carryinteraction" mask="">
+        <ParameterSelector parameter="x:age" unique_id="89">
+          <Choice value="baby" />
+          <Choice value="toddler" />
+          <Choice value="child">
+            <RandomSelector repeatweight="0" allow_empty_choices="False" unique_id="85">
+              <Choice weight="100" avoidRepeat="False">
+                <Controller target="x" controller="@ClipController(clip=c2o_hotTub_{consumable:carryObject}_idle_lookInTo_seated_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="" focus="body only" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="83">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+              </Choice>
+              <Choice weight="100" avoidRepeat="False">
+                <Controller target="x" controller="@ClipController(clip=c2o_hotTub_{consumable:carryObject}_idle_swirlDrink_seated_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="" focus="body only" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="84">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+              </Choice>
+            </RandomSelector>
+          </Choice>
+          <Choice value="teen">
+            <RandomSelector repeatweight="0" allow_empty_choices="False" unique_id="88">
+              <Choice weight="100" avoidRepeat="False">
+                <Controller target="x" controller="@ClipController(clip=a2o_{consumable:carryObject}_idle_lookInTo_seated_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="" focus="body only" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="86">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+              </Choice>
+              <Choice weight="100" avoidRepeat="False">
+                <Controller target="x" controller="@ClipController(clip=a2o_{consumable:carryObject}_idle_swirlDrink_seated_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="" focus="body only" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="87">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+              </Choice>
+            </RandomSelector>
+          </Choice>
+          <Choice value="youngadult">
+            <Reference target="88" />
+          </Choice>
+          <Choice value="adult">
+            <Reference target="88" />
+          </Choice>
+          <Choice value="elder">
+            <Reference target="88" />
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+      <Choice value="loungeChair_Lounging--FullBody" track="carryinteraction" mask="">
+        <ParameterSelector parameter="x:age" unique_id="94">
+          <Choice value="baby" />
+          <Choice value="toddler" />
+          <Choice value="child" />
+          <Choice value="teen">
+            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="93">
+              <Choice weight="50" avoidRepeat="False">
+                <Controller target="x" controller="@ClipController(clip=a2o_loungeChair_{consumable:carryObject}_idle_breathe_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="90">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+              <Choice weight="50" avoidRepeat="False">
+                <Controller target="x" controller="@ClipController(clip=a2o_loungeChair_{consumable:carryObject}_idle_lookInTo_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="91">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+              <Choice weight="50" avoidRepeat="False">
+                <Controller target="x" controller="@ClipController(clip=a2o_loungeChair_{consumable:carryObject}_idle_swirlDrink_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="92">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+            </RandomSelector>
+          </Choice>
+          <Choice value="youngadult">
+            <Reference target="93" />
+          </Choice>
+          <Choice value="adult">
+            <Reference target="93" />
+          </Choice>
+          <Choice value="elder">
+            <Reference target="93" />
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+      <Choice value="-sit-FullBody" track="carryinteraction" mask="">
+        <Reference target="88" />
+      </Choice>
+      <Choice value="-sit-UpperBody" track="carryinteraction" mask="Trackmask_UpperBody">
+        <Reference target="88" />
+      </Choice>
+      <Choice value="-stand-FullBody" track="carryinteraction" mask="">
+        <RandomSelector repeatweight="0" allow_empty_choices="False" unique_id="97">
+          <Choice weight="100" avoidRepeat="False">
+            <Controller target="x" controller="@ClipController(clip=a2o_{consumable:carryObject}_idle_lookInTo_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="" focus="body only" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="95">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice weight="100" avoidRepeat="False">
+            <Controller target="x" controller="@ClipController(clip=a2o_{consumable:carryObject}_idle_swirlDrink_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="" focus="body only" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="96">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+        </RandomSelector>
+      </Choice>
+      <Choice value="-stand-UpperBody" track="carryinteraction" mask="Trackmask_UpperBody">
+        <Reference target="97" />
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="mirror" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <ParameterSelector parameter="consumable:carryTrack" unique_id="100">
+      <Choice value="left">
+        <SetMirror target="x" mirror="true" unique_id="99" />
+      </Choice>
+      <Choice value="right" />
+    </ParameterSelector>
+  </State>
+</ASM>

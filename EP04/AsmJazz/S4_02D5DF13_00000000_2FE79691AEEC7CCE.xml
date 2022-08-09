@@ -1,0 +1,124 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="RobotVacuum_Actions_Idles" dcc="sage">
+  <Actor name="robotVacuum" type="Object" master="true" virtual="false" />
+  <Actor name="robotVacuumDock" type="Object" virtual="true" />
+  <Parameter name="robotVacuum:isParented" type="bool" labels="" default="False" />
+  <Parameter name="robotVacuumDock:objectPosition" type="vector3" labels="" default="0,0,0" />
+  <Parameter name="robotVacuumDock:objectOrientation" type="quaternion" labels="" default="0,0,0,1" />
+  <IkConfiguration name="o_robotVacuum_clean_idle.ma">
+    <SourceFile name="o_robotVacuum_clean_idle.ma">
+      <MapNamespace namespace="robotVacuum" actor="robotVacuum" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="o_robotVacuum_scan.ma">
+    <SourceFile name="o_robotVacuum_scan.ma">
+      <MapNamespace namespace="robotVacuum" actor="robotVacuum" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="o_robotVacuum_dock_getInOut.ma">
+    <SourceFile name="o_robotVacuum_dock_getInOut.ma">
+      <MapNamespace namespace="robotVacuum" actor="robotVacuum" />
+      <MapNamespace namespace="robotVacuumDock" actor="robotVacuumDock" />
+    </SourceFile>
+  </IkConfiguration>
+  <PostureManifest actors="" />
+  <State type="public" skippable="false" interrupt_this="false" name="Clean" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="DockGetIn" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="DockGetOut" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" name="Docked" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" name="Idle" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="No Idle" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" name="Scan" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="hub" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="scanStart" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="scanStop" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <Connection from="Clean" to="hub" />
+  <Connection from="DockGetIn" to="Docked" />
+  <Connection from="DockGetOut" to="No Idle" />
+  <Connection from="DockGetOut" to="hub" />
+  <Connection from="Docked" to="DockGetOut" />
+  <Connection from="Idle" to="hub" />
+  <Connection from="No Idle" to="hub" />
+  <Connection from="Scan" to="scanStop" />
+  <Connection from="entry" to="hub" />
+  <Connection from="hub" to="Clean" />
+  <Connection from="hub" to="DockGetIn" />
+  <Connection from="hub" to="DockGetOut" />
+  <Connection from="hub" to="Idle" />
+  <Connection from="hub" to="exit" />
+  <Connection from="hub" to="scanStart" />
+  <Connection from="scanStart" to="Scan" />
+  <Connection from="scanStop" to="hub" />
+  <State name="Clean" type="public" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <Controller target="robotVacuum" controller="@ClipController(clip=o_robotVacuum_active_clean_robotVacuum, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="o_robotVacuum_clean_idle.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="1">
+      <TransitionClassList />
+    </Controller>
+  </State>
+  <State name="DockGetIn" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <ParameterSelector parameter="robotVacuum:isParented" unique_id="4">
+      <Choice value="false">
+        <FollowPath path="RobotVacuum_Docking" default_walkstyle="RobotVacuum_Default" reference_actor="robotVacuumDock" reference_translation_param="robotVacuumDock:objectPosition" reference_orientation_param="robotVacuumDock:objectOrientation" trigger_posture_transition_event="False" reverse_path="False" target="robotVacuum" overridePosture="false" track="normal" transition_class_in="Default" transition_class_out="Default" unique_id="3">
+          <TransitionClassList />
+        </FollowPath>
+        <Controller target="robotVacuum" controller="@ClipController(clip=o_robotVacuum_dock_getIn_robotVacuum, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="o_robotVacuum_dock_getInOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="2">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+      <Choice value="true" />
+    </ParameterSelector>
+  </State>
+  <State name="DockGetOut" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <ParameterSelector parameter="robotVacuum:isParented" unique_id="7">
+      <Choice value="false" />
+      <Choice value="true">
+        <Controller target="robotVacuum" controller="@ClipController(clip=o_robotVacuum_dock_getOut_robotVacuum, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="o_robotVacuum_dock_getInOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="6">
+          <TransitionClassList />
+        </Controller>
+        <FollowPath path="RobotVacuum_Docking" default_walkstyle="RobotVacuum_Default" reference_actor="robotVacuumDock" reference_translation_param="robotVacuumDock:objectPosition" reference_orientation_param="robotVacuumDock:objectOrientation" trigger_posture_transition_event="False" reverse_path="True" target="robotVacuum" overridePosture="false" track="normal" transition_class_in="Default" transition_class_out="Default" unique_id="5">
+          <TransitionClassList />
+        </FollowPath>
+      </Choice>
+    </ParameterSelector>
+  </State>
+  <State name="Docked" type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <MakeController />
+  </State>
+  <State name="Idle" type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <MakeController>
+      <Controller target="robotVacuum" controller="@ClipController(clip=o_robotVacuum_active_idle_robotVacuum, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="o_robotVacuum_clean_idle.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="8">
+        <TransitionClassList />
+      </Controller>
+    </MakeController>
+  </State>
+  <State name="No Idle" type="public" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+  </State>
+  <State name="Scan" type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <MakeController>
+      <Controller target="robotVacuum" controller="@ClipController(clip=o_robotVacuum_active_scan_loop_robotVacuum, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="o_robotVacuum_scan.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="9">
+        <TransitionClassList />
+      </Controller>
+    </MakeController>
+  </State>
+  <State name="hub" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+  </State>
+  <State name="scanStart" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <Controller target="robotVacuum" controller="@ClipController(clip=o_robotVacuum_active_scan_start_robotVacuum, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="o_robotVacuum_scan.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="10">
+      <TransitionClassList />
+    </Controller>
+  </State>
+  <State name="scanStop" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <Controller target="robotVacuum" controller="@ClipController(clip=o_robotVacuum_active_scan_stop_robotVacuum, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="o_robotVacuum_scan.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="11">
+      <TransitionClassList />
+    </Controller>
+  </State>
+</ASM>

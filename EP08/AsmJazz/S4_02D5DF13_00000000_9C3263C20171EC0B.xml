@@ -1,0 +1,55 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="Quadcopter_Object_Actions" dcc="sage">
+  <Actor name="quadcopter" type="Object" master="true" virtual="false" />
+  <IkConfiguration name="o_quadcopter_hover_idle.ma">
+    <SourceFile name="o_quadcopter_hover_idle.ma" />
+  </IkConfiguration>
+  <IkConfiguration name="o_quadcopter_launch.ma">
+    <SourceFile name="o_quadcopter_launch.ma" />
+  </IkConfiguration>
+  <IkConfiguration name="o_quadcopter_land.ma">
+    <SourceFile name="o_quadcopter_land.ma" />
+  </IkConfiguration>
+  <PostureManifest actors="" />
+  <State type="public" skippable="false" interrupt_this="false" name="Land" focus="none" facialoverlays="false" tailoverlays="false" />
+  <State type="private" skippable="false" interrupt_this="false" name="Launch" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" name="OnGround" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" name="hover" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="hub" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <Connection from="Land" to="OnGround" />
+  <Connection from="Launch" to="hub" />
+  <Connection from="OnGround" to="Launch" />
+  <Connection from="entry" to="hub" />
+  <Connection from="hover" to="hub" />
+  <Connection from="hub" to="Land" />
+  <Connection from="hub" to="OnGround" />
+  <Connection from="hub" to="exit" />
+  <Connection from="hub" to="hover" />
+  <State name="Land" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="false">
+    <description />
+    <Controller target="quadcopter" controller="@ClipController(clip=o_quadcopter_land_quadcopter, loop_count=#1)" overridePosture="false" mask="" track="lowplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="o_quadcopter_land.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="1">
+      <TransitionClassList />
+    </Controller>
+  </State>
+  <State name="Launch" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <Controller target="quadcopter" controller="@ClipController(clip=o_quadcopter_launch_quadcopter, loop_count=#1)" overridePosture="false" mask="" track="lowplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="o_quadcopter_launch.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="2">
+      <TransitionClassList />
+    </Controller>
+  </State>
+  <State name="OnGround" type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <MakeController />
+  </State>
+  <State name="hover" type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <MakeController>
+      <Controller target="quadcopter" controller="@ClipController(clip=o_quadcopter_hover_idle_quadcopter, loop_count=#1)" overridePosture="false" mask="" track="lowplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="o_quadcopter_hover_idle.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="3">
+        <TransitionClassList />
+      </Controller>
+    </MakeController>
+  </State>
+  <State name="hub" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+  </State>
+</ASM>

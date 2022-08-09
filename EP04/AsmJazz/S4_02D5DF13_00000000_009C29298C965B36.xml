@@ -1,0 +1,130 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="PetBall_Throw" dcc="sage">
+  <Actor name="x" type="Sim" master="true" virtual="false" />
+  <Actor name="ball" type="Object" virtual="false" />
+  <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
+  <Parameter name="x:carryState" type="enum" labels="none,left,right,both" default="right" />
+  <Parameter name="x:trait_LeftHanded" type="bool" labels="" default="False" />
+  <Parameter name="ball:TargetTranslation" type="vector3" labels="" default="0,0,0" />
+  <Parameter name="ball:TargetOrientation" type="quaternion" labels="" default="0,0,0,1" />
+  <Parameter name="ball:ThrowDistance" type="float" labels="" default="0" />
+  <Parameter name="ball:BounceDistance" type="float" labels="" default="0" />
+  <Parameter name="ball:LandingSurface" type="enum" labels="Ground,Water" default="Ground" />
+  <Parameter name="ball:carryTrack" type="enum" labels="left,right" default="right" />
+  <IkConfiguration name="a2o_petball_throwBall.ma">
+    <SourceFile name="a2o_petball_throwBall.ma">
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="carryObject" actor="ball" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_petball_fake_throwBall.ma">
+    <SourceFile name="a2o_petball_fake_throwBall.ma">
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="carryObject" actor="ball" />
+    </SourceFile>
+  </IkConfiguration>
+  <PostureManifest actors="">
+    <Support family="stand" compatibility="FullBody" carry_left="ball" carry_right="-" surface="*" />
+    <Support family="stand" compatibility="FullBody" carry_left="-" carry_right="ball" surface="*" />
+    <Support family="stand" compatibility="UpperBody" carry_left="ball" carry_right="-" surface="*" />
+    <Support family="stand" compatibility="UpperBody" carry_left="-" carry_right="ball" surface="*" />
+  </PostureManifest>
+  <State type="public" skippable="false" interrupt_this="false" name="FakeThrow" focus="head" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="Throw" focus="none" facialoverlays="true" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="hub" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" name="idle" focus="head" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="mirror" focus="none" facialoverlays="true" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="stop" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <Connection from="FakeThrow" to="hub" />
+  <Connection from="Throw" to="exit" />
+  <Connection from="entry" to="mirror" />
+  <Connection from="hub" to="FakeThrow" />
+  <Connection from="hub" to="idle" />
+  <Connection from="idle" to="stop" />
+  <Connection from="mirror" to="Throw" />
+  <Connection from="mirror" to="hub" />
+  <Connection from="stop" to="exit" />
+  <State name="FakeThrow" type="public" skippable="false" interrupt_this="false" focus="head" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="2">
+      <Choice value="-stand-FullBody" track="carryinteraction" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2o_toyBall_throw_fake_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_petball_fake_throwBall.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="1">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+      <Choice value="-stand-UpperBody" track="carryinteraction" mask="Trackmask_UpperBody">
+        <Reference target="1" />
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="Throw" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="true" tailoverlays="true">
+    <description />
+    <CustomController name="Throw Controller" target="x" overridePosture="true" track="carryinteraction" transition_class_in="Default" transition_class_out="Default" unique_id="8">
+      <TransitionClassList />
+      <ControllerTree>
+        <ScheduleOnEvent actor="ball" track="normal" event_id="100" unique_id="7">
+          <BaseContent>
+            <Blend1D mode="ceiling" type="static" transition_velocity="-1" parameter="ball:ThrowDistance" unique_id="5">
+              <Choice value="3">
+                <Clip clip="a2o_toyBall_throw_short_x" ik_configuration="a2o_petball_throwBall.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="3" />
+              </Choice>
+              <Choice value="10">
+                <Clip clip="a2o_toyBall_throw_long_x" ik_configuration="a2o_petball_throwBall.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="4" />
+              </Choice>
+            </Blend1D>
+          </BaseContent>
+          <EventContent>
+            <Ballistic tag_source_actor="x" target_translation_parameter="ball:TargetTranslation" target_orientation_parameter="ball:TargetOrientation" bounce_distance_parameter="ball:BounceDistance" landing_surface_parameter="ball:LandingSurface" unique_id="6" />
+          </EventContent>
+        </ScheduleOnEvent>
+      </ControllerTree>
+    </CustomController>
+  </State>
+  <State name="hub" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="9">
+      <Choice value="-stand-FullBody" track="normal" mask="" />
+      <Choice value="-stand-UpperBody" track="normal" mask="Trackmask_UpperBody" />
+    </PostureSelector>
+  </State>
+  <State name="idle" type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" focus="head" facialoverlays="false" tailoverlays="true">
+    <description />
+    <MakeController>
+      <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="12">
+        <Choice weight="94" avoidRepeat="False">
+          <Controller target="x" controller="@ClipController(clip=a2o_toyBall_throw_idle_laugh_x, loop_count=#1)" overridePosture="true" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_petball_fake_throwBall.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="10">
+            <TransitionClassList />
+          </Controller>
+        </Choice>
+        <Choice weight="50" avoidRepeat="False">
+          <Controller target="x" controller="@ClipController(clip=a2o_toyBall_throw_idle_x, loop_count=#1)" overridePosture="true" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_petball_fake_throwBall.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="11">
+            <TransitionClassList />
+          </Controller>
+        </Choice>
+      </RandomSelector>
+    </MakeController>
+  </State>
+  <State name="mirror" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="true" tailoverlays="true">
+    <description />
+    <ParameterSelector parameter="ball:carryTrack" unique_id="14">
+      <Choice value="left">
+        <SetMirror target="x" mirror="true" unique_id="13" />
+      </Choice>
+      <Choice value="right" />
+    </ParameterSelector>
+  </State>
+  <State name="stop" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="16">
+      <Choice value="-stand-FullBody" track="carryinteraction" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2o_toyBall_throw_fake_stop_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_petball_fake_throwBall.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="15">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+      <Choice value="-stand-UpperBody" track="carryinteraction" mask="Trackmask_UpperBody">
+        <Reference target="15" />
+      </Choice>
+    </PostureSelector>
+  </State>
+</ASM>

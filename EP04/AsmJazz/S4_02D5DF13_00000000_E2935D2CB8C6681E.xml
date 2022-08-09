@@ -1,0 +1,699 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="Pet_EatDrinkFromConsumable" dcc="sage">
+  <Actor name="x" type="Sim" master="true" virtual="false" />
+  <Actor name="consumable" type="Object" virtual="false" />
+  <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
+  <Parameter name="x:species" type="enum" labels="human,dog,smalldog,cat" default="human" />
+  <Parameter name="x:is_reacting" type="bool" labels="" default="False" />
+  <IkConfiguration name="ac2o_plate_eat_all.ma">
+    <SourceFile name="ac2o_plate_eat_all.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="ad2o_plate_eat_all.ma">
+    <SourceFile name="ad2o_plate_eat_all.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="ad2o_plate_eat_notice.ma">
+    <SourceFile name="ad2o_plate_eat_notice.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="ac2o_plate_eat_notice.ma">
+    <SourceFile name="ac2o_plate_eat_notice.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="ac2o_drinkTumbler_drink_x.ma">
+    <SourceFile name="ac2o_drinkTumbler_drink_x.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="ac2o_drinkTumbler_drink_notice.ma">
+    <SourceFile name="ac2o_drinkTumbler_drink_notice.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="ac2o_plateMulti_eat_all.ma">
+    <SourceFile name="ac2o_plateMulti_eat_all.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="ad2o_plateMulti_eat_all.ma">
+    <SourceFile name="ad2o_plateMulti_eat_all.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="ad2o_plateMulti_eat_notice.ma">
+    <SourceFile name="ad2o_plateMulti_eat_notice.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="ac2o_plateMulti_eat_notice.ma">
+    <SourceFile name="ac2o_plateMulti_eat_notice.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="ac2o_bowl_eat_all.ma">
+    <SourceFile name="ac2o_bowl_eat_all.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="ad2o_bowl_eat_all.ma">
+    <SourceFile name="ad2o_bowl_eat_all.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="ad2o_bowl_eat_notice.ma">
+    <SourceFile name="ad2o_bowl_eat_notice.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="ac2o_bowl_eat_notice.ma">
+    <SourceFile name="ac2o_bowl_eat_notice.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="ac2o_bowlMulti_eat_all.ma">
+    <SourceFile name="ac2o_bowlMulti_eat_all.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="ad2o_bowlMulti_eat_all.ma">
+    <SourceFile name="ad2o_bowlMulti_eat_all.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="ad2o_bowMultil_eat_notice.ma">
+    <SourceFile name="ad2o_bowMultil_eat_notice.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="ac2o_bowlMulti_eat_notice.ma">
+    <SourceFile name="ac2o_bowlMulti_eat_notice.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <PostureManifest actors="">
+    <Support name="stand" family="none" compatibility="FullBody" carry_left="-" carry_right="-" surface="*" />
+  </PostureManifest>
+  <State type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" name="DrinkTall" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" name="EatFromBowlMulti" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" name="EatFromBowlSingle" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" name="EatFromPlate" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" name="EatFromPlateMulti" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="StartBowlMulti" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="StartBowlSingle" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="StartDrinkTall" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="StartPlate" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="StartPlateMulti" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="StopBowlMulti" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="StopBowlSingle" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="StopDrinkTall" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="StopPlate" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="StopPlayMulti" focus="none" facialoverlays="false" tailoverlays="true" />
+  <Connection from="DrinkTall" to="StopDrinkTall" />
+  <Connection from="EatFromBowlMulti" to="StopBowlMulti" />
+  <Connection from="EatFromBowlSingle" to="StopBowlSingle" />
+  <Connection from="EatFromPlate" to="StopPlate" />
+  <Connection from="EatFromPlateMulti" to="StopPlayMulti" />
+  <Connection from="StartBowlMulti" to="EatFromBowlMulti" />
+  <Connection from="StartBowlSingle" to="EatFromBowlSingle" />
+  <Connection from="StartDrinkTall" to="DrinkTall" />
+  <Connection from="StartPlate" to="EatFromPlate" />
+  <Connection from="StartPlateMulti" to="EatFromPlateMulti" />
+  <Connection from="StopBowlMulti" to="exit" />
+  <Connection from="StopBowlSingle" to="exit" />
+  <Connection from="StopDrinkTall" to="exit" />
+  <Connection from="StopPlate" to="exit" />
+  <Connection from="StopPlayMulti" to="exit" />
+  <Connection from="entry" to="StartBowlMulti" />
+  <Connection from="entry" to="StartBowlSingle" />
+  <Connection from="entry" to="StartDrinkTall" />
+  <Connection from="entry" to="StartPlate" />
+  <Connection from="entry" to="StartPlateMulti" />
+  <State name="DrinkTall" type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <MakeController>
+      <PostureSelector parameter="x:posture" unique_id="8">
+        <Choice value="stand--FullBody" track="normal" mask="">
+          <ParameterSelector parameter="x:species" unique_id="7">
+            <Choice value="human" />
+            <Choice value="dog" />
+            <Choice value="smalldog" />
+            <Choice value="cat">
+              <CustomController name="Eat Blend Tree Cat" target="x" overridePosture="false" track="normal" transition_class_in="Default" transition_class_out="Default" unique_id="6">
+                <TransitionClassList />
+                <ControllerTree>
+                  <Notice unique_id="5">
+                    <BaseContent>
+                      <Clip clip="ac2o_drinkTumbler_drink_loop_x" ik_configuration="ac2o_drinkTumbler_drink_x.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="1" />
+                    </BaseContent>
+                    <NoticeStart>
+                      <Clip clip="ac2o_drinkTumbler_drink_notice_start_x" ik_configuration="ac2o_drinkTumbler_drink_notice.ma" focus="full body" mirror="False" start_frame_offset="0" end_frame_offset="0" focus_min_turn_angle="-0.785398163397448" focus_max_turn_angle="0.785398163397448" unique_id="2" />
+                    </NoticeStart>
+                    <NoticeLoop>
+                      <Clip clip="ac2o_drinkTumbler_drink_notice_loop_x" ik_configuration="ac2o_drinkTumbler_drink_notice.ma" focus="full body" mirror="False" start_frame_offset="0" end_frame_offset="0" focus_min_turn_angle="-0.785398163397448" focus_max_turn_angle="0.785398163397448" unique_id="3" />
+                    </NoticeLoop>
+                    <NoticeStop>
+                      <Clip clip="ac2o_drinkTumbler_drink_notice_stop_x" ik_configuration="ac2o_drinkTumbler_drink_notice.ma" focus="none" mirror="False" start_frame_offset="0" end_frame_offset="0" focus_min_turn_angle="-0.785398163397448" focus_max_turn_angle="0.785398163397448" unique_id="4" />
+                    </NoticeStop>
+                  </Notice>
+                </ControllerTree>
+              </CustomController>
+            </Choice>
+          </ParameterSelector>
+        </Choice>
+      </PostureSelector>
+    </MakeController>
+  </State>
+  <State name="EatFromBowlMulti" type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <MakeController>
+      <PostureSelector parameter="x:posture" unique_id="26">
+        <Choice value="stand--FullBody" track="normal" mask="">
+          <ParameterSelector parameter="x:species" unique_id="25">
+            <Choice value="human" />
+            <Choice value="dog">
+              <CustomController name="Eat Blend Tree AdultDog" target="x" overridePosture="false" track="normal" transition_class_in="Default" transition_class_out="Default" unique_id="16">
+                <TransitionClassList />
+                <ControllerTree>
+                  <Notice unique_id="15">
+                    <BaseContent>
+                      <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="11">
+                        <Choice weight="50" avoidRepeat="False">
+                          <Clip clip="ad2o_bowlMulti_eat_loop1_x" ik_configuration="ad2o_bowlMulti_eat_all.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="9" />
+                        </Choice>
+                        <Choice weight="50" avoidRepeat="False">
+                          <Clip clip="ad2o_bowlMulti_eat_loop2_x" ik_configuration="ad2o_bowlMulti_eat_all.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="10" />
+                        </Choice>
+                      </RandomSelector>
+                    </BaseContent>
+                    <NoticeStart>
+                      <Clip clip="ad2o_bowlMulti_eat_notice_start_x" ik_configuration="ad2o_bowMultil_eat_notice.ma" focus="full body" mirror="False" start_frame_offset="0" end_frame_offset="0" focus_min_turn_angle="-0.785398163397448" focus_max_turn_angle="0.785398163397448" unique_id="12" />
+                    </NoticeStart>
+                    <NoticeLoop>
+                      <Clip clip="ad2o_bowlMulti_eat_notice_loop_x" ik_configuration="ad2o_bowMultil_eat_notice.ma" focus="full body" mirror="False" start_frame_offset="0" end_frame_offset="0" focus_min_turn_angle="-0.785398163397448" focus_max_turn_angle="0.785398163397448" unique_id="13" />
+                    </NoticeLoop>
+                    <NoticeStop>
+                      <Clip clip="ad2o_bowlMulti_eat_notice_stop_x" ik_configuration="ad2o_bowMultil_eat_notice.ma" focus="none" mirror="False" start_frame_offset="0" end_frame_offset="0" focus_min_turn_angle="-0.785398163397448" focus_max_turn_angle="0.785398163397448" unique_id="14" />
+                    </NoticeStop>
+                  </Notice>
+                </ControllerTree>
+              </CustomController>
+            </Choice>
+            <Choice value="smalldog">
+              <Reference target="16" />
+            </Choice>
+            <Choice value="cat">
+              <CustomController name="Eat Blend Tree Cat" target="x" overridePosture="false" track="normal" transition_class_in="Default" transition_class_out="Default" unique_id="24">
+                <TransitionClassList />
+                <ControllerTree>
+                  <Notice unique_id="23">
+                    <BaseContent>
+                      <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="19">
+                        <Choice weight="50" avoidRepeat="False">
+                          <Clip clip="ac2o_bowlMulti_eat_loop1_x" ik_configuration="ac2o_bowlMulti_eat_all.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="17" />
+                        </Choice>
+                        <Choice weight="50" avoidRepeat="False">
+                          <Clip clip="ac2o_bowlMulti_eat_loop2_x" ik_configuration="ac2o_bowlMulti_eat_all.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="18" />
+                        </Choice>
+                      </RandomSelector>
+                    </BaseContent>
+                    <NoticeStart>
+                      <Clip clip="ac2o_bowlMulti_eat_notice_start_x" ik_configuration="ac2o_bowlMulti_eat_notice.ma" focus="full body" mirror="False" start_frame_offset="0" end_frame_offset="0" focus_min_turn_angle="-0.785398163397448" focus_max_turn_angle="0.785398163397448" unique_id="20" />
+                    </NoticeStart>
+                    <NoticeLoop>
+                      <Clip clip="ac2o_bowlMulti_eat_notice_loop_x" ik_configuration="ac2o_bowlMulti_eat_notice.ma" focus="full body" mirror="False" start_frame_offset="0" end_frame_offset="0" focus_min_turn_angle="-0.785398163397448" focus_max_turn_angle="0.785398163397448" unique_id="21" />
+                    </NoticeLoop>
+                    <NoticeStop>
+                      <Clip clip="ac2o_bowlMulti_eat_notice_stop_x" ik_configuration="ac2o_bowlMulti_eat_notice.ma" focus="none" mirror="False" start_frame_offset="0" end_frame_offset="0" focus_min_turn_angle="-0.785398163397448" focus_max_turn_angle="0.785398163397448" unique_id="22" />
+                    </NoticeStop>
+                  </Notice>
+                </ControllerTree>
+              </CustomController>
+            </Choice>
+          </ParameterSelector>
+        </Choice>
+      </PostureSelector>
+    </MakeController>
+  </State>
+  <State name="EatFromBowlSingle" type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <MakeController>
+      <PostureSelector parameter="x:posture" unique_id="44">
+        <Choice value="stand--FullBody" track="normal" mask="">
+          <ParameterSelector parameter="x:species" unique_id="43">
+            <Choice value="human" />
+            <Choice value="dog">
+              <CustomController name="Eat Blend Tree AdultDog" target="x" overridePosture="false" track="normal" transition_class_in="Default" transition_class_out="Default" unique_id="34">
+                <TransitionClassList />
+                <ControllerTree>
+                  <Notice unique_id="33">
+                    <BaseContent>
+                      <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="29">
+                        <Choice weight="50" avoidRepeat="False">
+                          <Clip clip="ad2o_bowl_eat_loop1_x" ik_configuration="ad2o_bowl_eat_all.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="27" />
+                        </Choice>
+                        <Choice weight="50" avoidRepeat="False">
+                          <Clip clip="ad2o_bowl_eat_loop2_x" ik_configuration="ad2o_bowl_eat_all.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="28" />
+                        </Choice>
+                      </RandomSelector>
+                    </BaseContent>
+                    <NoticeStart>
+                      <Clip clip="ad2o_bowl_eat_notice_start_x" ik_configuration="ad2o_bowl_eat_notice.ma" focus="full body" mirror="False" start_frame_offset="0" end_frame_offset="0" focus_min_turn_angle="-0.785398163397448" focus_max_turn_angle="0.785398163397448" unique_id="30" />
+                    </NoticeStart>
+                    <NoticeLoop>
+                      <Clip clip="ad2o_bowl_eat_notice_loop_x" ik_configuration="ad2o_bowl_eat_notice.ma" focus="full body" mirror="False" start_frame_offset="0" end_frame_offset="0" focus_min_turn_angle="-0.785398163397448" focus_max_turn_angle="0.785398163397448" unique_id="31" />
+                    </NoticeLoop>
+                    <NoticeStop>
+                      <Clip clip="ad2o_bowl_eat_notice_stop_x" ik_configuration="ad2o_bowl_eat_notice.ma" focus="none" mirror="False" start_frame_offset="0" end_frame_offset="0" focus_min_turn_angle="-0.785398163397448" focus_max_turn_angle="0.785398163397448" unique_id="32" />
+                    </NoticeStop>
+                  </Notice>
+                </ControllerTree>
+              </CustomController>
+            </Choice>
+            <Choice value="smalldog">
+              <Reference target="34" />
+            </Choice>
+            <Choice value="cat">
+              <CustomController name="Eat Blend Tree Cat" target="x" overridePosture="false" track="normal" transition_class_in="Default" transition_class_out="Default" unique_id="42">
+                <TransitionClassList />
+                <ControllerTree>
+                  <Notice unique_id="41">
+                    <BaseContent>
+                      <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="37">
+                        <Choice weight="50" avoidRepeat="False">
+                          <Clip clip="ac2o_bowl_eat_loop1_x" ik_configuration="ac2o_bowl_eat_all.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="35" />
+                        </Choice>
+                        <Choice weight="50" avoidRepeat="False">
+                          <Clip clip="ac2o_bowl_eat_loop2_x" ik_configuration="ac2o_bowl_eat_all.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="36" />
+                        </Choice>
+                      </RandomSelector>
+                    </BaseContent>
+                    <NoticeStart>
+                      <Clip clip="ac2o_bowl_eat_notice_start_x" ik_configuration="ac2o_bowl_eat_notice.ma" focus="full body" mirror="False" start_frame_offset="0" end_frame_offset="0" focus_min_turn_angle="-0.785398163397448" focus_max_turn_angle="0.785398163397448" unique_id="38" />
+                    </NoticeStart>
+                    <NoticeLoop>
+                      <Clip clip="ac2o_bowl_eat_notice_loop_x" ik_configuration="ac2o_bowl_eat_notice.ma" focus="full body" mirror="False" start_frame_offset="0" end_frame_offset="0" focus_min_turn_angle="-0.785398163397448" focus_max_turn_angle="0.785398163397448" unique_id="39" />
+                    </NoticeLoop>
+                    <NoticeStop>
+                      <Clip clip="ac2o_bowl_eat_notice_stop_x" ik_configuration="ac2o_bowl_eat_notice.ma" focus="none" mirror="False" start_frame_offset="0" end_frame_offset="0" focus_min_turn_angle="-0.785398163397448" focus_max_turn_angle="0.785398163397448" unique_id="40" />
+                    </NoticeStop>
+                  </Notice>
+                </ControllerTree>
+              </CustomController>
+            </Choice>
+          </ParameterSelector>
+        </Choice>
+      </PostureSelector>
+    </MakeController>
+  </State>
+  <State name="EatFromPlate" type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <MakeController>
+      <PostureSelector parameter="x:posture" unique_id="62">
+        <Choice value="stand--FullBody" track="normal" mask="">
+          <ParameterSelector parameter="x:species" unique_id="61">
+            <Choice value="human" />
+            <Choice value="dog">
+              <CustomController name="Eat Blend Tree AdultDog" target="x" overridePosture="false" track="normal" transition_class_in="Default" transition_class_out="Default" unique_id="52">
+                <TransitionClassList />
+                <ControllerTree>
+                  <Notice unique_id="51">
+                    <BaseContent>
+                      <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="47">
+                        <Choice weight="50" avoidRepeat="False">
+                          <Clip clip="ad2o_plate_eat_loop1_x" ik_configuration="ad2o_plate_eat_all.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="45" />
+                        </Choice>
+                        <Choice weight="50" avoidRepeat="False">
+                          <Clip clip="ad2o_plate_eat_loop2_x" ik_configuration="ad2o_plate_eat_all.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="46" />
+                        </Choice>
+                      </RandomSelector>
+                    </BaseContent>
+                    <NoticeStart>
+                      <Clip clip="ad2o_plate_eat_notice_start_x" ik_configuration="ad2o_plate_eat_notice.ma" focus="full body" mirror="False" start_frame_offset="0" end_frame_offset="0" focus_min_turn_angle="-0.785398163397448" focus_max_turn_angle="0.785398163397448" unique_id="48" />
+                    </NoticeStart>
+                    <NoticeLoop>
+                      <Clip clip="ad2o_plate_eat_notice_loop_x" ik_configuration="ad2o_plate_eat_notice.ma" focus="full body" mirror="False" start_frame_offset="0" end_frame_offset="0" focus_min_turn_angle="-0.785398163397448" focus_max_turn_angle="0.785398163397448" unique_id="49" />
+                    </NoticeLoop>
+                    <NoticeStop>
+                      <Clip clip="ad2o_plate_eat_notice_stop_x" ik_configuration="ad2o_plate_eat_notice.ma" focus="none" mirror="False" start_frame_offset="0" end_frame_offset="0" focus_min_turn_angle="-0.785398163397448" focus_max_turn_angle="0.785398163397448" unique_id="50" />
+                    </NoticeStop>
+                  </Notice>
+                </ControllerTree>
+              </CustomController>
+            </Choice>
+            <Choice value="smalldog">
+              <Reference target="52" />
+            </Choice>
+            <Choice value="cat">
+              <CustomController name="Eat Blend Tree Cat" target="x" overridePosture="false" track="normal" transition_class_in="Default" transition_class_out="Default" unique_id="60">
+                <TransitionClassList />
+                <ControllerTree>
+                  <Notice unique_id="59">
+                    <BaseContent>
+                      <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="55">
+                        <Choice weight="50" avoidRepeat="False">
+                          <Clip clip="ac2o_plate_eat_loop1_x" ik_configuration="ac2o_plate_eat_all.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="53" />
+                        </Choice>
+                        <Choice weight="50" avoidRepeat="False">
+                          <Clip clip="ac2o_plate_eat_loop2_x" ik_configuration="ac2o_plate_eat_all.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="54" />
+                        </Choice>
+                      </RandomSelector>
+                    </BaseContent>
+                    <NoticeStart>
+                      <Clip clip="ac2o_plate_eat_notice_start_x" ik_configuration="ac2o_plate_eat_notice.ma" focus="full body" mirror="False" start_frame_offset="0" end_frame_offset="0" focus_min_turn_angle="-0.785398163397448" focus_max_turn_angle="0.785398163397448" unique_id="56" />
+                    </NoticeStart>
+                    <NoticeLoop>
+                      <Clip clip="ac2o_plate_eat_notice_loop_x" ik_configuration="ac2o_plate_eat_notice.ma" focus="full body" mirror="False" start_frame_offset="0" end_frame_offset="0" focus_min_turn_angle="-0.785398163397448" focus_max_turn_angle="0.785398163397448" unique_id="57" />
+                    </NoticeLoop>
+                    <NoticeStop>
+                      <Clip clip="ac2o_plate_eat_notice_stop_x" ik_configuration="ac2o_plate_eat_notice.ma" focus="none" mirror="False" start_frame_offset="0" end_frame_offset="0" focus_min_turn_angle="-0.785398163397448" focus_max_turn_angle="0.785398163397448" unique_id="58" />
+                    </NoticeStop>
+                  </Notice>
+                </ControllerTree>
+              </CustomController>
+            </Choice>
+          </ParameterSelector>
+        </Choice>
+      </PostureSelector>
+    </MakeController>
+  </State>
+  <State name="EatFromPlateMulti" type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <MakeController>
+      <PostureSelector parameter="x:posture" unique_id="80">
+        <Choice value="stand--FullBody" track="normal" mask="">
+          <ParameterSelector parameter="x:species" unique_id="79">
+            <Choice value="human" />
+            <Choice value="dog">
+              <CustomController name="Eat Blend Tree AdultDog" target="x" overridePosture="false" track="normal" transition_class_in="Default" transition_class_out="Default" unique_id="70">
+                <TransitionClassList />
+                <ControllerTree>
+                  <Notice unique_id="69">
+                    <BaseContent>
+                      <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="65">
+                        <Choice weight="50" avoidRepeat="False">
+                          <Clip clip="ad2o_plateMulti_eat_loop1_x" ik_configuration="ad2o_plateMulti_eat_all.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="63" />
+                        </Choice>
+                        <Choice weight="50" avoidRepeat="False">
+                          <Clip clip="ad2o_plateMulti_eat_loop2_x" ik_configuration="ad2o_plateMulti_eat_all.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="64" />
+                        </Choice>
+                      </RandomSelector>
+                    </BaseContent>
+                    <NoticeStart>
+                      <Clip clip="ad2o_plateMulti_eat_notice_start_x" ik_configuration="ad2o_plateMulti_eat_notice.ma" focus="full body" mirror="False" start_frame_offset="0" end_frame_offset="0" focus_min_turn_angle="-0.785398163397448" focus_max_turn_angle="0.785398163397448" unique_id="66" />
+                    </NoticeStart>
+                    <NoticeLoop>
+                      <Clip clip="ad2o_plateMulti_eat_notice_loop_x" ik_configuration="ad2o_plateMulti_eat_notice.ma" focus="full body" mirror="False" start_frame_offset="0" end_frame_offset="0" focus_min_turn_angle="-0.785398163397448" focus_max_turn_angle="0.785398163397448" unique_id="67" />
+                    </NoticeLoop>
+                    <NoticeStop>
+                      <Clip clip="ad2o_plateMulti_eat_notice_stop_x" ik_configuration="ad2o_plateMulti_eat_notice.ma" focus="none" mirror="False" start_frame_offset="0" end_frame_offset="0" focus_min_turn_angle="-0.785398163397448" focus_max_turn_angle="0.785398163397448" unique_id="68" />
+                    </NoticeStop>
+                  </Notice>
+                </ControllerTree>
+              </CustomController>
+            </Choice>
+            <Choice value="smalldog">
+              <Reference target="70" />
+            </Choice>
+            <Choice value="cat">
+              <CustomController name="Eat Blend Tree Cat" target="x" overridePosture="false" track="normal" transition_class_in="Default" transition_class_out="Default" unique_id="78">
+                <TransitionClassList />
+                <ControllerTree>
+                  <Notice unique_id="77">
+                    <BaseContent>
+                      <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="73">
+                        <Choice weight="50" avoidRepeat="False">
+                          <Clip clip="ac2o_plateMulti_eat_loop1_x" ik_configuration="ac2o_plateMulti_eat_all.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="71" />
+                        </Choice>
+                        <Choice weight="50" avoidRepeat="False">
+                          <Clip clip="ac2o_plateMulti_eat_loop2_x" ik_configuration="ac2o_plateMulti_eat_all.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="72" />
+                        </Choice>
+                      </RandomSelector>
+                    </BaseContent>
+                    <NoticeStart>
+                      <Clip clip="ac2o_plateMulti_eat_notice_start_x" ik_configuration="ac2o_plateMulti_eat_notice.ma" focus="full body" mirror="False" start_frame_offset="0" end_frame_offset="0" focus_min_turn_angle="-0.785398163397448" focus_max_turn_angle="0.785398163397448" unique_id="74" />
+                    </NoticeStart>
+                    <NoticeLoop>
+                      <Clip clip="ac2o_plateMulti_eat_notice_loop_x" ik_configuration="ac2o_plateMulti_eat_notice.ma" focus="full body" mirror="False" start_frame_offset="0" end_frame_offset="0" focus_min_turn_angle="-0.785398163397448" focus_max_turn_angle="0.785398163397448" unique_id="75" />
+                    </NoticeLoop>
+                    <NoticeStop>
+                      <Clip clip="ac2o_plateMulti_eat_notice_stop_x" ik_configuration="ac2o_plateMulti_eat_notice.ma" focus="none" mirror="False" start_frame_offset="0" end_frame_offset="0" focus_min_turn_angle="-0.785398163397448" focus_max_turn_angle="0.785398163397448" unique_id="76" />
+                    </NoticeStop>
+                  </Notice>
+                </ControllerTree>
+              </CustomController>
+            </Choice>
+          </ParameterSelector>
+        </Choice>
+      </PostureSelector>
+    </MakeController>
+  </State>
+  <State name="StartBowlMulti" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="84">
+      <Choice value="stand--FullBody" track="normal" mask="">
+        <ParameterSelector parameter="x:species" unique_id="83">
+          <Choice value="human" />
+          <Choice value="dog">
+            <Controller target="x" controller="@ClipController(clip=ad2o_bowlMulti_eat_start_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ad2o_bowlMulti_eat_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="81">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
+          <Choice value="smalldog">
+            <Reference target="81" />
+          </Choice>
+          <Choice value="cat">
+            <Controller target="x" controller="@ClipController(clip=ac2o_bowlMulti_eat_start_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ac2o_bowlMulti_eat_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="82">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="StartBowlSingle" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="88">
+      <Choice value="stand--FullBody" track="normal" mask="">
+        <ParameterSelector parameter="x:species" unique_id="87">
+          <Choice value="human" />
+          <Choice value="dog">
+            <Controller target="x" controller="@ClipController(clip=ad2o_bowl_eat_start_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ad2o_bowl_eat_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="85">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
+          <Choice value="smalldog">
+            <Reference target="85" />
+          </Choice>
+          <Choice value="cat">
+            <Controller target="x" controller="@ClipController(clip=ac2o_bowl_eat_start_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ac2o_bowl_eat_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="86">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="StartDrinkTall" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="91">
+      <Choice value="stand--FullBody" track="normal" mask="">
+        <ParameterSelector parameter="x:species" unique_id="90">
+          <Choice value="human" />
+          <Choice value="dog" />
+          <Choice value="smalldog" />
+          <Choice value="cat">
+            <Controller target="x" controller="@ClipController(clip=ac2o_drinkTumbler_drink_start_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ac2o_drinkTumbler_drink_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="89">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="StartPlate" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="95">
+      <Choice value="stand--FullBody" track="normal" mask="">
+        <ParameterSelector parameter="x:species" unique_id="94">
+          <Choice value="human" />
+          <Choice value="dog">
+            <Controller target="x" controller="@ClipController(clip=ad2o_plate_eat_start_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ad2o_plate_eat_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="92">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
+          <Choice value="smalldog">
+            <Reference target="92" />
+          </Choice>
+          <Choice value="cat">
+            <Controller target="x" controller="@ClipController(clip=ac2o_plate_eat_start_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ac2o_plate_eat_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="93">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="StartPlateMulti" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="99">
+      <Choice value="stand--FullBody" track="normal" mask="">
+        <ParameterSelector parameter="x:species" unique_id="98">
+          <Choice value="human" />
+          <Choice value="dog">
+            <Controller target="x" controller="@ClipController(clip=ad2o_plateMulti_eat_start_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ad2o_plateMulti_eat_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="96">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
+          <Choice value="smalldog">
+            <Reference target="96" />
+          </Choice>
+          <Choice value="cat">
+            <Controller target="x" controller="@ClipController(clip=ac2o_plateMulti_eat_start_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ac2o_plateMulti_eat_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="97">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="StopBowlMulti" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="104">
+      <Choice value="stand--FullBody" track="normal" mask="">
+        <ParameterSelector parameter="x:is_reacting" unique_id="103">
+          <Choice value="false">
+            <ParameterSelector parameter="x:species" unique_id="102">
+              <Choice value="human" />
+              <Choice value="dog">
+                <Controller target="x" controller="@ClipController(clip=ad2o_bowlMulti_eat_stop_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ad2o_bowlMulti_eat_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="100">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+              <Choice value="smalldog">
+                <Reference target="100" />
+              </Choice>
+              <Choice value="cat">
+                <Controller target="x" controller="@ClipController(clip=ac2o_bowlMulti_eat_stop_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ac2o_bowlMulti_eat_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="101">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+            </ParameterSelector>
+          </Choice>
+          <Choice value="true" />
+        </ParameterSelector>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="StopBowlSingle" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="109">
+      <Choice value="stand--FullBody" track="normal" mask="">
+        <ParameterSelector parameter="x:is_reacting" unique_id="108">
+          <Choice value="false">
+            <ParameterSelector parameter="x:species" unique_id="107">
+              <Choice value="human" />
+              <Choice value="dog">
+                <Controller target="x" controller="@ClipController(clip=ad2o_bowl_eat_stop_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ad2o_bowl_eat_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="105">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+              <Choice value="smalldog">
+                <Reference target="105" />
+              </Choice>
+              <Choice value="cat">
+                <Controller target="x" controller="@ClipController(clip=ac2o_bowl_eat_stop_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ac2o_bowl_eat_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="106">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+            </ParameterSelector>
+          </Choice>
+          <Choice value="true" />
+        </ParameterSelector>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="StopDrinkTall" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="113">
+      <Choice value="stand--FullBody" track="normal" mask="">
+        <ParameterSelector parameter="x:is_reacting" unique_id="112">
+          <Choice value="false">
+            <ParameterSelector parameter="x:species" unique_id="111">
+              <Choice value="human" />
+              <Choice value="dog" />
+              <Choice value="smalldog" />
+              <Choice value="cat">
+                <Controller target="x" controller="@ClipController(clip=ac2o_drinkTumbler_drink_stop_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ac2o_drinkTumbler_drink_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="110">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+            </ParameterSelector>
+          </Choice>
+          <Choice value="true" />
+        </ParameterSelector>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="StopPlate" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="118">
+      <Choice value="stand--FullBody" track="normal" mask="">
+        <ParameterSelector parameter="x:is_reacting" unique_id="117">
+          <Choice value="false">
+            <ParameterSelector parameter="x:species" unique_id="116">
+              <Choice value="human" />
+              <Choice value="dog">
+                <Controller target="x" controller="@ClipController(clip=ad2o_plate_eat_stop_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ad2o_plate_eat_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="114">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+              <Choice value="smalldog">
+                <Reference target="114" />
+              </Choice>
+              <Choice value="cat">
+                <Controller target="x" controller="@ClipController(clip=ac2o_plate_eat_stop_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ac2o_plate_eat_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="115">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+            </ParameterSelector>
+          </Choice>
+          <Choice value="true" />
+        </ParameterSelector>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="StopPlayMulti" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="123">
+      <Choice value="stand--FullBody" track="normal" mask="">
+        <ParameterSelector parameter="x:is_reacting" unique_id="122">
+          <Choice value="false">
+            <ParameterSelector parameter="x:species" unique_id="121">
+              <Choice value="human" />
+              <Choice value="dog">
+                <Controller target="x" controller="@ClipController(clip=ad2o_plateMulti_eat_stop_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ad2o_plateMulti_eat_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="119">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+              <Choice value="smalldog">
+                <Reference target="119" />
+              </Choice>
+              <Choice value="cat">
+                <Controller target="x" controller="@ClipController(clip=ac2o_plateMulti_eat_stop_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ac2o_plateMulti_eat_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="120">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+            </ParameterSelector>
+          </Choice>
+          <Choice value="true" />
+        </ParameterSelector>
+      </Choice>
+    </PostureSelector>
+  </State>
+</ASM>

@@ -1,0 +1,109 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="Bake_Decorate_Consumable_Actions" dcc="sage">
+  <Actor name="x" type="Sim" master="true" virtual="false" />
+  <Actor name="surface" type="Object" virtual="false" />
+  <Actor name="consumable" type="Object" virtual="false" />
+  <Actor name="frostBag" type="Prop" virtual="false" object_def_resource_key="c0db5ae7:00000000:000000000001231f#bagFrosting_EP01GEN" />
+  <Actor name="bagCandy" type="Prop" virtual="false" object_def_resource_key="c0db5ae7:00000000:0000000000012323#bagCandy_EP01GEN" />
+  <Actor name="knife" type="Prop" virtual="false" object_def_resource_key="c0db5ae7:00000000:0000000000001fbb#toolKnifeChefGEN_01_prop" />
+  <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
+  <Parameter name="consumable:isCupCake" type="bool" labels="" default="False" />
+  <IkConfiguration name="a2o_bake_addPiping.ma">
+    <SourceFile name="a2o_bake_addPiping.ma">
+      <MapNamespace namespace="consumable" actor="consumable" />
+      <MapNamespace namespace="frostBag" actor="frostBag" />
+      <MapNamespace namespace="surface" actor="surface" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_bake_addTopping.ma">
+    <SourceFile name="a2o_bake_addTopping.ma">
+      <MapNamespace namespace="bagCandy" actor="bagCandy" />
+      <MapNamespace namespace="consumable" actor="consumable" />
+      <MapNamespace namespace="surface" actor="surface" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_bake_topping.ma">
+    <SourceFile name="a2o_bake_topping.ma">
+      <MapNamespace namespace="consumable" actor="consumable" />
+      <MapNamespace namespace="knife" actor="knife" />
+      <MapNamespace namespace="surface" actor="surface" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <PostureManifest actors="" />
+  <PostureManifest actors="x">
+    <Support name="cook" family="none" compatibility="FullBody" carry_left="-" carry_right="-" surface="surface" />
+  </PostureManifest>
+  <State type="private" skippable="false" interrupt_this="false" name="Hub" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="Icing" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="Piping" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="Sprinkle" focus="none" facialoverlays="false" tailoverlays="true" />
+  <Connection from="Hub" to="Icing" />
+  <Connection from="Hub" to="Piping" />
+  <Connection from="Hub" to="Sprinkle" />
+  <Connection from="Hub" to="exit" />
+  <Connection from="Icing" to="Hub" />
+  <Connection from="Piping" to="Hub" />
+  <Connection from="Sprinkle" to="Hub" />
+  <Connection from="entry" to="Hub" />
+  <State name="Hub" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+  </State>
+  <State name="Icing" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="4">
+      <Choice value="cook--FullBody" track="normal" mask="">
+        <ParameterSelector parameter="consumable:isCupCake" unique_id="3">
+          <Choice value="false">
+            <Controller target="x" controller="@ClipController(clip=a2o_bake_topping_cake_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bake_topping.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="1">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice value="true">
+            <Controller target="x" controller="@ClipController(clip=a2o_bake_topping_cupCake_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bake_topping.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="2">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="Piping" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="7">
+      <Choice value="cook--FullBody" track="normal" mask="">
+        <ParameterSelector parameter="consumable:isCupCake" unique_id="6">
+          <Choice value="false">
+            <Controller target="x" controller="@ClipController(clip=a2o_bake_addPiping_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bake_addPiping.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="5">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice value="true">
+            <Reference target="5" />
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="Sprinkle" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="9">
+      <Choice value="cook--FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2o_bake_addTopping_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bake_addTopping.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="8">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
+    </PostureSelector>
+  </State>
+</ASM>

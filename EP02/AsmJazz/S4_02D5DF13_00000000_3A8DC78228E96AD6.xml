@@ -1,0 +1,80 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="Bonfire_Burn">
+  <Actor name="x" type="Sim" master="true" virtual="false" />
+  <Actor name="bonfire" type="Object" virtual="false" />
+  <Actor name="carryObject" type="Object" virtual="false" />
+  <Actor name="xcarryObjectRig" type="Object" virtual="false" />
+  <Actor name="testTube" type="Prop" virtual="false" object_def_resource_key="c0db5ae7:00000000:00000000000050b7" />
+  <Parameter name="x:age" template="age" type="enum" labels="baby,unsupported_age,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="x:sex" template="sex" type="enum" labels="male,female" default="male" />
+  <Parameter name="carryObject:carryTrack" template="carryTrack" type="enum" labels="left,right" default="right" />
+  <PostureManifest actors="x">
+    <Support family="stand" compatibility="FullBody" carry_left="-" carry_right="carryObject" surface="*" />
+    <Support family="stand" compatibility="FullBody" carry_left="carryObject" carry_right="-" surface="*" />
+  </PostureManifest>
+  <State type="public" skippable="false" interrupt_this="false" name="burnTrash" focus="none" facialoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="Mirror" focus="none" facialoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="burnObject" focus="none" facialoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="burnVoodooDoll" focus="full body" facialoverlays="false" />
+  <Connection from="burnObject" to="exit" />
+  <Connection from="burnTrash" to="exit" />
+  <Connection from="burnVoodooDoll" to="exit" />
+  <Connection from="entry" to="Mirror" />
+  <Connection from="Mirror" to="burnObject" />
+  <Connection from="Mirror" to="burnTrash" />
+  <Connection from="Mirror" to="burnVoodooDoll" />
+  <State name="burnTrash">
+    <description />
+    <PostureSelector parameter="x:posture">
+      <Choice value="-stand-FullBody">
+        <Controller target="x" controller="@ClipController(clip=a2o_bonfire_burn_trash_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bonfire_burn_throwInFire.ma" focus="undefined" id="82a8ce87-7263-48d0-8c67-498c063dc633">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+        <Controller target="carryObject" controller="@ClipController(clip=a2o_bonfire_burn_trash_trash, loop_count=#1)" overridePosture="false" mask="" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bonfire_burn_throwInFire.ma" focus="undefined" id="874c4b74-a76e-45a1-828a-e8eb50e194f3">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="Mirror">
+    <description />
+    <ParameterSelector parameter="carryObject:carryTrack">
+      <Choice value="left">
+        <SetMirror target="x" mirror="true" />
+      </Choice>
+    </ParameterSelector>
+  </State>
+  <State name="burnObject">
+    <description />
+    <PostureSelector parameter="x:posture">
+      <Choice value="-stand-FullBody">
+        <Controller target="x" controller="@ClipController(clip=a2o_bonfire_burn_object_x, loop_count=#1)" overridePosture="false" mask="" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bonfire_burn_throwInFire_object.ma" focus="undefined" id="bf414477-e2f0-4166-8828-1527cd367e90">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="burnVoodooDoll">
+    <description />
+    <PostureSelector parameter="x:posture">
+      <Choice value="-stand-FullBody">
+        <Controller target="carryObject" controller="@ClipController(clip=a2o_bonfire_burn_voodooDoll_voodooDoll, loop_count=#1)" overridePosture="false" mask="" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bonfire_burn_throwInFire_voodooDoll.ma" focus="undefined" id="75316aa3-9b6b-49a6-a7ca-82a677c41775">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+        <Controller target="x" controller="@ClipController(clip=a2o_bonfire_burn_voodooDoll_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bonfire_burn_throwInFire_voodooDoll.ma" focus="undefined" id="c97ed851-4e51-4ec2-aba4-db82bdfeea65">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
+    </PostureSelector>
+  </State>
+</ASM>

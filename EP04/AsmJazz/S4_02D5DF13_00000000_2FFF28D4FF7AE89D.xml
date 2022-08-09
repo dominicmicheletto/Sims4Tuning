@@ -1,0 +1,53 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="Pet_CarriedSim_Idle" dcc="sage">
+  <Actor name="x" type="Sim" master="true" virtual="false" />
+  <Actor name="z" type="Sim" virtual="true" />
+  <Parameter name="x:age" type="enum" labels="child,adult,elder" default="adult" />
+  <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
+  <Parameter name="x:species" type="enum" labels="dog,smalldog,human,cat" default="dog" />
+  <Parameter name="z:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="z:sex" type="enum" labels="male,female" default="male" />
+  <Parameter name="z:species" type="enum" labels="human,dog,smalldog,cat" default="human" />
+  <IkConfiguration name="al_idle_carry_all.ma">
+    <SourceFile name="al_idle_carry_all.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <PostureManifest actors="" />
+  <PostureManifest actors="x">
+    <Support name="carried_sim" family="none" compatibility="FullBody" carry_left="*" carry_right="*" surface="-" />
+  </PostureManifest>
+  <PostureManifest actors="z" />
+  <State type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" name="Carried_Sim_Idle" focus="head" facialoverlays="true" tailoverlays="false" />
+  <Connection from="Carried_Sim_Idle" to="exit" />
+  <Connection from="entry" to="Carried_Sim_Idle" />
+  <State name="Carried_Sim_Idle" type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" focus="head" facialoverlays="true" tailoverlays="false">
+    <description />
+    <MakeController>
+      <ParameterSelector parameter="z:species" unique_id="5">
+        <Choice value="human">
+          <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="4">
+            <Choice weight="100" avoidRepeat="False">
+              <Controller target="x" controller="@ClipController(clip=al_idle_carry_breathe_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="al_idle_carry_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="1">
+                <TransitionClassList />
+              </Controller>
+            </Choice>
+            <Choice weight="51" avoidRepeat="False">
+              <Controller target="x" controller="@ClipController(clip=al_idle_carry_lookAround_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="al_idle_carry_all.ma" focus="none" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="2">
+                <TransitionClassList />
+              </Controller>
+            </Choice>
+            <Choice weight="50" avoidRepeat="False">
+              <Controller target="x" controller="@ClipController(clip=al_idle_carry_sniffAround_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="al_idle_carry_all.ma" focus="none" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="3">
+                <TransitionClassList />
+              </Controller>
+            </Choice>
+          </RandomSelector>
+        </Choice>
+        <Choice value="dog" />
+        <Choice value="smalldog" />
+        <Choice value="cat" />
+      </ParameterSelector>
+    </MakeController>
+  </State>
+</ASM>

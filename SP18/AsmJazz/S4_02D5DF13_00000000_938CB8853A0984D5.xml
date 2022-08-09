@@ -1,0 +1,378 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="SeanceTable_Chant" dcc="sage">
+  <Actor name="x" type="Sim" master="true" virtual="false" />
+  <Actor name="sitTemplate" type="Object" virtual="true" />
+  <Actor name="surface" type="Object" virtual="false" />
+  <Parameter name="x:age" type="enum" labels="baby,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="x:sex" type="enum" labels="male,female" default="female" />
+  <Parameter name="x:skillLevel" type="enum" labels="low,mediumLow,medium,mediumHigh,high" default="low" />
+  <IkConfiguration name="a2o_seanceTable_seancee_chant_seated.ma">
+    <SourceFile name="a2o_seanceTable_seancee_chant_seated.ma">
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="sitTemplate" actor="sitTemplate" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_seanceTable_seancer_chant_seated.ma">
+    <SourceFile name="a2o_seanceTable_seancer_chant_seated.ma">
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="sitTemplate" actor="sitTemplate" />
+      <MapNamespace namespace="surface" actor="surface" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_seanceTable_seancer_chant_lowSkill_seated.ma">
+    <SourceFile name="a2o_seanceTable_seancer_chant_lowSkill_seated.ma">
+      <MapNamespace namespace="sitTemplate" actor="sitTemplate" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_seanceTable_seancee_chant_highSkill_seated.ma">
+    <SourceFile name="a2o_seanceTable_seancee_chant_highSkill_seated.ma">
+      <MapNamespace namespace="sitTemplate" actor="sitTemplate" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <PostureManifest actors="" />
+  <PostureManifest actors="x">
+    <Support family="sit" compatibility="FullBody" carry_left="-" carry_right="-" surface="*" />
+    <Support family="sit" compatibility="UpperBody" carry_left="-" carry_right="-" surface="*" />
+    <Support name="kneel" family="none" compatibility="UpperBody" carry_left="-" carry_right="-" surface="*" />
+  </PostureManifest>
+  <State type="private" skippable="false" interrupt_this="false" name="Seancee_Start" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="Seancee_Stop" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" countlooptime="true" disableautostop="false" skippable="false" interrupt_this="false" name="Seancee_loop" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="Seancer_Start" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="Seancer_Stop" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" countlooptime="true" disableautostop="false" skippable="false" interrupt_this="false" name="Seancer_loop" focus="none" facialoverlays="false" tailoverlays="true" />
+  <Connection from="Seancee_Start" to="Seancee_loop" />
+  <Connection from="Seancee_Stop" to="exit" />
+  <Connection from="Seancee_loop" to="Seancee_Stop" />
+  <Connection from="Seancer_Start" to="Seancer_loop" />
+  <Connection from="Seancer_Stop" to="exit" />
+  <Connection from="Seancer_loop" to="Seancer_Stop" />
+  <Connection from="entry" to="Seancee_Start" />
+  <Connection from="entry" to="Seancer_Start" />
+  <State name="Seancee_Start" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="5">
+      <Choice value="kneel--UpperBody" track="normal" mask="Trackmask_UpperBody">
+        <ParameterSelector parameter="x:skillLevel" unique_id="4">
+          <Choice value="low">
+            <Controller target="x" controller="@ClipController(clip=a2o_seanceTable_seancee_chant_start_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_seanceTable_seancee_chant_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="1">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice value="mediumLow">
+            <Reference target="1" />
+          </Choice>
+          <Choice value="medium">
+            <Controller target="x" controller="@ClipController(clip=a2o_seanceTable_seancee_chant_highSkill_start_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_seanceTable_seancee_chant_highSkill_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="2">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+            <Controller target="sitTemplate" controller="@ClipController(clip=a2o_seanceTable_seancee_chant_highSkill_start_seated_sitTemplate, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_seanceTable_seancee_chant_highSkill_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="3">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice value="mediumHigh">
+            <Reference target="2" />
+            <Reference target="3" />
+          </Choice>
+          <Choice value="high">
+            <Reference target="2" />
+            <Reference target="3" />
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+      <Choice value="-sit-FullBody" track="normal" mask="">
+        <Reference target="4" />
+      </Choice>
+      <Choice value="-sit-UpperBody" track="normal" mask="Trackmask_UpperBody">
+        <Reference target="4" />
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="Seancee_Stop" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="10">
+      <Choice value="kneel--UpperBody" track="normal" mask="Trackmask_UpperBody">
+        <ParameterSelector parameter="x:skillLevel" unique_id="9">
+          <Choice value="low">
+            <Controller target="x" controller="@ClipController(clip=a2o_seanceTable_seancee_chant_stop_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_seanceTable_seancee_chant_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="6">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice value="mediumLow">
+            <Reference target="6" />
+          </Choice>
+          <Choice value="medium">
+            <Controller target="x" controller="@ClipController(clip=a2o_seanceTable_seancee_chant_highSkill_stop_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_seanceTable_seancee_chant_highSkill_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="7">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+            <Controller target="sitTemplate" controller="@ClipController(clip=a2o_seanceTable_seancee_chant_highSkill_stop_seated_sitTemplate, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_seanceTable_seancee_chant_highSkill_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="8">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice value="mediumHigh">
+            <Reference target="7" />
+            <Reference target="8" />
+          </Choice>
+          <Choice value="high">
+            <Reference target="7" />
+            <Reference target="8" />
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+      <Choice value="-sit-FullBody" track="normal" mask="">
+        <Reference target="9" />
+      </Choice>
+      <Choice value="-sit-UpperBody" track="normal" mask="Trackmask_UpperBody">
+        <Reference target="9" />
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="Seancee_loop" type="public" countlooptime="true" disableautostop="false" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <MakeController>
+      <PostureSelector parameter="x:posture" unique_id="20">
+        <Choice value="kneel--UpperBody" track="normal" mask="Trackmask_UpperBody">
+          <ParameterSelector parameter="x:skillLevel" unique_id="19">
+            <Choice value="low">
+              <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="13">
+                <Choice weight="89" avoidRepeat="False">
+                  <Controller target="x" controller="@ClipController(clip=a2o_seanceTable_seancee_chant_loop_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="NoBlendLoop" transition_class_out="NoBlendLoop" ik_configuration="a2o_seanceTable_seancee_chant_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="11">
+                    <TransitionClassList>
+                      <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                    </TransitionClassList>
+                  </Controller>
+                </Choice>
+                <Choice weight="21" avoidRepeat="True">
+                  <Controller target="x" controller="@ClipController(clip=a2o_seanceTable_seancee_chant_loop02_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_seanceTable_seancee_chant_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="12">
+                    <TransitionClassList>
+                      <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                    </TransitionClassList>
+                  </Controller>
+                </Choice>
+              </RandomSelector>
+            </Choice>
+            <Choice value="mediumLow">
+              <Reference target="13" />
+            </Choice>
+            <Choice value="medium">
+              <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="18">
+                <Choice weight="89" avoidRepeat="False">
+                  <Controller target="sitTemplate" controller="@ClipController(clip=a2o_seanceTable_seancee_chant_highSkill_loop_seated_sitTemplate, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_seanceTable_seancee_chant_highSkill_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="14">
+                    <TransitionClassList>
+                      <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                    </TransitionClassList>
+                  </Controller>
+                  <Controller target="x" controller="@ClipController(clip=a2o_seanceTable_seancee_chant_highSkill_loop_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_seanceTable_seancee_chant_highSkill_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="15">
+                    <TransitionClassList>
+                      <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                    </TransitionClassList>
+                  </Controller>
+                </Choice>
+                <Choice weight="21" avoidRepeat="True">
+                  <Controller target="sitTemplate" controller="@ClipController(clip=a2o_seanceTable_seancee_chant_highSkill_loop02_seated_sitTemplate, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_seanceTable_seancee_chant_highSkill_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="16">
+                    <TransitionClassList>
+                      <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                    </TransitionClassList>
+                  </Controller>
+                  <Controller target="x" controller="@ClipController(clip=a2o_seanceTable_seancee_chant_highSkill_loop02_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_seanceTable_seancee_chant_highSkill_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="17">
+                    <TransitionClassList>
+                      <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                    </TransitionClassList>
+                  </Controller>
+                </Choice>
+              </RandomSelector>
+            </Choice>
+            <Choice value="mediumHigh">
+              <Reference target="18" />
+            </Choice>
+            <Choice value="high">
+              <Reference target="18" />
+            </Choice>
+          </ParameterSelector>
+        </Choice>
+        <Choice value="-sit-FullBody" track="normal" mask="">
+          <Reference target="19" />
+        </Choice>
+        <Choice value="-sit-UpperBody" track="normal" mask="Trackmask_UpperBody">
+          <Reference target="19" />
+        </Choice>
+      </PostureSelector>
+    </MakeController>
+  </State>
+  <State name="Seancer_Start" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="25">
+      <Choice value="kneel--UpperBody" track="normal" mask="Trackmask_UpperBody">
+        <ParameterSelector parameter="x:skillLevel" unique_id="24">
+          <Choice value="low">
+            <Controller target="x" controller="@ClipController(clip=a2o_seanceTable_seancer_chant_lowSkill_start_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_seanceTable_seancer_chant_lowSkill_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="21">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice value="mediumLow">
+            <Reference target="21" />
+          </Choice>
+          <Choice value="medium">
+            <Controller target="sitTemplate" controller="@ClipController(clip=a2o_seanceTable_seancer_chant_start_seated_sitTemplate, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_seanceTable_seancer_chant_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="22">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+            <Controller target="x" controller="@ClipController(clip=a2o_seanceTable_seancer_chant_start_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_seanceTable_seancer_chant_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="23">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice value="mediumHigh">
+            <Reference target="22" />
+            <Reference target="23" />
+          </Choice>
+          <Choice value="high">
+            <Reference target="22" />
+            <Reference target="23" />
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+      <Choice value="-sit-FullBody" track="normal" mask="">
+        <Reference target="24" />
+      </Choice>
+      <Choice value="-sit-UpperBody" track="normal" mask="Trackmask_UpperBody">
+        <Reference target="24" />
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="Seancer_Stop" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="30">
+      <Choice value="kneel--UpperBody" track="normal" mask="Trackmask_UpperBody">
+        <ParameterSelector parameter="x:skillLevel" unique_id="29">
+          <Choice value="low">
+            <Controller target="x" controller="@ClipController(clip=a2o_seanceTable_seancer_chant_lowSkill_stop_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_seanceTable_seancer_chant_lowSkill_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="26">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice value="mediumLow">
+            <Reference target="26" />
+          </Choice>
+          <Choice value="medium">
+            <Controller target="x" controller="@ClipController(clip=a2o_seanceTable_seancer_chant_stop_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_seanceTable_seancer_chant_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="27">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+            <Controller target="sitTemplate" controller="@ClipController(clip=a2o_seanceTable_seancer_chant_stop_seated_sitTemplate, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_seanceTable_seancer_chant_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="28">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice value="mediumHigh">
+            <Reference target="27" />
+            <Reference target="28" />
+          </Choice>
+          <Choice value="high">
+            <Reference target="27" />
+            <Reference target="28" />
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+      <Choice value="-sit-FullBody" track="normal" mask="">
+        <Reference target="29" />
+      </Choice>
+      <Choice value="-sit-UpperBody" track="normal" mask="Trackmask_UpperBody">
+        <Reference target="29" />
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="Seancer_loop" type="public" countlooptime="true" disableautostop="false" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <MakeController>
+      <PostureSelector parameter="x:posture" unique_id="40">
+        <Choice value="kneel--UpperBody" track="normal" mask="Trackmask_UpperBody">
+          <ParameterSelector parameter="x:skillLevel" unique_id="39">
+            <Choice value="low">
+              <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="33">
+                <Choice weight="89" avoidRepeat="False">
+                  <Controller target="x" controller="@ClipController(clip=a2o_seanceTable_seancer_chant_lowSkill_loop_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_seanceTable_seancer_chant_lowSkill_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="31">
+                    <TransitionClassList>
+                      <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                    </TransitionClassList>
+                  </Controller>
+                </Choice>
+                <Choice weight="26" avoidRepeat="True">
+                  <Controller target="x" controller="@ClipController(clip=a2o_seanceTable_seancer_chant_lowSkill_loop02_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_seanceTable_seancer_chant_lowSkill_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="32">
+                    <TransitionClassList>
+                      <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                    </TransitionClassList>
+                  </Controller>
+                </Choice>
+              </RandomSelector>
+            </Choice>
+            <Choice value="mediumLow">
+              <Reference target="33" />
+            </Choice>
+            <Choice value="medium">
+              <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="38">
+                <Choice weight="89" avoidRepeat="False">
+                  <Controller target="sitTemplate" controller="@ClipController(clip=a2o_seanceTable_seancer_chant_loop_seated_sitTemplate, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_seanceTable_seancer_chant_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="34">
+                    <TransitionClassList>
+                      <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                    </TransitionClassList>
+                  </Controller>
+                  <Controller target="x" controller="@ClipController(clip=a2o_seanceTable_seancer_chant_loop_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_seanceTable_seancer_chant_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="35">
+                    <TransitionClassList>
+                      <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                    </TransitionClassList>
+                  </Controller>
+                </Choice>
+                <Choice weight="26" avoidRepeat="True">
+                  <Controller target="x" controller="@ClipController(clip=a2o_seanceTable_seancer_chant_loop02_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_seanceTable_seancer_chant_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="36">
+                    <TransitionClassList>
+                      <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                    </TransitionClassList>
+                  </Controller>
+                  <Controller target="sitTemplate" controller="@ClipController(clip=a2o_seanceTable_seancer_chant_loop02_seated_sitTemplate, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_seanceTable_seancer_chant_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="37">
+                    <TransitionClassList>
+                      <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                    </TransitionClassList>
+                  </Controller>
+                </Choice>
+              </RandomSelector>
+            </Choice>
+            <Choice value="mediumHigh">
+              <Reference target="38" />
+            </Choice>
+            <Choice value="high">
+              <Reference target="38" />
+            </Choice>
+          </ParameterSelector>
+        </Choice>
+        <Choice value="-sit-FullBody" track="normal" mask="">
+          <Reference target="39" />
+        </Choice>
+        <Choice value="-sit-UpperBody" track="normal" mask="Trackmask_UpperBody">
+          <Reference target="39" />
+        </Choice>
+      </PostureSelector>
+    </MakeController>
+  </State>
+</ASM>

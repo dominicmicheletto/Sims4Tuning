@@ -1,0 +1,84 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="Dog_WalkDog_Start" dcc="sage">
+  <Actor name="x" type="Sim" master="true" virtual="false" />
+  <Actor name="y" type="Sim" virtual="false" />
+  <Actor name="petLeash" type="Object" virtual="false" />
+  <Parameter name="x:age" type="enum" labels="baby,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
+  <Parameter name="x:leashHand" type="enum" labels="left,right" default="right" />
+  <Parameter name="x:leashCountLeft" type="int" labels="" default="1" />
+  <Parameter name="x:leashCountRight" type="int" labels="" default="1" />
+  <Parameter name="y:age" type="enum" labels="baby,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="y:sex" type="enum" labels="male,female" default="male" />
+  <Parameter name="y:species" type="enum" labels="human,dog,smalldog,cat" default="human" />
+  <IkConfiguration name="a2ad_walkDog_clipLeash.ma">
+    <SourceFile name="a2ad_walkDog_clipLeash.ma">
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="y" actor="y" />
+      <MapNamespace namespace="petLeash" actor="petLeash" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a_walkDog_unleash_swip.ma">
+    <SourceFile name="a_walkDog_unleash_swip.ma">
+      <MapNamespace namespace="petLeash" actor="petLeash" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <PostureManifest actors="" />
+  <PostureManifest actors="x">
+    <Support family="stand" compatibility="FullBody" carry_left="*" carry_right="petLeash" surface="-" />
+    <Support family="stand" compatibility="FullBody" carry_left="petLeash" carry_right="*" surface="-" />
+    <Support family="stand" compatibility="UpperBody" carry_left="*" carry_right="petLeash" surface="-" />
+    <Support family="stand" compatibility="UpperBody" carry_left="petLeash" carry_right="*" surface="-" />
+  </PostureManifest>
+  <PostureManifest actors="y">
+    <Support name="stand" family="none" compatibility="FullBody" carry_left="*" carry_right="*" surface="-" />
+  </PostureManifest>
+  <State type="private" skippable="false" interrupt_this="false" name="Leash_Dog" focus="full body" facialoverlays="true" tailoverlays="true" />
+  <State type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" name="Walk" focus="full body" facialoverlays="true" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="stop" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <Connection from="Leash_Dog" to="Walk" />
+  <Connection from="Walk" to="stop" />
+  <Connection from="entry" to="Leash_Dog" />
+  <Connection from="stop" to="exit" />
+  <State name="Leash_Dog" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="true" tailoverlays="true">
+    <description />
+    <ParameterSelector parameter="x:leashHand" unique_id="4">
+      <Choice value="left">
+        <SetMirror target="x" mirror="true" unique_id="3" />
+        <Controller target="x" controller="@ClipController(clip=a2ad_walkDog_clipLeash_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2ad_walkDog_clipLeash.ma" focus="none" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="1">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+        <Controller target="y" controller="@ClipController(clip=a2ad_walkDog_clipLeash_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2ad_walkDog_clipLeash.ma" focus="none" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="2">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
+      <Choice value="right">
+        <Reference target="1" />
+        <Reference target="2" />
+      </Choice>
+    </ParameterSelector>
+  </State>
+  <State name="Walk" type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" focus="full body" facialoverlays="true" tailoverlays="true">
+    <description />
+    <MakeController />
+  </State>
+  <State name="stop" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <ParameterSelector parameter="x:leashHand" unique_id="7">
+      <Choice value="left">
+        <SetMirror target="x" mirror="true" unique_id="6" />
+        <Controller target="x" controller="@ClipController(clip=a_walkDog_unleash_swip_x, loop_count=#1)" overridePosture="true" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_walkDog_unleash_swip.ma" focus="none" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="5">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+      <Choice value="right">
+        <Reference target="5" />
+      </Choice>
+    </ParameterSelector>
+  </State>
+</ASM>
