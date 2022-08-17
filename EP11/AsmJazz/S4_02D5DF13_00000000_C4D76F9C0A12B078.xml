@@ -1,0 +1,110 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="Chicken_soc_T_SimAttackedByChicken" dcc="sage">
+  <Actor name="x" type="Sim" master="true" virtual="false" />
+  <Actor name="animalChicken" type="Object" virtual="false" />
+  <Actor name="urnStone" type="Object" virtual="false" />
+  <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
+  <IkConfiguration name="o_chicken_idle_breath.ma">
+    <SourceFile name="o_chicken_idle_breath.ma" />
+  </IkConfiguration>
+  <IkConfiguration name="a_death_starvation.ma">
+    <SourceFile name="a_death_starvation.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_chicken_soc_T_attackedByChicken_survive.ma">
+    <SourceFile name="a2o_chicken_soc_T_attackedByChicken_survive.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_chicken_soc_T_attackedByChicken_death.ma">
+    <SourceFile name="a2o_chicken_soc_T_attackedByChicken_death.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <PostureManifest actors="">
+    <Support family="stand" compatibility="FullBody" carry_left="-" carry_right="-" surface="*" />
+  </PostureManifest>
+  <State type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" name="DeadOnGround" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="Death" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="Doom" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="Resurrect" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="Survive" focus="none" facialoverlays="false" tailoverlays="true" />
+  <Connection from="DeadOnGround" to="Doom" />
+  <Connection from="DeadOnGround" to="Resurrect" />
+  <Connection from="Death" to="exit" />
+  <Connection from="Doom" to="exit" />
+  <Connection from="Resurrect" to="exit" />
+  <Connection from="Survive" to="exit" />
+  <Connection from="entry" to="DeadOnGround" />
+  <Connection from="entry" to="Death" />
+  <Connection from="entry" to="Survive" />
+  <State name="DeadOnGround" type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <MakeController>
+      <PostureSelector parameter="x:posture" unique_id="2">
+        <Choice value="-stand-FullBody" track="normal" mask="">
+          <Controller target="x" controller="@ClipController(clip=a_death_deadOnGround_loop_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_death_starvation.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="1">
+            <TransitionClassList />
+          </Controller>
+        </Choice>
+      </PostureSelector>
+    </MakeController>
+  </State>
+  <State name="Death" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="8">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2o_chicken_soc_T_attackedByChicken_death_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_chicken_soc_T_attackedByChicken_death.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="6">
+          <TransitionClassList />
+        </Controller>
+        <MakeController unique_id="5">
+          <Controller target="animalChicken" controller="@ClipController(clip=o_chicken_idle_breath_animalChicken, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="o_chicken_idle_breath.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="3">
+            <TransitionClassList />
+          </Controller>
+          <Controller target="x" controller="@ClipController(clip=a_death_deadOnGround_loop_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_death_starvation.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="4">
+            <TransitionClassList />
+          </Controller>
+        </MakeController>
+        <Controller target="animalChicken" controller="@ClipController(clip=a2o_chicken_soc_T_attackedByChicken_death_animalChicken, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_chicken_soc_T_attackedByChicken_death.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="7">
+          <TransitionClassList />
+        </Controller>
+        <Reference target="5" />
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="Doom" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="10">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a_death_deadOnGround_urnStone_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_death_starvation.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="9">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="Resurrect" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="12">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a_death_deadOnGround_getUp_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_death_starvation.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="11">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="Survive" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="15">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2o_chicken_soc_T_attackedByChicken_survive_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_chicken_soc_T_attackedByChicken_survive.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="13">
+          <TransitionClassList />
+        </Controller>
+        <Controller target="animalChicken" controller="@ClipController(clip=a2o_chicken_soc_T_attackedByChicken_survive_animalChicken, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_chicken_soc_T_attackedByChicken_survive.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="14">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+    </PostureSelector>
+  </State>
+</ASM>

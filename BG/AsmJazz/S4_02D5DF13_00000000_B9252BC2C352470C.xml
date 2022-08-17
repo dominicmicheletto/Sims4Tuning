@@ -2,12 +2,20 @@
 <ASM name="Cook_Posture" dcc="sage">
   <Actor name="x" type="Sim" master="true" virtual="false" />
   <Actor name="surface" type="Object" virtual="false" />
+  <Actor name="stepStool" type="Prop" virtual="false" object_def_resource_key="c0db5ae7:00000000:00000000000406fe#toolStepStoolGEN01_set1" />
   <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
   <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
   <IkConfiguration name="a2o_cook_posture.ma">
     <SourceFile name="a2o_cook_posture.ma">
       <MapNamespace namespace="surface" actor="surface" />
       <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="c2o_cook_posture.ma">
+    <SourceFile name="c2o_cook_posture.ma">
+      <MapNamespace namespace="stepStool" actor="stepStool" />
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="surface" actor="surface" />
     </SourceFile>
   </IkConfiguration>
   <PostureManifest>
@@ -25,27 +33,96 @@
   <State name="Cook_Posture" type="public" countlooptime="false" disableautostop="false" skippable="true" interrupt_this="true" focus="full body" facialoverlays="true" tailoverlays="true">
     <description />
     <MakeController>
-      <Controller target="x" controller="@ClipController(clip=a2o_cook_posture_x, loop_count=#1)" overridePosture="false" mask="" track="low" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_cook_posture.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="1">
-        <TransitionClassList>
-          <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
-        </TransitionClassList>
-      </Controller>
+      <ParameterSelector parameter="x:age" unique_id="4">
+        <Choice value="baby" />
+        <Choice value="toddler" />
+        <Choice value="child">
+          <Controller target="x" controller="@ClipController(clip=c2o_cook_posture_x, loop_count=#1)" overridePosture="false" mask="" track="low" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c2o_cook_posture.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="1">
+            <TransitionClassList />
+          </Controller>
+          <Controller target="stepStool" controller="@ClipController(clip=c2o_cook_posture_stepStool, loop_count=#1)" overridePosture="false" mask="" track="low" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c2o_cook_posture.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="2">
+            <TransitionClassList />
+          </Controller>
+        </Choice>
+        <Choice value="teen">
+          <Controller target="x" controller="@ClipController(clip=a2o_cook_posture_x, loop_count=#1)" overridePosture="false" mask="" track="low" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_cook_posture.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="3">
+            <TransitionClassList>
+              <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+            </TransitionClassList>
+          </Controller>
+        </Choice>
+        <Choice value="youngadult">
+          <Reference target="3" />
+        </Choice>
+        <Choice value="adult">
+          <Reference target="3" />
+        </Choice>
+        <Choice value="elder">
+          <Reference target="3" />
+        </Choice>
+      </ParameterSelector>
     </MakeController>
   </State>
   <State name="GetIn" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="true" tailoverlays="true">
     <description />
-    <Controller target="x" controller="@ClipController(clip=a2o_cook_posture_getIn_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_cook_posture.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="2">
-      <TransitionClassList>
-        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
-      </TransitionClassList>
-    </Controller>
+    <ParameterSelector parameter="x:age" unique_id="8">
+      <Choice value="baby" />
+      <Choice value="toddler" />
+      <Choice value="child">
+        <Controller target="stepStool" controller="@ClipController(clip=c2o_cook_posture_getIn_stepStool, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c2o_cook_posture.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="5">
+          <TransitionClassList />
+        </Controller>
+        <Controller target="x" controller="@ClipController(clip=c2o_cook_posture_getIn_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c2o_cook_posture.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="6">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+      <Choice value="teen">
+        <Controller target="x" controller="@ClipController(clip=a2o_cook_posture_getIn_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_cook_posture.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="7">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
+      <Choice value="youngadult">
+        <Reference target="7" />
+      </Choice>
+      <Choice value="adult">
+        <Reference target="7" />
+      </Choice>
+      <Choice value="elder">
+        <Reference target="7" />
+      </Choice>
+    </ParameterSelector>
   </State>
   <State name="GetOut" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="true" tailoverlays="true">
     <description />
-    <Controller target="x" controller="@ClipController(clip=a2o_cook_posture_getOut_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_cook_posture.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="3">
-      <TransitionClassList>
-        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
-      </TransitionClassList>
-    </Controller>
+    <ParameterSelector parameter="x:age" unique_id="12">
+      <Choice value="baby" />
+      <Choice value="toddler" />
+      <Choice value="child">
+        <Controller target="stepStool" controller="@ClipController(clip=c2o_cook_posture_getOut_stepStool, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c2o_cook_posture.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="9">
+          <TransitionClassList />
+        </Controller>
+        <Controller target="x" controller="@ClipController(clip=c2o_cook_posture_getOut_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c2o_cook_posture.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="10">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+      <Choice value="teen">
+        <Controller target="x" controller="@ClipController(clip=a2o_cook_posture_getOut_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_cook_posture.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="11">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
+      <Choice value="youngadult">
+        <Reference target="11" />
+      </Choice>
+      <Choice value="adult">
+        <Reference target="11" />
+      </Choice>
+      <Choice value="elder">
+        <Reference target="11" />
+      </Choice>
+    </ParameterSelector>
   </State>
 </ASM>

@@ -1,0 +1,110 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="Chicken_Sit_Idle" dcc="sage">
+  <Actor name="animalChicken" type="Object" master="true" virtual="false" />
+  <IkConfiguration name="o_chicken_sit_start_standToSit.ma">
+    <SourceFile name="o_chicken_sit_start_standToSit.ma" />
+  </IkConfiguration>
+  <IkConfiguration name="o_chicken_sit_stop_sitToStand.ma">
+    <SourceFile name="o_chicken_sit_stop_sitToStand.ma" />
+  </IkConfiguration>
+  <IkConfiguration name="o_chicken_sit_idle_Breath.ma">
+    <SourceFile name="o_chicken_sit_idle_Breath.ma" />
+  </IkConfiguration>
+  <IkConfiguration name="o_chicken_sit_idle_lookAround.ma">
+    <SourceFile name="o_chicken_sit_idle_lookAround.ma" />
+  </IkConfiguration>
+  <IkConfiguration name="o_chicken_sit_idle_sleep.ma">
+    <SourceFile name="o_chicken_sit_idle_sleep.ma" />
+  </IkConfiguration>
+  <IkConfiguration name="o_chicken_idle_breath_softPosture.ma">
+    <SourceFile name="o_chicken_idle_breath_softPosture.ma" />
+  </IkConfiguration>
+  <PostureManifest actors="" />
+  <State type="private" skippable="false" interrupt_this="false" name="Hub" focus="none" facialoverlays="true" tailoverlays="true" />
+  <State type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" name="Sit_Idle" focus="full body" facialoverlays="true" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="Sit_to_Stand" focus="none" facialoverlays="true" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="Stand_to_Sit" focus="none" facialoverlays="true" tailoverlays="true" />
+  <State type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" name="sleep" focus="none" facialoverlays="true" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="sleep_start" focus="none" facialoverlays="true" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="sleep_stop" focus="none" facialoverlays="true" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="startSoftPosture" focus="none" facialoverlays="true" tailoverlays="true" />
+  <Connection from="Hub" to="Sit_Idle" />
+  <Connection from="Hub" to="Sit_to_Stand" />
+  <Connection from="Hub" to="sleep_start" />
+  <Connection from="Sit_Idle" to="Hub" />
+  <Connection from="Sit_to_Stand" to="exit" />
+  <Connection from="Stand_to_Sit" to="Hub" />
+  <Connection from="entry" to="startSoftPosture" />
+  <Connection from="sleep" to="sleep_stop" />
+  <Connection from="sleep_start" to="sleep" />
+  <Connection from="sleep_stop" to="Hub" />
+  <Connection from="startSoftPosture" to="Stand_to_Sit" />
+  <State name="Hub" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="true" tailoverlays="true">
+    <description />
+  </State>
+  <State name="Sit_Idle" type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" focus="full body" facialoverlays="true" tailoverlays="true">
+    <description />
+    <MakeController>
+      <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="3">
+        <Choice weight="50" avoidRepeat="False">
+          <Controller target="animalChicken" controller="@ClipController(clip=o_chicken_sit_idle_Breath_animalChicken, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="o_chicken_sit_idle_Breath.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="1">
+            <TransitionClassList />
+          </Controller>
+        </Choice>
+        <Choice weight="50" avoidRepeat="False">
+          <Controller target="animalChicken" controller="@ClipController(clip=o_chicken_sit_idle_lookAround_animalChicken, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="o_chicken_sit_idle_lookAround.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="2">
+            <TransitionClassList />
+          </Controller>
+        </Choice>
+      </RandomSelector>
+    </MakeController>
+  </State>
+  <State name="Sit_to_Stand" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="true" tailoverlays="true">
+    <description />
+    <Controller target="animalChicken" controller="@ClipController(clip=o_chicken_sit_stop_sitToStand_animalChicken, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="o_chicken_sit_stop_sitToStand.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="4">
+      <TransitionClassList />
+    </Controller>
+  </State>
+  <State name="Stand_to_Sit" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="true" tailoverlays="true">
+    <description />
+    <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="7">
+      <Choice weight="50" avoidRepeat="False">
+        <Controller target="animalChicken" controller="@ClipController(clip=o_chicken_sit_start_standToSit_animalChicken, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="o_chicken_sit_start_standToSit.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="5">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+      <Choice weight="50" avoidRepeat="False">
+        <SetMirror target="animalChicken" mirror="true" unique_id="6" />
+        <Reference target="5" />
+      </Choice>
+    </RandomSelector>
+  </State>
+  <State name="sleep" type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" focus="none" facialoverlays="true" tailoverlays="true">
+    <description />
+    <MakeController>
+      <Controller target="animalChicken" controller="@ClipController(clip=o_chicken_sleep_loop_animalChicken, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="o_chicken_sit_idle_sleep.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="8">
+        <TransitionClassList />
+      </Controller>
+    </MakeController>
+  </State>
+  <State name="sleep_start" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="true" tailoverlays="true">
+    <description />
+    <Controller target="animalChicken" controller="@ClipController(clip=o_chicken_sleep_start_animalChicken, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="o_chicken_sit_idle_sleep.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="9">
+      <TransitionClassList />
+    </Controller>
+  </State>
+  <State name="sleep_stop" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="true" tailoverlays="true">
+    <description />
+    <Controller target="animalChicken" controller="@ClipController(clip=o_chicken_sleep_stop_animalChicken, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="o_chicken_sit_idle_sleep.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="10">
+      <TransitionClassList />
+    </Controller>
+  </State>
+  <State name="startSoftPosture" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="true" tailoverlays="true">
+    <description />
+    <MakeController unique_id="12">
+      <Controller target="animalChicken" controller="@ClipController(clip=o_chicken_idle_breath_softPosture_animalChicken, loop_count=#1)" overridePosture="false" mask="" track="low" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="o_chicken_idle_breath_softPosture.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="11">
+        <TransitionClassList />
+      </Controller>
+    </MakeController>
+  </State>
+</ASM>

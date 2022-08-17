@@ -12,6 +12,7 @@
   <Parameter name="consumable:carryTrack" type="enum" labels="left,right" default="right" />
   <Parameter name="consumable:taste" type="enum" labels="spicy,normal" default="normal" />
   <Parameter name="consumable:spoiled" type="enum" labels="notSpoiled,Spoiled" default="notSpoiled" />
+  <Parameter name="consumable:IsBubbleTea" type="bool" labels="" default="False" />
   <IkConfiguration name="a2o_eat_startStop_seatedTable.ma">
     <SourceFile name="a2o_eat_startStop_seatedTable.ma">
       <MapNamespace namespace="sitTemplate" actor="sitTemplate" />
@@ -27,12 +28,28 @@
       <MapNamespace namespace="x" actor="x" />
     </SourceFile>
   </IkConfiguration>
+  <IkConfiguration name="a2o_drinkTumblerStraw_sip_seatedTable.ma">
+    <SourceFile name="a2o_drinkTumblerStraw_sip_seatedTable.ma">
+      <MapNamespace namespace="consumable" actor="consumable" />
+      <MapNamespace namespace="surface" actor="surface" />
+      <MapNamespace namespace="sitTemplate" actor="sitTemplate" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_drinkTumblerStraw_choke_seatedTable.ma">
+    <SourceFile name="a2o_drinkTumblerStraw_choke_seatedTable.ma">
+      <MapNamespace namespace="consumable" actor="consumable" />
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="surface" actor="surface" />
+      <MapNamespace namespace="sitTemplate" actor="sitTemplate" />
+    </SourceFile>
+  </IkConfiguration>
   <PostureManifest actors="" />
   <PostureManifest actors="x">
     <Support family="sit" compatibility="UpperBody" carry_left="*" carry_right="*" surface="surface" />
     <Support family="sit" compatibility="FullBody" carry_left="*" carry_right="*" surface="surface" />
   </PostureManifest>
-  <State type="public" skippable="false" interrupt_this="false" name="ActiveActions" focus="upper body" facialoverlays="true" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="ActiveActions" focus="upper body" facialoverlays="false" tailoverlays="true" />
   <State type="public" skippable="false" interrupt_this="false" name="PassiveActions" focus="upper body" facialoverlays="true" tailoverlays="true" />
   <State type="private" skippable="false" interrupt_this="false" name="Start" focus="full body" facialoverlays="true" tailoverlays="true" />
   <State type="private" skippable="false" interrupt_this="false" name="Stop" focus="full body" facialoverlays="true" tailoverlays="true" />
@@ -44,15 +61,15 @@
   <Connection from="Start" to="PassiveActions" />
   <Connection from="Stop" to="exit" />
   <Connection from="entry" to="Start" />
-  <State name="ActiveActions" type="public" skippable="false" interrupt_this="false" focus="upper body" facialoverlays="true" tailoverlays="true">
+  <State name="ActiveActions" type="public" skippable="false" interrupt_this="false" focus="upper body" facialoverlays="false" tailoverlays="true">
     <description />
-    <PostureSelector parameter="x:posture" unique_id="12">
+    <PostureSelector parameter="x:posture" unique_id="17">
       <Choice value="-sit-FullBody" track="normal" mask="">
-        <ParameterSelector parameter="consumable:spoiled" unique_id="11">
+        <ParameterSelector parameter="consumable:spoiled" unique_id="16">
           <Choice value="notSpoiled">
-            <ParameterSelector parameter="consumable:taste" unique_id="10">
+            <ParameterSelector parameter="consumable:taste" unique_id="15">
               <Choice value="spicy">
-                <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="9">
+                <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="14">
                   <Choice weight="100" avoidRepeat="False">
                     <Controller target="x" controller="@ClipController(clip=a2o_{consumable:carryObject}_sip_normal_seatedTable_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="" focus="none" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="4">
                       <TransitionClassList>
@@ -73,7 +90,7 @@
                     </MakeController>
                   </Choice>
                   <Choice weight="50" avoidRepeat="False">
-                    <ParameterSelector parameter="consumable:Quality" unique_id="8">
+                    <ParameterSelector parameter="consumable:Quality" unique_id="13">
                       <Choice value="Quality_Poor">
                         <Controller target="x" controller="@ClipController(clip=a2o_{consumable:carryObject}_sip_poor_seatedTable_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="" focus="none" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="5">
                           <TransitionClassList>
@@ -83,15 +100,40 @@
                         <Reference target="2" />
                       </Choice>
                       <Choice value="Quality_Normal">
-                        <Controller target="x" controller="@ClipController(clip=a2o_{consumable:carryObject}_sip_normal_seatedTable_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="" focus="none" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="6">
-                          <TransitionClassList>
-                            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
-                          </TransitionClassList>
-                        </Controller>
-                        <Reference target="2" />
+                        <ParameterSelector parameter="consumable:IsBubbleTea" unique_id="11">
+                          <Choice value="false">
+                            <Controller target="x" controller="@ClipController(clip=a2o_{consumable:carryObject}_sip_normal_seatedTable_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="" focus="none" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="6">
+                              <TransitionClassList>
+                                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                              </TransitionClassList>
+                            </Controller>
+                            <Reference target="2" />
+                          </Choice>
+                          <Choice value="true">
+                            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="10">
+                              <Choice weight="95" avoidRepeat="False">
+                                <Controller target="x" controller="@ClipController(clip=a2o_{consumable:carryObject}_sip_normal_seatedTable_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="" focus="none" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="8">
+                                  <TransitionClassList>
+                                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                                  </TransitionClassList>
+                                </Controller>
+                                <Controller target="x" controller="@ClipController(clip=a2o_drinkTumblerStraw_chew_normal_seatedTable_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_drinkTumblerStraw_sip_seatedTable.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="7">
+                                  <TransitionClassList />
+                                </Controller>
+                                <Reference target="2" />
+                              </Choice>
+                              <Choice weight="5" avoidRepeat="False">
+                                <Controller target="x" controller="@ClipController(clip=a2o_drinkTumblerStraw_choke_seatedTable_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_drinkTumblerStraw_choke_seatedTable.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="9">
+                                  <TransitionClassList />
+                                </Controller>
+                                <Reference target="2" />
+                              </Choice>
+                            </RandomSelector>
+                          </Choice>
+                        </ParameterSelector>
                       </Choice>
                       <Choice value="Quality_Outstanding">
-                        <Controller target="x" controller="@ClipController(clip=a2o_{consumable:carryObject}_sip_outstanding_seatedTable_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="" focus="none" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="7">
+                        <Controller target="x" controller="@ClipController(clip=a2o_{consumable:carryObject}_sip_outstanding_seatedTable_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="" focus="none" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="12">
                           <TransitionClassList>
                             <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
                           </TransitionClassList>
@@ -103,7 +145,7 @@
                 </RandomSelector>
               </Choice>
               <Choice value="normal">
-                <Reference target="8" />
+                <Reference target="13" />
               </Choice>
             </ParameterSelector>
           </Choice>
@@ -114,63 +156,73 @@
         </ParameterSelector>
       </Choice>
       <Choice value="-sit-UpperBody" track="normal" mask="Trackmask_UpperBody">
-        <Reference target="11" />
+        <Reference target="16" />
       </Choice>
     </PostureSelector>
   </State>
   <State name="PassiveActions" type="public" skippable="false" interrupt_this="false" focus="upper body" facialoverlays="true" tailoverlays="true">
     <description />
-    <PostureSelector parameter="x:posture" unique_id="16">
+    <PostureSelector parameter="x:posture" unique_id="23">
       <Choice value="-sit-FullBody" track="normal" mask="">
-        <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="15">
+        <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="22">
           <Choice weight="100" avoidRepeat="False">
-            <Controller target="x" controller="@ClipController(clip=a2o_eat_idle_breathe_seatedTable_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_eat_idle_seatedTable_x.ma" focus="none" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="13">
+            <Controller target="x" controller="@ClipController(clip=a2o_eat_idle_breathe_seatedTable_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_eat_idle_seatedTable_x.ma" focus="none" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="18">
               <TransitionClassList>
                 <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
               </TransitionClassList>
             </Controller>
           </Choice>
           <Choice weight="100" avoidRepeat="True">
-            <Controller target="x" controller="@ClipController(clip=a2o_eat_idle_lookRight_seatedTable_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_eat_idle_seatedTable_x.ma" focus="none" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="14">
+            <Controller target="x" controller="@ClipController(clip=a2o_eat_idle_lookRight_seatedTable_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_eat_idle_seatedTable_x.ma" focus="none" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="19">
               <TransitionClassList>
                 <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
               </TransitionClassList>
             </Controller>
           </Choice>
+          <Choice weight="50" avoidRepeat="False">
+            <Controller target="x" controller="@ClipController(clip=a2o_{consumable:carryObject}_sip_idle_swirlDrink_seatedTable_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="20">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
+          <Choice weight="50" avoidRepeat="False">
+            <Controller target="x" controller="@ClipController(clip=a2o_{consumable:carryObject}_sip_idle_lookInTo_seatedTable_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="21">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
         </RandomSelector>
       </Choice>
       <Choice value="-sit-UpperBody" track="normal" mask="Trackmask_UpperBody">
-        <Reference target="15" />
+        <Reference target="22" />
       </Choice>
     </PostureSelector>
   </State>
   <State name="Start" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="true" tailoverlays="true">
     <description />
-    <PostureSelector parameter="x:posture" unique_id="18">
+    <PostureSelector parameter="x:posture" unique_id="25">
       <Choice value="-sit-FullBody" track="normal" mask="">
-        <Controller target="x" controller="@ClipController(clip=a2o_eat_start_seatedTable_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_eat_startStop_seatedTable.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="17">
+        <Controller target="x" controller="@ClipController(clip=a2o_eat_start_seatedTable_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_eat_startStop_seatedTable.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="24">
           <TransitionClassList>
             <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
           </TransitionClassList>
         </Controller>
       </Choice>
       <Choice value="-sit-UpperBody" track="normal" mask="Trackmask_UpperBody">
-        <Reference target="17" />
+        <Reference target="24" />
       </Choice>
     </PostureSelector>
   </State>
   <State name="Stop" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="true" tailoverlays="true">
     <description />
-    <PostureSelector parameter="x:posture" unique_id="20">
+    <PostureSelector parameter="x:posture" unique_id="27">
       <Choice value="-sit-FullBody" track="normal" mask="">
-        <Controller target="x" controller="@ClipController(clip=a2o_eat_stop_seatedTable_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_eat_startStop_seatedTable.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="19">
+        <Controller target="x" controller="@ClipController(clip=a2o_eat_stop_seatedTable_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_eat_startStop_seatedTable.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="26">
           <TransitionClassList>
             <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
           </TransitionClassList>
         </Controller>
       </Choice>
       <Choice value="-sit-UpperBody" track="normal" mask="Trackmask_UpperBody">
-        <Reference target="19" />
+        <Reference target="26" />
       </Choice>
     </PostureSelector>
   </State>

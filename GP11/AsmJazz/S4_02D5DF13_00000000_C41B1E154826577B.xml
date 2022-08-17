@@ -1,0 +1,126 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="WeddingBouquet_PrepareToThrow" dcc="sage">
+  <Actor name="x" type="Sim" master="true" virtual="false" />
+  <Actor name="weddingBouquet" type="Object" virtual="false" />
+  <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
+  <Parameter name="x:species" type="enum" labels="human,dog,smalldog,cat" default="human" />
+  <Parameter name="x:carryTrack" type="enum" labels="left,right" default="right" />
+  <IkConfiguration name="a_mentor_sports_cheerOn.ma">
+    <SourceFile name="a_mentor_sports_cheerOn.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a_idle_M_shiftLeft.ma">
+    <SourceFile name="a_idle_M_shiftLeft.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_TV_watch_emotions_standing.ma">
+    <SourceFile name="a2o_TV_watch_emotions_standing.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a_CAS_trait_idles.ma">
+    <SourceFile name="a_CAS_trait_idles.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a_weddingBouquet_prepareToThrow.ma">
+    <SourceFile name="a_weddingBouquet_prepareToThrow.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <PostureManifest actors="">
+    <Support family="stand" compatibility="FullBody" carry_left="weddingBouquet" carry_right="-" surface="*" />
+    <Support family="stand" compatibility="FullBody" carry_left="-" carry_right="weddingBouquet" surface="*" />
+    <Support family="stand" compatibility="UpperBody" carry_left="weddingBouquet" carry_right="-" surface="*" />
+    <Support family="stand" compatibility="UpperBody" carry_left="-" carry_right="weddingBouquet" surface="*" />
+  </PostureManifest>
+  <State type="private" skippable="false" interrupt_this="false" name="Hub" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="Mirror" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="Prepare_To_Throw_Bouquet" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" name="Prepare_To_Throw_Bouquet Idles" focus="none" facialoverlays="false" tailoverlays="true" />
+  <Connection from="Hub" to="Prepare_To_Throw_Bouquet" />
+  <Connection from="Hub" to="Prepare_To_Throw_Bouquet Idles" />
+  <Connection from="Hub" to="exit" />
+  <Connection from="Mirror" to="Hub" />
+  <Connection from="Prepare_To_Throw_Bouquet" to="Hub" />
+  <Connection from="Prepare_To_Throw_Bouquet Idles" to="Hub" />
+  <Connection from="entry" to="Mirror" />
+  <State name="Hub" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="1">
+      <Choice value="-stand-FullBody" track="normal" mask="" />
+      <Choice value="-stand-UpperBody" track="normal" mask="Trackmask_UpperBody" />
+    </PostureSelector>
+  </State>
+  <State name="Mirror" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="4">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <ParameterSelector parameter="x:carryTrack" unique_id="3">
+          <Choice value="left">
+            <SetMirror target="x" mirror="true" unique_id="2" />
+          </Choice>
+          <Choice value="right" />
+        </ParameterSelector>
+      </Choice>
+      <Choice value="-stand-UpperBody" track="normal" mask="Trackmask_UpperBody">
+        <Reference target="3" />
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="Prepare_To_Throw_Bouquet" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="6">
+      <Choice value="-stand-FullBody" track="carryinteraction" mask="">
+        <Controller target="x" controller="@ClipController(clip=a_weddingBouquet_prepareToThrow_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_weddingBouquet_prepareToThrow.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="5">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+      <Choice value="-stand-UpperBody" track="carryinteraction" mask="Trackmask_UpperBody">
+        <Reference target="5" />
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="Prepare_To_Throw_Bouquet Idles" type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <MakeController>
+      <PostureSelector parameter="x:posture" unique_id="13">
+        <Choice value="-stand-FullBody" track="normal" mask="">
+          <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="12">
+            <Choice weight="50" avoidRepeat="False">
+              <Controller target="x" controller="@ClipController(clip=a2o_TV_watch_hiAnticipate_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="True" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_TV_watch_emotions_standing.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="7">
+                <TransitionClassList />
+              </Controller>
+            </Choice>
+            <Choice weight="50" avoidRepeat="False">
+              <Controller target="x" controller="@ClipController(clip=a_mentor_sports_cheerOn_x, loop_count=#1)" overridePosture="false" mask="" track="carryleft" mirror_conditional="False" suppress_footsteps="True" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_mentor_sports_cheerOn.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="8">
+                <TransitionClassList />
+              </Controller>
+            </Choice>
+            <Choice weight="50" avoidRepeat="False">
+              <Controller target="x" controller="@ClipController(clip=a_idle_M_shiftLeft_lookRight_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="True" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_idle_M_shiftLeft.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="9">
+                <TransitionClassList />
+              </Controller>
+            </Choice>
+            <Choice weight="50" avoidRepeat="False">
+              <Controller target="x" controller="@ClipController(clip=a_idle_M_shiftLeft_lookLeft_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="True" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_idle_M_shiftLeft.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="10">
+                <TransitionClassList />
+              </Controller>
+            </Choice>
+            <Choice weight="50" avoidRepeat="False">
+              <Controller target="x" controller="@ClipController(clip=a_CAS_trait_idle_lookAround_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="True" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_CAS_trait_idles.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="11">
+                <TransitionClassList />
+              </Controller>
+            </Choice>
+          </RandomSelector>
+        </Choice>
+        <Choice value="-stand-UpperBody" track="normal" mask="Trackmask_UpperBody">
+          <Reference target="12" />
+        </Choice>
+      </PostureSelector>
+    </MakeController>
+  </State>
+</ASM>

@@ -14,65 +14,132 @@
       <MapNamespace namespace="x" actor="x" />
     </SourceFile>
   </IkConfiguration>
+  <IkConfiguration name="a2o_bed_relax_idle_breathe_loops.ma">
+    <SourceFile name="a2o_bed_relax_idle_breathe_loops.ma">
+      <MapNamespace namespace="bed" actor="bedIKRef" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="p2o_toddlerBed_relax_idlePosture.ma">
+    <SourceFile name="p2o_toddlerBed_relax_idlePosture.ma">
+      <MapNamespace namespace="bed" actor="bed" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
   <PostureManifest actors="" />
   <PostureManifest actors="x">
     <Support name="bed_Relax" family="none" compatibility="FullBody" carry_left="-" carry_right="-" surface="*" />
   </PostureManifest>
-  <State type="public" skippable="true" interrupt_this="true" name="Bed_Relax_InteractionIdle" focus="full body" facialoverlays="true" tailoverlays="true" />
+  <State type="public" countlooptime="false" disableautostop="false" skippable="true" interrupt_this="true" name="Bed_Relax_InteractionIdle" focus="full body" facialoverlays="true" tailoverlays="true" />
   <State type="private" skippable="false" interrupt_this="false" name="mirror" focus="full body" facialoverlays="false" tailoverlays="true" />
   <State type="private" skippable="false" interrupt_this="false" name="stop_bed_idle" focus="full body" facialoverlays="false" tailoverlays="true" />
   <Connection from="Bed_Relax_InteractionIdle" to="stop_bed_idle" />
   <Connection from="entry" to="mirror" />
   <Connection from="mirror" to="Bed_Relax_InteractionIdle" />
   <Connection from="stop_bed_idle" to="exit" />
-  <State name="Bed_Relax_InteractionIdle" type="public" skippable="true" interrupt_this="true" focus="full body" facialoverlays="true" tailoverlays="true">
+  <State name="Bed_Relax_InteractionIdle" type="public" countlooptime="false" disableautostop="false" skippable="true" interrupt_this="true" focus="full body" facialoverlays="true" tailoverlays="true">
     <description />
-    <PostureSelector parameter="x:posture" unique_id="3">
-      <Choice value="bed_Relax--FullBody" track="normal" mask="">
-        <Controller target="x" controller="@ClipController(clip=a2o_bed_relax_idle_breathe_x, loop_count=#0)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bed_posturesIdles_MASTER.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="1">
-          <TransitionClassList>
-            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
-          </TransitionClassList>
-        </Controller>
-        <Controller target="bed" controller="@ClipController(clip=a2o_bed_relax_idle_breathe_bed, loop_count=#0)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bed_posturesIdles_MASTER.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="2">
-          <TransitionClassList>
-            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
-          </TransitionClassList>
-        </Controller>
-      </Choice>
-    </PostureSelector>
+    <MakeController>
+      <PostureSelector parameter="x:posture" unique_id="13">
+        <Choice value="bed_Relax--FullBody" track="normal" mask="">
+          <ParameterSelector parameter="x:age" unique_id="12">
+            <Choice value="baby" />
+            <Choice value="toddler">
+              <Controller target="bed" controller="@ClipController(clip=p2o_bed_relax_idle_breathe_bed, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p2o_toddlerBed_relax_idlePosture.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="1">
+                <TransitionClassList />
+              </Controller>
+              <Controller target="x" controller="@ClipController(clip=p2o_bed_relax_idle_breathe_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p2o_toddlerBed_relax_idlePosture.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="2">
+                <TransitionClassList />
+              </Controller>
+            </Choice>
+            <Choice value="child">
+              <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="11">
+                <Choice weight="50" avoidRepeat="False">
+                  <Controller target="x" controller="@ClipController(clip=a2o_bed_relax_idle_breathe_x, loop_count=#0)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bed_posturesIdles_MASTER.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="3">
+                    <TransitionClassList>
+                      <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                    </TransitionClassList>
+                  </Controller>
+                  <Controller target="bed" controller="@ClipController(clip=a2o_bed_relax_idle_breathe_bed, loop_count=#0)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bed_posturesIdles_MASTER.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="4">
+                    <TransitionClassList>
+                      <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                    </TransitionClassList>
+                  </Controller>
+                </Choice>
+                <Choice weight="50" avoidRepeat="False">
+                  <Controller target="x" controller="@ClipController(clip=a2o_bed_relax_idle_breathe_01_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bed_relax_idle_breathe_loops.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="5">
+                    <TransitionClassList />
+                  </Controller>
+                  <Controller target="bed" controller="@ClipController(clip=a2o_bed_relax_idle_breathe_01_bed, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bed_relax_idle_breathe_loops.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="6">
+                    <TransitionClassList />
+                  </Controller>
+                </Choice>
+                <Choice weight="50" avoidRepeat="False">
+                  <Controller target="bed" controller="@ClipController(clip=a2o_bed_relax_idle_breathe_02_bed, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bed_relax_idle_breathe_loops.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="7">
+                    <TransitionClassList />
+                  </Controller>
+                  <Controller target="x" controller="@ClipController(clip=a2o_bed_relax_idle_breathe_02_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bed_relax_idle_breathe_loops.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="8">
+                    <TransitionClassList />
+                  </Controller>
+                </Choice>
+                <Choice weight="50" avoidRepeat="False">
+                  <Controller target="x" controller="@ClipController(clip=a2o_bed_relax_idle_breathe_03_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bed_relax_idle_breathe_loops.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="9">
+                    <TransitionClassList />
+                  </Controller>
+                  <Controller target="bed" controller="@ClipController(clip=a2o_bed_relax_idle_breathe_03_bed, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bed_relax_idle_breathe_loops.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="10">
+                    <TransitionClassList />
+                  </Controller>
+                </Choice>
+              </RandomSelector>
+            </Choice>
+            <Choice value="teen">
+              <Reference target="11" />
+            </Choice>
+            <Choice value="youngadult">
+              <Reference target="11" />
+            </Choice>
+            <Choice value="adult">
+              <Reference target="11" />
+            </Choice>
+            <Choice value="elder">
+              <Reference target="11" />
+            </Choice>
+          </ParameterSelector>
+        </Choice>
+      </PostureSelector>
+    </MakeController>
   </State>
   <State name="mirror" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
     <description />
-    <ParameterSelector parameter="bed:objectName" unique_id="10">
+    <ParameterSelector parameter="bed:objectName" unique_id="20">
       <Choice value="bedSingle">
-        <ActorMask target="bed" mask="Trackmask_Bed" unique_id="8" />
-        <ParameterSelector parameter="isMirrored" unique_id="7">
+        <ActorMask target="bed" mask="Trackmask_Bed" unique_id="18" />
+        <ParameterSelector parameter="isMirrored" unique_id="17">
           <Choice value="false" />
           <Choice value="true">
-            <TrackOffset target="bed" offset="5000" unique_id="6" />
-            <SetMirror target="bed" mirror="true" unique_id="5" />
-            <SetMirror target="x" mirror="true" unique_id="4" />
+            <TrackOffset target="bed" offset="5000" unique_id="16" />
+            <SetMirror target="bed" mirror="true" unique_id="15" />
+            <SetMirror target="x" mirror="true" unique_id="14" />
           </Choice>
         </ParameterSelector>
       </Choice>
       <Choice value="bedDouble">
-        <Reference target="8" />
-        <Reference target="7" />
+        <Reference target="18" />
+        <Reference target="17" />
       </Choice>
       <Choice value="toddlerBed">
-        <SetMirror target="x" mirror="false" unique_id="9" />
+        <SetMirror target="x" mirror="false" unique_id="19" />
       </Choice>
     </ParameterSelector>
   </State>
   <State name="stop_bed_idle" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
     <description />
-    <ParameterSelector parameter="isMirrored" unique_id="13">
+    <ParameterSelector parameter="isMirrored" unique_id="23">
       <Choice value="false">
-        <Stop target="bed" track="normal" blend_in="0.2666667" unique_id="11" />
+        <Stop target="bed" track="normal" blend_in="0.2666667" unique_id="21" />
       </Choice>
       <Choice value="true">
-        <Stop target="bed" track="normalplus" blend_in="0.2666667" unique_id="12" />
+        <Stop target="bed" track="normalplus" blend_in="0.2666667" unique_id="22" />
       </Choice>
     </ParameterSelector>
   </State>

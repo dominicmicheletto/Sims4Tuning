@@ -2,7 +2,7 @@
 <ASM name="Cook_Ico_Transition_Oven" dcc="sage">
   <Actor name="x" type="Sim" master="true" virtual="false" />
   <Actor name="ico" type="Object" virtual="false" />
-  <Actor name="foodCuttingBoard" type="Prop" virtual="false" object_def_resource_key="c0db5ae7:00000000:0000000000000000" />
+  <Actor name="foodCuttingBoard" type="Prop" virtual="false" object_def_resource_key="c0db5ae7:00000000:000000000000201f#foodCuttingBoard_bm" />
   <Actor name="newIco" type="Object" virtual="false" />
   <Actor name="surface" type="Object" virtual="false" />
   <Parameter name="carryObject" type="string" labels="" default="mixingBowl" />
@@ -11,11 +11,20 @@
   <Parameter name="ico:carryObject" type="string" labels="" default="mixingBowl" />
   <Parameter name="ico:carryTrack" type="enum" labels="left,right" default="right" />
   <Parameter name="newIco:carryObject" type="string" labels="" default="mixingBowl" />
+  <Parameter name="surface:objectName" type="enum" labels="ovenCounterTop,oven" />
   <IkConfiguration name="a2o_mixingBowl_dumpInto_oven.ma">
     <SourceFile name="a2o_mixingBowl_dumpInto_oven.ma">
       <MapNamespace namespace="ico" actor="ico" />
       <MapNamespace namespace="newIco" actor="newIco" />
       <MapNamespace namespace="surface" actor="surface" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_cuttingBoard_dumpInto_ovenCounterTop.ma">
+    <SourceFile name="a2o_cuttingBoard_dumpInto_ovenCounterTop.ma">
+      <MapNamespace namespace="ico" actor="ico" />
+      <MapNamespace namespace="newIco" actor="newIco" />
+      <MapNamespace namespace="surface" actor="surface" />
+      <MapNamespace namespace="foodCuttingBoard" actor="foodCuttingBoard" />
     </SourceFile>
   </IkConfiguration>
   <PostureManifest actors="" />
@@ -32,30 +41,43 @@
   <Connection from="mirror" to="Dump" />
   <State name="Dump" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="true" tailoverlays="true">
     <description />
-    <PostureSelector parameter="x:posture" unique_id="3">
+    <PostureSelector parameter="x:posture" unique_id="6">
       <Choice value="cook--FullBody" track="carryinteraction" mask="">
-        <Controller target="x" controller="@ClipController(clip=a2o_{ico:carryObject}_dumpInto_oven_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="" focus="none" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="1">
-          <TransitionClassList>
-            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
-          </TransitionClassList>
-        </Controller>
-        <Controller target="surface" controller="@ClipController(clip=a2o_dumpInto_oven_surface, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_mixingBowl_dumpInto_oven.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="2">
-          <TransitionClassList>
-            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
-          </TransitionClassList>
-        </Controller>
+        <ParameterSelector parameter="surface:objectName" unique_id="5">
+          <Choice value="ovenCounterTop">
+            <Controller target="surface" controller="@ClipController(clip=a2o_dumpInto_ovenCounterTop_surface, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_cuttingBoard_dumpInto_ovenCounterTop.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="1">
+              <TransitionClassList />
+            </Controller>
+            <Controller target="x" controller="@ClipController(clip=a2o_{ico:carryObject}_dumpInto_ovenCounterTop_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="" focus="none" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="2">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice value="oven">
+            <Controller target="x" controller="@ClipController(clip=a2o_{ico:carryObject}_dumpInto_oven_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="" focus="none" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="3">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+            <Controller target="surface" controller="@ClipController(clip=a2o_dumpInto_oven_surface, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_mixingBowl_dumpInto_oven.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="4">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+        </ParameterSelector>
       </Choice>
       <Choice value="-stand-FullBody" track="carryinteraction" mask="">
-        <Reference target="1" />
-        <Reference target="2" />
+        <Reference target="5" />
       </Choice>
     </PostureSelector>
   </State>
   <State name="mirror" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
     <description />
-    <ParameterSelector parameter="ico:carryTrack" unique_id="5">
+    <ParameterSelector parameter="ico:carryTrack" unique_id="8">
       <Choice value="left">
-        <SetMirror target="x" mirror="true" unique_id="4" />
+        <SetMirror target="x" mirror="true" unique_id="7" />
       </Choice>
       <Choice value="right" />
     </ParameterSelector>

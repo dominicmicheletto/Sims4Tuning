@@ -4,8 +4,9 @@
   <Actor name="y" type="Sim" virtual="false" />
   <Actor name="sitTemplate" type="Object" virtual="true" />
   <Actor name="sitTemplate1" type="Object" virtual="false" />
-  <Parameter name="transitionPosture" type="enum" labels="stand,sit,sitIntimate,sitPoolEdge,hotTub_sit" default="stand" />
+  <Parameter name="transitionPosture" type="enum" labels="stand,sit,sitIntimate,sitPoolEdge,hotTub_sit,sitIntimateBooth" default="stand" />
   <Parameter name="isMirrored" type="bool" labels="" default="False" />
+  <Parameter name="isSectionalSofa" type="bool" labels="" default="False" />
   <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
   <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
   <Parameter name="y:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
@@ -18,19 +19,43 @@
       <MapNamespace namespace="y" actor="y" />
     </SourceFile>
   </IkConfiguration>
-  <IkConfiguration name="a2a_watchIntimate_posture_transitions.ma">
-    <SourceFile name="a2a_watchIntimate_posture_transitions.ma">
+  <IkConfiguration name="a2a_watchIntimate_idles.ma">
+    <SourceFile name="a2a_watchIntimate_idles.ma">
       <MapNamespace namespace="sitTemplate" actor="sitTemplate" />
       <MapNamespace namespace="sitTemplate1" actor="sitTemplate" />
       <MapNamespace namespace="x" actor="x" />
       <MapNamespace namespace="y" actor="y" />
     </SourceFile>
   </IkConfiguration>
-  <IkConfiguration name="a2a_watchIntimate_idles.ma">
-    <SourceFile name="a2a_watchIntimate_idles.ma">
-      <MapNamespace namespace="sitTemplate" actor="sitTemplate" />
+  <IkConfiguration name="a2a_sectionalSofas_watchIntimate_posture_transitions.ma">
+    <SourceFile name="a2a_sectionalSofas_watchIntimate_posture_transitions.ma">
       <MapNamespace namespace="sitTemplate1" actor="sitTemplate" />
       <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="sitTemplate" actor="sitTemplate" />
+      <MapNamespace namespace="y" actor="y" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2a_sectionalSofas_watchIntimate_idles.ma">
+    <SourceFile name="a2a_sectionalSofas_watchIntimate_idles.ma">
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="sitTemplate" actor="sitTemplate" />
+      <MapNamespace namespace="y" actor="y" />
+      <MapNamespace namespace="sitTemplate1" actor="sitTemplate" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2a_sectionalSofas_sit_trans_sit_to_intimate.ma">
+    <SourceFile name="a2a_sectionalSofas_sit_trans_sit_to_intimate.ma">
+      <MapNamespace namespace="sitTemplate1" actor="sitTemplate" />
+      <MapNamespace namespace="y" actor="y" />
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="sitTemplate" actor="sitTemplate" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2a_watchIntimate_posture_transitions.ma">
+    <SourceFile name="a2a_watchIntimate_posture_transitions.ma">
+      <MapNamespace namespace="sitTemplate1" actor="sitTemplate" />
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="sitTemplate" actor="sitTemplate" />
       <MapNamespace namespace="y" actor="y" />
     </SourceFile>
   </IkConfiguration>
@@ -49,51 +74,93 @@
   <State name="SitIntimate_watch" type="public" countlooptime="false" disableautostop="false" skippable="true" interrupt_this="true" focus="head" facialoverlays="false" tailoverlays="true">
     <description />
     <MakeController>
-      <Controller target="x" controller="@ClipController(clip=a2a_sitIntimateWatch_posture_x, loop_count=#1)" overridePosture="false" mask="" track="low" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_watchIntimate_idles.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="1">
-        <TransitionClassList>
-          <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
-        </TransitionClassList>
-      </Controller>
-      <Controller target="y" controller="@ClipController(clip=a2a_sitIntimateWatch_posture_y, loop_count=#1)" overridePosture="false" mask="" track="low" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_watchIntimate_idles.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="2">
-        <TransitionClassList>
-          <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
-        </TransitionClassList>
-      </Controller>
+      <ParameterSelector parameter="isSectionalSofa" unique_id="5">
+        <Choice value="false">
+          <Controller target="x" controller="@ClipController(clip=a2a_sitIntimateWatch_posture_x, loop_count=#1)" overridePosture="false" mask="" track="low" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_watchIntimate_idles.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="1">
+            <TransitionClassList>
+              <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+            </TransitionClassList>
+          </Controller>
+          <Controller target="y" controller="@ClipController(clip=a2a_sitIntimateWatch_posture_y, loop_count=#1)" overridePosture="false" mask="" track="low" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_watchIntimate_idles.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="2">
+            <TransitionClassList>
+              <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+            </TransitionClassList>
+          </Controller>
+        </Choice>
+        <Choice value="true">
+          <Controller target="y" controller="@ClipController(clip=a2a_sectionalSofas_sitIntimateWatch_posture_y, loop_count=#1)" overridePosture="false" mask="" track="low" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_sectionalSofas_watchIntimate_idles.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="3">
+            <TransitionClassList>
+              <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+            </TransitionClassList>
+          </Controller>
+          <Controller target="x" controller="@ClipController(clip=a2a_sectionalSofas_sitIntimateWatch_posture_x, loop_count=#1)" overridePosture="false" mask="" track="low" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_sectionalSofas_watchIntimate_idles.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="4">
+            <TransitionClassList>
+              <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+            </TransitionClassList>
+          </Controller>
+        </Choice>
+      </ParameterSelector>
     </MakeController>
   </State>
   <State name="get_in" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
     <description />
-    <ParameterSelector parameter="transitionPosture" unique_id="9">
+    <ParameterSelector parameter="transitionPosture" unique_id="19">
       <Choice value="stand" />
       <Choice value="sit">
-        <Controller target="x" controller="@ClipController(clip=a2a_sit_trans_sit_to_intimate_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_sit_trans_sit_to_intimate.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="4">
-          <TransitionClassList>
-            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
-          </TransitionClassList>
-        </Controller>
-        <Controller target="x" controller="@ClipController(clip=a2a_sit_trans_sitIntimate_to_sitIntimateWatch_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_watchIntimate_posture_transitions.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="3">
-          <TransitionClassList>
-            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
-          </TransitionClassList>
-        </Controller>
-        <Controller target="y" controller="@ClipController(clip=a2a_sit_trans_sit_to_intimate_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_sit_trans_sit_to_intimate.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="6">
-          <TransitionClassList>
-            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
-          </TransitionClassList>
-        </Controller>
-        <Controller target="y" controller="@ClipController(clip=a2a_sit_trans_sitIntimate_to_sitIntimateWatch_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_watchIntimate_posture_transitions.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="5">
-          <TransitionClassList>
-            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
-          </TransitionClassList>
-        </Controller>
+        <ParameterSelector parameter="isSectionalSofa" unique_id="14">
+          <Choice value="false">
+            <Controller target="x" controller="@ClipController(clip=a2a_sit_trans_sit_to_intimate_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_sit_trans_sit_to_intimate.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="7">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+            <Controller target="x" controller="@ClipController(clip=a2a_sit_trans_sitIntimate_to_sitIntimateWatch_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_watchIntimate_posture_transitions.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="6">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+            <Controller target="y" controller="@ClipController(clip=a2a_sit_trans_sit_to_intimate_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_sit_trans_sit_to_intimate.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="9">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+            <Controller target="y" controller="@ClipController(clip=a2a_sit_trans_sitIntimate_to_sitIntimateWatch_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_watchIntimate_posture_transitions.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="8">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice value="true">
+            <Controller target="y" controller="@ClipController(clip=a2a_sectionalSofas_trans_sit_to_intimate_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_sectionalSofas_sit_trans_sit_to_intimate.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="11">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+            <Controller target="y" controller="@ClipController(clip=a2a_sectionalSofas_sit_trans_sitIntimate_to_sitIntimateWatch_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_sectionalSofas_watchIntimate_posture_transitions.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="10">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+            <Controller target="x" controller="@ClipController(clip=a2a_sectionalSofas_trans_sit_to_intimate_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_sectionalSofas_sit_trans_sit_to_intimate.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="13">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+            <Controller target="x" controller="@ClipController(clip=a2a_sectionalSofas_sit_trans_sitIntimate_to_sitIntimateWatch_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_sectionalSofas_watchIntimate_posture_transitions.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="12">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+        </ParameterSelector>
       </Choice>
       <Choice value="sitIntimate">
-        <Controller target="x" controller="@ClipController(clip=a2a_sit_trans_sitIntimate_to_sitIntimateWatch_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_watchIntimate_posture_transitions.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="7">
+        <Controller target="x" controller="@ClipController(clip=a2a_sit_trans_sitIntimate_to_sitIntimateWatch_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_watchIntimate_posture_transitions.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="15">
           <TransitionClassList>
             <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
           </TransitionClassList>
         </Controller>
-        <Controller target="y" controller="@ClipController(clip=a2a_sit_trans_sitIntimate_to_sitIntimateWatch_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_watchIntimate_posture_transitions.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="8">
+        <Controller target="y" controller="@ClipController(clip=a2a_sit_trans_sitIntimate_to_sitIntimateWatch_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_watchIntimate_posture_transitions.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="16">
           <TransitionClassList>
             <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
           </TransitionClassList>
@@ -101,41 +168,75 @@
       </Choice>
       <Choice value="sitPoolEdge" />
       <Choice value="hotTub_sit" />
+      <Choice value="sitIntimateBooth">
+        <Controller target="y" controller="@ClipController(clip=a2a_sectionalSofas_sit_trans_sitIntimate_to_sitIntimateWatch_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_sectionalSofas_watchIntimate_posture_transitions.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="17">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+        <Controller target="x" controller="@ClipController(clip=a2a_sectionalSofas_sit_trans_sitIntimate_to_sitIntimateWatch_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_sectionalSofas_watchIntimate_posture_transitions.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="18">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
     </ParameterSelector>
   </State>
   <State name="get_out" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
     <description />
-    <ParameterSelector parameter="transitionPosture" unique_id="16">
+    <ParameterSelector parameter="transitionPosture" unique_id="33">
       <Choice value="stand" />
       <Choice value="sit">
-        <Controller target="x" controller="@ClipController(clip=a2a_sit_trans_sitIntimateWatch_to_sitIntimate_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_watchIntimate_posture_transitions.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="11">
-          <TransitionClassList>
-            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
-          </TransitionClassList>
-        </Controller>
-        <Controller target="x" controller="@ClipController(clip=a2a_sit_trans_intimate_to_sit_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_sit_trans_sit_to_intimate.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="10">
-          <TransitionClassList>
-            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
-          </TransitionClassList>
-        </Controller>
-        <Controller target="y" controller="@ClipController(clip=a2a_sit_trans_sitIntimateWatch_to_sitIntimate_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_watchIntimate_posture_transitions.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="13">
-          <TransitionClassList>
-            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
-          </TransitionClassList>
-        </Controller>
-        <Controller target="y" controller="@ClipController(clip=a2a_sit_trans_intimate_to_sit_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_sit_trans_sit_to_intimate.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="12">
-          <TransitionClassList>
-            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
-          </TransitionClassList>
-        </Controller>
+        <ParameterSelector parameter="isSectionalSofa" unique_id="28">
+          <Choice value="false">
+            <Controller target="x" controller="@ClipController(clip=a2a_sit_trans_sitIntimateWatch_to_sitIntimate_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_watchIntimate_posture_transitions.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="21">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+            <Controller target="x" controller="@ClipController(clip=a2a_sit_trans_intimate_to_sit_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_sit_trans_sit_to_intimate.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="20">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+            <Controller target="y" controller="@ClipController(clip=a2a_sit_trans_sitIntimateWatch_to_sitIntimate_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_watchIntimate_posture_transitions.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="23">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+            <Controller target="y" controller="@ClipController(clip=a2a_sit_trans_intimate_to_sit_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_sit_trans_sit_to_intimate.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="22">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice value="true">
+            <Controller target="y" controller="@ClipController(clip=a2a_sectionalSofas_sit_trans_sitIntimateWatch_to_sitIntimate_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_sectionalSofas_watchIntimate_posture_transitions.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="25">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+            <Controller target="y" controller="@ClipController(clip=a2a_sectionalSofas_trans_intimate_to_sit_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_sectionalSofas_sit_trans_sit_to_intimate.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="24">
+              <TransitionClassList />
+            </Controller>
+            <Controller target="x" controller="@ClipController(clip=a2a_sectionalSofas_sit_trans_sitIntimateWatch_to_sitIntimate_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_sectionalSofas_watchIntimate_posture_transitions.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="27">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+            <Controller target="x" controller="@ClipController(clip=a2a_sectionalSofas_trans_intimate_to_sit_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_sectionalSofas_sit_trans_sit_to_intimate.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="26">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
+        </ParameterSelector>
       </Choice>
       <Choice value="sitIntimate">
-        <Controller target="x" controller="@ClipController(clip=a2a_sit_trans_sitIntimateWatch_to_sitIntimate_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_watchIntimate_posture_transitions.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="14">
+        <Controller target="x" controller="@ClipController(clip=a2a_sit_trans_sitIntimateWatch_to_sitIntimate_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_watchIntimate_posture_transitions.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="29">
           <TransitionClassList>
             <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
           </TransitionClassList>
         </Controller>
-        <Controller target="y" controller="@ClipController(clip=a2a_sit_trans_sitIntimateWatch_to_sitIntimate_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_watchIntimate_posture_transitions.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="15">
+        <Controller target="y" controller="@ClipController(clip=a2a_sit_trans_sitIntimateWatch_to_sitIntimate_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_watchIntimate_posture_transitions.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="30">
           <TransitionClassList>
             <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
           </TransitionClassList>
@@ -143,18 +244,30 @@
       </Choice>
       <Choice value="sitPoolEdge" />
       <Choice value="hotTub_sit" />
+      <Choice value="sitIntimateBooth">
+        <Controller target="x" controller="@ClipController(clip=a2a_sectionalSofas_sit_trans_sitIntimateWatch_to_sitIntimate_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_sectionalSofas_watchIntimate_posture_transitions.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="31">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+        <Controller target="y" controller="@ClipController(clip=a2a_sectionalSofas_sit_trans_sitIntimateWatch_to_sitIntimate_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_sectionalSofas_watchIntimate_posture_transitions.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="32">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
     </ParameterSelector>
   </State>
   <State name="set_mirroring" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
     <description />
-    <ParameterSelector parameter="isMirrored" unique_id="21">
+    <ParameterSelector parameter="isMirrored" unique_id="38">
       <Choice value="false">
-        <SetMirror target="x" mirror="false" unique_id="18" />
-        <SetMirror target="y" mirror="false" unique_id="17" />
+        <SetMirror target="x" mirror="false" unique_id="35" />
+        <SetMirror target="y" mirror="false" unique_id="34" />
       </Choice>
       <Choice value="true">
-        <SetMirror target="x" mirror="true" unique_id="20" />
-        <SetMirror target="y" mirror="true" unique_id="19" />
+        <SetMirror target="x" mirror="true" unique_id="37" />
+        <SetMirror target="y" mirror="true" unique_id="36" />
       </Choice>
     </ParameterSelector>
   </State>

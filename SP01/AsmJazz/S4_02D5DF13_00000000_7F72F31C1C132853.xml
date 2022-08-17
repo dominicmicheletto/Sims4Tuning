@@ -1,60 +1,36 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<ASM name="FruitPunchFountain" dcc="sage">
+﻿<?xml version="1.0"?>
+<ASM name="FruitPunchFountain">
   <Actor name="x" type="Sim" master="true" virtual="false" />
-  <Actor name="spiceBottle" type="Prop" virtual="false" object_def_resource_key="c0db5ae7:00000000:0000000000001d16#spiceBottleGEN_01_prop" />
-  <Actor name="toolMeasuringCup" type="Prop" virtual="false" object_def_resource_key="c0db5ae7:00000000:000000000001087e#toolMeasuringCup_bm" />
-  <Actor name="drinkCan" type="Prop" virtual="false" object_def_resource_key="c0db5ae7:00000000:00000000000029e3#drinkCanGENEnergy_01" />
+  <Actor name="spiceBottle" type="Prop" virtual="false" object_def_resource_key="c0db5ae7:00000000:0000000000001d16" />
+  <Actor name="toolMeasuringCup" type="Prop" virtual="false" object_def_resource_key="c0db5ae7:00000000:000000000001087e" />
+  <Actor name="drinkCan" type="Prop" virtual="false" object_def_resource_key="c0db5ae7:00000000:00000000000029e3" />
   <Actor name="fruitPunchFountain" type="Object" virtual="false" />
-  <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
-  <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
-  <Parameter name="x:carryState" type="enum" labels="none,left,right,both" default="right" />
-  <IkConfiguration name="a2o_fruitPunchFountain_improve.ma">
-    <SourceFile name="a2o_fruitPunchFountain_improve.ma">
-      <MapNamespace namespace="spiceBottle" actor="spiceBottle" />
-      <MapNamespace namespace="x" actor="x" />
-    </SourceFile>
-  </IkConfiguration>
-  <IkConfiguration name="a2o_fruitPunchFountain_fill.ma">
-    <SourceFile name="a2o_fruitPunchFountain_fill.ma">
-      <MapNamespace namespace="toolMeasuringCup" actor="toolMeasuringCup" />
-      <MapNamespace namespace="x" actor="x" />
-    </SourceFile>
-  </IkConfiguration>
-  <IkConfiguration name="a2o_fruitPunchFountain_dipFinger.ma">
-    <SourceFile name="a2o_fruitPunchFountain_dipFinger.ma">
-      <MapNamespace namespace="x" actor="x" />
-    </SourceFile>
-  </IkConfiguration>
-  <IkConfiguration name="a2o_fruitPunchFountain_addExtra.ma">
-    <SourceFile name="a2o_fruitPunchFountain_addExtra.ma">
-      <MapNamespace namespace="drinkCan" actor="drinkCan" />
-      <MapNamespace namespace="x" actor="x" />
-    </SourceFile>
-  </IkConfiguration>
-  <PostureManifest actors="" />
+  <Parameter name="x:age" template="age" type="enum" labels="baby,unsupported_age,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="x:sex" template="sex" type="enum" labels="male,female" default="male" />
+  <Parameter name="x:carryState" template="carryState" type="enum" labels="none,left,right,both" default="right" />
   <PostureManifest actors="x">
     <Support family="stand" compatibility="FullBody" carry_left="*" carry_right="-" surface="*" />
     <Support family="stand" compatibility="FullBody" carry_left="-" carry_right="*" surface="*" />
   </PostureManifest>
-  <State type="public" skippable="false" interrupt_this="false" name="DipFinger" focus="none" facialoverlays="false" tailoverlays="true" />
-  <State type="public" skippable="false" interrupt_this="false" name="Fill" focus="none" facialoverlays="false" tailoverlays="true" />
-  <State type="public" skippable="false" interrupt_this="false" name="Improve" focus="none" facialoverlays="false" tailoverlays="true" />
-  <State type="public" skippable="false" interrupt_this="false" name="SomethingExtra" focus="none" facialoverlays="false" tailoverlays="true" />
-  <State type="private" skippable="false" interrupt_this="false" name="mirror" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="Fill" focus="none" facialoverlays="false" />
+  <State type="public" skippable="false" interrupt_this="false" name="Improve" focus="none" facialoverlays="false" />
+  <State type="public" skippable="false" interrupt_this="false" name="SomethingExtra" focus="none" facialoverlays="false" />
+  <State type="public" skippable="false" interrupt_this="false" name="DipFinger" focus="none" facialoverlays="false" />
+  <State type="private" skippable="false" interrupt_this="false" name="mirror" focus="full body" facialoverlays="false" />
   <Connection from="DipFinger" to="exit" />
+  <Connection from="entry" to="mirror" />
   <Connection from="Fill" to="exit" />
   <Connection from="Improve" to="exit" />
-  <Connection from="SomethingExtra" to="exit" />
-  <Connection from="entry" to="mirror" />
   <Connection from="mirror" to="DipFinger" />
   <Connection from="mirror" to="Fill" />
   <Connection from="mirror" to="Improve" />
   <Connection from="mirror" to="SomethingExtra" />
-  <State name="DipFinger" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
-    <description />
-    <PostureSelector parameter="x:posture" unique_id="2">
-      <Choice value="-stand-FullBody" track="normal" mask="">
-        <Controller target="x" controller="@ClipController(clip=a2o_fruitPunchFountain_dipFinger_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_fruitPunchFountain_dipFinger.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="1">
+  <Connection from="SomethingExtra" to="exit" />
+  <State name="Fill">
+    <description></description>
+    <PostureSelector parameter="x:posture">
+      <Choice value="-stand-FullBody">
+        <Controller target="x" controller="@ClipController(clip=a2o_fruitPunchFountain_fill_x, loop_count=#1)" overridePosture="false" mask="" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_fruitPunchFountain_fill.ma" focus="undefined" id="323dd2f5-62fb-4443-8d88-9142cad2f962">
           <TransitionClassList>
             <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
           </TransitionClassList>
@@ -62,11 +38,11 @@
       </Choice>
     </PostureSelector>
   </State>
-  <State name="Fill" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
-    <description />
-    <PostureSelector parameter="x:posture" unique_id="4">
-      <Choice value="-stand-FullBody" track="normal" mask="">
-        <Controller target="x" controller="@ClipController(clip=a2o_fruitPunchFountain_fill_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_fruitPunchFountain_fill.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="3">
+  <State name="Improve">
+    <description></description>
+    <PostureSelector parameter="x:posture">
+      <Choice value="-stand-FullBody">
+        <Controller target="x" controller="@ClipController(clip=a2o_fruitPunchFountain_improve_x, loop_count=#1)" overridePosture="false" mask="" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_fruitPunchFountain_improve.ma" focus="undefined" id="9a29a773-2fac-4ebd-8e86-e542c482215d">
           <TransitionClassList>
             <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
           </TransitionClassList>
@@ -74,11 +50,11 @@
       </Choice>
     </PostureSelector>
   </State>
-  <State name="Improve" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
-    <description />
-    <PostureSelector parameter="x:posture" unique_id="6">
-      <Choice value="-stand-FullBody" track="normal" mask="">
-        <Controller target="x" controller="@ClipController(clip=a2o_fruitPunchFountain_improve_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_fruitPunchFountain_improve.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="5">
+  <State name="SomethingExtra">
+    <description></description>
+    <PostureSelector parameter="x:posture">
+      <Choice value="-stand-FullBody">
+        <Controller target="x" controller="@ClipController(clip=a2o_fruitPunchFountain_addExtra_x, loop_count=#1)" overridePosture="false" mask="" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_fruitPunchFountain_addExtra.ma" focus="undefined" id="6d949337-bbe1-47f3-a2fa-5f9d61556eb4">
           <TransitionClassList>
             <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
           </TransitionClassList>
@@ -86,11 +62,11 @@
       </Choice>
     </PostureSelector>
   </State>
-  <State name="SomethingExtra" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
-    <description />
-    <PostureSelector parameter="x:posture" unique_id="8">
-      <Choice value="-stand-FullBody" track="normal" mask="">
-        <Controller target="x" controller="@ClipController(clip=a2o_fruitPunchFountain_addExtra_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_fruitPunchFountain_addExtra.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="7">
+  <State name="DipFinger">
+    <description></description>
+    <PostureSelector parameter="x:posture">
+      <Choice value="-stand-FullBody">
+        <Controller target="x" controller="@ClipController(clip=a2o_fruitPunchFountain_dipFinger_x, loop_count=#1)" overridePosture="false" mask="" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_fruitPunchFountain_dipFinger.ma" focus="undefined" id="e6db6813-8b01-4cc1-a055-bcca7721ed05">
           <TransitionClassList>
             <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
           </TransitionClassList>
@@ -98,15 +74,552 @@
       </Choice>
     </PostureSelector>
   </State>
-  <State name="mirror" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
-    <description />
-    <ParameterSelector parameter="x:carryState" unique_id="10">
-      <Choice value="none" />
-      <Choice value="left" />
+  <State name="mirror">
+    <description></description>
+    <ParameterSelector parameter="x:carryState">
       <Choice value="right">
-        <SetMirror target="x" mirror="true" unique_id="9" />
+        <SetMirror target="x" mirror="true" />
       </Choice>
-      <Choice value="both" />
     </ParameterSelector>
   </State>
+  <SwingPrivate swingfileversion="1.101.0.406">
+    <StateMachineData>
+      <State type="public" loop="false" skippable="false" interrupt_this="false" posture="false" name="entry" id="ae624c8e-9074-4fc6-a514-febf70e14a13" focus="full body" facialoverlays="false" />
+      <State type="public" loop="false" skippable="false" interrupt_this="false" posture="false" name="exit" id="974bde32-f46a-464d-a84f-343c5a52fd74" focus="full body" facialoverlays="false" />
+      <State type="public" loop="false" skippable="false" interrupt_this="false" posture="false" name="Fill" id="ae14cc17-2586-4bf3-bf5c-19d47d783d4a" focus="none" facialoverlays="false" entrypoint_id="2e11e628-4791-420a-a3c3-601a7706588e" connectedTo="bca75928-971a-4dca-b294-6e9fd57ea157" />
+      <State type="public" loop="false" skippable="false" interrupt_this="false" posture="false" name="Improve" id="7b6a8daa-cc56-49f4-9fed-4776c89d9b4b" focus="none" facialoverlays="false" entrypoint_id="baf8935b-218b-47ba-b684-06033fb5da9a" connectedTo="1e9c7a7a-d9cd-4217-90ca-dfb9f076fa71" />
+      <State type="public" loop="false" skippable="false" interrupt_this="false" posture="false" name="SomethingExtra" id="4869fd53-081c-423a-a758-d291d0f0ed5a" focus="none" facialoverlays="false" entrypoint_id="89fcd3f0-bfc6-40bd-b50c-8e3d03c5fb47" connectedTo="e8c9b8de-e4da-4fe1-957e-8138154d300e" />
+      <State type="public" loop="false" skippable="false" interrupt_this="false" posture="false" name="DipFinger" id="643cb4c6-c2f8-4a62-bbd1-c970a4c91f8d" focus="none" facialoverlays="false" entrypoint_id="a6caf824-59c7-4236-9a2b-7ca9e73fc14d" connectedTo="b9b731f1-1096-4f8d-9397-ec091cf4d527" />
+      <State type="private" loop="false" skippable="false" interrupt_this="false" posture="false" name="mirror" id="5b4b76d0-b1d3-4271-b721-02c7a1ceeae5" focus="full body" facialoverlays="false" entrypoint_id="402e113e-3d72-4bc9-bd5b-beb6dfebe777" connectedTo="1efed067-3784-43e4-9e2e-1b68ae0ab607" />
+      <Connection from="DipFinger" to="exit" to_id="974bde32-f46a-464d-a84f-343c5a52fd74" />
+      <Connection from="entry" from_id="ae624c8e-9074-4fc6-a514-febf70e14a13" to="mirror" />
+      <Connection from="Fill" to="exit" to_id="974bde32-f46a-464d-a84f-343c5a52fd74" />
+      <Connection from="Improve" to="exit" to_id="974bde32-f46a-464d-a84f-343c5a52fd74" />
+      <Connection from="mirror" to="DipFinger" />
+      <Connection from="mirror" to="Fill" />
+      <Connection from="mirror" to="Improve" />
+      <Connection from="mirror" to="SomethingExtra" />
+      <Connection from="SomethingExtra" to="exit" to_id="974bde32-f46a-464d-a84f-343c5a52fd74" />
+      <State name="Fill" id="ae14cc17-2586-4bf3-bf5c-19d47d783d4a">
+        <description></description>
+        <PostureSelector type="Swing.DataStructures.SupportedPosturesStatement" id="bca75928-971a-4dca-b294-6e9fd57ea157" parameter="x:posture" swing_id="ae14cc17-2586-4bf3-bf5c-19d47d783d4a">
+          <Choice type="Swing.DataStructures.SupportedPosturesCaseStatement" value="-stand-FullBody" mask="" track="normal" connectedTo="323dd2f5-62fb-4443-8d88-9142cad2f962">
+            <Controller target="x" controller="@ClipController(clip=a2o_fruitPunchFountain_fill_x, loop_count=#1)" overridePosture="false" mask="" track="normal" overrideTimingEnable="false" transition_class_in="Default" transition_class_out="Default" useLoopable="true" mayafilename="a2o_fruitPunchFountain_fill.ma" ik_configuration="a2o_fruitPunchFountain_fill.ma" focus="undefined" type="Swing.DataStructures.ActionStatement" id="323dd2f5-62fb-4443-8d88-9142cad2f962">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+        </PostureSelector>
+      </State>
+      <State name="Improve" id="7b6a8daa-cc56-49f4-9fed-4776c89d9b4b">
+        <description></description>
+        <PostureSelector type="Swing.DataStructures.SupportedPosturesStatement" id="1e9c7a7a-d9cd-4217-90ca-dfb9f076fa71" parameter="x:posture" swing_id="7b6a8daa-cc56-49f4-9fed-4776c89d9b4b">
+          <Choice type="Swing.DataStructures.SupportedPosturesCaseStatement" value="-stand-FullBody" mask="" track="normal" connectedTo="9a29a773-2fac-4ebd-8e86-e542c482215d">
+            <Controller target="x" controller="@ClipController(clip=a2o_fruitPunchFountain_improve_x, loop_count=#1)" overridePosture="false" mask="" track="normal" overrideTimingEnable="false" transition_class_in="Default" transition_class_out="Default" useLoopable="true" mayafilename="a2o_fruitPunchFountain_improve.ma" ik_configuration="a2o_fruitPunchFountain_improve.ma" focus="undefined" type="Swing.DataStructures.ActionStatement" id="9a29a773-2fac-4ebd-8e86-e542c482215d">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+        </PostureSelector>
+      </State>
+      <State name="SomethingExtra" id="4869fd53-081c-423a-a758-d291d0f0ed5a">
+        <description></description>
+        <PostureSelector type="Swing.DataStructures.SupportedPosturesStatement" id="e8c9b8de-e4da-4fe1-957e-8138154d300e" parameter="x:posture" swing_id="4869fd53-081c-423a-a758-d291d0f0ed5a">
+          <Choice type="Swing.DataStructures.SupportedPosturesCaseStatement" value="-stand-FullBody" mask="" track="normal" connectedTo="6d949337-bbe1-47f3-a2fa-5f9d61556eb4">
+            <Controller target="x" controller="@ClipController(clip=a2o_fruitPunchFountain_addExtra_x, loop_count=#1)" overridePosture="false" mask="" track="normal" overrideTimingEnable="false" transition_class_in="Default" transition_class_out="Default" useLoopable="true" mayafilename="a2o_fruitPunchFountain_addExtra.ma" ik_configuration="a2o_fruitPunchFountain_addExtra.ma" focus="undefined" type="Swing.DataStructures.ActionStatement" id="6d949337-bbe1-47f3-a2fa-5f9d61556eb4">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+        </PostureSelector>
+      </State>
+      <State name="DipFinger" id="643cb4c6-c2f8-4a62-bbd1-c970a4c91f8d">
+        <description></description>
+        <PostureSelector type="Swing.DataStructures.SupportedPosturesStatement" id="b9b731f1-1096-4f8d-9397-ec091cf4d527" parameter="x:posture" swing_id="643cb4c6-c2f8-4a62-bbd1-c970a4c91f8d">
+          <Choice type="Swing.DataStructures.SupportedPosturesCaseStatement" value="-stand-FullBody" mask="" track="normal" connectedTo="e6db6813-8b01-4cc1-a055-bcca7721ed05">
+            <Controller target="x" controller="@ClipController(clip=a2o_fruitPunchFountain_dipFinger_x, loop_count=#1)" overridePosture="false" mask="" track="normal" overrideTimingEnable="false" transition_class_in="Default" transition_class_out="Default" useLoopable="true" mayafilename="a2o_fruitPunchFountain_dipFinger.ma" ik_configuration="a2o_fruitPunchFountain_dipFinger.ma" focus="undefined" type="Swing.DataStructures.ActionStatement" id="e6db6813-8b01-4cc1-a055-bcca7721ed05">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+        </PostureSelector>
+      </State>
+      <State name="mirror" id="5b4b76d0-b1d3-4271-b721-02c7a1ceeae5">
+        <description></description>
+        <ParameterSelector parameter="x:carryState" type="Swing.DataStructures.SelectStatement" id="1efed067-3784-43e4-9e2e-1b68ae0ab607" swing_id="5b4b76d0-b1d3-4271-b721-02c7a1ceeae5">
+          <Choice value="right" connectedTo="637558a3-fd0e-44cf-a403-62334ecb0c12">
+            <SetMirror type="Swing.DataStructures.SetMirrorStatement" id="637558a3-fd0e-44cf-a403-62334ecb0c12" target="x" mirror="true" />
+          </Choice>
+        </ParameterSelector>
+      </State>
+      <State type="public" loop="false" name="exit" id="974bde32-f46a-464d-a84f-343c5a52fd74" />
+      <State type="public" loop="false" name="entry" id="ae624c8e-9074-4fc6-a514-febf70e14a13" />
+      <namespacemap>
+        <source file="a2o_fruitPunchFountain_improve.ma">
+          <mapping namespace="spiceBottle" actor="spiceBottle" />
+          <mapping namespace="x" actor="x" />
+        </source>
+        <source file="a2o_fruitPunchFountain_fill.ma">
+          <mapping namespace="toolMeasuringCup" actor="toolMeasuringCup" />
+          <mapping namespace="x" actor="x" />
+        </source>
+        <source file="a2o_fruitPunchFountain_dipFinger.ma">
+          <mapping namespace="x" actor="x" />
+        </source>
+        <source file="a2o_fruitPunchFountain_addExtra.ma">
+          <mapping namespace="drinkCan" actor="drinkCan" />
+          <mapping namespace="x" actor="x" />
+        </source>
+      </namespacemap>
+    </StateMachineData>
+    <widgetcanvas>
+      <viewport>
+        <track x="81.71429" y="-72.57141" />
+        <zoom f="0.8566651" />
+      </viewport>
+      <widget type="Swing.Widgets.EntryWidget" id="125bfa6a-33ca-49d2-8a42-ff3d06aa8f08">
+        <location x="298" y="137" />
+        <size width="100" height="70" />
+        <data ref="ae624c8e-9074-4fc6-a514-febf70e14a13" />
+      </widget>
+      <widget type="Swing.Widgets.AnnotationWidget" id="1a422490-5777-458f-9634-020a87975bd0" fillcolor="-2139029505">
+        <location x="107" y="508" />
+        <size width="172" height="46" />
+        <text>Sim produces a measuring
+cup and fills the fountain with
+a flavor</text>
+      </widget>
+      <widget type="Swing.Widgets.StateWidget" id="2da1d2cb-4442-4d83-b9d5-a2033aad6d3b" fakeloop="False" edge="null" statetype="Normal">
+        <location x="494" y="362" />
+        <size width="100" height="100" />
+        <data ref="4869fd53-081c-423a-a758-d291d0f0ed5a" />
+        <widgetcanvas>
+          <viewport>
+            <track x="39" y="18" />
+            <zoom f="1.072309" />
+          </viewport>
+          <widget type="Swing.Widgets.ActionWidget" id="1cdb1260-8da7-4788-bbc9-496f083af9f0" showadvancedoptions="False">
+            <location x="440" y="146" />
+            <size width="236" height="58" />
+            <data ref="6d949337-bbe1-47f3-a2fa-5f9d61556eb4" />
+          </widget>
+          <widget type="Swing.Widgets.EntryPointWidget" id="4f613723-cf35-48ae-aa6e-bcff8399d79b">
+            <location x="28" y="127" />
+            <size width="30" height="30" />
+            <data ref="89fcd3f0-bfc6-40bd-b50c-8e3d03c5fb47" />
+          </widget>
+          <widget type="Swing.Widgets.SupportedPosturesWidget" id="56bb354b-5bc0-4aa7-b885-2e97921d00d5">
+            <location x="159" y="159" />
+            <size width="91" height="40" />
+            <data ref="e8c9b8de-e4da-4fe1-957e-8138154d300e" />
+            <case value="stand-FullBody" />
+          </widget>
+          <edge type="WidgetCanvas.Edge" id="1d3f4c76-f025-41bb-b5f3-220afa3bb064" origin="4f613723-cf35-48ae-aa6e-bcff8399d79b.0" endpoint="56bb354b-5bc0-4aa7-b885-2e97921d00d5.0" />
+          <edge type="WidgetCanvas.Edge" id="c215721b-fefd-4c5f-a2d1-9565e02c16f7" origin="56bb354b-5bc0-4aa7-b885-2e97921d00d5.1" endpoint="1cdb1260-8da7-4788-bbc9-496f083af9f0.0" />
+        </widgetcanvas>
+      </widget>
+      <widget type="Swing.Widgets.AnnotationWidget" id="31d88057-81f6-45d3-95ca-a0ac5064320d" fillcolor="-2139029505">
+        <location x="558" y="141" />
+        <size width="220" height="58" />
+        <text>After generic swiping at the fountain
+to remove the current liquid within, the
+Sim will use the Fill animation/state
+to Change Servings.</text>
+      </widget>
+      <widget type="Swing.Widgets.StateWidget" id="45862041-5f5d-4a17-9401-45b62ae91406" fakeloop="False" edge="null" statetype="Normal">
+        <location x="314" y="248" />
+        <size width="100" height="100" />
+        <data ref="5b4b76d0-b1d3-4271-b721-02c7a1ceeae5" />
+        <widgetcanvas>
+          <viewport>
+            <track x="32" y="16" />
+            <zoom f="1" />
+          </viewport>
+          <widget type="Swing.Widgets.SelectWidget" id="240863b1-653b-4352-a984-6831b8dc6e64">
+            <location x="211" y="168" />
+            <size width="82" height="100" />
+            <data ref="1efed067-3784-43e4-9e2e-1b68ae0ab607" />
+            <case value="none" />
+            <case value="left" />
+            <case value="right" />
+            <case value="both" />
+          </widget>
+          <widget type="Swing.Widgets.SetMirrorWidget" id="863eb03e-5e2e-4aee-a1f2-657bb6b5dc13">
+            <location x="377" y="182" />
+            <size width="86" height="80" />
+            <data ref="637558a3-fd0e-44cf-a403-62334ecb0c12" />
+          </widget>
+          <widget type="Swing.Widgets.EntryPointWidget" id="8e30da50-5cdc-480c-bcfb-b0f9177120ad">
+            <location x="50" y="100" />
+            <size width="30" height="30" />
+            <data ref="402e113e-3d72-4bc9-bd5b-beb6dfebe777" />
+          </widget>
+          <edge type="WidgetCanvas.Edge" id="4f995582-ea83-4584-a93e-1da53a5b5a9f" origin="240863b1-653b-4352-a984-6831b8dc6e64.3" endpoint="863eb03e-5e2e-4aee-a1f2-657bb6b5dc13.0" />
+          <edge type="WidgetCanvas.Edge" id="f36886a0-f4c2-4f5d-a91d-9b5b19d97ff0" origin="8e30da50-5cdc-480c-bcfb-b0f9177120ad.0" endpoint="240863b1-653b-4352-a984-6831b8dc6e64.0" />
+        </widgetcanvas>
+      </widget>
+      <widget type="Swing.Widgets.AnnotationWidget" id="4720a3f7-f01e-4b91-8469-914e6662ecca" fillcolor="-2139029505">
+        <location x="75" y="231" />
+        <size width="162" height="46" />
+        <text>Sim sprinkles some spices
+into the fountain, improving
+its taste.</text>
+      </widget>
+      <widget type="Swing.Widgets.StateWidget" id="61200ecd-24a1-49d6-8706-b626d4b28d2e" fakeloop="False" edge="null" statetype="Normal">
+        <location x="377" y="365" />
+        <size width="100" height="100" />
+        <data ref="643cb4c6-c2f8-4a62-bbd1-c970a4c91f8d" />
+        <widgetcanvas>
+          <viewport>
+            <track x="0" y="0" />
+            <zoom f="1" />
+          </viewport>
+          <widget type="Swing.Widgets.EntryPointWidget" id="1ffd7fe3-d5ae-4707-91e8-35c57a536218">
+            <location x="50" y="100" />
+            <size width="30" height="30" />
+            <data ref="a6caf824-59c7-4236-9a2b-7ca9e73fc14d" />
+          </widget>
+          <widget type="Swing.Widgets.SupportedPosturesWidget" id="62a7e9fc-9f17-4ce7-b687-bce92a627e53">
+            <location x="171" y="137" />
+            <size width="91" height="40" />
+            <data ref="b9b731f1-1096-4f8d-9397-ec091cf4d527" />
+            <case value="stand-FullBody" />
+          </widget>
+          <widget type="Swing.Widgets.ActionWidget" id="b53e6b19-e657-4a8a-9d31-8cd9955e5dab" showadvancedoptions="False">
+            <location x="411" y="146" />
+            <size width="239" height="58" />
+            <data ref="e6db6813-8b01-4cc1-a055-bcca7721ed05" />
+          </widget>
+          <edge type="WidgetCanvas.Edge" id="204f388d-0595-4f44-94ab-e972acccd610" origin="62a7e9fc-9f17-4ce7-b687-bce92a627e53.1" endpoint="b53e6b19-e657-4a8a-9d31-8cd9955e5dab.0" />
+          <edge type="WidgetCanvas.Edge" id="70b54696-776c-4f0d-b79b-1ebc32577237" origin="1ffd7fe3-d5ae-4707-91e8-35c57a536218.0" endpoint="62a7e9fc-9f17-4ce7-b687-bce92a627e53.0" />
+        </widgetcanvas>
+      </widget>
+      <widget type="Swing.Widgets.StateWidget" id="6c5af6ac-3e0b-4864-9b56-0b997f3babed" fakeloop="False" edge="null" statetype="Normal">
+        <location x="149" y="369" />
+        <size width="100" height="100" />
+        <data ref="7b6a8daa-cc56-49f4-9fed-4776c89d9b4b" />
+        <widgetcanvas>
+          <viewport>
+            <track x="0" y="0" />
+            <zoom f="1" />
+          </viewport>
+          <widget type="Swing.Widgets.ActionWidget" id="426d10d4-d94a-49ec-8bab-03c22974606a" showadvancedoptions="False">
+            <location x="384" y="180" />
+            <size width="232" height="58" />
+            <data ref="9a29a773-2fac-4ebd-8e86-e542c482215d" />
+          </widget>
+          <widget type="Swing.Widgets.SupportedPosturesWidget" id="a86a0ba5-66a4-476b-ba0c-1acb814d2d5c">
+            <location x="183" y="177" />
+            <size width="91" height="40" />
+            <data ref="1e9c7a7a-d9cd-4217-90ca-dfb9f076fa71" />
+            <case value="stand-FullBody" />
+          </widget>
+          <widget type="Swing.Widgets.EntryPointWidget" id="b61a9328-5cd1-4aa3-963c-d29ae0a032c6">
+            <location x="50" y="100" />
+            <size width="30" height="30" />
+            <data ref="baf8935b-218b-47ba-b684-06033fb5da9a" />
+          </widget>
+          <edge type="WidgetCanvas.Edge" id="5e42129d-438e-47f1-b6c6-4a986680587f" origin="b61a9328-5cd1-4aa3-963c-d29ae0a032c6.0" endpoint="a86a0ba5-66a4-476b-ba0c-1acb814d2d5c.0" />
+          <edge type="WidgetCanvas.Edge" id="78ebaf97-fe58-4391-a0fc-35806d02d1bd" origin="a86a0ba5-66a4-476b-ba0c-1acb814d2d5c.1" endpoint="426d10d4-d94a-49ec-8bab-03c22974606a.0" />
+        </widgetcanvas>
+      </widget>
+      <widget type="Swing.Widgets.StateWidget" id="7a6743f4-c8b5-46b1-a115-e9a15fd0c71d" fakeloop="False" edge="null" statetype="Normal">
+        <location x="260" y="367" />
+        <size width="100" height="100" />
+        <data ref="ae14cc17-2586-4bf3-bf5c-19d47d783d4a" />
+        <widgetcanvas>
+          <viewport>
+            <track x="0" y="0" />
+            <zoom f="1" />
+          </viewport>
+          <widget type="Swing.Widgets.SupportedPosturesWidget" id="27e1ceb6-6664-486a-8df8-a152b3da9e67">
+            <location x="168" y="204" />
+            <size width="91" height="40" />
+            <data ref="bca75928-971a-4dca-b294-6e9fd57ea157" />
+            <case value="stand-FullBody" />
+          </widget>
+          <widget type="Swing.Widgets.ActionWidget" id="80e88b1a-f5a0-479c-88d5-9b86dcb8afea" showadvancedoptions="False">
+            <location x="388" y="219" />
+            <size width="217" height="58" />
+            <data ref="323dd2f5-62fb-4443-8d88-9142cad2f962" />
+          </widget>
+          <widget type="Swing.Widgets.EntryPointWidget" id="de61909e-ad26-4880-af45-4c307cc3b32e">
+            <location x="50" y="100" />
+            <size width="30" height="30" />
+            <data ref="2e11e628-4791-420a-a3c3-601a7706588e" />
+          </widget>
+          <edge type="WidgetCanvas.Edge" id="5a611fba-44fe-4744-8a66-750c8bb56d70" origin="27e1ceb6-6664-486a-8df8-a152b3da9e67.1" endpoint="80e88b1a-f5a0-479c-88d5-9b86dcb8afea.0" />
+          <edge type="WidgetCanvas.Edge" id="f174d097-761d-45cc-9869-83ac1a0fd638" origin="de61909e-ad26-4880-af45-4c307cc3b32e.0" endpoint="27e1ceb6-6664-486a-8df8-a152b3da9e67.0" />
+        </widgetcanvas>
+      </widget>
+      <widget type="Swing.Widgets.AnnotationWidget" id="8d762395-57ec-4143-b622-77390f7e050a" fillcolor="-2139029505">
+        <location x="615" y="505" />
+        <size width="177" height="46" />
+        <text>The Sim mischieviously pours
+a liquid into the fountain using
+the test tube. (Mischief)</text>
+      </widget>
+      <widget type="Swing.Widgets.AnnotationWidget" id="cb5c4f6e-9403-41c1-b36e-21ce0c50aebf" fillcolor="-2139029505">
+        <location x="493" y="232" />
+        <size width="178" height="46" />
+        <text>Sim dips their finger into the
+fountain and tastes their finger
+(Slob)</text>
+      </widget>
+      <widget type="Swing.Widgets.ExitWidget" id="d788fc3a-e0ef-4405-a2eb-338542122a36">
+        <location x="306" y="508" />
+        <size width="100" height="70" />
+        <data ref="974bde32-f46a-464d-a84f-343c5a52fd74" />
+      </widget>
+      <edge type="WidgetCanvas.AnnotationWidget+AnnotationEdge" id="178566c7-1b73-4443-913f-290ac43f604d" origin="8d762395-57ec-4143-b622-77390f7e050a.0" endpoint="2da1d2cb-4442-4d83-b9d5-a2033aad6d3b.0" />
+      <edge type="WidgetCanvas.Edge" id="45b65b01-7c75-4c56-934a-46402c6ebbb3" origin="61200ecd-24a1-49d6-8706-b626d4b28d2e.0" endpoint="d788fc3a-e0ef-4405-a2eb-338542122a36.0" />
+      <edge type="WidgetCanvas.AnnotationWidget+AnnotationEdge" id="68eb4095-059d-4a7e-bff5-de6519dc2225" origin="4720a3f7-f01e-4b91-8469-914e6662ecca.0" endpoint="6c5af6ac-3e0b-4864-9b56-0b997f3babed.0" />
+      <edge type="WidgetCanvas.Edge" id="6b34bb73-3f30-4ace-8c54-60514fb0d842" origin="2da1d2cb-4442-4d83-b9d5-a2033aad6d3b.0" endpoint="d788fc3a-e0ef-4405-a2eb-338542122a36.0" />
+      <edge type="WidgetCanvas.Edge" id="84699139-4cf0-4105-818d-952e28110266" origin="7a6743f4-c8b5-46b1-a115-e9a15fd0c71d.0" endpoint="d788fc3a-e0ef-4405-a2eb-338542122a36.0" />
+      <edge type="WidgetCanvas.Edge" id="9340b369-5675-4952-b78a-b8846d010afd" origin="45862041-5f5d-4a17-9401-45b62ae91406.0" endpoint="6c5af6ac-3e0b-4864-9b56-0b997f3babed.0" />
+      <edge type="WidgetCanvas.Edge" id="977d40ff-dcd9-462c-a752-63a18f3e632f" origin="45862041-5f5d-4a17-9401-45b62ae91406.0" endpoint="2da1d2cb-4442-4d83-b9d5-a2033aad6d3b.0" />
+      <edge type="WidgetCanvas.AnnotationWidget+AnnotationEdge" id="9da4e408-4c9e-4d1c-8d65-76221326cd3b" origin="cb5c4f6e-9403-41c1-b36e-21ce0c50aebf.0" endpoint="61200ecd-24a1-49d6-8706-b626d4b28d2e.0" />
+      <edge type="WidgetCanvas.AnnotationWidget+AnnotationEdge" id="a41e0559-51d3-4c74-9447-8962693f651d" origin="1a422490-5777-458f-9634-020a87975bd0.0" endpoint="7a6743f4-c8b5-46b1-a115-e9a15fd0c71d.0" />
+      <edge type="WidgetCanvas.Edge" id="a4bcc873-5404-4fed-8e9f-9360918bd8c4" origin="125bfa6a-33ca-49d2-8a42-ff3d06aa8f08.0" endpoint="45862041-5f5d-4a17-9401-45b62ae91406.0" />
+      <edge type="WidgetCanvas.Edge" id="afbb884c-052f-474b-85df-fb0f101432a4" origin="45862041-5f5d-4a17-9401-45b62ae91406.0" endpoint="7a6743f4-c8b5-46b1-a115-e9a15fd0c71d.0" />
+      <edge type="WidgetCanvas.Edge" id="f7dc371f-387a-4460-ad9f-a5f1b4cb5260" origin="45862041-5f5d-4a17-9401-45b62ae91406.0" endpoint="61200ecd-24a1-49d6-8706-b626d4b28d2e.0" />
+      <edge type="WidgetCanvas.Edge" id="fcc3a4c2-079b-41e0-90a4-1918f19a6bce" origin="6c5af6ac-3e0b-4864-9b56-0b997f3babed.0" endpoint="d788fc3a-e0ef-4405-a2eb-338542122a36.0" />
+      <Actor name="x" type="Sim" master="true" virtual="false" id="c031448d-64d4-4f4d-aef5-eee23357e434" />
+      <Actor name="spiceBottle" type="Prop" virtual="false" id="d1633c4a-25a1-4ee8-93f6-a3946ea6a79f" obj_def_id="7446" object_def_resource_key="c0db5ae7:00000000:0000000000001d16" />
+      <Actor name="toolMeasuringCup" type="Prop" virtual="false" id="720a7fad-8d21-4c3f-bff2-e592839ad455" obj_def_id="67710" object_def_resource_key="c0db5ae7:00000000:000000000001087e" />
+      <Actor name="drinkCan" type="Prop" virtual="false" id="a0b0bcd8-e9d2-4925-84f3-fb2d3097568f" obj_def_id="10723" object_def_resource_key="c0db5ae7:00000000:00000000000029e3" />
+      <Actor name="fruitPunchFountain" type="Object" virtual="false" id="718916b3-0409-42cf-b855-79324644476b" />
+      <Parameter name="x:age" template="age" type="enum" labels="baby,unsupported_age,child,teen,youngadult,adult,elder" default="adult" id="086e7abf-6422-47f5-a57f-9bf9ee8c1c0f" />
+      <Parameter name="x:sex" template="sex" type="enum" labels="male,female" default="male" id="544bff07-bc09-40a2-99a0-9e80a0e9754c" />
+      <Parameter name="x:carryState" template="carryState" type="enum" labels="none,left,right,both" default="right" id="90443b00-96db-4e18-8d46-dd0d07959daf" />
+      <PostureManifest statemachine_type="INTERACTION" actors="x">
+        <Support family="stand" compatibility="FullBody" carry_left="*" carry_right="-" surface="*" />
+        <Support family="stand" compatibility="FullBody" carry_left="-" carry_right="*" surface="*" />
+      </PostureManifest>
+    </widgetcanvas>
+    <testcaselist>
+      <graphs>
+        <testcasegraph name="Improve" type="Swing.Testing.TestCaseGraph" id="169ab7b2-a906-4bea-81b5-e2c33c4d0243">
+          <description></description>
+          <decisionmaker type="Swing.Testing.SceneStatement" id="5caf3897-4ee5-42ed-84d0-ca4a135e4f59" scenename="adult" />
+          <decisionmaker type="Swing.DataStructures.EntryPoint" id="8ee1131c-a123-4341-8e2f-3d4517ad6c0d">
+            <target id="5caf3897-4ee5-42ed-84d0-ca4a135e4f59" />
+          </decisionmaker>
+          <decisionmaker type="Swing.Testing.RequestStatement" id="998e5d70-cdc4-49f5-a40d-509d09a28c6d" actorinstance="cffdc039-1cbe-4aa2-ae85-e1b222c8af4f" state="7b6a8daa-cc56-49f4-9fed-4776c89d9b4b" interrputiblity="Normal" />
+        </testcasegraph>
+        <widgetcanvas>
+          <viewport>
+            <track x="0" y="0" />
+            <zoom f="1" />
+          </viewport>
+          <widget type="Swing.Testing.RequestWidget" id="4ef21774-939f-4c04-b0ee-d1f0d4acf246">
+            <location x="148" y="268" />
+            <size width="167" height="27" />
+            <data ref="998e5d70-cdc4-49f5-a40d-509d09a28c6d" />
+          </widget>
+          <widget type="Swing.Testing.SceneWidget" id="90db3c7e-2092-4c3a-a323-289207c4f6d2">
+            <location x="372" y="207" />
+            <size width="131" height="27" />
+            <data ref="5caf3897-4ee5-42ed-84d0-ca4a135e4f59" />
+          </widget>
+          <widget type="Swing.Widgets.EntryPointWidget" id="e073b0c7-d481-4644-82e9-0aa4d3f6910b">
+            <location x="50" y="100" />
+            <size width="30" height="30" />
+            <data ref="8ee1131c-a123-4341-8e2f-3d4517ad6c0d" />
+          </widget>
+          <edge type="WidgetCanvas.Edge" id="62e966ff-012c-49e0-8968-bc8dc5883e1b" origin="e073b0c7-d481-4644-82e9-0aa4d3f6910b.0" endpoint="90db3c7e-2092-4c3a-a323-289207c4f6d2.0" />
+          <edge type="WidgetCanvas.Edge" id="e4e2b9d8-0756-4f44-9f76-0a952413dc7c" origin="90db3c7e-2092-4c3a-a323-289207c4f6d2.1" endpoint="4ef21774-939f-4c04-b0ee-d1f0d4acf246.0" />
+        </widgetcanvas>
+        <testcasegraph name="Fill" type="Swing.Testing.TestCaseGraph" id="27a2afeb-d66b-47e5-9e5f-249a9128eab0">
+          <description></description>
+          <decisionmaker type="Swing.DataStructures.EntryPoint" id="0c7aa231-ae63-4264-bc14-32a6729987c2">
+            <target id="7f2310d3-46bf-4fb1-9a07-221dc02f8385" />
+          </decisionmaker>
+          <decisionmaker type="Swing.Testing.SceneStatement" id="7f2310d3-46bf-4fb1-9a07-221dc02f8385" scenename="adult" />
+          <decisionmaker type="Swing.Testing.RequestStatement" id="e7a77192-134a-4353-af13-e0ee5e478b42" actorinstance="cffdc039-1cbe-4aa2-ae85-e1b222c8af4f" state="ae14cc17-2586-4bf3-bf5c-19d47d783d4a" interrputiblity="Normal" />
+        </testcasegraph>
+        <widgetcanvas>
+          <viewport>
+            <track x="0" y="0" />
+            <zoom f="1" />
+          </viewport>
+          <widget type="Swing.Testing.SceneWidget" id="24144853-d492-4a01-99de-5a0071c12983">
+            <location x="180" y="127" />
+            <size width="131" height="27" />
+            <data ref="7f2310d3-46bf-4fb1-9a07-221dc02f8385" />
+          </widget>
+          <widget type="Swing.Testing.RequestWidget" id="80ed656d-7e7a-43ee-a965-9ae83adf79ce">
+            <location x="148" y="268" />
+            <size width="140" height="27" />
+            <data ref="e7a77192-134a-4353-af13-e0ee5e478b42" />
+          </widget>
+          <widget type="Swing.Widgets.EntryPointWidget" id="b06c0a25-6ce2-4694-9bb9-6df3700ee9c6">
+            <location x="50" y="100" />
+            <size width="30" height="30" />
+            <data ref="0c7aa231-ae63-4264-bc14-32a6729987c2" />
+          </widget>
+          <edge type="WidgetCanvas.Edge" id="36bdbc84-af29-448f-b8a7-c01dee5e9a68" origin="b06c0a25-6ce2-4694-9bb9-6df3700ee9c6.0" endpoint="24144853-d492-4a01-99de-5a0071c12983.0" />
+          <edge type="WidgetCanvas.Edge" id="dd6886eb-f974-4ebc-a710-ca6e65d908c2" origin="24144853-d492-4a01-99de-5a0071c12983.1" endpoint="80ed656d-7e7a-43ee-a965-9ae83adf79ce.0" />
+        </widgetcanvas>
+        <testcasegraph name="DipFinger_adult" type="Swing.Testing.TestCaseGraph" id="633d70ed-9b99-4ed2-a5d3-5f1ef6b13765">
+          <description></description>
+          <decisionmaker type="Swing.Testing.RequestStatement" id="62888923-6917-481b-946f-0800b97c3c9d" actorinstance="cffdc039-1cbe-4aa2-ae85-e1b222c8af4f" state="643cb4c6-c2f8-4a62-bbd1-c970a4c91f8d" interrputiblity="Normal" />
+          <decisionmaker type="Swing.DataStructures.EntryPoint" id="6d8e4e0f-7c69-4bd3-adec-0e3ad24b797d">
+            <target id="c8b7727f-ec6a-4b87-ae8a-52b5f9680d28" />
+          </decisionmaker>
+          <decisionmaker type="Swing.Testing.SceneStatement" id="c8b7727f-ec6a-4b87-ae8a-52b5f9680d28" scenename="adult" />
+        </testcasegraph>
+        <widgetcanvas>
+          <viewport>
+            <track x="0" y="0" />
+            <zoom f="1" />
+          </viewport>
+          <widget type="Swing.Testing.RequestWidget" id="1341e01b-9087-468c-be9a-a41a6d58b49a">
+            <location x="148" y="268" />
+            <size width="176" height="27" />
+            <data ref="62888923-6917-481b-946f-0800b97c3c9d" />
+          </widget>
+          <widget type="Swing.Testing.SceneWidget" id="289d1df2-3353-4984-aac4-77530994492b">
+            <location x="182" y="155" />
+            <size width="131" height="27" />
+            <data ref="c8b7727f-ec6a-4b87-ae8a-52b5f9680d28" />
+          </widget>
+          <widget type="Swing.Widgets.EntryPointWidget" id="486b1aaa-fc4b-4bb1-8737-e6cf9c8a95c9">
+            <location x="50" y="100" />
+            <size width="30" height="30" />
+            <data ref="6d8e4e0f-7c69-4bd3-adec-0e3ad24b797d" />
+          </widget>
+          <edge type="WidgetCanvas.Edge" id="36d97710-b601-478f-9fe1-604a0182cb8d" origin="289d1df2-3353-4984-aac4-77530994492b.1" endpoint="1341e01b-9087-468c-be9a-a41a6d58b49a.0" />
+          <edge type="WidgetCanvas.Edge" id="7416516c-303b-4c55-a721-535de8a0a3d5" origin="486b1aaa-fc4b-4bb1-8737-e6cf9c8a95c9.0" endpoint="289d1df2-3353-4984-aac4-77530994492b.0" />
+        </widgetcanvas>
+        <testcasegraph name="SomethingExtra" type="Swing.Testing.TestCaseGraph" id="55cfbd03-3f08-472f-9732-089ecc87e962">
+          <description></description>
+          <decisionmaker type="Swing.Testing.RequestStatement" id="532ea62b-a51a-4ad2-a08a-1c1235eee3df" actorinstance="cffdc039-1cbe-4aa2-ae85-e1b222c8af4f" state="4869fd53-081c-423a-a758-d291d0f0ed5a" interrputiblity="Normal" />
+          <decisionmaker type="Swing.Testing.SceneStatement" id="76b602d4-9c9c-4e79-a636-f6aef227553e" scenename="adult" />
+          <decisionmaker type="Swing.DataStructures.EntryPoint" id="e3df98d2-4f4e-4acb-849d-c0874b2b1601">
+            <target id="76b602d4-9c9c-4e79-a636-f6aef227553e" />
+          </decisionmaker>
+        </testcasegraph>
+        <widgetcanvas>
+          <viewport>
+            <track x="0" y="0" />
+            <zoom f="1" />
+          </viewport>
+          <widget type="Swing.Widgets.EntryPointWidget" id="197465ef-71b3-41fd-8542-bf726cdfa60b">
+            <location x="50" y="100" />
+            <size width="30" height="30" />
+            <data ref="e3df98d2-4f4e-4acb-849d-c0874b2b1601" />
+          </widget>
+          <widget type="Swing.Testing.SceneWidget" id="91540666-5f17-41a3-96f5-dae9ccad9ee9">
+            <location x="214" y="113" />
+            <size width="131" height="27" />
+            <data ref="76b602d4-9c9c-4e79-a636-f6aef227553e" />
+          </widget>
+          <widget type="Swing.Testing.RequestWidget" id="ccc556ad-3e71-4a77-9717-2d781e603f11">
+            <location x="148" y="268" />
+            <size width="209" height="27" />
+            <data ref="532ea62b-a51a-4ad2-a08a-1c1235eee3df" />
+          </widget>
+          <edge type="WidgetCanvas.Edge" id="351cad48-29e6-4c2c-80c9-1b6f762a9f79" origin="91540666-5f17-41a3-96f5-dae9ccad9ee9.1" endpoint="ccc556ad-3e71-4a77-9717-2d781e603f11.0" />
+          <edge type="WidgetCanvas.Edge" id="58c76bb1-d897-445d-8d2a-2436392e5038" origin="197465ef-71b3-41fd-8542-bf726cdfa60b.0" endpoint="91540666-5f17-41a3-96f5-dae9ccad9ee9.0" />
+        </widgetcanvas>
+        <testcasegraph name="DipFinger_child" type="Swing.Testing.TestCaseGraph" id="e7ee3d0f-d299-4666-bb85-ec870478a88e">
+          <description></description>
+          <decisionmaker type="Swing.Testing.RequestStatement" id="3d6f26eb-c9f7-4fff-b5c6-ab01212d02fa" actorinstance="1a9ba2bf-0175-41ff-a9c9-f67a9417ebf4" state="643cb4c6-c2f8-4a62-bbd1-c970a4c91f8d" interrputiblity="Normal" />
+          <decisionmaker type="Swing.DataStructures.EntryPoint" id="a4224d6e-4dec-498e-a021-5f9b477aa173">
+            <target id="f0c79918-eb20-485f-bffd-8d5fb2ec1262" />
+          </decisionmaker>
+          <decisionmaker type="Swing.Testing.SceneStatement" id="f0c79918-eb20-485f-bffd-8d5fb2ec1262" scenename="child" />
+        </testcasegraph>
+        <widgetcanvas>
+          <viewport>
+            <track x="0" y="0" />
+            <zoom f="1" />
+          </viewport>
+          <widget type="Swing.Testing.RequestWidget" id="25f85453-c533-401b-9fc6-e7a676d851c9">
+            <location x="148" y="268" />
+            <size width="176" height="27" />
+            <data ref="3d6f26eb-c9f7-4fff-b5c6-ab01212d02fa" />
+          </widget>
+          <widget type="Swing.Testing.SceneWidget" id="5775ff68-853c-4436-91a6-0c279f3b7f0d">
+            <location x="182" y="155" />
+            <size width="130" height="27" />
+            <data ref="f0c79918-eb20-485f-bffd-8d5fb2ec1262" />
+          </widget>
+          <widget type="Swing.Widgets.EntryPointWidget" id="99e8e0a7-42a6-4a9e-a3e1-ba25a5a70517">
+            <location x="50" y="100" />
+            <size width="30" height="30" />
+            <data ref="a4224d6e-4dec-498e-a021-5f9b477aa173" />
+          </widget>
+          <edge type="WidgetCanvas.Edge" id="2465d061-aa40-4340-85dc-301ae563c83d" origin="5775ff68-853c-4436-91a6-0c279f3b7f0d.1" endpoint="25f85453-c533-401b-9fc6-e7a676d851c9.0" />
+          <edge type="WidgetCanvas.Edge" id="72323cf4-b5fb-4fab-abdd-16161a915264" origin="99e8e0a7-42a6-4a9e-a3e1-ba25a5a70517.0" endpoint="5775ff68-853c-4436-91a6-0c279f3b7f0d.0" />
+        </widgetcanvas>
+      </graphs>
+    </testcaselist>
+    <blendmasklist />
+    <Lighting>
+      <Key0Light Rot="17.3" Height="0.9" Red="1" Green="1" Blue="1" Intensity="0.05" />
+      <Key1Light Rot="213.5" Height="0.45" Red="1" Green="1" Blue="1" Intensity="0.1" />
+      <Rim0Light Red="0.28" Green="0.15" Blue="0.06" Intensity="1.8" />
+      <Rim1Light Red="0" Green="0.3" Blue="0.4" Intensity="2.11" />
+      <DirectonalLight Yaw="0.5585054" Pitch="-0.9948377" Red="0.8" Green="0.8" Blue="0.8" Intensity="0.8" />
+      <AmbientLight Red="0.53" Green="0.76" Blue="0.53" Intensity="0.2" />
+      <ShadowLight Red="0.53" Green="0.76" Blue="0.53" Intensity="0.2" />
+    </Lighting>
+    <CameraData>
+      <EyePos posx="-3.000132" posy="1.98471" posz="2.150469" />
+      <TargetPos posx="-0.0212631" posy="0.7614638" posz="-0.04953343" />
+    </CameraData>
+    <FocusData ActiveActorInstance="x">
+      <ActorInstanceFocus ActorInstance="x" CarryEnabled="false" HorizValue="0" VertValue="0" FocusPostureType="PostureStand" CarryLeftAnim="bowl" CarryRightAnim="bowl" CarryLeftEnabled="false" CarryRightEnabled="false" />
+    </FocusData>
+    <SceneSetUp>
+      <Models>
+        <Model name="cfEve" alias="cfEve_1" obj_def_id="13101385503273364552">
+          <Position mode="Absolute" posx="0" posy="0" posz="0" rotx="0" roty="0" rotz="0" />
+        </Model>
+        <Model name="fountainBanquet_SP01BLACKTIE_set1" alias="fountainBanquet_1" obj_def_id="85875">
+          <Position mode="Absolute" posx="0" posy="1" posz="0.8" rotx="0" roty="0" rotz="0" />
+        </Model>
+      </Models>
+      <ActorInstances>
+        <ActorInstance name="x" postureinswing="stand,FullBody" parameters="x:age,x:sex,x:carryState" parametersinswing="child,male,right" modelname="cfEve_1" subroot="" pairedactors="" id="cffdc039-1cbe-4aa2-ae85-e1b222c8af4f" />
+        <ActorInstance name="fruitPunchFountain" postureinswing="" parameters="" parametersinswing="" modelname="fountainBanquet_1" subroot="" pairedactors="" id="e73c3732-1368-4dcc-bec8-db0afb573b26" />
+      </ActorInstances>
+    </SceneSetUp>
+    <SceneList>
+      <SceneSetUp name="adult">
+        <Models>
+          <Model name="ymAdam" alias="ymAdam_1" obj_def_id="314150333418808286">
+            <Position mode="Absolute" posx="0" posy="0" posz="0" rotx="0" roty="0" rotz="0" />
+          </Model>
+          <Model name="fountainBanquet_SP01BLACKTIE_set1" alias="fountainBanquet_1" obj_def_id="85875">
+            <Position mode="Absolute" posx="0" posy="1" posz="0.8" rotx="0" roty="0" rotz="0" />
+          </Model>
+        </Models>
+        <ActorInstances>
+          <ActorInstance name="x" postureinswing="stand,FullBody" parameters="x:age,x:sex,x:carryState" parametersinswing="adult,male,right" modelname="ymAdam_1" subroot="" pairedactors="" id="af36f4b0-dacd-453e-926c-0f4b3863518c" />
+          <ActorInstance name="fruitPunchFountain" postureinswing="" parameters="" parametersinswing="" modelname="fountainBanquet_1" subroot="" pairedactors="" id="0e4514fc-fa4b-4bc5-ae96-6f3734509e57" />
+        </ActorInstances>
+      </SceneSetUp>
+      <SceneSetUp name="child">
+        <Models>
+          <Model name="cfEve" alias="cfEve_1" obj_def_id="13101385503273364552">
+            <Position mode="Absolute" posx="0" posy="0" posz="0" rotx="0" roty="0" rotz="0" />
+          </Model>
+          <Model name="fountainBanquet_SP01BLACKTIE_set1" alias="fountainBanquet_1" obj_def_id="85875">
+            <Position mode="Absolute" posx="0" posy="1" posz="0.8" rotx="0" roty="0" rotz="0" />
+          </Model>
+        </Models>
+        <ActorInstances>
+          <ActorInstance name="x" postureinswing="stand,FullBody" parameters="x:age,x:sex,x:carryState" parametersinswing="child,male,right" modelname="cfEve_1" subroot="" pairedactors="" id="869dd478-33a5-48c2-a41c-0fdb73b932ad" />
+          <ActorInstance name="fruitPunchFountain" postureinswing="" parameters="" parametersinswing="" modelname="fountainBanquet_1" subroot="" pairedactors="" id="8a4baf69-a360-4522-8481-e460e6eac590" />
+        </ActorInstances>
+      </SceneSetUp>
+    </SceneList>
+  </SwingPrivate>
 </ASM>

@@ -1,0 +1,118 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="Rabbit_soc_T_SimAttackedByRabbit" dcc="sage">
+  <Actor name="x" type="Sim" master="true" virtual="false" />
+  <Actor name="animalRabbit" type="Object" virtual="false" />
+  <Actor name="urnStone" type="Object" virtual="false" />
+  <Actor name="rabbitMound" type="Prop" virtual="false" object_def_resource_key="c0db5ae7:00000000:0000000000041f64#rabbitMound_EP11GEN_set1" />
+  <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
+  <Parameter name="x:carryState" type="enum" labels="none,left,right,both" default="right" />
+  <IkConfiguration name="a2o_rabbit_soc_T_attackedByRabbit_survive.ma">
+    <SourceFile name="a2o_rabbit_soc_T_attackedByRabbit_survive.ma">
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="y" actor="animalRabbit" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_rabbit_soc_T_attackedByRabbit_death.ma">
+    <SourceFile name="a2o_rabbit_soc_T_attackedByRabbit_death.ma">
+      <MapNamespace namespace="y" actor="animalRabbit" />
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="rabbitMound" actor="rabbitMound" />
+    </SourceFile>
+  </IkConfiguration>
+  <PostureManifest actors="">
+    <Support family="stand" compatibility="FullBody" carry_left="-" carry_right="-" surface="*" />
+  </PostureManifest>
+  <State type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" name="DeadOnGround" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="Death_by_Rabbit" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="Doom" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="Resurrect" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="Survive" focus="none" facialoverlays="false" tailoverlays="true" />
+  <Connection from="DeadOnGround" to="Doom" />
+  <Connection from="DeadOnGround" to="Resurrect" />
+  <Connection from="Death_by_Rabbit" to="DeadOnGround" />
+  <Connection from="Doom" to="exit" />
+  <Connection from="Resurrect" to="exit" />
+  <Connection from="Survive" to="exit" />
+  <Connection from="entry" to="Death_by_Rabbit" />
+  <Connection from="entry" to="Survive" />
+  <State name="DeadOnGround" type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <MakeController>
+      <PostureSelector parameter="x:posture" unique_id="4">
+        <Choice value="-stand-FullBody" track="normal" mask="">
+          <Controller target="animalRabbit" controller="@ClipController(clip=a2o_rabbit_soc_T_attackedByRabbit_death_loop_animalRabbit, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_rabbit_soc_T_attackedByRabbit_death.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="1">
+            <TransitionClassList />
+          </Controller>
+          <Controller target="x" controller="@ClipController(clip=a2o_rabbit_soc_T_attackedByRabbit_death_loop_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_rabbit_soc_T_attackedByRabbit_death.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="2">
+            <TransitionClassList />
+          </Controller>
+          <Controller target="rabbitMound" controller="@ClipController(clip=a2o_rabbit_soc_T_attackedByRabbit_death_loop_rabbitMound, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_rabbit_soc_T_attackedByRabbit_death.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="3">
+            <TransitionClassList />
+          </Controller>
+        </Choice>
+      </PostureSelector>
+    </MakeController>
+  </State>
+  <State name="Death_by_Rabbit" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="8">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2o_rabbit_soc_T_attackedByRabbit_death_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_rabbit_soc_T_attackedByRabbit_death.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="5">
+          <TransitionClassList />
+        </Controller>
+        <Controller target="animalRabbit" controller="@ClipController(clip=a2o_rabbit_soc_T_attackedByRabbit_death_animalRabbit, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_rabbit_soc_T_attackedByRabbit_death.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="6">
+          <TransitionClassList />
+        </Controller>
+        <Controller target="rabbitMound" controller="@ClipController(clip=a2o_rabbit_soc_T_attackedByRabbit_death_rabbitMound, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_rabbit_soc_T_attackedByRabbit_death.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="7">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="Doom" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="12">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <Controller target="rabbitMound" controller="@ClipController(clip=a2o_rabbit_soc_T_attackedByRabbit_death_urnStone_rabbitMound, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_rabbit_soc_T_attackedByRabbit_death.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="9">
+          <TransitionClassList />
+        </Controller>
+        <Controller target="animalRabbit" controller="@ClipController(clip=a2o_rabbit_soc_T_attackedByRabbit_death_urnStone_animalRabbit, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_rabbit_soc_T_attackedByRabbit_death.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="10">
+          <TransitionClassList />
+        </Controller>
+        <Controller target="x" controller="@ClipController(clip=a2o_rabbit_soc_T_attackedByRabbit_death_urnStone_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_rabbit_soc_T_attackedByRabbit_death.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="11">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="Resurrect" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="16">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <Controller target="rabbitMound" controller="@ClipController(clip=a2o_rabbit_soc_T_attackedByRabbit_death_getUp_rabbitMound, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_rabbit_soc_T_attackedByRabbit_death.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="13">
+          <TransitionClassList />
+        </Controller>
+        <Controller target="x" controller="@ClipController(clip=a2o_rabbit_soc_T_attackedByRabbit_death_getUp_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_rabbit_soc_T_attackedByRabbit_death.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="14">
+          <TransitionClassList />
+        </Controller>
+        <Controller target="animalRabbit" controller="@ClipController(clip=a2o_rabbit_soc_T_attackedByRabbit_death_getUp_animalRabbit, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_rabbit_soc_T_attackedByRabbit_death.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="15">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="Survive" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="19">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2o_rabbit_soc_T_attackedByRabbit_survive_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_rabbit_soc_T_attackedByRabbit_survive.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="17">
+          <TransitionClassList />
+        </Controller>
+        <Controller target="animalRabbit" controller="@ClipController(clip=a2o_rabbit_soc_T_attackedByRabbit_survive_animalRabbit, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_rabbit_soc_T_attackedByRabbit_survive.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="18">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+    </PostureSelector>
+  </State>
+</ASM>

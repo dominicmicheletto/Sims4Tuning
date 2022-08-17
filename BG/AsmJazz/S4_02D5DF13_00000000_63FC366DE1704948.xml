@@ -4,10 +4,14 @@
   <Actor name="bed" type="Object" virtual="false" />
   <Actor name="bedIKRef" type="Object" virtual="true" />
   <Actor name="sitTemplate" type="Object" virtual="true" />
-  <Parameter name="transitionPosture" type="enum" labels="stand,sit,sitIntimate,bed_Sleep,bed_Intimate,bed_Woohoo,bed_Relax,bed_Nap,bed_Undercovers,monkeyBar_play,monkeyBar_hangOut,shower,shower_wooHoo,computer,Bathtub_Bubblebath,bathTub_TakeBath" default="stand" />
+  <Parameter name="transitionPosture" type="enum" labels="Bathtub_Bubblebath,bathTub_TakeBath,bed_Intimate,bed_Nap,bed_Relax,bed_Sleep,bed_Undercovers,bed_Woohoo,computer,monkeyBar_hangOut,monkeyBar_play,shower,shower_wooHoo,sit,sitIntimate,stand,bed_crosslegged,bed_kneel" default="stand" />
   <Parameter name="isMirrored" type="bool" labels="" default="False" />
   <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
   <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
+  <Parameter name="x:trait_Clumsy" type="bool" labels="" default="False" />
+  <Parameter name="x:trait_isPregnant" type="bool" labels="" default="False" />
+  <Parameter name="bedIKRef:objectName" type="enum" labels="bedSingle,bedDouble,toddlerBed,bunkBedTop" default="bedSingle" />
+  <Parameter name="bedIKRef:isParallelLowerBunk" type="bool" labels="" default="False" />
   <IkConfiguration name="a2o_bed_trans_toFrom_sit.ma">
     <SourceFile name="a2o_bed_trans_toFrom_sit.ma">
       <MapNamespace namespace="bed" actor="bedIKRef" />
@@ -24,6 +28,42 @@
   </IkConfiguration>
   <IkConfiguration name="a2o_bed_undercovers.ma">
     <SourceFile name="a2o_bed_undercovers.ma">
+      <MapNamespace namespace="bed" actor="bedIKRef" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_bunkBed_undercovers_getInOut.ma">
+    <SourceFile name="a2o_bunkBed_undercovers_getInOut.ma">
+      <MapNamespace namespace="bed" actor="bedIKRef" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_bunkBed_trans_MASTER.ma">
+    <SourceFile name="a2o_bunkBed_trans_MASTER.ma">
+      <MapNamespace namespace="bed" actor="bedIKRef" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_bed_trans_to_stand_bonkHead.ma">
+    <SourceFile name="a2o_bed_trans_to_stand_bonkHead.ma">
+      <MapNamespace namespace="bed" actor="bedIKRef" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_bunkBed_trans_undercovers_to_stand_fail.ma">
+    <SourceFile name="a2o_bunkBed_trans_undercovers_to_stand_fail.ma">
+      <MapNamespace namespace="bed" actor="bedIKRef" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_bed_trans_crosslegged_04.ma">
+    <SourceFile name="a2o_bed_trans_crosslegged_04.ma">
+      <MapNamespace namespace="bed" actor="bedIKRef" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_bed_trans_kneel_04.ma">
+    <SourceFile name="a2o_bed_trans_kneel_04.ma">
       <MapNamespace namespace="bed" actor="bedIKRef" />
       <MapNamespace namespace="x" actor="x" />
     </SourceFile>
@@ -59,152 +99,329 @@
   </State>
   <State name="Get_In" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
     <description />
-    <ParameterSelector parameter="transitionPosture" unique_id="11">
-      <Choice value="stand">
-        <Controller target="bed" controller="@ClipController(clip=a2o_bed_trans_stand_to_undercovers_bed, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bed_trans_MASTER.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="3">
-          <TransitionClassList>
-            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
-          </TransitionClassList>
-        </Controller>
-        <Controller target="x" controller="@ClipController(clip=a2o_bed_trans_stand_to_undercovers_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bed_trans_MASTER.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="4">
-          <TransitionClassList>
-            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
-          </TransitionClassList>
-        </Controller>
+    <ParameterSelector parameter="transitionPosture" unique_id="24">
+      <Choice value="Bathtub_Bubblebath" />
+      <Choice value="bathTub_TakeBath" />
+      <Choice value="bed_Intimate" />
+      <Choice value="bed_Nap">
+        <ParameterSelector parameter="bedIKRef:objectName" unique_id="7">
+          <Choice value="bedSingle">
+            <Controller target="bed" controller="@ClipController(clip=a2o_bed_trans_nap_to_undercovers_bed, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bed_trans_MASTER.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="3">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+            <Controller target="x" controller="@ClipController(clip=a2o_bed_trans_nap_to_undercovers_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bed_trans_MASTER.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="4">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice value="bedDouble">
+            <Reference target="3" />
+            <Reference target="4" />
+          </Choice>
+          <Choice value="toddlerBed">
+            <Reference target="3" />
+            <Reference target="4" />
+          </Choice>
+          <Choice value="bunkBedTop">
+            <Controller target="x" controller="@ClipController(clip=a2o_bunkBed_trans_nap_to_undercovers_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bunkBed_trans_MASTER.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="5">
+              <TransitionClassList />
+            </Controller>
+            <Controller target="bed" controller="@ClipController(clip=a2o_bunkBed_trans_nap_to_undercovers_bed, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bunkBed_trans_MASTER.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="6">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
+        </ParameterSelector>
       </Choice>
+      <Choice value="bed_Relax">
+        <ParameterSelector parameter="bedIKRef:objectName" unique_id="12">
+          <Choice value="bedSingle">
+            <Controller target="x" controller="@ClipController(clip=a2o_bed_trans_relax_to_undercovers_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bed_trans_MASTER.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="8">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+            <Controller target="bed" controller="@ClipController(clip=a2o_bed_trans_relax_to_undercovers_bed, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bed_trans_MASTER.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="9">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice value="bedDouble">
+            <Reference target="8" />
+            <Reference target="9" />
+          </Choice>
+          <Choice value="toddlerBed">
+            <Reference target="8" />
+            <Reference target="9" />
+          </Choice>
+          <Choice value="bunkBedTop">
+            <Controller target="x" controller="@ClipController(clip=a2o_bunkBed_trans_relax_to_undercovers_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bunkBed_trans_MASTER.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="10">
+              <TransitionClassList />
+            </Controller>
+            <Controller target="bed" controller="@ClipController(clip=a2o_bunkBed_trans_relax_to_undercovers_bed, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bunkBed_trans_MASTER.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="11">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+      <Choice value="bed_Sleep" />
+      <Choice value="bed_Undercovers" />
+      <Choice value="bed_Woohoo" />
+      <Choice value="computer" />
+      <Choice value="monkeyBar_hangOut" />
+      <Choice value="monkeyBar_play" />
+      <Choice value="shower" />
+      <Choice value="shower_wooHoo" />
       <Choice value="sit">
-        <Controller target="x" controller="@ClipController(clip=a2o_bed_trans_sit_to_undercovers_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bed_trans_toFrom_sit.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="5">
+        <Controller target="x" controller="@ClipController(clip=a2o_bed_trans_sit_to_undercovers_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bed_trans_toFrom_sit.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="13">
           <TransitionClassList>
             <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
           </TransitionClassList>
         </Controller>
-        <Controller target="bed" controller="@ClipController(clip=a2o_bed_trans_sit_to_undercovers_bed, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bed_trans_toFrom_sit.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="6">
+        <Controller target="bed" controller="@ClipController(clip=a2o_bed_trans_sit_to_undercovers_bed, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bed_trans_toFrom_sit.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="14">
           <TransitionClassList>
             <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
           </TransitionClassList>
         </Controller>
       </Choice>
       <Choice value="sitIntimate" />
-      <Choice value="bed_Sleep" />
-      <Choice value="bed_Intimate" />
-      <Choice value="bed_Woohoo" />
-      <Choice value="bed_Relax">
-        <Controller target="x" controller="@ClipController(clip=a2o_bed_trans_relax_to_undercovers_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bed_trans_MASTER.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="7">
-          <TransitionClassList>
-            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
-          </TransitionClassList>
+      <Choice value="stand">
+        <ParameterSelector parameter="bedIKRef:objectName" unique_id="19">
+          <Choice value="bedSingle">
+            <Controller target="bed" controller="@ClipController(clip=a2o_bed_trans_stand_to_undercovers_bed, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bed_trans_MASTER.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="15">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+            <Controller target="x" controller="@ClipController(clip=a2o_bed_trans_stand_to_undercovers_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bed_trans_MASTER.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="16">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice value="bedDouble">
+            <Reference target="15" />
+            <Reference target="16" />
+          </Choice>
+          <Choice value="toddlerBed">
+            <Reference target="15" />
+            <Reference target="16" />
+          </Choice>
+          <Choice value="bunkBedTop">
+            <Controller target="x" controller="@ClipController(clip=a2o_bunkBed_trans_stand_to_undercover_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bunkBed_undercovers_getInOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="17">
+              <TransitionClassList />
+            </Controller>
+            <Controller target="bed" controller="@ClipController(clip=a2o_bunkBed_trans_stand_to_undercovers_bed, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bunkBed_undercovers_getInOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="18">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+      <Choice value="bed_crosslegged">
+        <Controller target="bed" controller="@ClipController(clip=a2o_bed_trans_crosslegged_to_undercovers_bed, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bed_trans_crosslegged_04.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="20">
+          <TransitionClassList />
         </Controller>
-        <Controller target="bed" controller="@ClipController(clip=a2o_bed_trans_relax_to_undercovers_bed, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bed_trans_MASTER.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="8">
-          <TransitionClassList>
-            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
-          </TransitionClassList>
+        <Controller target="x" controller="@ClipController(clip=a2o_bed_trans_crosslegged_to_undercovers_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bed_trans_crosslegged_04.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="21">
+          <TransitionClassList />
         </Controller>
       </Choice>
-      <Choice value="bed_Nap">
-        <Controller target="bed" controller="@ClipController(clip=a2o_bed_trans_nap_to_undercovers_bed, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bed_trans_MASTER.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="9">
-          <TransitionClassList>
-            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
-          </TransitionClassList>
+      <Choice value="bed_kneel">
+        <Controller target="bed" controller="@ClipController(clip=a2o_bed_trans_kneel_to_undercovers_bed, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bed_trans_kneel_04.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="22">
+          <TransitionClassList />
         </Controller>
-        <Controller target="x" controller="@ClipController(clip=a2o_bed_trans_nap_to_undercovers_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bed_trans_MASTER.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="10">
-          <TransitionClassList>
-            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
-          </TransitionClassList>
+        <Controller target="x" controller="@ClipController(clip=a2o_bed_trans_kneel_to_undercovers_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bed_trans_kneel_04.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="23">
+          <TransitionClassList />
         </Controller>
       </Choice>
-      <Choice value="bed_Undercovers" />
-      <Choice value="monkeyBar_play" />
-      <Choice value="monkeyBar_hangOut" />
-      <Choice value="shower" />
-      <Choice value="shower_wooHoo" />
-      <Choice value="computer" />
-      <Choice value="Bathtub_Bubblebath" />
-      <Choice value="bathTub_TakeBath" />
     </ParameterSelector>
   </State>
   <State name="Get_Out" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
     <description />
-    <ParameterSelector parameter="transitionPosture" unique_id="19">
-      <Choice value="stand">
-        <Controller target="bed" controller="@ClipController(clip=a2o_bed_trans_undercovers_to_stand_bed, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bed_trans_MASTER.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="12">
-          <TransitionClassList>
-            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
-          </TransitionClassList>
-        </Controller>
-        <ParameterSelector parameter="isMirrored" unique_id="15">
-          <Choice value="false">
-            <Stop target="bed" track="low" blend_in="0.2666667" unique_id="13" />
-          </Choice>
-          <Choice value="true">
-            <Stop target="bed" track="lowplus" blend_in="0.2666667" unique_id="14" />
-          </Choice>
-        </ParameterSelector>
-        <Controller target="x" controller="@ClipController(clip=a2o_bed_trans_undercovers_to_stand_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bed_trans_MASTER.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="16">
-          <TransitionClassList>
-            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
-          </TransitionClassList>
-        </Controller>
-      </Choice>
-      <Choice value="sit">
-        <Controller target="x" controller="@ClipController(clip=a2o_bed_trans_undercovers_to_sit_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bed_trans_toFrom_sit.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="17">
-          <TransitionClassList>
-            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
-          </TransitionClassList>
-        </Controller>
-        <Controller target="bed" controller="@ClipController(clip=a2o_bed_trans_undercovers_to_sit_bed, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bed_trans_toFrom_sit.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="18">
-          <TransitionClassList>
-            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
-          </TransitionClassList>
-        </Controller>
-        <Reference target="15" />
-      </Choice>
-      <Choice value="sitIntimate" />
-      <Choice value="bed_Sleep">
-        <Reference target="15" />
-      </Choice>
-      <Choice value="bed_Intimate">
-        <Reference target="15" />
-      </Choice>
-      <Choice value="bed_Woohoo">
-        <Reference target="15" />
-      </Choice>
-      <Choice value="bed_Relax">
-        <Reference target="15" />
-      </Choice>
-      <Choice value="bed_Nap">
-        <Reference target="15" />
-      </Choice>
-      <Choice value="bed_Undercovers" />
-      <Choice value="monkeyBar_play" />
-      <Choice value="monkeyBar_hangOut" />
-      <Choice value="shower" />
-      <Choice value="shower_wooHoo" />
-      <Choice value="computer" />
+    <ParameterSelector parameter="transitionPosture" unique_id="46">
       <Choice value="Bathtub_Bubblebath" />
       <Choice value="bathTub_TakeBath" />
+      <Choice value="bed_Intimate">
+        <ParameterSelector parameter="isMirrored" unique_id="27">
+          <Choice value="false">
+            <Stop target="bed" track="low" blend_in="0.2666667" unique_id="25" />
+          </Choice>
+          <Choice value="true">
+            <Stop target="bed" track="lowplus" blend_in="0.2666667" unique_id="26" />
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+      <Choice value="bed_Nap">
+        <Reference target="27" />
+      </Choice>
+      <Choice value="bed_Relax">
+        <Reference target="27" />
+      </Choice>
+      <Choice value="bed_Sleep">
+        <Reference target="27" />
+      </Choice>
+      <Choice value="bed_Undercovers" />
+      <Choice value="bed_Woohoo">
+        <Reference target="27" />
+      </Choice>
+      <Choice value="computer" />
+      <Choice value="monkeyBar_hangOut" />
+      <Choice value="monkeyBar_play" />
+      <Choice value="shower" />
+      <Choice value="shower_wooHoo" />
+      <Choice value="sit">
+        <Controller target="x" controller="@ClipController(clip=a2o_bed_trans_undercovers_to_sit_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bed_trans_toFrom_sit.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="28">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+        <Controller target="bed" controller="@ClipController(clip=a2o_bed_trans_undercovers_to_sit_bed, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bed_trans_toFrom_sit.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="29">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+        <Reference target="27" />
+      </Choice>
+      <Choice value="sitIntimate" />
+      <Choice value="stand">
+        <ParameterSelector parameter="bedIKRef:objectName" unique_id="45">
+          <Choice value="bedSingle">
+            <ParameterSelector parameter="x:trait_Clumsy" unique_id="37">
+              <Choice value="false">
+                <Controller target="bed" controller="@ClipController(clip=a2o_bed_trans_undercovers_to_stand_bed, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bed_trans_MASTER.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="30">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=a2o_bed_trans_undercovers_to_stand_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bed_trans_MASTER.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="31">
+                  <TransitionClassList>
+                    <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  </TransitionClassList>
+                </Controller>
+              </Choice>
+              <Choice value="true">
+                <ParameterSelector parameter="x:age" unique_id="36">
+                  <Choice value="baby" />
+                  <Choice value="toddler">
+                    <Reference target="30" />
+                    <Reference target="31" />
+                  </Choice>
+                  <Choice value="child">
+                    <Reference target="30" />
+                    <Reference target="31" />
+                  </Choice>
+                  <Choice value="teen">
+                    <ParameterSelector parameter="bedIKRef:isParallelLowerBunk" unique_id="35">
+                      <Choice value="false">
+                        <Reference target="30" />
+                        <Reference target="31" />
+                      </Choice>
+                      <Choice value="true">
+                        <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="34">
+                          <Choice weight="90" avoidRepeat="False">
+                            <Reference target="30" />
+                            <Reference target="31" />
+                          </Choice>
+                          <Choice weight="37" avoidRepeat="False">
+                            <Controller target="bed" controller="@ClipController(clip=a2o_bed_trans_undercovers_to_stand_bonkHead_bed, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bed_trans_to_stand_bonkHead.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="32">
+                              <TransitionClassList />
+                            </Controller>
+                            <Controller target="x" controller="@ClipController(clip=a2o_bed_trans_undercovers_to_stand_bonkHead_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bed_trans_to_stand_bonkHead.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="33">
+                              <TransitionClassList />
+                            </Controller>
+                          </Choice>
+                        </RandomSelector>
+                      </Choice>
+                    </ParameterSelector>
+                  </Choice>
+                  <Choice value="youngadult">
+                    <Reference target="35" />
+                  </Choice>
+                  <Choice value="adult">
+                    <Reference target="35" />
+                  </Choice>
+                  <Choice value="elder">
+                    <Reference target="35" />
+                  </Choice>
+                </ParameterSelector>
+              </Choice>
+            </ParameterSelector>
+          </Choice>
+          <Choice value="bedDouble">
+            <Reference target="30" />
+            <Reference target="31" />
+          </Choice>
+          <Choice value="toddlerBed" />
+          <Choice value="bunkBedTop">
+            <ParameterSelector parameter="x:trait_isPregnant" unique_id="44">
+              <Choice value="false">
+                <ParameterSelector parameter="x:trait_Clumsy" unique_id="43">
+                  <Choice value="false">
+                    <Controller target="x" controller="@ClipController(clip=a2o_bunkBed_trans_undercovers_to_stand_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bunkBed_undercovers_getInOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="38">
+                      <TransitionClassList />
+                    </Controller>
+                    <Controller target="bed" controller="@ClipController(clip=a2o_bunkBed_trans_undercovers_to_stand_bed, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bunkBed_undercovers_getInOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="39">
+                      <TransitionClassList />
+                    </Controller>
+                  </Choice>
+                  <Choice value="true">
+                    <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="42">
+                      <Choice weight="87" avoidRepeat="False">
+                        <Reference target="38" />
+                        <Reference target="39" />
+                      </Choice>
+                      <Choice weight="25" avoidRepeat="False">
+                        <Controller target="x" controller="@ClipController(clip=a2o_bunkBed_trans_undercovers_to_stand_fail_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bunkBed_trans_undercovers_to_stand_fail.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="40">
+                          <TransitionClassList />
+                        </Controller>
+                        <Controller target="bed" controller="@ClipController(clip=a2o_bunkBed_trans_undercovers_to_stand_fail_bed, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bunkBed_trans_undercovers_to_stand_fail.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="41">
+                          <TransitionClassList />
+                        </Controller>
+                      </Choice>
+                    </RandomSelector>
+                  </Choice>
+                </ParameterSelector>
+              </Choice>
+              <Choice value="true">
+                <Reference target="38" />
+                <Reference target="39" />
+              </Choice>
+            </ParameterSelector>
+          </Choice>
+        </ParameterSelector>
+        <Reference target="27" />
+      </Choice>
+      <Choice value="bed_crosslegged">
+        <Reference target="27" />
+      </Choice>
+      <Choice value="bed_kneel">
+        <Reference target="27" />
+      </Choice>
     </ParameterSelector>
   </State>
   <State name="Mirror_Out" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
     <description />
-    <ActorMask target="bed" mask="Trackmask_Bed" unique_id="24" />
-    <ParameterSelector parameter="isMirrored" unique_id="23">
+    <ActorMask target="bed" mask="Trackmask_Bed" unique_id="51" />
+    <ParameterSelector parameter="isMirrored" unique_id="50">
       <Choice value="false" />
       <Choice value="true">
-        <TrackOffset target="bed" offset="2000" unique_id="22" />
-        <SetMirror target="bed" mirror="true" unique_id="21" />
-        <SetMirror target="x" mirror="true" unique_id="20" />
+        <TrackOffset target="bed" offset="2000" unique_id="49" />
+        <SetMirror target="bed" mirror="true" unique_id="48" />
+        <SetMirror target="x" mirror="true" unique_id="47" />
       </Choice>
     </ParameterSelector>
   </State>
   <State name="mirror" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
     <description />
-    <ActorMask target="bed" mask="Trackmask_Bed" unique_id="29" />
-    <ParameterSelector parameter="isMirrored" unique_id="28">
+    <ActorMask target="bed" mask="Trackmask_Bed" unique_id="56" />
+    <ParameterSelector parameter="isMirrored" unique_id="55">
       <Choice value="false" />
       <Choice value="true">
-        <TrackOffset target="bed" offset="2000" unique_id="27" />
-        <SetMirror target="bed" mirror="true" unique_id="26" />
-        <SetMirror target="x" mirror="true" unique_id="25" />
+        <TrackOffset target="bed" offset="2000" unique_id="54" />
+        <SetMirror target="bed" mirror="true" unique_id="53" />
+        <SetMirror target="x" mirror="true" unique_id="52" />
       </Choice>
     </ParameterSelector>
   </State>

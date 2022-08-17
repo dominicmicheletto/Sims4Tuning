@@ -1,0 +1,132 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="GiantCrop_Prune" dcc="sage">
+  <Actor name="x" type="Sim" master="true" virtual="false" />
+  <Actor name="Plant" type="Object" virtual="false" />
+  <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
+  <Parameter name="x:mood" type="enum" labels="happy,confident,angry,sad,bored,embarrassed,uncomfortable,playful,tense,focused,energized,flirty,fine,inspired,dazed,fashion,scared" default="happy" />
+  <IkConfiguration name="a2o_giantCrop_prune.ma">
+    <SourceFile name="a2o_giantCrop_prune.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_giantCrop_prune_whistle.ma">
+    <SourceFile name="a2o_giantCrop_prune_whistle.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <PostureManifest actors="" />
+  <PostureManifest actors="x">
+    <Support family="stand" compatibility="FullBody" carry_left="-" carry_right="-" surface="*" />
+    <Support family="stand" compatibility="UpperBody" carry_left="-" carry_right="-" surface="*" />
+  </PostureManifest>
+  <State type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" name="Prune" focus="none" facialoverlays="true" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="Prune_GetIn" focus="none" facialoverlays="true" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="Prune_GetOut" focus="none" facialoverlays="true" tailoverlays="true" />
+  <Connection from="Prune" to="Prune_GetOut" />
+  <Connection from="Prune_GetIn" to="Prune" />
+  <Connection from="Prune_GetOut" to="exit" />
+  <Connection from="entry" to="Prune_GetIn" />
+  <State name="Prune" type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" focus="none" facialoverlays="true" tailoverlays="true">
+    <description />
+    <MakeController>
+      <PostureSelector parameter="x:posture" unique_id="5">
+        <Choice value="-stand-FullBody" track="normal" mask="">
+          <ParameterSelector parameter="x:mood" unique_id="4">
+            <Choice value="happy">
+              <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="3">
+                <Choice weight="51" avoidRepeat="False">
+                  <Controller target="x" controller="@ClipController(clip=a2o_giantCrop_prune_loop_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_giantCrop_prune.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="1">
+                    <TransitionClassList />
+                  </Controller>
+                </Choice>
+                <Choice weight="50" avoidRepeat="False">
+                  <Controller target="x" controller="@ClipController(clip=a2o_giantCrop_prune_whistle_loop_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_giantCrop_prune_whistle.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="2">
+                    <TransitionClassList />
+                  </Controller>
+                </Choice>
+              </RandomSelector>
+            </Choice>
+            <Choice value="confident">
+              <Reference target="3" />
+            </Choice>
+            <Choice value="angry">
+              <Reference target="1" />
+            </Choice>
+            <Choice value="sad">
+              <Reference target="1" />
+            </Choice>
+            <Choice value="bored">
+              <Reference target="1" />
+            </Choice>
+            <Choice value="embarrassed">
+              <Reference target="1" />
+            </Choice>
+            <Choice value="uncomfortable">
+              <Reference target="1" />
+            </Choice>
+            <Choice value="playful">
+              <Reference target="3" />
+            </Choice>
+            <Choice value="tense">
+              <Reference target="1" />
+            </Choice>
+            <Choice value="focused">
+              <Reference target="1" />
+            </Choice>
+            <Choice value="energized">
+              <Reference target="1" />
+            </Choice>
+            <Choice value="flirty">
+              <Reference target="1" />
+            </Choice>
+            <Choice value="fine">
+              <Reference target="1" />
+            </Choice>
+            <Choice value="inspired">
+              <Reference target="3" />
+            </Choice>
+            <Choice value="dazed">
+              <Reference target="1" />
+            </Choice>
+            <Choice value="fashion">
+              <Reference target="1" />
+            </Choice>
+            <Choice value="scared">
+              <Reference target="1" />
+            </Choice>
+          </ParameterSelector>
+        </Choice>
+        <Choice value="-stand-UpperBody" track="normal" mask="Trackmask_UpperBody">
+          <Reference target="4" />
+        </Choice>
+      </PostureSelector>
+    </MakeController>
+  </State>
+  <State name="Prune_GetIn" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="true" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="7">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2o_giantCrop_prune_start_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_giantCrop_prune.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="6">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+      <Choice value="-stand-UpperBody" track="normal" mask="Trackmask_UpperBody">
+        <Reference target="6" />
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="Prune_GetOut" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="true" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="9">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2o_giantCrop_prune_stop_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_giantCrop_prune.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="8">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+      <Choice value="-stand-UpperBody" track="normal" mask="Trackmask_UpperBody">
+        <Reference target="8" />
+      </Choice>
+    </PostureSelector>
+  </State>
+</ASM>

@@ -5,6 +5,7 @@
   <Actor name="ball" type="Prop" virtual="false" object_def_resource_key="c0db5ae7:00000000:00000000000271af#bowlingBall_SP10GEN_set1" />
   <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
   <Parameter name="x:statLevel" type="enum" labels="low,mediumLow,medium,mediumHigh,high" default="low" />
+  <Parameter name="x:carryState" type="enum" labels="none,left,right,both" default="right" />
   <IkConfiguration name="a2o_bowlingLane_shot_basic_x.ma">
     <SourceFile name="a2o_bowlingLane_shot_basic_x.ma">
       <MapNamespace namespace="ball" actor="ball" />
@@ -265,6 +266,16 @@
       <MapNamespace namespace="lane" actor="lane" />
     </SourceFile>
   </IkConfiguration>
+  <IkConfiguration name="t_react_dislike_waveOff.ma">
+    <SourceFile name="t_react_dislike_waveOff.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="c_react_dislike_waveOff_short.ma">
+    <SourceFile name="c_react_dislike_waveOff_short.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
   <PostureManifest actors="">
     <Support family="stand" compatibility="FullBody" carry_left="-" carry_right="-" surface="*" />
   </PostureManifest>
@@ -340,9 +351,9 @@
   </State>
   <State name="React_Fail_High" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
     <description />
-    <PostureSelector parameter="x:posture" unique_id="16">
+    <PostureSelector parameter="x:posture" unique_id="17">
       <Choice value="-stand-FullBody" track="normal" mask="">
-        <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="15">
+        <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="16">
           <Choice weight="50" avoidRepeat="False">
             <Controller target="x" controller="@ClipController(clip=a_react_angry_failure_tantrum_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_angry_failure_tantrum.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="8">
               <TransitionClassList />
@@ -374,9 +385,22 @@
             </Controller>
           </Choice>
           <Choice weight="50" avoidRepeat="False">
-            <Controller target="x" controller="@ClipController(clip=a_react_angry_high_stomp_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_angry_high_stomp.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="14">
-              <TransitionClassList />
-            </Controller>
+            <ParameterSelector parameter="x:carryState" unique_id="15">
+              <Choice value="none">
+                <Controller target="x" controller="@ClipController(clip=a_react_angry_high_stomp_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_angry_high_stomp.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="14">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+              <Choice value="left">
+                <Reference target="10" />
+              </Choice>
+              <Choice value="right">
+                <Reference target="10" />
+              </Choice>
+              <Choice value="both">
+                <Reference target="10" />
+              </Choice>
+            </ParameterSelector>
           </Choice>
         </RandomSelector>
       </Choice>
@@ -384,56 +408,78 @@
   </State>
   <State name="React_Fail_Low" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
     <description />
-    <PostureSelector parameter="x:posture" unique_id="28">
+    <PostureSelector parameter="x:posture" unique_id="32">
       <Choice value="-stand-FullBody" track="normal" mask="">
-        <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="27">
+        <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="31">
           <Choice weight="50" avoidRepeat="False">
-            <Controller target="x" controller="@ClipController(clip=a_react_angry_annoyedSigh_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_angry_annoyedSigh.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="17">
+            <Controller target="x" controller="@ClipController(clip=a_react_angry_annoyedSigh_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_angry_annoyedSigh.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="18">
               <TransitionClassList />
             </Controller>
           </Choice>
           <Choice weight="50" avoidRepeat="False">
-            <Controller target="x" controller="@ClipController(clip=a_react_angry_exhaleShakeHead_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_angry_exhaleShakeHead.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="18">
+            <Controller target="x" controller="@ClipController(clip=a_react_angry_exhaleShakeHead_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_angry_exhaleShakeHead.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="19">
               <TransitionClassList />
             </Controller>
           </Choice>
           <Choice weight="50" avoidRepeat="False">
-            <Controller target="x" controller="@ClipController(clip=a_react_angry_groan_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_angry_groan.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="19">
+            <Controller target="x" controller="@ClipController(clip=a_react_angry_groan_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_angry_groan.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="20">
               <TransitionClassList />
             </Controller>
           </Choice>
           <Choice weight="50" avoidRepeat="False">
-            <Controller target="x" controller="@ClipController(clip=a_react_angry_high_stompFistPump_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_angry_high_stompFistPump.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="20">
+            <Controller target="x" controller="@ClipController(clip=a_react_angry_high_stompFistPump_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_angry_high_stompFistPump.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="21">
               <TransitionClassList />
             </Controller>
           </Choice>
           <Choice weight="50" avoidRepeat="False">
-            <Controller target="x" controller="@ClipController(clip=a_react_angry_shakeHead_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_angry_shakehead.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="21">
+            <Controller target="x" controller="@ClipController(clip=a_react_angry_shakeHead_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_angry_shakehead.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="22">
               <TransitionClassList />
             </Controller>
           </Choice>
           <Choice weight="50" avoidRepeat="False">
-            <Controller target="x" controller="@ClipController(clip=a_react_annoyed_ingore_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_annoyed_ingore.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="22">
+            <Controller target="x" controller="@ClipController(clip=a_react_annoyed_ingore_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_annoyed_ingore.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="23">
               <TransitionClassList />
             </Controller>
           </Choice>
           <Choice weight="50" avoidRepeat="False">
-            <Controller target="x" controller="@ClipController(clip=a_react_dislike_waveOff_short_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_dislike_waveOff_short.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="23">
+            <ParameterSelector parameter="x:age" unique_id="27">
+              <Choice value="baby" />
+              <Choice value="toddler" />
+              <Choice value="child">
+                <Controller target="x" controller="@ClipController(clip=c_react_dislike_waveOff_short_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c_react_dislike_waveOff_short.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="24">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+              <Choice value="teen">
+                <Controller target="x" controller="@ClipController(clip=t_react_dislike_waveOff_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="t_react_dislike_waveOff.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="25">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+              <Choice value="youngadult">
+                <Controller target="x" controller="@ClipController(clip=a_react_dislike_waveOff_short_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_dislike_waveOff_short.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="26">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+              <Choice value="adult">
+                <Reference target="26" />
+              </Choice>
+              <Choice value="elder">
+                <Reference target="26" />
+              </Choice>
+            </ParameterSelector>
+          </Choice>
+          <Choice weight="50" avoidRepeat="False">
+            <Controller target="x" controller="@ClipController(clip=a_react_dismiss_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_dismiss.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="28">
               <TransitionClassList />
             </Controller>
           </Choice>
           <Choice weight="50" avoidRepeat="False">
-            <Controller target="x" controller="@ClipController(clip=a_react_dismiss_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_dismiss.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="24">
+            <Controller target="x" controller="@ClipController(clip=a_react_embarrassed_biteFinger_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_embarrassed_biteFinger.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="29">
               <TransitionClassList />
             </Controller>
           </Choice>
           <Choice weight="50" avoidRepeat="False">
-            <Controller target="x" controller="@ClipController(clip=a_react_embarrassed_biteFinger_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_embarrassed_biteFinger.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="25">
-              <TransitionClassList />
-            </Controller>
-          </Choice>
-          <Choice weight="50" avoidRepeat="False">
-            <Controller target="x" controller="@ClipController(clip=a_react_sad_bummed_short_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_sad_bummed_short.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="26">
+            <Controller target="x" controller="@ClipController(clip=a_react_sad_bummed_short_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_sad_bummed_short.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="30">
               <TransitionClassList />
             </Controller>
           </Choice>
@@ -443,16 +489,16 @@
   </State>
   <State name="React_Flair" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
     <description />
-    <PostureSelector parameter="x:posture" unique_id="32">
+    <PostureSelector parameter="x:posture" unique_id="36">
       <Choice value="-stand-FullBody" track="normal" mask="">
-        <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="31">
+        <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="35">
           <Choice weight="50" avoidRepeat="False">
-            <Controller target="x" controller="@ClipController(clip=a_bowlingLane_react_success_danceDougie_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_bowlingLane_react_success_danceDougie_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="29">
+            <Controller target="x" controller="@ClipController(clip=a_bowlingLane_react_success_danceDougie_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_bowlingLane_react_success_danceDougie_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="33">
               <TransitionClassList />
             </Controller>
           </Choice>
           <Choice weight="50" avoidRepeat="False">
-            <Controller target="x" controller="@ClipController(clip=a_bowlingLane_react_success_danceRobot_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_bowlingLane_react_success_danceRobot_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="30">
+            <Controller target="x" controller="@ClipController(clip=a_bowlingLane_react_success_danceRobot_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_bowlingLane_react_success_danceRobot_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="34">
               <TransitionClassList />
             </Controller>
           </Choice>
@@ -462,36 +508,36 @@
   </State>
   <State name="React_Successs_High" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
     <description />
-    <PostureSelector parameter="x:posture" unique_id="40">
+    <PostureSelector parameter="x:posture" unique_id="44">
       <Choice value="-stand-FullBody" track="normal" mask="">
-        <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="39">
+        <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="43">
           <Choice weight="50" avoidRepeat="False">
-            <Controller target="x" controller="@ClipController(clip=a_react_confident_high_armSwing_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_confident_high_armSwing.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="33">
+            <Controller target="x" controller="@ClipController(clip=a_react_confident_high_armSwing_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_confident_high_armSwing.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="37">
               <TransitionClassList />
             </Controller>
           </Choice>
           <Choice weight="50" avoidRepeat="False">
-            <Controller target="x" controller="@ClipController(clip=a_react_confidence_armPump_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_confidence_armPump.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="34">
+            <Controller target="x" controller="@ClipController(clip=a_react_confidence_armPump_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_confidence_armPump.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="38">
               <TransitionClassList />
             </Controller>
           </Choice>
           <Choice weight="50" avoidRepeat="False">
-            <Controller target="x" controller="@ClipController(clip=a_react_confident_high_firedUp_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_confident_high_firedUp.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="35">
+            <Controller target="x" controller="@ClipController(clip=a_react_confident_high_firedUp_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_confident_high_firedUp.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="39">
               <TransitionClassList />
             </Controller>
           </Choice>
           <Choice weight="50" avoidRepeat="False">
-            <Controller target="x" controller="@ClipController(clip=a_react_confident_high_fistPump_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_confident_high_fistPump.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="36">
+            <Controller target="x" controller="@ClipController(clip=a_react_confident_high_fistPump_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_confident_high_fistPump.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="40">
               <TransitionClassList />
             </Controller>
           </Choice>
           <Choice weight="50" avoidRepeat="False">
-            <Controller target="x" controller="@ClipController(clip=a_react_happy_high_heelClick_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_happy_high_heelClick.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="37">
+            <Controller target="x" controller="@ClipController(clip=a_react_happy_high_heelClick_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_happy_high_heelClick.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="41">
               <TransitionClassList />
             </Controller>
           </Choice>
           <Choice weight="50" avoidRepeat="False">
-            <Controller target="x" controller="@ClipController(clip=a_react_happy_high_giddy_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_happy_high_giddy.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="38">
+            <Controller target="x" controller="@ClipController(clip=a_react_happy_high_giddy_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_happy_high_giddy.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="42">
               <TransitionClassList />
             </Controller>
           </Choice>
@@ -501,31 +547,31 @@
   </State>
   <State name="React_Successs_Low" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
     <description />
-    <PostureSelector parameter="x:posture" unique_id="47">
+    <PostureSelector parameter="x:posture" unique_id="51">
       <Choice value="-stand-FullBody" track="normal" mask="">
-        <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="46">
+        <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="50">
           <Choice weight="50" avoidRepeat="False">
-            <Controller target="x" controller="@ClipController(clip=a_react_cheer_fastClap_short_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_cheer_fastClap_short.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="41">
+            <Controller target="x" controller="@ClipController(clip=a_react_cheer_fastClap_short_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_cheer_fastClap_short.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="45">
               <TransitionClassList />
             </Controller>
           </Choice>
           <Choice weight="50" avoidRepeat="False">
-            <Controller target="x" controller="@ClipController(clip=a_react_confident_high_deepBreath_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_confident_high_deepBreath.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="42">
+            <Controller target="x" controller="@ClipController(clip=a_react_confident_high_deepBreath_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_confident_high_deepBreath.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="46">
               <TransitionClassList />
             </Controller>
           </Choice>
           <Choice weight="50" avoidRepeat="False">
-            <Controller target="x" controller="@ClipController(clip=a_react_confident_high_armCross_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_confident_high_armCross.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="43">
+            <Controller target="x" controller="@ClipController(clip=a_react_confident_high_armCross_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_confident_high_armCross.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="47">
               <TransitionClassList />
             </Controller>
           </Choice>
           <Choice weight="50" avoidRepeat="False">
-            <Controller target="x" controller="@ClipController(clip=a_react_confident_headTilt_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_confident_headTilt.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="44">
+            <Controller target="x" controller="@ClipController(clip=a_react_confident_headTilt_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_confident_headTilt.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="48">
               <TransitionClassList />
             </Controller>
           </Choice>
           <Choice weight="50" avoidRepeat="False">
-            <Controller target="x" controller="@ClipController(clip=a_react_confident_tippyToes_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_confident_tippyToes.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="45">
+            <Controller target="x" controller="@ClipController(clip=a_react_confident_tippyToes_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_confident_tippyToes.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="49">
               <TransitionClassList />
             </Controller>
           </Choice>
@@ -535,120 +581,120 @@
   </State>
   <State name="Shot" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
     <description />
-    <PostureSelector parameter="x:posture" unique_id="68">
+    <PostureSelector parameter="x:posture" unique_id="72">
       <Choice value="-stand-FullBody" track="normal" mask="">
-        <ParameterSelector parameter="x:statLevel" unique_id="67">
+        <ParameterSelector parameter="x:statLevel" unique_id="71">
           <Choice value="low">
-            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="53">
+            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="57">
               <Choice weight="50" avoidRepeat="False">
-                <Controller target="x" controller="@ClipController(clip=a2o_bowlingLane_shot_basicFumble_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bowlingLane_shot_basicFumble_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="50">
+                <Controller target="x" controller="@ClipController(clip=a2o_bowlingLane_shot_basicFumble_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bowlingLane_shot_basicFumble_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="54">
                   <TransitionClassList />
                 </Controller>
-                <MakeController unique_id="49">
-                  <Controller target="x" controller="@ClipController(clip=a2o_bowlingLane_shot_softPosture_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bowlingLane_shot_basic_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="48">
+                <MakeController unique_id="53">
+                  <Controller target="x" controller="@ClipController(clip=a2o_bowlingLane_shot_softPosture_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bowlingLane_shot_basic_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="52">
                     <TransitionClassList />
                   </Controller>
                 </MakeController>
               </Choice>
               <Choice weight="50" avoidRepeat="False">
-                <Controller target="x" controller="@ClipController(clip=a2o_bowlingLane_shot_bentLegFumble_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bowlingLane_shot_bentLegFumble_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="51">
+                <Controller target="x" controller="@ClipController(clip=a2o_bowlingLane_shot_bentLegFumble_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bowlingLane_shot_bentLegFumble_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="55">
                   <TransitionClassList />
                 </Controller>
-                <Reference target="49" />
+                <Reference target="53" />
               </Choice>
               <Choice weight="50" avoidRepeat="False">
-                <Controller target="x" controller="@ClipController(clip=a2o_bowlingLane_shot_2handedFumble_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bowlingLane_shot_2handedFumble_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="52">
+                <Controller target="x" controller="@ClipController(clip=a2o_bowlingLane_shot_2handedFumble_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bowlingLane_shot_2handedFumble_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="56">
                   <TransitionClassList />
                 </Controller>
-                <Reference target="49" />
+                <Reference target="53" />
               </Choice>
             </RandomSelector>
           </Choice>
           <Choice value="mediumLow">
-            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="57">
+            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="61">
               <Choice weight="82" avoidRepeat="False">
-                <Reference target="53" />
+                <Reference target="57" />
               </Choice>
               <Choice weight="50" avoidRepeat="False">
-                <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="56">
+                <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="60">
                   <Choice weight="50" avoidRepeat="False">
-                    <Controller target="x" controller="@ClipController(clip=a2o_bowlingLane_shot_basic_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bowlingLane_shot_basic_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="54">
+                    <Controller target="x" controller="@ClipController(clip=a2o_bowlingLane_shot_basic_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bowlingLane_shot_basic_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="58">
                       <TransitionClassList>
                         <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
                       </TransitionClassList>
                     </Controller>
-                    <Reference target="49" />
+                    <Reference target="53" />
                   </Choice>
                   <Choice weight="50" avoidRepeat="False">
-                    <Controller target="x" controller="@ClipController(clip=a2o_bowlingLane_shot_2handed_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bowlingLane_shot_2handed_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="55">
+                    <Controller target="x" controller="@ClipController(clip=a2o_bowlingLane_shot_2handed_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bowlingLane_shot_2handed_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="59">
                       <TransitionClassList />
                     </Controller>
-                    <Reference target="49" />
+                    <Reference target="53" />
                   </Choice>
                 </RandomSelector>
               </Choice>
             </RandomSelector>
           </Choice>
           <Choice value="medium">
-            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="61">
+            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="65">
               <Choice weight="50" avoidRepeat="False">
-                <Reference target="53" />
+                <Reference target="57" />
               </Choice>
               <Choice weight="66" avoidRepeat="False">
-                <Reference target="56" />
+                <Reference target="60" />
               </Choice>
               <Choice weight="19" avoidRepeat="False">
-                <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="60">
+                <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="64">
                   <Choice weight="50" avoidRepeat="False">
-                    <Controller target="x" controller="@ClipController(clip=a2o_bowlingLane_shot_bentLeg_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bowlingLane_shot_bentLeg_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="58">
+                    <Controller target="x" controller="@ClipController(clip=a2o_bowlingLane_shot_bentLeg_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bowlingLane_shot_bentLeg_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="62">
                       <TransitionClassList />
                     </Controller>
-                    <Reference target="49" />
+                    <Reference target="53" />
                   </Choice>
                   <Choice weight="50" avoidRepeat="False">
-                    <Controller target="x" controller="@ClipController(clip=a2o_bowlingLane_shot_basicHighSkill_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bowlingLane_shot_basicHighSkill_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="59">
+                    <Controller target="x" controller="@ClipController(clip=a2o_bowlingLane_shot_basicHighSkill_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bowlingLane_shot_basicHighSkill_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="63">
                       <TransitionClassList />
                     </Controller>
-                    <Reference target="49" />
+                    <Reference target="53" />
                   </Choice>
                 </RandomSelector>
               </Choice>
             </RandomSelector>
           </Choice>
           <Choice value="mediumHigh">
-            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="62">
+            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="66">
               <Choice weight="23" avoidRepeat="False">
-                <Reference target="53" />
+                <Reference target="57" />
               </Choice>
               <Choice weight="50" avoidRepeat="False">
-                <Reference target="56" />
+                <Reference target="60" />
               </Choice>
               <Choice weight="81" avoidRepeat="False">
-                <Reference target="60" />
+                <Reference target="64" />
               </Choice>
             </RandomSelector>
           </Choice>
           <Choice value="high">
-            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="66">
+            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="70">
               <Choice weight="25" avoidRepeat="False">
-                <Reference target="56" />
-              </Choice>
-              <Choice weight="84" avoidRepeat="False">
                 <Reference target="60" />
               </Choice>
+              <Choice weight="84" avoidRepeat="False">
+                <Reference target="64" />
+              </Choice>
               <Choice weight="50" avoidRepeat="False">
-                <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="65">
+                <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="69">
                   <Choice weight="50" avoidRepeat="False">
-                    <Controller target="x" controller="@ClipController(clip=a2o_bowlingLane_shot_basicHighSkillSuper_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bowlingLane_shot_basicHighSkill_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="63">
+                    <Controller target="x" controller="@ClipController(clip=a2o_bowlingLane_shot_basicHighSkillSuper_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bowlingLane_shot_basicHighSkill_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="67">
                       <TransitionClassList />
                     </Controller>
-                    <Reference target="49" />
+                    <Reference target="53" />
                   </Choice>
                   <Choice weight="50" avoidRepeat="False">
-                    <Controller target="x" controller="@ClipController(clip=a2o_bowlingLane_shot_bentLegSuper_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bowlingLane_shot_bentLeg_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="64">
+                    <Controller target="x" controller="@ClipController(clip=a2o_bowlingLane_shot_bentLegSuper_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bowlingLane_shot_bentLeg_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="68">
                       <TransitionClassList />
                     </Controller>
-                    <Reference target="49" />
+                    <Reference target="53" />
                   </Choice>
                 </RandomSelector>
               </Choice>
@@ -660,20 +706,20 @@
   </State>
   <State name="Shot_PickUp" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
     <description />
-    <Controller target="lane" controller="@ClipController(clip=o_bowlingLane_rerack_lane, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="o_bowlingLane_rerack.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="69">
+    <Controller target="lane" controller="@ClipController(clip=o_bowlingLane_rerack_lane, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="o_bowlingLane_rerack.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="73">
       <TransitionClassList>
         <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
       </TransitionClassList>
     </Controller>
-    <PostureSelector parameter="x:posture" unique_id="73">
+    <PostureSelector parameter="x:posture" unique_id="77">
       <Choice value="-stand-FullBody" track="normal" mask="">
-        <Controller target="x" controller="@ClipController(clip=a2o_bowlingLane_shot_pickUp_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bowlingLane_shot_basic_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="72">
+        <Controller target="x" controller="@ClipController(clip=a2o_bowlingLane_shot_pickUp_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bowlingLane_shot_basic_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="76">
           <TransitionClassList>
             <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
           </TransitionClassList>
         </Controller>
-        <MakeController unique_id="71">
-          <Controller target="x" controller="@ClipController(clip=a2o_bowlingLane_shot_pickUp_sofPosture_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bowlingLane_shot_basic_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="70">
+        <MakeController unique_id="75">
+          <Controller target="x" controller="@ClipController(clip=a2o_bowlingLane_shot_pickUp_sofPosture_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bowlingLane_shot_basic_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="74">
             <TransitionClassList />
           </Controller>
         </MakeController>
@@ -682,74 +728,74 @@
   </State>
   <State name="Trick" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
     <description />
-    <PostureSelector parameter="x:posture" unique_id="86">
+    <PostureSelector parameter="x:posture" unique_id="90">
       <Choice value="-stand-FullBody" track="normal" mask="">
-        <ParameterSelector parameter="x:statLevel" unique_id="85">
+        <ParameterSelector parameter="x:statLevel" unique_id="89">
           <Choice value="low">
-            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="78">
+            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="82">
               <Choice weight="50" avoidRepeat="False">
-                <Controller target="x" controller="@ClipController(clip=a2o_bowlingLane_trick_spinShotFumble_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bowlingLane_trick_spinShotFumble_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="76">
+                <Controller target="x" controller="@ClipController(clip=a2o_bowlingLane_trick_spinShotFumble_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bowlingLane_trick_spinShotFumble_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="80">
                   <TransitionClassList />
                 </Controller>
-                <MakeController unique_id="75">
-                  <Controller target="x" controller="@ClipController(clip=a2o_bowlingLane_shot_softPosture_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bowlingLane_shot_basic_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="74">
+                <MakeController unique_id="79">
+                  <Controller target="x" controller="@ClipController(clip=a2o_bowlingLane_shot_softPosture_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bowlingLane_shot_basic_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="78">
                     <TransitionClassList />
                   </Controller>
                 </MakeController>
               </Choice>
               <Choice weight="50" avoidRepeat="False">
-                <Controller target="x" controller="@ClipController(clip=a2o_bowlingLane_trick_underLegShotFumble_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bowlingLane_trick_underLegShotFumble_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="77">
+                <Controller target="x" controller="@ClipController(clip=a2o_bowlingLane_trick_underLegShotFumble_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bowlingLane_trick_underLegShotFumble_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="81">
                   <TransitionClassList />
                 </Controller>
-                <Reference target="75" />
+                <Reference target="79" />
               </Choice>
             </RandomSelector>
           </Choice>
           <Choice value="mediumLow">
-            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="82">
+            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="86">
               <Choice weight="76" avoidRepeat="False">
-                <Reference target="78" />
+                <Reference target="82" />
               </Choice>
               <Choice weight="25" avoidRepeat="False">
-                <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="81">
+                <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="85">
                   <Choice weight="50" avoidRepeat="False">
-                    <Controller target="x" controller="@ClipController(clip=a2o_bowlingLane_trick_spinShot_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bowlingLane_trick_spinShot_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="79">
+                    <Controller target="x" controller="@ClipController(clip=a2o_bowlingLane_trick_spinShot_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bowlingLane_trick_spinShot_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="83">
                       <TransitionClassList />
                     </Controller>
-                    <Reference target="75" />
+                    <Reference target="79" />
                   </Choice>
                   <Choice weight="50" avoidRepeat="False">
-                    <Controller target="x" controller="@ClipController(clip=a2o_bowlingLane_trick_underLegShot_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bowlingLane_trick_underLegShot_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="80">
+                    <Controller target="x" controller="@ClipController(clip=a2o_bowlingLane_trick_underLegShot_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bowlingLane_trick_underLegShot_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="84">
                       <TransitionClassList />
                     </Controller>
-                    <Reference target="75" />
+                    <Reference target="79" />
                   </Choice>
                 </RandomSelector>
               </Choice>
             </RandomSelector>
           </Choice>
           <Choice value="medium">
-            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="83">
+            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="87">
               <Choice weight="50" avoidRepeat="False">
-                <Reference target="78" />
+                <Reference target="82" />
               </Choice>
               <Choice weight="50" avoidRepeat="False">
-                <Reference target="81" />
+                <Reference target="85" />
               </Choice>
             </RandomSelector>
           </Choice>
           <Choice value="mediumHigh">
-            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="84">
+            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="88">
               <Choice weight="25" avoidRepeat="False">
-                <Reference target="78" />
+                <Reference target="82" />
               </Choice>
               <Choice weight="80" avoidRepeat="False">
-                <Reference target="81" />
+                <Reference target="85" />
               </Choice>
             </RandomSelector>
           </Choice>
           <Choice value="high">
-            <Reference target="81" />
+            <Reference target="85" />
           </Choice>
         </ParameterSelector>
       </Choice>
@@ -757,16 +803,16 @@
   </State>
   <State name="Trick_Epic_Fail" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
     <description />
-    <PostureSelector parameter="x:posture" unique_id="90">
+    <PostureSelector parameter="x:posture" unique_id="94">
       <Choice value="-stand-FullBody" track="normal" mask="">
-        <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="89">
+        <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="93">
           <Choice weight="50" avoidRepeat="False">
-            <Controller target="x" controller="@ClipController(clip=a2o_bowlingLane_fail_spinShotTrickFail_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bowlingLane_fail_spinShotTrickFail_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="87">
+            <Controller target="x" controller="@ClipController(clip=a2o_bowlingLane_fail_spinShotTrickFail_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bowlingLane_fail_spinShotTrickFail_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="91">
               <TransitionClassList />
             </Controller>
           </Choice>
           <Choice weight="50" avoidRepeat="False">
-            <Controller target="x" controller="@ClipController(clip=a2o_bowlingLane_fail_loseBallBackwards_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bowlingLane_fail_loseBallBackwards_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="88">
+            <Controller target="x" controller="@ClipController(clip=a2o_bowlingLane_fail_loseBallBackwards_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_bowlingLane_fail_loseBallBackwards_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="92">
               <TransitionClassList />
             </Controller>
           </Choice>

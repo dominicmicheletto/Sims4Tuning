@@ -4,8 +4,9 @@
   <Actor name="surface" type="Object" virtual="false" />
   <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
   <Parameter name="x:species" type="enum" labels="human,dog,smalldog,cat" default="human" />
-  <Parameter name="surface:surfaceObject" type="enum" labels="bed,bookcase,sitTemplate,dresser" />
-  <Parameter name="surface:objectName" type="enum" labels="bedSingle,bedDouble,toddlerBed,chairDining,chairLiving,sofa,dresser,bookcase,booth,bed,barstool" />
+  <Parameter name="surface:surfaceObject" type="enum" labels="bed,bookcase,dresser,sitTemplate,kidsTent,sitLoungeChaise" />
+  <Parameter name="surface:objectName" type="enum" labels="bedSingle,bedDouble,toddlerBed,chairDining,chairLiving,barstool,sofa,booth,bed,dresser,bookcase,kidsTent,sitLoungeChaise" />
+  <Parameter name="surface:isMirroredPart" type="bool" labels="" default="False" />
   <IkConfiguration name="ac2o_bed_scratch.ma">
     <SourceFile name="ac2o_bed_scratch.ma">
       <MapNamespace namespace="surface" actor="surface" />
@@ -26,6 +27,18 @@
   </IkConfiguration>
   <IkConfiguration name="ac2o_sofa_scratch.ma">
     <SourceFile name="ac2o_sofa_scratch.ma">
+      <MapNamespace namespace="surface" actor="surface" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="ac2o_kidsTent_scratch.ma">
+    <SourceFile name="ac2o_kidsTent_scratch.ma">
+      <MapNamespace namespace="surface" actor="surface" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="ac2o_sitLoungeChaise_scratch.ma">
+    <SourceFile name="ac2o_sitLoungeChaise_scratch.ma">
       <MapNamespace namespace="surface" actor="surface" />
       <MapNamespace namespace="x" actor="x" />
     </SourceFile>
@@ -68,7 +81,7 @@
   </State>
   <State name="start" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
     <description />
-    <ParameterSelector parameter="surface:objectName" unique_id="10">
+    <ParameterSelector parameter="surface:objectName" unique_id="14">
       <Choice value="bedSingle">
         <Controller target="x" controller="@ClipController(clip=ac2o_bed_scratch_start_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ac2o_bed_scratch.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="6">
           <TransitionClassList />
@@ -88,8 +101,17 @@
       <Choice value="chairLiving">
         <Reference target="7" />
       </Choice>
+      <Choice value="barstool">
+        <Reference target="7" />
+      </Choice>
       <Choice value="sofa">
         <Reference target="7" />
+      </Choice>
+      <Choice value="booth">
+        <Reference target="7" />
+      </Choice>
+      <Choice value="bed">
+        <Reference target="6" />
       </Choice>
       <Choice value="dresser">
         <Controller target="x" controller="@ClipController(clip=ac2o_dresser_scratch_start_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ac2o_dresser_scratch.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="8">
@@ -101,27 +123,36 @@
           <TransitionClassList />
         </Controller>
       </Choice>
-      <Choice value="booth">
-        <Reference target="7" />
+      <Choice value="kidsTent">
+        <ParameterSelector parameter="surface:isMirroredPart" unique_id="12">
+          <Choice value="false">
+            <Controller target="x" controller="@ClipController(clip=ac2o_kidsTent_scratch_start_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ac2o_kidsTent_scratch.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="10">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
+          <Choice value="true">
+            <SetMirror target="x" mirror="true" unique_id="11" />
+            <Reference target="10" />
+          </Choice>
+        </ParameterSelector>
       </Choice>
-      <Choice value="bed">
-        <Reference target="6" />
-      </Choice>
-      <Choice value="barstool">
-        <Reference target="7" />
+      <Choice value="sitLoungeChaise">
+        <Controller target="x" controller="@ClipController(clip=ac2o_sitLoungeChaise_scratch_start_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ac2o_sitLoungeChaise_scratch.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="13">
+          <TransitionClassList />
+        </Controller>
       </Choice>
     </ParameterSelector>
   </State>
   <State name="stop" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
     <description />
-    <PostureSelector parameter="x:posture" unique_id="13">
+    <PostureSelector parameter="x:posture" unique_id="17">
       <Choice value="stand--FullBody" track="normal" mask="">
-        <ParameterSelector parameter="x:species" unique_id="12">
+        <ParameterSelector parameter="x:species" unique_id="16">
           <Choice value="human" />
           <Choice value="dog" />
           <Choice value="smalldog" />
           <Choice value="cat">
-            <Controller target="x" controller="@ClipController(clip=ac2o_{surface:surfaceObject}_scratch_stop_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="11">
+            <Controller target="x" controller="@ClipController(clip=ac2o_{surface:surfaceObject}_scratch_stop_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="15">
               <TransitionClassList />
             </Controller>
           </Choice>

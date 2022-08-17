@@ -4,6 +4,7 @@
   <Actor name="sitTemplate" type="Object" virtual="true" />
   <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
   <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
+  <Parameter name="x:carryState" type="enum" labels="none,left,right,both" default="right" />
   <IkConfiguration name="a2a_entertain_NT_tellJoke_fail.ma">
     <SourceFile name="a2a_entertain_NT_tellJoke_fail.ma">
       <MapNamespace namespace="x" actor="x" />
@@ -22,6 +23,28 @@
   </IkConfiguration>
   <IkConfiguration name="a2a_entertain_NT_tellJoke_fail_seated.ma">
     <SourceFile name="a2a_entertain_NT_tellJoke_fail_seated.ma">
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="sitTemplate" actor="sitTemplate" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="c2c_entertain_NT_tellJoke_02_succeed_x.ma">
+    <SourceFile name="c2c_entertain_NT_tellJoke_02_succeed_x.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="c2c_entertain_NT_tellJoke_02_succeed_x_seated.ma">
+    <SourceFile name="c2c_entertain_NT_tellJoke_02_succeed_x_seated.ma">
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="sitTemplate" actor="sitTemplate" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="c2c_entertain_NT_tellJoke_02_fail_x.ma">
+    <SourceFile name="c2c_entertain_NT_tellJoke_02_fail_x.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="c2c_entertain_NT_tellJoke_02_fail_seated_x.ma">
+    <SourceFile name="c2c_entertain_NT_tellJoke_02_fail_seated_x.ma">
       <MapNamespace namespace="x" actor="x" />
       <MapNamespace namespace="sitTemplate" actor="sitTemplate" />
     </SourceFile>
@@ -49,71 +72,275 @@
   <Connection from="entry" to="Succeed" />
   <State name="Fail" type="public" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
     <description />
-    <PostureSelector parameter="x:posture" unique_id="4">
+    <PostureSelector parameter="x:posture" unique_id="18">
       <Choice value="-movingStand-UpperBody" track="normalplus" mask="Trackmask_UpperBody">
-        <Controller target="x" controller="@ClipController(clip=a2a_entertain_NT_tellJoke_fail_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_entertain_NT_tellJoke_fail.ma" focus="full body" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="1">
-          <TransitionClassList>
-            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
-          </TransitionClassList>
-        </Controller>
+        <ParameterSelector parameter="x:age" unique_id="8">
+          <Choice value="baby" />
+          <Choice value="toddler" />
+          <Choice value="child">
+            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="7">
+              <Choice weight="50" avoidRepeat="False">
+                <ParameterSelector parameter="x:carryState" unique_id="3">
+                  <Choice value="none">
+                    <Controller target="x" controller="@ClipController(clip=a2a_entertain_NT_tellJoke_fail_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_entertain_NT_tellJoke_fail.ma" focus="full body" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="1">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                  </Choice>
+                  <Choice value="left">
+                    <Reference target="1" />
+                  </Choice>
+                  <Choice value="right">
+                    <SetMirror target="x" mirror="true" unique_id="2" />
+                    <Reference target="1" />
+                  </Choice>
+                  <Choice value="both" />
+                </ParameterSelector>
+              </Choice>
+              <Choice weight="50" avoidRepeat="False">
+                <ParameterSelector parameter="x:carryState" unique_id="6">
+                  <Choice value="none">
+                    <Controller target="x" controller="@ClipController(clip=c2c_entertain_NT_tellJoke_02_fail_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c2c_entertain_NT_tellJoke_02_fail_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="4">
+                      <TransitionClassList />
+                    </Controller>
+                  </Choice>
+                  <Choice value="left">
+                    <Reference target="4" />
+                  </Choice>
+                  <Choice value="right">
+                    <SetMirror target="x" mirror="true" unique_id="5" />
+                    <Reference target="4" />
+                  </Choice>
+                  <Choice value="both" />
+                </ParameterSelector>
+              </Choice>
+            </RandomSelector>
+          </Choice>
+          <Choice value="teen">
+            <Reference target="3" />
+          </Choice>
+          <Choice value="youngadult">
+            <Reference target="3" />
+          </Choice>
+          <Choice value="adult">
+            <Reference target="3" />
+          </Choice>
+          <Choice value="elder">
+            <Reference target="3" />
+          </Choice>
+        </ParameterSelector>
       </Choice>
       <Choice value="rockingChair_sit--UpperBody" track="normal" mask="">
-        <Controller target="x" controller="@ClipController(clip=a2a_entertain_NT_tellJoke_fail_seated_x, loop_count=#1)" overridePosture="true" mask="Trackmask_UpperBody_NoRootMotion" track="normal" mirror_conditional="False" suppress_footsteps="True" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_entertain_NT_tellJoke_fail_seated.ma" focus="full body" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="2">
+        <Controller target="x" controller="@ClipController(clip=a2a_entertain_NT_tellJoke_fail_seated_x, loop_count=#1)" overridePosture="true" mask="Trackmask_UpperBody_NoRootMotion" track="normal" mirror_conditional="False" suppress_footsteps="True" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_entertain_NT_tellJoke_fail_seated.ma" focus="full body" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="9">
           <TransitionClassList>
             <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
           </TransitionClassList>
         </Controller>
       </Choice>
       <Choice value="-sit-FullBody" track="normal" mask="">
-        <Controller target="x" controller="@ClipController(clip=a2a_entertain_NT_tellJoke_fail_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_entertain_NT_tellJoke_fail_seated.ma" focus="full body" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="3">
-          <TransitionClassList>
-            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
-          </TransitionClassList>
-        </Controller>
+        <ParameterSelector parameter="x:age" unique_id="17">
+          <Choice value="baby" />
+          <Choice value="toddler" />
+          <Choice value="child">
+            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="16">
+              <Choice weight="50" avoidRepeat="False">
+                <ParameterSelector parameter="x:carryState" unique_id="12">
+                  <Choice value="none">
+                    <Controller target="x" controller="@ClipController(clip=a2a_entertain_NT_tellJoke_fail_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_entertain_NT_tellJoke_fail_seated.ma" focus="full body" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="10">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                  </Choice>
+                  <Choice value="left">
+                    <Reference target="10" />
+                  </Choice>
+                  <Choice value="right">
+                    <SetMirror target="x" mirror="true" unique_id="11" />
+                    <Reference target="10" />
+                  </Choice>
+                  <Choice value="both" />
+                </ParameterSelector>
+              </Choice>
+              <Choice weight="50" avoidRepeat="False">
+                <ParameterSelector parameter="x:carryState" unique_id="15">
+                  <Choice value="none">
+                    <Controller target="x" controller="@ClipController(clip=c2c_entertain_NT_tellJoke_02_fail_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c2c_entertain_NT_tellJoke_02_fail_seated_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="13">
+                      <TransitionClassList />
+                    </Controller>
+                  </Choice>
+                  <Choice value="left">
+                    <Reference target="13" />
+                  </Choice>
+                  <Choice value="right">
+                    <SetMirror target="x" mirror="true" unique_id="14" />
+                    <Reference target="13" />
+                  </Choice>
+                  <Choice value="both" />
+                </ParameterSelector>
+              </Choice>
+            </RandomSelector>
+          </Choice>
+          <Choice value="teen">
+            <Reference target="12" />
+          </Choice>
+          <Choice value="youngadult">
+            <Reference target="12" />
+          </Choice>
+          <Choice value="adult">
+            <Reference target="12" />
+          </Choice>
+          <Choice value="elder">
+            <Reference target="12" />
+          </Choice>
+        </ParameterSelector>
       </Choice>
       <Choice value="-sit-UpperBody" track="normal" mask="Trackmask_UpperBody">
-        <Reference target="3" />
+        <Reference target="17" />
       </Choice>
       <Choice value="-stand-FullBody" track="normal" mask="">
-        <Reference target="1" />
+        <Reference target="8" />
       </Choice>
       <Choice value="-stand-UpperBody" track="normal" mask="Trackmask_UpperBody">
-        <Reference target="1" />
+        <Reference target="8" />
       </Choice>
     </PostureSelector>
   </State>
   <State name="Succeed" type="public" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
     <description />
-    <PostureSelector parameter="x:posture" unique_id="8">
+    <PostureSelector parameter="x:posture" unique_id="36">
       <Choice value="-movingStand-UpperBody" track="normalplus" mask="Trackmask_UpperBody">
-        <Controller target="x" controller="@ClipController(clip=a2a_entertain_NT_tellJoke_succeed_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_entertain_NT_tellJoke_succeed.ma" focus="full body" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="5">
-          <TransitionClassList>
-            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
-          </TransitionClassList>
-        </Controller>
+        <ParameterSelector parameter="x:age" unique_id="26">
+          <Choice value="baby" />
+          <Choice value="toddler" />
+          <Choice value="child">
+            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="25">
+              <Choice weight="50" avoidRepeat="False">
+                <ParameterSelector parameter="x:carryState" unique_id="21">
+                  <Choice value="none">
+                    <Controller target="x" controller="@ClipController(clip=c2c_entertain_NT_tellJoke_02_succeed_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c2c_entertain_NT_tellJoke_02_succeed_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="19">
+                      <TransitionClassList />
+                    </Controller>
+                  </Choice>
+                  <Choice value="left">
+                    <Reference target="19" />
+                  </Choice>
+                  <Choice value="right">
+                    <SetMirror target="x" mirror="true" unique_id="20" />
+                    <Reference target="19" />
+                  </Choice>
+                  <Choice value="both" />
+                </ParameterSelector>
+              </Choice>
+              <Choice weight="50" avoidRepeat="False">
+                <ParameterSelector parameter="x:carryState" unique_id="24">
+                  <Choice value="none">
+                    <Controller target="x" controller="@ClipController(clip=a2a_entertain_NT_tellJoke_succeed_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_entertain_NT_tellJoke_succeed.ma" focus="full body" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="22">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                  </Choice>
+                  <Choice value="left">
+                    <Reference target="22" />
+                  </Choice>
+                  <Choice value="right">
+                    <SetMirror target="x" mirror="true" unique_id="23" />
+                    <Reference target="22" />
+                  </Choice>
+                  <Choice value="both" />
+                </ParameterSelector>
+              </Choice>
+            </RandomSelector>
+          </Choice>
+          <Choice value="teen">
+            <Reference target="24" />
+          </Choice>
+          <Choice value="youngadult">
+            <Reference target="24" />
+          </Choice>
+          <Choice value="adult">
+            <Reference target="24" />
+          </Choice>
+          <Choice value="elder">
+            <Reference target="24" />
+          </Choice>
+        </ParameterSelector>
       </Choice>
       <Choice value="rockingChair_sit--UpperBody" track="normal" mask="">
-        <Controller target="x" controller="@ClipController(clip=a2a_entertain_NT_tellJoke_succeed_seated_x, loop_count=#1)" overridePosture="true" mask="Trackmask_UpperBody_NoRootMotion" track="normal" mirror_conditional="False" suppress_footsteps="True" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_entertain_NT_tellJoke_succeed_seated.ma" focus="full body" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="6">
+        <Controller target="x" controller="@ClipController(clip=a2a_entertain_NT_tellJoke_succeed_seated_x, loop_count=#1)" overridePosture="true" mask="Trackmask_UpperBody_NoRootMotion" track="normal" mirror_conditional="False" suppress_footsteps="True" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_entertain_NT_tellJoke_succeed_seated.ma" focus="full body" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="27">
           <TransitionClassList>
             <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
           </TransitionClassList>
         </Controller>
       </Choice>
       <Choice value="-sit-FullBody" track="normal" mask="">
-        <Controller target="x" controller="@ClipController(clip=a2a_entertain_NT_tellJoke_succeed_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_entertain_NT_tellJoke_succeed_seated.ma" focus="full body" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="7">
-          <TransitionClassList>
-            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
-          </TransitionClassList>
-        </Controller>
+        <ParameterSelector parameter="x:age" unique_id="35">
+          <Choice value="baby" />
+          <Choice value="toddler" />
+          <Choice value="child">
+            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="34">
+              <Choice weight="50" avoidRepeat="False">
+                <ParameterSelector parameter="x:carryState" unique_id="30">
+                  <Choice value="none">
+                    <Controller target="x" controller="@ClipController(clip=c2c_entertain_NT_tellJoke_02_succeed_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c2c_entertain_NT_tellJoke_02_succeed_x_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="28">
+                      <TransitionClassList />
+                    </Controller>
+                  </Choice>
+                  <Choice value="left">
+                    <Reference target="28" />
+                  </Choice>
+                  <Choice value="right">
+                    <SetMirror target="x" mirror="true" unique_id="29" />
+                    <Reference target="28" />
+                  </Choice>
+                  <Choice value="both" />
+                </ParameterSelector>
+              </Choice>
+              <Choice weight="50" avoidRepeat="False">
+                <ParameterSelector parameter="x:carryState" unique_id="33">
+                  <Choice value="none">
+                    <Controller target="x" controller="@ClipController(clip=a2a_entertain_NT_tellJoke_succeed_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_entertain_NT_tellJoke_succeed_seated.ma" focus="full body" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="31">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                  </Choice>
+                  <Choice value="left">
+                    <Reference target="31" />
+                  </Choice>
+                  <Choice value="right">
+                    <SetMirror target="x" mirror="true" unique_id="32" />
+                    <Reference target="31" />
+                  </Choice>
+                  <Choice value="both" />
+                </ParameterSelector>
+              </Choice>
+            </RandomSelector>
+          </Choice>
+          <Choice value="teen">
+            <Reference target="33" />
+          </Choice>
+          <Choice value="youngadult">
+            <Reference target="33" />
+          </Choice>
+          <Choice value="adult">
+            <Reference target="33" />
+          </Choice>
+          <Choice value="elder">
+            <Reference target="33" />
+          </Choice>
+        </ParameterSelector>
       </Choice>
       <Choice value="-sit-UpperBody" track="normal" mask="Trackmask_UpperBody">
-        <Reference target="7" />
+        <Reference target="35" />
       </Choice>
       <Choice value="-stand-FullBody" track="normal" mask="">
-        <Reference target="5" />
+        <Reference target="26" />
       </Choice>
       <Choice value="-stand-UpperBody" track="normal" mask="Trackmask_UpperBody">
-        <Reference target="5" />
+        <Reference target="26" />
       </Choice>
     </PostureSelector>
   </State>

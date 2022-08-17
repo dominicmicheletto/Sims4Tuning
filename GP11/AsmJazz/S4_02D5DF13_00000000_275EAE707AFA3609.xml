@@ -1,0 +1,98 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="WeddingCeremony_ThrowRice" dcc="sage">
+  <Actor name="x" type="Sim" master="true" virtual="false" />
+  <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
+  <Parameter name="x:species" type="enum" labels="human,dog,smalldog,cat" default="human" />
+  <Parameter name="x:carryState" type="enum" labels="none,left,right,both" default="right" />
+  <IkConfiguration name="a2a_generic_GS_listen_happy.ma">
+    <SourceFile name="a2a_generic_GS_listen_happy.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a_weddingCeremony_throwRice_all.ma">
+    <SourceFile name="a_weddingCeremony_throwRice_all.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <PostureManifest actors="" />
+  <PostureManifest actors="x">
+    <Support family="stand" compatibility="FullBody" carry_left="*" carry_right="-" surface="*" />
+    <Support family="stand" compatibility="FullBody" carry_left="-" carry_right="*" surface="*" />
+    <Support family="stand" compatibility="UpperBody" carry_left="*" carry_right="-" surface="*" />
+    <Support family="stand" compatibility="UpperBody" carry_left="-" carry_right="*" surface="*" />
+  </PostureManifest>
+  <State type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" name="ThrowRice" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <Connection from="ThrowRice" to="exit" />
+  <Connection from="entry" to="ThrowRice" />
+  <State name="ThrowRice" type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <MakeController>
+      <PostureSelector parameter="x:posture" unique_id="11">
+        <Choice value="-stand-FullBody" track="normal" mask="">
+          <ParameterSelector parameter="x:carryState" unique_id="10">
+            <Choice value="none">
+              <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="5">
+                <Choice weight="100" avoidRepeat="True">
+                  <Controller target="x" controller="@ClipController(clip=a_weddingCeremony_throwRice_loop1_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_weddingCeremony_throwRice_all.ma" focus="body only" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="1">
+                    <TransitionClassList />
+                  </Controller>
+                </Choice>
+                <Choice weight="100" avoidRepeat="True">
+                  <Controller target="x" controller="@ClipController(clip=a_weddingCeremony_throwRice_loop2_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_weddingCeremony_throwRice_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="2">
+                    <TransitionClassList />
+                  </Controller>
+                </Choice>
+                <Choice weight="100" avoidRepeat="True">
+                  <Controller target="x" controller="@ClipController(clip=a_weddingCeremony_throwRice_loop3_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_weddingCeremony_throwRice_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="3">
+                    <TransitionClassList />
+                  </Controller>
+                </Choice>
+                <Choice weight="25" avoidRepeat="True">
+                  <Controller target="x" controller="@ClipController(clip=a2a_generic_GS_listen_happy_breathe_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_generic_GS_listen_happy.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="4">
+                    <TransitionClassList />
+                  </Controller>
+                </Choice>
+              </RandomSelector>
+            </Choice>
+            <Choice value="left">
+              <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="7">
+                <Choice weight="100" avoidRepeat="True">
+                  <Reference target="1" />
+                </Choice>
+                <Choice weight="100" avoidRepeat="True">
+                  <SetMirror target="x" mirror="true" unique_id="6" />
+                  <Reference target="2" />
+                </Choice>
+                <Choice weight="25" avoidRepeat="True">
+                  <Reference target="4" />
+                </Choice>
+              </RandomSelector>
+            </Choice>
+            <Choice value="right">
+              <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="9">
+                <Choice weight="100" avoidRepeat="True">
+                  <Reference target="1" />
+                </Choice>
+                <Choice weight="100" avoidRepeat="True">
+                  <Reference target="2" />
+                </Choice>
+                <Choice weight="100" avoidRepeat="True">
+                  <SetMirror target="x" mirror="true" unique_id="8" />
+                  <Reference target="3" />
+                </Choice>
+                <Choice weight="25" avoidRepeat="True">
+                  <Reference target="4" />
+                </Choice>
+              </RandomSelector>
+            </Choice>
+            <Choice value="both" />
+          </ParameterSelector>
+        </Choice>
+        <Choice value="-stand-UpperBody" track="normal" mask="Trackmask_UpperBody">
+          <Reference target="10" />
+        </Choice>
+      </PostureSelector>
+    </MakeController>
+  </State>
+</ASM>

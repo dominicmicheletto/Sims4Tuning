@@ -1,0 +1,175 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="soc_WeddingCake_T_CutCake" dcc="sage">
+  <Actor name="x" type="Sim" master="true" virtual="false" />
+  <Actor name="y" type="Sim" virtual="false" />
+  <Actor name="knife" type="Prop" virtual="false" object_def_resource_key="c0db5ae7:00000000:000000000004808b#toolKnifeCake_GEN_set1" />
+  <Actor name="surface" type="Object" virtual="true" />
+  <Actor name="cake" type="Object" virtual="false" />
+  <Actor name="carryObject" type="Object" virtual="false" />
+  <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
+  <Parameter name="x:species" type="enum" labels="human,dog,smalldog,cat,fox" default="human" />
+  <Parameter name="x:carryState" type="enum" labels="none,left,right,both" default="right" />
+  <Parameter name="y:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="y:sex" type="enum" labels="male,female" default="male" />
+  <Parameter name="y:species" type="enum" labels="human,dog,smalldog,cat,fox" default="human" />
+  <IkConfiguration name="a2a_soc_weddingCake_cutCakeLarge_romantic_success.ma">
+    <SourceFile name="a2a_soc_weddingCake_cutCakeLarge_romantic_success.ma">
+      <MapNamespace namespace="surface" actor="surface" />
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="y" actor="y" />
+      <MapNamespace namespace="knife" actor="knife" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2a_soc_weddingCake_cutCakeSmall_romantic_success.ma">
+    <SourceFile name="a2a_soc_weddingCake_cutCakeSmall_romantic_success.ma">
+      <MapNamespace namespace="y" actor="y" />
+      <MapNamespace namespace="surface" actor="surface" />
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="knife" actor="knife" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2a_soc_weddingCake_cutCakeSmall_fail.ma">
+    <SourceFile name="a2a_soc_weddingCake_cutCakeSmall_fail.ma">
+      <MapNamespace namespace="surface" actor="surface" />
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="y" actor="y" />
+      <MapNamespace namespace="knife" actor="knife" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2a_soc_weddingCake_cutCakeLarge_fail.ma">
+    <SourceFile name="a2a_soc_weddingCake_cutCakeLarge_fail.ma">
+      <MapNamespace namespace="surface" actor="surface" />
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="y" actor="y" />
+      <MapNamespace namespace="knife" actor="knife" />
+    </SourceFile>
+  </IkConfiguration>
+  <PostureManifest actors="" />
+  <PostureManifest actors="x">
+    <Support name="WeddingCake_Posture" family="none" compatibility="FullBody" carry_left="-" carry_right="carryObject" surface="*" />
+    <Support name="WeddingCake_Posture" family="none" compatibility="UpperBody" carry_left="carryObject" carry_right="-" surface="*" />
+  </PostureManifest>
+  <PostureManifest actors="y">
+    <Support name="WeddingCake_Posture" family="none" compatibility="FullBody" carry_left="-" carry_right="-" surface="*" />
+    <Support name="WeddingCake_Posture" family="none" compatibility="UpperBody" carry_left="-" carry_right="-" surface="*" />
+  </PostureManifest>
+  <State type="public" skippable="false" interrupt_this="false" name="CutCakeLarge_Fail" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="CutCakeLarge_Success" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="CutCakeSmall_Fail" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="CutCakeSmall_Success" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="Mirror" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <Connection from="CutCakeLarge_Fail" to="exit" />
+  <Connection from="CutCakeLarge_Success" to="exit" />
+  <Connection from="CutCakeSmall_Fail" to="exit" />
+  <Connection from="CutCakeSmall_Success" to="exit" />
+  <Connection from="Mirror" to="CutCakeLarge_Fail" />
+  <Connection from="Mirror" to="CutCakeLarge_Success" />
+  <Connection from="Mirror" to="CutCakeSmall_Fail" />
+  <Connection from="Mirror" to="CutCakeSmall_Success" />
+  <Connection from="entry" to="Mirror" />
+  <State name="CutCakeLarge_Fail" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="y:posture" unique_id="2">
+      <Choice value="WeddingCake_Posture--FullBody" track="normal" mask="">
+        <Controller target="y" controller="@ClipController(clip=a2a_soc_weddingCake_cutCakeLarge_fail_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_soc_weddingCake_cutCakeLarge_fail.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="1">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+      <Choice value="WeddingCake_Posture--UpperBody" track="normal" mask="Trackmask_UpperBody">
+        <Reference target="1" />
+      </Choice>
+    </PostureSelector>
+    <PostureSelector parameter="x:posture" unique_id="4">
+      <Choice value="WeddingCake_Posture--FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2a_soc_weddingCake_cutCakeLarge_fail_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_soc_weddingCake_cutCakeLarge_fail.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="3">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+      <Choice value="WeddingCake_Posture--UpperBody" track="normal" mask="Trackmask_UpperBody">
+        <Reference target="3" />
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="CutCakeLarge_Success" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="6">
+      <Choice value="WeddingCake_Posture--FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2a_soc_weddingCake_cutCakeLarge_romantic_success_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_soc_weddingCake_cutCakeLarge_romantic_success.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="5">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+      <Choice value="WeddingCake_Posture--UpperBody" track="normal" mask="Trackmask_UpperBody">
+        <Reference target="5" />
+      </Choice>
+    </PostureSelector>
+    <PostureSelector parameter="y:posture" unique_id="8">
+      <Choice value="WeddingCake_Posture--FullBody" track="normal" mask="">
+        <Controller target="y" controller="@ClipController(clip=a2a_soc_weddingCake_cutCakeLarge_romantic_success_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_soc_weddingCake_cutCakeLarge_romantic_success.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="7">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+      <Choice value="WeddingCake_Posture--UpperBody" track="normal" mask="Trackmask_UpperBody">
+        <Reference target="7" />
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="CutCakeSmall_Fail" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="y:posture" unique_id="10">
+      <Choice value="WeddingCake_Posture--FullBody" track="normal" mask="">
+        <Controller target="y" controller="@ClipController(clip=a2a_soc_weddingCake_cutCakeSmall_fail_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_soc_weddingCake_cutCakeSmall_fail.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="9">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+      <Choice value="WeddingCake_Posture--UpperBody" track="normal" mask="Trackmask_UpperBody">
+        <Reference target="9" />
+      </Choice>
+    </PostureSelector>
+    <PostureSelector parameter="x:posture" unique_id="12">
+      <Choice value="WeddingCake_Posture--FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2a_soc_weddingCake_cutCakeSmall_fail_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_soc_weddingCake_cutCakeSmall_fail.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="11">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+      <Choice value="WeddingCake_Posture--UpperBody" track="normal" mask="Trackmask_UpperBody">
+        <Reference target="11" />
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="CutCakeSmall_Success" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="14">
+      <Choice value="WeddingCake_Posture--FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2a_soc_weddingCake_cutCakeSmall_romantic_success_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_soc_weddingCake_cutCakeSmall_romantic_success.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="13">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+      <Choice value="WeddingCake_Posture--UpperBody" track="normal" mask="Trackmask_UpperBody">
+        <Reference target="13" />
+      </Choice>
+    </PostureSelector>
+    <PostureSelector parameter="y:posture" unique_id="16">
+      <Choice value="WeddingCake_Posture--FullBody" track="normal" mask="">
+        <Controller target="y" controller="@ClipController(clip=a2a_soc_weddingCake_cutCakeSmall_romantic_success_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_soc_weddingCake_cutCakeSmall_romantic_success.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="15">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+      <Choice value="WeddingCake_Posture--UpperBody" track="normal" mask="Trackmask_UpperBody">
+        <Reference target="15" />
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="Mirror" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <ParameterSelector parameter="x:carryState" unique_id="19">
+      <Choice value="none" />
+      <Choice value="left">
+        <SetMirror target="x" mirror="true" unique_id="17" />
+        <SetMirror target="y" mirror="true" unique_id="18" />
+      </Choice>
+      <Choice value="right" />
+      <Choice value="both" />
+    </ParameterSelector>
+  </State>
+</ASM>

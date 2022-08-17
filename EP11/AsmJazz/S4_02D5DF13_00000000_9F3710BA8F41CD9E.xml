@@ -1,0 +1,51 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="Fox_StealEgg_Posture" dcc="sage">
+  <Actor name="x" type="Sim" master="true" virtual="false" />
+  <Actor name="carryObject" type="Object" virtual="true" />
+  <Actor name="chickenCoop" type="Object" virtual="true" />
+  <Actor name="postureObject" type="Object" virtual="true" />
+  <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
+  <Parameter name="x:species" type="enum" labels="human,dog,smalldog,cat,fox" default="fox" />
+  <Parameter name="chickenCoop:objectOrientation" type="quaternion" labels="" default="0,0,0,1" />
+  <Parameter name="chickenCoop:objectPosition" type="vector3" labels="" default="0,0,0" />
+  <IkConfiguration name="ax2o_stealEgg_posture.ma">
+    <SourceFile name="ax2o_stealEgg_posture.ma">
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="chickenCoop" actor="chickenCoop" />
+    </SourceFile>
+  </IkConfiguration>
+  <PostureManifest>
+    <Provide name="stealEgg" family="none" compatibility="FullBody" carry_left="*" carry_right="*" surface="*" />
+  </PostureManifest>
+  <State type="public" skippable="false" interrupt_this="false" name="GetIn_Path" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="GetOut_Path" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="public" countlooptime="false" disableautostop="false" skippable="true" interrupt_this="true" name="StealEgg_Posture" focus="none" facialoverlays="false" tailoverlays="true" />
+  <Connection from="GetIn_Path" to="StealEgg_Posture" />
+  <Connection from="GetOut_Path" to="exit" />
+  <Connection from="StealEgg_Posture" to="GetOut_Path" />
+  <Connection from="entry" to="GetIn_Path" />
+  <State name="GetIn_Path" type="public" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <FollowPath path="ChickenCoop_Fox_In" default_walkstyle="Walk" reference_actor="chickenCoop" reference_translation_param="chickenCoop:objectPosition" reference_orientation_param="chickenCoop:objectOrientation" trigger_posture_transition_event="True" reverse_path="False" target="x" overridePosture="false" track="normal" transition_class_in="Default" transition_class_out="Default" unique_id="1">
+      <TransitionClassList />
+    </FollowPath>
+  </State>
+  <State name="GetOut_Path" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <FollowPath path="ChickenCoop_Fox_Out" default_walkstyle="Run" reference_actor="chickenCoop" reference_translation_param="chickenCoop:objectPosition" reference_orientation_param="chickenCoop:objectOrientation" trigger_posture_transition_event="True" reverse_path="False" target="x" overridePosture="false" track="normal" transition_class_in="Default" transition_class_out="Default" unique_id="2">
+      <TransitionClassList />
+    </FollowPath>
+  </State>
+  <State name="StealEgg_Posture" type="public" countlooptime="false" disableautostop="false" skippable="true" interrupt_this="true" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <MakeController>
+      <Controller target="chickenCoop" controller="@ClipController(clip=ax2o_stealEgg_posture_chickenCoop, loop_count=#1)" overridePosture="false" mask="" track="low" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ax2o_stealEgg_posture.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="3">
+        <TransitionClassList />
+      </Controller>
+      <Controller target="x" controller="@ClipController(clip=ax2o_stealEgg_posture_x, loop_count=#1)" overridePosture="false" mask="" track="low" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ax2o_stealEgg_posture.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="4">
+        <TransitionClassList />
+      </Controller>
+    </MakeController>
+  </State>
+</ASM>

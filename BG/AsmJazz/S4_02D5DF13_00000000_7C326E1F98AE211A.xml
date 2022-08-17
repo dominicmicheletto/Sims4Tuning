@@ -2,6 +2,7 @@
 <ASM name="Cook_InteractionIdle" dcc="sage">
   <Actor name="x" type="Sim" master="true" virtual="false" />
   <Actor name="surface" type="Object" virtual="false" />
+  <Actor name="stepStool" type="Prop" virtual="false" object_def_resource_key="c0db5ae7:00000000:00000000000406fe#toolStepStoolGEN01_set1" />
   <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
   <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
   <Parameter name="x:statLevel" type="enum" labels="low,mediumLow,medium,mediumHigh,high" default="medium" />
@@ -23,6 +24,18 @@
       <MapNamespace namespace="x" actor="x" />
     </SourceFile>
   </IkConfiguration>
+  <IkConfiguration name="c2o_cook_idle_lowSkill.ma">
+    <SourceFile name="c2o_cook_idle_lowSkill.ma">
+      <MapNamespace namespace="surface" actor="surface" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="c2o_cook_idle_medSkill.ma">
+    <SourceFile name="c2o_cook_idle_medSkill.ma">
+      <MapNamespace namespace="surface" actor="surface" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
   <PostureManifest actors="" />
   <PostureManifest actors="x">
     <Support name="cook" family="none" compatibility="FullBody" carry_left="-" carry_right="-" surface="*" />
@@ -34,78 +47,111 @@
   <State name="Cook_Interaction_Idle" type="public" countlooptime="false" disableautostop="false" skippable="true" interrupt_this="true" focus="none" facialoverlays="true" tailoverlays="true">
     <description />
     <MakeController>
-      <PostureSelector parameter="x:posture" unique_id="19">
+      <PostureSelector parameter="x:posture" unique_id="32">
         <Choice value="cook--FullBody" track="normal" mask="">
-          <ParameterSelector parameter="x:statLevel" unique_id="18">
-            <Choice value="low">
-              <RandomSelector repeatweight="0" allow_empty_choices="False" unique_id="6">
-                <Choice weight="100" avoidRepeat="True">
-                  <Controller target="x" controller="@ClipController(clip=a2o_cook_idle_lowSkill_breathe_01_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_cook_idle_lowSkill.ma" focus="none" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="1">
-                    <TransitionClassList>
-                      <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
-                    </TransitionClassList>
-                  </Controller>
+          <ParameterSelector parameter="x:age" unique_id="31">
+            <Choice value="baby" />
+            <Choice value="toddler" />
+            <Choice value="child">
+              <ParameterSelector parameter="x:statLevel" unique_id="12">
+                <Choice value="low">
+                  <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="6">
+                    <Choice weight="100" avoidRepeat="False">
+                      <Controller target="x" controller="@ClipController(clip=c2o_cook_idle_lowSkill_breathe_01_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c2o_cook_idle_lowSkill.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="1">
+                        <TransitionClassList />
+                      </Controller>
+                    </Choice>
+                    <Choice weight="100" avoidRepeat="False">
+                      <Controller target="x" controller="@ClipController(clip=c2o_cook_idle_lowSkill_breathe_02_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c2o_cook_idle_lowSkill.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="2">
+                        <TransitionClassList />
+                      </Controller>
+                    </Choice>
+                    <Choice weight="50" avoidRepeat="False">
+                      <Controller target="x" controller="@ClipController(clip=c2o_cook_idle_lowSkill_searchAround_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c2o_cook_idle_lowSkill.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="3">
+                        <TransitionClassList />
+                      </Controller>
+                    </Choice>
+                    <Choice weight="51" avoidRepeat="False">
+                      <Controller target="x" controller="@ClipController(clip=c2o_cook_idle_lowSkill_sniff_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c2o_cook_idle_lowSkill.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="4">
+                        <TransitionClassList />
+                      </Controller>
+                    </Choice>
+                    <Choice weight="35" avoidRepeat="False">
+                      <Controller target="x" controller="@ClipController(clip=c2o_cook_idle_lowSkill_think_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c2o_cook_idle_lowSkill.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="5">
+                        <TransitionClassList />
+                      </Controller>
+                    </Choice>
+                  </RandomSelector>
                 </Choice>
-                <Choice weight="100" avoidRepeat="True">
-                  <Controller target="x" controller="@ClipController(clip=a2o_cook_idle_lowSkill_breathe_02_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_cook_idle_lowSkill.ma" focus="none" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="2">
-                    <TransitionClassList>
-                      <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
-                    </TransitionClassList>
-                  </Controller>
-                </Choice>
-                <Choice weight="25" avoidRepeat="True">
-                  <Controller target="x" controller="@ClipController(clip=a2o_cook_idle_lowSkill_think_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_cook_idle_lowSkill.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="3">
-                    <TransitionClassList>
-                      <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
-                    </TransitionClassList>
-                  </Controller>
-                </Choice>
-                <Choice weight="25" avoidRepeat="True">
-                  <Controller target="x" controller="@ClipController(clip=a2o_cook_idle_lowSkill_searchAround_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_cook_idle_lowSkill.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="4">
-                    <TransitionClassList>
-                      <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
-                    </TransitionClassList>
-                  </Controller>
-                </Choice>
-                <Choice weight="25" avoidRepeat="True">
-                  <Controller target="x" controller="@ClipController(clip=a2o_cook_idle_lowSkill_sniff_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_cook_idle_lowSkill.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="5">
-                    <TransitionClassList>
-                      <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
-                    </TransitionClassList>
-                  </Controller>
-                </Choice>
-              </RandomSelector>
-            </Choice>
-            <Choice value="mediumLow">
-              <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="12">
-                <Choice weight="100" avoidRepeat="False">
+                <Choice value="mediumLow">
                   <Reference target="6" />
                 </Choice>
-                <Choice weight="100" avoidRepeat="False">
+                <Choice value="medium">
                   <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="11">
-                    <Choice weight="34" avoidRepeat="True">
-                      <Controller target="x" controller="@ClipController(clip=a2o_cook_idle_medSkill_think_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_cook_idle_medSkill.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="7">
-                        <TransitionClassList>
-                          <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
-                        </TransitionClassList>
+                    <Choice weight="27" avoidRepeat="False">
+                      <Controller target="x" controller="@ClipController(clip=c2o_cook_idle_medSkill_smell_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c2o_cook_idle_medSkill.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="7">
+                        <TransitionClassList />
                       </Controller>
                     </Choice>
                     <Choice weight="100" avoidRepeat="False">
-                      <Controller target="x" controller="@ClipController(clip=a2o_cook_idle_breathe_01_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_cook_idle_medSkill.ma" focus="none" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="8">
-                        <TransitionClassList>
-                          <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
-                        </TransitionClassList>
+                      <Controller target="x" controller="@ClipController(clip=c2o_cook_idle_breathe_01_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c2o_cook_idle_medSkill.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="8">
+                        <TransitionClassList />
                       </Controller>
                     </Choice>
                     <Choice weight="100" avoidRepeat="False">
-                      <Controller target="x" controller="@ClipController(clip=a2o_cook_idle_breathe_02_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_cook_idle_medSkill.ma" focus="none" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="9">
+                      <Controller target="x" controller="@ClipController(clip=c2o_cook_idle_breathe_02_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c2o_cook_idle_medSkill.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="9">
+                        <TransitionClassList />
+                      </Controller>
+                    </Choice>
+                    <Choice weight="41" avoidRepeat="False">
+                      <Controller target="x" controller="@ClipController(clip=c2o_cook_idle_medSkill_think_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c2o_cook_idle_medSkill.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="10">
+                        <TransitionClassList />
+                      </Controller>
+                    </Choice>
+                  </RandomSelector>
+                </Choice>
+                <Choice value="mediumHigh">
+                  <Reference target="11" />
+                </Choice>
+                <Choice value="high">
+                  <Reference target="11" />
+                </Choice>
+              </ParameterSelector>
+            </Choice>
+            <Choice value="teen">
+              <ParameterSelector parameter="x:statLevel" unique_id="30">
+                <Choice value="low">
+                  <RandomSelector repeatweight="0" allow_empty_choices="False" unique_id="18">
+                    <Choice weight="100" avoidRepeat="True">
+                      <Controller target="x" controller="@ClipController(clip=a2o_cook_idle_lowSkill_breathe_01_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_cook_idle_lowSkill.ma" focus="none" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="13">
                         <TransitionClassList>
                           <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
                         </TransitionClassList>
                       </Controller>
                     </Choice>
-                    <Choice weight="34" avoidRepeat="True">
-                      <Controller target="x" controller="@ClipController(clip=a2o_cook_idle_medSkill_smell_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_cook_idle_medSkill.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="10">
+                    <Choice weight="100" avoidRepeat="True">
+                      <Controller target="x" controller="@ClipController(clip=a2o_cook_idle_lowSkill_breathe_02_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_cook_idle_lowSkill.ma" focus="none" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="14">
+                        <TransitionClassList>
+                          <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                        </TransitionClassList>
+                      </Controller>
+                    </Choice>
+                    <Choice weight="25" avoidRepeat="True">
+                      <Controller target="x" controller="@ClipController(clip=a2o_cook_idle_lowSkill_think_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_cook_idle_lowSkill.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="15">
+                        <TransitionClassList>
+                          <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                        </TransitionClassList>
+                      </Controller>
+                    </Choice>
+                    <Choice weight="25" avoidRepeat="True">
+                      <Controller target="x" controller="@ClipController(clip=a2o_cook_idle_lowSkill_searchAround_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_cook_idle_lowSkill.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="16">
+                        <TransitionClassList>
+                          <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                        </TransitionClassList>
+                      </Controller>
+                    </Choice>
+                    <Choice weight="25" avoidRepeat="True">
+                      <Controller target="x" controller="@ClipController(clip=a2o_cook_idle_lowSkill_sniff_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_cook_idle_lowSkill.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="17">
                         <TransitionClassList>
                           <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
                         </TransitionClassList>
@@ -113,50 +159,98 @@
                     </Choice>
                   </RandomSelector>
                 </Choice>
-              </RandomSelector>
+                <Choice value="mediumLow">
+                  <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="24">
+                    <Choice weight="100" avoidRepeat="False">
+                      <Reference target="18" />
+                    </Choice>
+                    <Choice weight="100" avoidRepeat="False">
+                      <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="23">
+                        <Choice weight="34" avoidRepeat="True">
+                          <Controller target="x" controller="@ClipController(clip=a2o_cook_idle_medSkill_think_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_cook_idle_medSkill.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="19">
+                            <TransitionClassList>
+                              <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                            </TransitionClassList>
+                          </Controller>
+                        </Choice>
+                        <Choice weight="100" avoidRepeat="False">
+                          <Controller target="x" controller="@ClipController(clip=a2o_cook_idle_breathe_01_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_cook_idle_medSkill.ma" focus="none" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="20">
+                            <TransitionClassList>
+                              <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                            </TransitionClassList>
+                          </Controller>
+                        </Choice>
+                        <Choice weight="100" avoidRepeat="False">
+                          <Controller target="x" controller="@ClipController(clip=a2o_cook_idle_breathe_02_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_cook_idle_medSkill.ma" focus="none" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="21">
+                            <TransitionClassList>
+                              <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                            </TransitionClassList>
+                          </Controller>
+                        </Choice>
+                        <Choice weight="34" avoidRepeat="True">
+                          <Controller target="x" controller="@ClipController(clip=a2o_cook_idle_medSkill_smell_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_cook_idle_medSkill.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="22">
+                            <TransitionClassList>
+                              <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                            </TransitionClassList>
+                          </Controller>
+                        </Choice>
+                      </RandomSelector>
+                    </Choice>
+                  </RandomSelector>
+                </Choice>
+                <Choice value="medium">
+                  <Reference target="23" />
+                </Choice>
+                <Choice value="mediumHigh">
+                  <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="29">
+                    <Choice weight="34" avoidRepeat="True">
+                      <Controller target="x" controller="@ClipController(clip=a2o_cook_idle_highSkill_think_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_cook_idle_highSkill.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="25">
+                        <TransitionClassList>
+                          <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                        </TransitionClassList>
+                      </Controller>
+                    </Choice>
+                    <Choice weight="100" avoidRepeat="False">
+                      <Controller target="x" controller="@ClipController(clip=a2o_cook_idle_highSkill_breathe_01_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_cook_idle_highSkill.ma" focus="none" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="26">
+                        <TransitionClassList>
+                          <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                        </TransitionClassList>
+                      </Controller>
+                    </Choice>
+                    <Choice weight="100" avoidRepeat="False">
+                      <Controller target="x" controller="@ClipController(clip=a2o_cook_idle_highSkill_breathe_02_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_cook_idle_highSkill.ma" focus="none" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="27">
+                        <TransitionClassList>
+                          <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                        </TransitionClassList>
+                      </Controller>
+                    </Choice>
+                    <Choice weight="34" avoidRepeat="True">
+                      <Controller target="x" controller="@ClipController(clip=a2o_cook_idle_highSkill_smell_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_cook_idle_highSkill.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="28">
+                        <TransitionClassList>
+                          <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                        </TransitionClassList>
+                      </Controller>
+                    </Choice>
+                  </RandomSelector>
+                </Choice>
+                <Choice value="high">
+                  <Reference target="29" />
+                </Choice>
+              </ParameterSelector>
             </Choice>
-            <Choice value="medium">
-              <Reference target="11" />
+            <Choice value="youngadult">
+              <Reference target="30" />
             </Choice>
-            <Choice value="mediumHigh">
-              <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="17">
-                <Choice weight="34" avoidRepeat="True">
-                  <Controller target="x" controller="@ClipController(clip=a2o_cook_idle_highSkill_think_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_cook_idle_highSkill.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="13">
-                    <TransitionClassList>
-                      <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
-                    </TransitionClassList>
-                  </Controller>
-                </Choice>
-                <Choice weight="100" avoidRepeat="False">
-                  <Controller target="x" controller="@ClipController(clip=a2o_cook_idle_highSkill_breathe_01_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_cook_idle_highSkill.ma" focus="none" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="14">
-                    <TransitionClassList>
-                      <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
-                    </TransitionClassList>
-                  </Controller>
-                </Choice>
-                <Choice weight="100" avoidRepeat="False">
-                  <Controller target="x" controller="@ClipController(clip=a2o_cook_idle_highSkill_breathe_02_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_cook_idle_highSkill.ma" focus="none" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="15">
-                    <TransitionClassList>
-                      <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
-                    </TransitionClassList>
-                  </Controller>
-                </Choice>
-                <Choice weight="34" avoidRepeat="True">
-                  <Controller target="x" controller="@ClipController(clip=a2o_cook_idle_highSkill_smell_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_cook_idle_highSkill.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="16">
-                    <TransitionClassList>
-                      <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
-                    </TransitionClassList>
-                  </Controller>
-                </Choice>
-              </RandomSelector>
+            <Choice value="adult">
+              <Reference target="30" />
             </Choice>
-            <Choice value="high">
-              <Reference target="17" />
+            <Choice value="elder">
+              <Reference target="30" />
             </Choice>
           </ParameterSelector>
         </Choice>
         <Choice value="grill--FullBody" track="normal" mask="">
-          <Reference target="18" />
+          <Reference target="31" />
         </Choice>
       </PostureSelector>
     </MakeController>

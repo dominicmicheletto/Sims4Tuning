@@ -1,0 +1,65 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="Fox_StealEgg" dcc="sage">
+  <Actor name="x" type="Sim" master="true" virtual="false" />
+  <Actor name="carryObject" type="Object" virtual="false" />
+  <Actor name="chickenCoop" type="Object" virtual="true" />
+  <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
+  <Parameter name="x:species" type="enum" labels="human,dog,smalldog,cat,fox" default="fox" />
+  <Parameter name="x:carryState" type="enum" labels="none,left,right,both" default="right" />
+  <IkConfiguration name="ax2o_stealEgg_coopCommotion.ma">
+    <SourceFile name="ax2o_stealEgg_coopCommotion.ma">
+      <MapNamespace namespace="chickenCoop" actor="chickenCoop" />
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="carryObject" actor="carryObject" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="ax2o_stealEgg_posture.ma">
+    <SourceFile name="ax2o_stealEgg_posture.ma">
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="chickenCoop" actor="chickenCoop" />
+    </SourceFile>
+  </IkConfiguration>
+  <PostureManifest actors="">
+    <Support name="stealEgg" family="none" compatibility="FullBody" carry_left="*" carry_right="-" surface="*" />
+  </PostureManifest>
+  <State type="private" skippable="false" interrupt_this="false" name="Hub" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" name="Idle" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="StealEgg_InteractionIdle" focus="none" facialoverlays="false" tailoverlays="true" />
+  <Connection from="Hub" to="Idle" />
+  <Connection from="Hub" to="StealEgg_InteractionIdle" />
+  <Connection from="Hub" to="exit" />
+  <Connection from="Idle" to="Hub" />
+  <Connection from="StealEgg_InteractionIdle" to="Hub" />
+  <Connection from="entry" to="Hub" />
+  <State name="Hub" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="1">
+      <Choice value="stealEgg--FullBody" track="normal" mask="" />
+    </PostureSelector>
+  </State>
+  <State name="Idle" type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <MakeController>
+      <PostureSelector parameter="x:posture" unique_id="4">
+        <Choice value="stealEgg--FullBody" track="normal" mask="">
+          <Controller target="chickenCoop" controller="@ClipController(clip=ax2o_stealEgg_idle_chickenCoop, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ax2o_stealEgg_posture.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="2">
+            <TransitionClassList />
+          </Controller>
+          <Controller target="x" controller="@ClipController(clip=ax2o_stealEgg_idle_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ax2o_stealEgg_posture.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="3">
+            <TransitionClassList />
+          </Controller>
+        </Choice>
+      </PostureSelector>
+    </MakeController>
+  </State>
+  <State name="StealEgg_InteractionIdle" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <Controller target="chickenCoop" controller="@ClipController(clip=ax2o_stealEgg_coopCommotion_chickenCoop, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ax2o_stealEgg_coopCommotion.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="5">
+      <TransitionClassList />
+    </Controller>
+    <Controller target="x" controller="@ClipController(clip=ax2o_stealEgg_coopCommotion_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ax2o_stealEgg_coopCommotion.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="6">
+      <TransitionClassList />
+    </Controller>
+  </State>
+</ASM>

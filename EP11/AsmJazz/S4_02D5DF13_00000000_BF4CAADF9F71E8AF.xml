@@ -1,0 +1,85 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="Llama_Soc_T_Shear" dcc="sage">
+  <Actor name="x" type="Sim" master="true" virtual="false" />
+  <Actor name="animalLlama" type="Object" virtual="false" />
+  <Actor name="animalPen" type="Object" virtual="true" />
+  <Actor name="toolAnimalShears" type="Prop" virtual="false" object_def_resource_key="c0db5ae7:00000000:00000000000425ea#toolAnimalShears_EP11GEN_set1" />
+  <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
+  <Parameter name="x:species" type="enum" labels="human,dog,smalldog,cat,fox" default="human" />
+  <IkConfiguration name="a2o_llama_soc_T_shear.ma">
+    <SourceFile name="a2o_llama_soc_T_shear.ma">
+      <MapNamespace namespace="animalPen" actor="animalPen" />
+      <MapNamespace namespace="y" actor="animalLlama" />
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="toolAnimalShears" actor="toolAnimalShears" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_llama_soc_T_shear_fail.ma">
+    <SourceFile name="a2o_llama_soc_T_shear_fail.ma">
+      <MapNamespace namespace="animalPen" actor="animalPen" />
+      <MapNamespace namespace="y" actor="animalLlama" />
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="toolAnimalShears" actor="toolAnimalShears" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="o_llama_idles.ma">
+    <SourceFile name="o_llama_idles.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <PostureManifest actors="" />
+  <PostureManifest actors="x">
+    <Support family="stand" compatibility="FullBody" carry_left="-" carry_right="-" surface="animalPen" />
+  </PostureManifest>
+  <State type="public" skippable="false" interrupt_this="false" name="Shear_Fail" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="Shear_Succeed" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="startSoftPosture" focus="upper body" facialoverlays="false" tailoverlays="true" />
+  <Connection from="Shear_Fail" to="exit" />
+  <Connection from="Shear_Succeed" to="exit" />
+  <Connection from="entry" to="startSoftPosture" />
+  <Connection from="startSoftPosture" to="Shear_Fail" />
+  <Connection from="startSoftPosture" to="Shear_Succeed" />
+  <State name="Shear_Fail" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="2">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2o_llama_soc_T_shear_fail_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_llama_soc_T_shear_fail.ma" focus="none" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="1">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+    </PostureSelector>
+    <PostureSelector parameter="x:posture" unique_id="4">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <Controller target="animalLlama" controller="@ClipController(clip=a2o_llama_soc_T_shear_fail_animalLlama, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_llama_soc_T_shear_fail.ma" focus="none" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="3">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="Shear_Succeed" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="6">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2o_llama_soc_T_shear_succeed_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_llama_soc_T_shear.ma" focus="none" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="5">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+    </PostureSelector>
+    <PostureSelector parameter="x:posture" unique_id="8">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <Controller target="animalLlama" controller="@ClipController(clip=a2o_llama_soc_T_shear_succeed_animalLlama, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_llama_soc_T_shear.ma" focus="none" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="7">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="startSoftPosture" type="private" skippable="false" interrupt_this="false" focus="upper body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <MakeController unique_id="10">
+      <Controller target="animalLlama" controller="@ClipController(clip=o_llama_idle_breathe_softPosture_animalLlama, loop_count=#1)" overridePosture="false" mask="" track="low" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="o_llama_idles.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="9">
+        <TransitionClassList />
+      </Controller>
+    </MakeController>
+  </State>
+</ASM>

@@ -1,0 +1,60 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="GiveTip" dcc="sage">
+  <Actor name="x" type="Sim" master="true" virtual="false" />
+  <Actor name="y" type="Sim" virtual="false" />
+  <Actor name="Coin" type="Prop" virtual="false" object_def_resource_key="c0db5ae7:00000000:000000000001c480#coinSml_GENgold" />
+  <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
+  <Parameter name="x:carryState" type="enum" labels="none,left,right,both" default="right" />
+  <Parameter name="y:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="y:sex" type="enum" labels="male,female" default="male" />
+  <IkConfiguration name="a2a_friendly_T_giveTip.ma">
+    <SourceFile name="a2a_friendly_T_giveTip.ma">
+      <MapNamespace namespace="coin" actor="Coin" />
+      <MapNamespace namespace="y" actor="y" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <PostureManifest actors="" />
+  <PostureManifest actors="x">
+    <Support family="stand" compatibility="FullBody" carry_left="-" carry_right="*" surface="*" />
+    <Support family="stand" compatibility="FullBody" carry_left="*" carry_right="-" surface="*" />
+  </PostureManifest>
+  <PostureManifest actors="y">
+    <Support family="stand" compatibility="FullBody" carry_left="-" carry_right="-" surface="*" />
+  </PostureManifest>
+  <State type="public" skippable="false" interrupt_this="false" name="GiveTip" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="Mirror" focus="none" facialoverlays="false" tailoverlays="true" />
+  <Connection from="GiveTip" to="exit" />
+  <Connection from="Mirror" to="GiveTip" />
+  <Connection from="entry" to="Mirror" />
+  <State name="GiveTip" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="2">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2a_soc_groceryDelivery_T_giveTip_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_friendly_T_giveTip.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="1">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+    </PostureSelector>
+    <PostureSelector parameter="y:posture" unique_id="4">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <Controller target="y" controller="@ClipController(clip=a2a_soc_groceryDelivery_T_giveTip_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_friendly_T_giveTip.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="3">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="Mirror" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <ParameterSelector parameter="x:carryState" unique_id="7">
+      <Choice value="none" />
+      <Choice value="left">
+        <SetMirror target="x" mirror="true" unique_id="6" />
+        <SetMirror target="y" mirror="true" unique_id="5" />
+      </Choice>
+      <Choice value="right" />
+      <Choice value="both" />
+    </ParameterSelector>
+  </State>
+</ASM>

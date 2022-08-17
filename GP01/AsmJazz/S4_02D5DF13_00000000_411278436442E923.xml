@@ -1,132 +1,849 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<ASM name="Campfire_Light_AddLog" dcc="sage">
+﻿<?xml version="1.0"?>
+<ASM name="Campfire_Light_AddLog">
   <Actor name="x" type="Sim" master="true" virtual="false" />
   <Actor name="sitTemplate" type="Object" virtual="true" />
-  <Actor name="match" type="Prop" virtual="false" object_def_resource_key="c0db5ae7:00000000:000000000000ff30#toolMatch_bm" />
-  <Actor name="firewood" type="Prop" virtual="false" object_def_resource_key="c0db5ae7:00000000:000000000000ff3d#firewood_bm" />
+  <Actor name="match" type="Prop" virtual="false" object_def_resource_key="c0db5ae7:00000000:000000000000ff30" />
+  <Actor name="firewood" type="Prop" virtual="false" object_def_resource_key="c0db5ae7:00000000:000000000000ff3d" />
   <Actor name="campFire" type="Object" virtual="false" />
-  <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
-  <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
+  <Parameter name="x:age" template="age" type="enum" labels="baby,unsupported_age,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="x:sex" template="sex" type="enum" labels="male,female" default="male" />
   <IkConfiguration name="a2o_campfire_light_addLog.ma">
     <SourceFile name="a2o_campfire_light_addLog.ma">
       <MapNamespace namespace="campfire" actor="campFire" />
-      <MapNamespace namespace="firewood" actor="firewood" />
-      <MapNamespace namespace="match" actor="match" />
-      <MapNamespace namespace="x" actor="x" />
     </SourceFile>
   </IkConfiguration>
   <IkConfiguration name="a2o_campfire_light_addLog_seated.ma">
     <SourceFile name="a2o_campfire_light_addLog_seated.ma">
       <MapNamespace namespace="campfire" actor="campFire" />
-      <MapNamespace namespace="firewood" actor="firewood" />
-      <MapNamespace namespace="match" actor="match" />
-      <MapNamespace namespace="sitTemplate" actor="sitTemplate" />
-      <MapNamespace namespace="x" actor="x" />
     </SourceFile>
   </IkConfiguration>
-  <PostureManifest actors="" />
   <PostureManifest actors="x">
-    <Support family="sit" compatibility="FullBody" carry_left="-" carry_right="-" surface="*" />
-    <Support family="sit" compatibility="UpperBody" carry_left="-" carry_right="-" surface="*" />
-    <Support family="stand" compatibility="FullBody" carry_left="-" carry_right="-" surface="*" />
-    <Support family="stand" compatibility="UpperBody" carry_left="-" carry_right="-" surface="*" />
-    <Support name="kneel" family="none" compatibility="FullBody" carry_left="-" carry_right="-" surface="*" />
+    <Support family="sit" compatibility="FullBody" carry_left="-" carry_right="*" surface="*" />
+    <Support family="sit" compatibility="FullBody" carry_left="*" carry_right="-" surface="*" />
+    <Support family="sit" compatibility="UpperBody" carry_left="*" carry_right="-" surface="*" />
+    <Support family="sit" compatibility="UpperBody" carry_left="-" carry_right="*" surface="*" />
+    <Support family="stand" compatibility="FullBody" carry_left="-" carry_right="*" surface="*" />
+    <Support family="stand" compatibility="FullBody" carry_left="*" carry_right="-" surface="*" />
+    <Support family="stand" compatibility="UpperBody" carry_left="-" carry_right="*" surface="*" />
+    <Support family="stand" compatibility="UpperBody" carry_left="*" carry_right="-" surface="*" />
+    <Support name="kneel" compatibility="UpperBody" carry_left="-" carry_right="-" surface="*" />
+    <Support name="kneel" compatibility="FullBody" carry_left="-" carry_right="-" surface="*" />
   </PostureManifest>
-  <State type="public" skippable="false" interrupt_this="false" name="Add Log" focus="none" facialoverlays="true" tailoverlays="true" />
-  <State type="public" skippable="false" interrupt_this="false" name="Light Fail" focus="none" facialoverlays="false" tailoverlays="true" />
-  <State type="public" skippable="false" interrupt_this="false" name="Light Succeed" focus="none" facialoverlays="true" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="Add Log" focus="none" facialoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="Light Succeed" focus="none" facialoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="Light Fail" focus="none" facialoverlays="false" />
   <Connection from="Add Log" to="exit" />
-  <Connection from="Light Fail" to="exit" />
-  <Connection from="Light Succeed" to="exit" />
   <Connection from="entry" to="Add Log" />
   <Connection from="entry" to="Light Fail" />
   <Connection from="entry" to="Light Succeed" />
-  <State name="Add Log" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="true" tailoverlays="true">
-    <description />
-    <PostureSelector parameter="x:posture" unique_id="4">
-      <Choice value="kneel--FullBody" track="normal" mask="">
-        <Controller target="x" controller="@ClipController(clip=a2o_campfire_addLog_kneel_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_campfire_light_addLog_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="1">
+  <Connection from="Light Fail" to="exit" />
+  <Connection from="Light Succeed" to="exit" />
+  <State name="Add Log">
+    <description></description>
+    <PostureSelector parameter="x:posture">
+      <Choice value="-sit-FullBody">
+        <Controller target="x" controller="@ClipController(clip=a2o_campfire_addLog_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_campfire_light_addLog_seated.ma" focus="undefined" id="c2d2a266-640a-4df2-85d0-eac92390d2ee">
           <TransitionClassList>
             <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
           </TransitionClassList>
         </Controller>
       </Choice>
-      <Choice value="-sit-FullBody" track="normal" mask="">
-        <Controller target="x" controller="@ClipController(clip=a2o_campfire_addLog_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_campfire_light_addLog_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="2">
+      <Choice value="-sit-UpperBody">
+        <Controller target="x" controller="@ClipController(clip=a2o_campfire_addLog_seated_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_campfire_light_addLog_seated.ma" focus="undefined" id="c2d2a266-640a-4df2-85d0-eac92390d2ee">
           <TransitionClassList>
             <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
           </TransitionClassList>
         </Controller>
       </Choice>
-      <Choice value="-sit-UpperBody" track="normal" mask="Trackmask_UpperBody">
-        <Reference target="2" />
-      </Choice>
-      <Choice value="-stand-FullBody" track="normal" mask="">
-        <Controller target="x" controller="@ClipController(clip=a2o_campfire_addLog_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_campfire_light_addLog.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="3">
+      <Choice value="-stand-FullBody">
+        <Controller target="x" controller="@ClipController(clip=a2o_campfire_addLog_x, loop_count=#1)" overridePosture="false" mask="" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_campfire_light_addLog.ma" focus="undefined" id="73b627ba-3745-4aca-9b85-4bec99f814d0">
           <TransitionClassList>
             <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
           </TransitionClassList>
         </Controller>
       </Choice>
-      <Choice value="-stand-UpperBody" track="normal" mask="Trackmask_UpperBody">
-        <Reference target="3" />
+      <Choice value="-stand-UpperBody">
+        <Controller target="x" controller="@ClipController(clip=a2o_campfire_addLog_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_campfire_light_addLog.ma" focus="undefined" id="73b627ba-3745-4aca-9b85-4bec99f814d0">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
+      <Choice value="kneel--UpperBody">
+        <Controller target="x" controller="@ClipController(clip=a2o_campfire_addLog_kneel_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_campfire_light_addLog_seated.ma" focus="undefined" id="4c383239-a404-4d7f-908c-3c2106df265a">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
+      <Choice value="kneel--FullBody">
+        <Controller target="x" controller="@ClipController(clip=a2o_campfire_addLog_kneel_x, loop_count=#1)" overridePosture="false" mask="" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_campfire_light_addLog_seated.ma" focus="undefined" id="4c383239-a404-4d7f-908c-3c2106df265a">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
       </Choice>
     </PostureSelector>
   </State>
-  <State name="Light Fail" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
-    <description />
-    <PostureSelector parameter="x:posture" unique_id="7">
-      <Choice value="kneel--FullBody" track="normal" mask="Trackmask_UpperBody">
-        <Controller target="x" controller="@ClipController(clip=a2o_campfire_light_fail_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_campfire_light_addLog_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="5">
+  <State name="Light Succeed">
+    <description></description>
+    <PostureSelector parameter="x:posture">
+      <Choice value="-sit-FullBody">
+        <Controller target="x" controller="@ClipController(clip=a2o_campfire_light_succeed_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_campfire_light_addLog_seated.ma" focus="undefined" id="03a26105-cd4d-45fc-a2af-9bc9132398c8">
           <TransitionClassList>
             <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
           </TransitionClassList>
         </Controller>
       </Choice>
-      <Choice value="-sit-FullBody" track="normal" mask="">
-        <Reference target="5" />
-      </Choice>
-      <Choice value="-sit-UpperBody" track="normal" mask="Trackmask_UpperBody">
-        <Reference target="5" />
-      </Choice>
-      <Choice value="-stand-FullBody" track="normal" mask="">
-        <Controller target="x" controller="@ClipController(clip=a2o_campfire_light_fail_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_campfire_light_addLog.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="6">
+      <Choice value="-sit-UpperBody">
+        <Controller target="x" controller="@ClipController(clip=a2o_campfire_light_succeed_seated_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_campfire_light_addLog_seated.ma" focus="undefined" id="03a26105-cd4d-45fc-a2af-9bc9132398c8">
           <TransitionClassList>
             <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
           </TransitionClassList>
         </Controller>
       </Choice>
-      <Choice value="-stand-UpperBody" track="normal" mask="Trackmask_UpperBody">
-        <Reference target="6" />
+      <Choice value="-stand-FullBody">
+        <Controller target="x" controller="@ClipController(clip=a2o_campfire_light_succeed_x, loop_count=#1)" overridePosture="false" mask="" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_campfire_light_addLog.ma" focus="undefined" id="b5659bff-70f9-4b53-9a39-5738f9efc47c">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
+      <Choice value="-stand-UpperBody">
+        <Controller target="x" controller="@ClipController(clip=a2o_campfire_light_succeed_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_campfire_light_addLog.ma" focus="undefined" id="b5659bff-70f9-4b53-9a39-5738f9efc47c">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
+      <Choice value="kneel--UpperBody">
+        <Controller target="x" controller="@ClipController(clip=a2o_campfire_light_succeed_seated_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_campfire_light_addLog_seated.ma" focus="undefined" id="03a26105-cd4d-45fc-a2af-9bc9132398c8">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
+      <Choice value="kneel--FullBody">
+        <Controller target="x" controller="@ClipController(clip=a2o_campfire_light_succeed_seated_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_campfire_light_addLog_seated.ma" focus="undefined" id="03a26105-cd4d-45fc-a2af-9bc9132398c8">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
       </Choice>
     </PostureSelector>
   </State>
-  <State name="Light Succeed" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="true" tailoverlays="true">
-    <description />
-    <PostureSelector parameter="x:posture" unique_id="10">
-      <Choice value="kneel--FullBody" track="normal" mask="Trackmask_UpperBody">
-        <Controller target="x" controller="@ClipController(clip=a2o_campfire_light_succeed_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_campfire_light_addLog_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="8">
+  <State name="Light Fail">
+    <description></description>
+    <PostureSelector parameter="x:posture">
+      <Choice value="-sit-FullBody">
+        <Controller target="x" controller="@ClipController(clip=a2o_campfire_light_fail_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_campfire_light_addLog_seated.ma" focus="undefined" id="e390a963-98b9-4118-b044-ac3c5c4c0666">
           <TransitionClassList>
             <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
           </TransitionClassList>
         </Controller>
       </Choice>
-      <Choice value="-sit-FullBody" track="normal" mask="">
-        <Reference target="8" />
-      </Choice>
-      <Choice value="-sit-UpperBody" track="normal" mask="Trackmask_UpperBody">
-        <Reference target="8" />
-      </Choice>
-      <Choice value="-stand-FullBody" track="normal" mask="">
-        <Controller target="x" controller="@ClipController(clip=a2o_campfire_light_succeed_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_campfire_light_addLog.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="9">
+      <Choice value="-sit-UpperBody">
+        <Controller target="x" controller="@ClipController(clip=a2o_campfire_light_fail_seated_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_campfire_light_addLog_seated.ma" focus="undefined" id="e390a963-98b9-4118-b044-ac3c5c4c0666">
           <TransitionClassList>
             <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
           </TransitionClassList>
         </Controller>
       </Choice>
-      <Choice value="-stand-UpperBody" track="normal" mask="Trackmask_UpperBody">
-        <Reference target="9" />
+      <Choice value="-stand-FullBody">
+        <Controller target="x" controller="@ClipController(clip=a2o_campfire_light_fail_x, loop_count=#1)" overridePosture="false" mask="" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_campfire_light_addLog.ma" focus="undefined" id="f2172871-4696-4e47-bba3-1edd771ebb8e">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
+      <Choice value="-stand-UpperBody">
+        <Controller target="x" controller="@ClipController(clip=a2o_campfire_light_fail_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_campfire_light_addLog.ma" focus="undefined" id="f2172871-4696-4e47-bba3-1edd771ebb8e">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
+      <Choice value="kneel--UpperBody">
+        <Controller target="x" controller="@ClipController(clip=a2o_campfire_light_fail_seated_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_campfire_light_addLog_seated.ma" focus="undefined" id="e390a963-98b9-4118-b044-ac3c5c4c0666">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
+      <Choice value="kneel--FullBody">
+        <Controller target="x" controller="@ClipController(clip=a2o_campfire_light_fail_seated_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="normal" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_campfire_light_addLog_seated.ma" focus="undefined" id="e390a963-98b9-4118-b044-ac3c5c4c0666">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
       </Choice>
     </PostureSelector>
   </State>
+  <SwingPrivate swingfileversion="1.102.0.271">
+    <StateMachineData>
+      <State type="public" loop="false" skippable="false" interrupt_this="false" posture="false" name="Add Log" id="31" focus="none" facialoverlays="true" entrypoint_id="32" connectedTo="33" />
+      <State type="public" loop="false" skippable="false" interrupt_this="false" posture="false" name="exit" id="10" focus="full body" facialoverlays="false" />
+      <State type="public" loop="false" skippable="false" interrupt_this="false" posture="false" name="entry" id="9" focus="full body" facialoverlays="false" />
+      <State type="public" loop="false" skippable="false" interrupt_this="false" posture="false" name="Light Succeed" id="1a4774a2-6d04-4cea-9946-3bf8c1920a82" focus="none" facialoverlays="true" entrypoint_id="eac9c398-0a2a-4f07-bf09-8433324272fa" connectedTo="1e53cb8a-fa54-4e51-95e3-403f5ebf916e" />
+      <State type="public" loop="false" skippable="false" interrupt_this="false" posture="false" name="Light Fail" id="fa7a2e64-dc9b-4abf-b005-ee3e8d3b2405" focus="none" facialoverlays="false" entrypoint_id="aff90d99-2d05-4eb4-b61d-efd0625ab938" connectedTo="40b12c35-f9ef-487f-b4dd-c28b2fb8421d" />
+      <Connection from="Add Log" to="exit" to_id="10" />
+      <Connection from="entry" from_id="9" to="Add Log" />
+      <Connection from="entry" from_id="9" to="Light Fail" />
+      <Connection from="entry" from_id="9" to="Light Succeed" />
+      <Connection from="Light Fail" to="exit" to_id="10" />
+      <Connection from="Light Succeed" to="exit" to_id="10" />
+      <State name="Add Log" id="31">
+        <description></description>
+        <PostureSelector type="Swing.DataStructures.SupportedPosturesStatement" id="33" parameter="x:posture" swing_id="31">
+          <Choice type="Swing.DataStructures.SupportedPosturesCaseStatement" value="-sit-FullBody" mask="" track="normal" connectedTo="c2d2a266-640a-4df2-85d0-eac92390d2ee">
+            <Controller target="x" controller="@ClipController(clip=a2o_campfire_addLog_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" overrideTimingEnable="false" transition_class_in="Default" transition_class_out="Default" useLoopable="true" mayafilename="a2o_campfire_light_addLog_seated.ma" ik_configuration="a2o_campfire_light_addLog_seated.ma" focus="undefined" type="Swing.DataStructures.ActionStatement" id="c2d2a266-640a-4df2-85d0-eac92390d2ee">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice type="Swing.DataStructures.SupportedPosturesCaseStatement" value="-sit-UpperBody" mask="Trackmask_UpperBody" track="normal" connectedTo="c2d2a266-640a-4df2-85d0-eac92390d2ee">
+            <Controller target="x" controller="@ClipController(clip=a2o_campfire_addLog_seated_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="normal" overrideTimingEnable="false" transition_class_in="Default" transition_class_out="Default" useLoopable="true" mayafilename="a2o_campfire_light_addLog_seated.ma" ik_configuration="a2o_campfire_light_addLog_seated.ma" focus="undefined" type="Swing.DataStructures.ActionStatement" id="c2d2a266-640a-4df2-85d0-eac92390d2ee">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice type="Swing.DataStructures.SupportedPosturesCaseStatement" value="-stand-FullBody" mask="" track="normal" connectedTo="73b627ba-3745-4aca-9b85-4bec99f814d0">
+            <Controller target="x" controller="@ClipController(clip=a2o_campfire_addLog_x, loop_count=#1)" overridePosture="false" mask="" track="normal" overrideTimingEnable="false" transition_class_in="Default" transition_class_out="Default" useLoopable="true" mayafilename="a2o_campfire_light_addLog.ma" ik_configuration="a2o_campfire_light_addLog.ma" focus="undefined" type="Swing.DataStructures.ActionStatement" id="73b627ba-3745-4aca-9b85-4bec99f814d0">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice type="Swing.DataStructures.SupportedPosturesCaseStatement" value="-stand-UpperBody" mask="Trackmask_UpperBody" track="normal" connectedTo="73b627ba-3745-4aca-9b85-4bec99f814d0">
+            <Controller target="x" controller="@ClipController(clip=a2o_campfire_addLog_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="normal" overrideTimingEnable="false" transition_class_in="Default" transition_class_out="Default" useLoopable="true" mayafilename="a2o_campfire_light_addLog.ma" ik_configuration="a2o_campfire_light_addLog.ma" focus="undefined" type="Swing.DataStructures.ActionStatement" id="73b627ba-3745-4aca-9b85-4bec99f814d0">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice type="Swing.DataStructures.SupportedPosturesCaseStatement" value="kneel--UpperBody" mask="Trackmask_UpperBody" track="normal" connectedTo="4c383239-a404-4d7f-908c-3c2106df265a">
+            <Controller target="x" controller="@ClipController(clip=a2o_campfire_addLog_kneel_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="normal" overrideTimingEnable="false" transition_class_in="Default" transition_class_out="Default" useLoopable="true" mayafilename="a2o_campfire_light_addLog_seated.ma" ik_configuration="a2o_campfire_light_addLog_seated.ma" focus="undefined" type="Swing.DataStructures.ActionStatement" id="4c383239-a404-4d7f-908c-3c2106df265a">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice type="Swing.DataStructures.SupportedPosturesCaseStatement" value="kneel--FullBody" mask="" track="normal" connectedTo="4c383239-a404-4d7f-908c-3c2106df265a">
+            <Controller target="x" controller="@ClipController(clip=a2o_campfire_addLog_kneel_x, loop_count=#1)" overridePosture="false" mask="" track="normal" overrideTimingEnable="false" transition_class_in="Default" transition_class_out="Default" useLoopable="true" mayafilename="a2o_campfire_light_addLog_seated.ma" ik_configuration="a2o_campfire_light_addLog_seated.ma" focus="undefined" type="Swing.DataStructures.ActionStatement" id="4c383239-a404-4d7f-908c-3c2106df265a">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+        </PostureSelector>
+      </State>
+      <State name="Light Succeed" id="1a4774a2-6d04-4cea-9946-3bf8c1920a82">
+        <description></description>
+        <PostureSelector type="Swing.DataStructures.SupportedPosturesStatement" id="1e53cb8a-fa54-4e51-95e3-403f5ebf916e" parameter="x:posture" swing_id="1a4774a2-6d04-4cea-9946-3bf8c1920a82">
+          <Choice type="Swing.DataStructures.SupportedPosturesCaseStatement" value="-sit-FullBody" mask="" track="normal" connectedTo="03a26105-cd4d-45fc-a2af-9bc9132398c8">
+            <Controller target="x" controller="@ClipController(clip=a2o_campfire_light_succeed_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" overrideTimingEnable="false" transition_class_in="Default" transition_class_out="Default" useLoopable="true" mayafilename="a2o_campfire_light_addLog_seated.ma" ik_configuration="a2o_campfire_light_addLog_seated.ma" focus="undefined" type="Swing.DataStructures.ActionStatement" id="03a26105-cd4d-45fc-a2af-9bc9132398c8">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice type="Swing.DataStructures.SupportedPosturesCaseStatement" value="-sit-UpperBody" mask="Trackmask_UpperBody" track="normal" connectedTo="03a26105-cd4d-45fc-a2af-9bc9132398c8">
+            <Controller target="x" controller="@ClipController(clip=a2o_campfire_light_succeed_seated_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="normal" overrideTimingEnable="false" transition_class_in="Default" transition_class_out="Default" useLoopable="true" mayafilename="a2o_campfire_light_addLog_seated.ma" ik_configuration="a2o_campfire_light_addLog_seated.ma" focus="undefined" type="Swing.DataStructures.ActionStatement" id="03a26105-cd4d-45fc-a2af-9bc9132398c8">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice type="Swing.DataStructures.SupportedPosturesCaseStatement" value="-stand-FullBody" mask="" track="normal" connectedTo="b5659bff-70f9-4b53-9a39-5738f9efc47c">
+            <Controller target="x" controller="@ClipController(clip=a2o_campfire_light_succeed_x, loop_count=#1)" overridePosture="false" mask="" track="normal" overrideTimingEnable="false" transition_class_in="Default" transition_class_out="Default" useLoopable="true" mayafilename="a2o_campfire_light_addLog.ma" ik_configuration="a2o_campfire_light_addLog.ma" focus="undefined" type="Swing.DataStructures.ActionStatement" id="b5659bff-70f9-4b53-9a39-5738f9efc47c">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice type="Swing.DataStructures.SupportedPosturesCaseStatement" value="-stand-UpperBody" mask="Trackmask_UpperBody" track="normal" connectedTo="b5659bff-70f9-4b53-9a39-5738f9efc47c">
+            <Controller target="x" controller="@ClipController(clip=a2o_campfire_light_succeed_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="normal" overrideTimingEnable="false" transition_class_in="Default" transition_class_out="Default" useLoopable="true" mayafilename="a2o_campfire_light_addLog.ma" ik_configuration="a2o_campfire_light_addLog.ma" focus="undefined" type="Swing.DataStructures.ActionStatement" id="b5659bff-70f9-4b53-9a39-5738f9efc47c">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice type="Swing.DataStructures.SupportedPosturesCaseStatement" value="kneel--UpperBody" mask="Trackmask_UpperBody" track="normal" connectedTo="03a26105-cd4d-45fc-a2af-9bc9132398c8">
+            <Controller target="x" controller="@ClipController(clip=a2o_campfire_light_succeed_seated_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="normal" overrideTimingEnable="false" transition_class_in="Default" transition_class_out="Default" useLoopable="true" mayafilename="a2o_campfire_light_addLog_seated.ma" ik_configuration="a2o_campfire_light_addLog_seated.ma" focus="undefined" type="Swing.DataStructures.ActionStatement" id="03a26105-cd4d-45fc-a2af-9bc9132398c8">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice type="Swing.DataStructures.SupportedPosturesCaseStatement" value="kneel--FullBody" mask="Trackmask_UpperBody" track="normal" connectedTo="03a26105-cd4d-45fc-a2af-9bc9132398c8">
+            <Controller target="x" controller="@ClipController(clip=a2o_campfire_light_succeed_seated_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="normal" overrideTimingEnable="false" transition_class_in="Default" transition_class_out="Default" useLoopable="true" mayafilename="a2o_campfire_light_addLog_seated.ma" ik_configuration="a2o_campfire_light_addLog_seated.ma" focus="undefined" type="Swing.DataStructures.ActionStatement" id="03a26105-cd4d-45fc-a2af-9bc9132398c8">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+        </PostureSelector>
+      </State>
+      <State name="Light Fail" id="fa7a2e64-dc9b-4abf-b005-ee3e8d3b2405">
+        <description></description>
+        <PostureSelector type="Swing.DataStructures.SupportedPosturesStatement" id="40b12c35-f9ef-487f-b4dd-c28b2fb8421d" parameter="x:posture" swing_id="fa7a2e64-dc9b-4abf-b005-ee3e8d3b2405">
+          <Choice type="Swing.DataStructures.SupportedPosturesCaseStatement" value="-sit-FullBody" mask="" track="normal" connectedTo="e390a963-98b9-4118-b044-ac3c5c4c0666">
+            <Controller target="x" controller="@ClipController(clip=a2o_campfire_light_fail_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" overrideTimingEnable="false" transition_class_in="Default" transition_class_out="Default" useLoopable="true" mayafilename="a2o_campfire_light_addLog_seated.ma" ik_configuration="a2o_campfire_light_addLog_seated.ma" focus="undefined" type="Swing.DataStructures.ActionStatement" id="e390a963-98b9-4118-b044-ac3c5c4c0666">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice type="Swing.DataStructures.SupportedPosturesCaseStatement" value="-sit-UpperBody" mask="Trackmask_UpperBody" track="normal" connectedTo="e390a963-98b9-4118-b044-ac3c5c4c0666">
+            <Controller target="x" controller="@ClipController(clip=a2o_campfire_light_fail_seated_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="normal" overrideTimingEnable="false" transition_class_in="Default" transition_class_out="Default" useLoopable="true" mayafilename="a2o_campfire_light_addLog_seated.ma" ik_configuration="a2o_campfire_light_addLog_seated.ma" focus="undefined" type="Swing.DataStructures.ActionStatement" id="e390a963-98b9-4118-b044-ac3c5c4c0666">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice type="Swing.DataStructures.SupportedPosturesCaseStatement" value="-stand-FullBody" mask="" track="normal" connectedTo="f2172871-4696-4e47-bba3-1edd771ebb8e">
+            <Controller target="x" controller="@ClipController(clip=a2o_campfire_light_fail_x, loop_count=#1)" overridePosture="false" mask="" track="normal" overrideTimingEnable="false" transition_class_in="Default" transition_class_out="Default" useLoopable="true" mayafilename="a2o_campfire_light_addLog.ma" ik_configuration="a2o_campfire_light_addLog.ma" focus="undefined" type="Swing.DataStructures.ActionStatement" id="f2172871-4696-4e47-bba3-1edd771ebb8e">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice type="Swing.DataStructures.SupportedPosturesCaseStatement" value="-stand-UpperBody" mask="Trackmask_UpperBody" track="normal" connectedTo="f2172871-4696-4e47-bba3-1edd771ebb8e">
+            <Controller target="x" controller="@ClipController(clip=a2o_campfire_light_fail_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="normal" overrideTimingEnable="false" transition_class_in="Default" transition_class_out="Default" useLoopable="true" mayafilename="a2o_campfire_light_addLog.ma" ik_configuration="a2o_campfire_light_addLog.ma" focus="undefined" type="Swing.DataStructures.ActionStatement" id="f2172871-4696-4e47-bba3-1edd771ebb8e">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice type="Swing.DataStructures.SupportedPosturesCaseStatement" value="kneel--UpperBody" mask="Trackmask_UpperBody" track="normal" connectedTo="e390a963-98b9-4118-b044-ac3c5c4c0666">
+            <Controller target="x" controller="@ClipController(clip=a2o_campfire_light_fail_seated_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="normal" overrideTimingEnable="false" transition_class_in="Default" transition_class_out="Default" useLoopable="true" mayafilename="a2o_campfire_light_addLog_seated.ma" ik_configuration="a2o_campfire_light_addLog_seated.ma" focus="undefined" type="Swing.DataStructures.ActionStatement" id="e390a963-98b9-4118-b044-ac3c5c4c0666">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice type="Swing.DataStructures.SupportedPosturesCaseStatement" value="kneel--FullBody" mask="Trackmask_UpperBody" track="normal" connectedTo="e390a963-98b9-4118-b044-ac3c5c4c0666">
+            <Controller target="x" controller="@ClipController(clip=a2o_campfire_light_fail_seated_x, loop_count=#1)" overridePosture="false" mask="Trackmask_UpperBody" track="normal" overrideTimingEnable="false" transition_class_in="Default" transition_class_out="Default" useLoopable="true" mayafilename="a2o_campfire_light_addLog_seated.ma" ik_configuration="a2o_campfire_light_addLog_seated.ma" focus="undefined" type="Swing.DataStructures.ActionStatement" id="e390a963-98b9-4118-b044-ac3c5c4c0666">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+        </PostureSelector>
+      </State>
+      <State type="public" loop="false" name="exit" id="10" />
+      <State type="public" loop="false" name="entry" id="9" />
+      <namespacemap>
+        <source file="a2o_campfire_light_addLog.ma">
+          <mapping namespace="campfire" actor="campFire" />
+          <mapping namespace="firewood" actor="firewood" />
+          <mapping namespace="match" actor="match" />
+          <mapping namespace="x" actor="x" />
+        </source>
+        <source file="a2o_campfire_light_addLog_seated.ma">
+          <mapping namespace="campfire" actor="campFire" />
+          <mapping namespace="firewood" actor="firewood" />
+          <mapping namespace="match" actor="match" />
+          <mapping namespace="sitTemplate" actor="sitTemplate" />
+          <mapping namespace="x" actor="x" />
+        </source>
+      </namespacemap>
+    </StateMachineData>
+    <widgetcanvas>
+      <viewport>
+        <track x="189.9535" y="-1.116302" />
+        <zoom f="1.100822" />
+      </viewport>
+      <widget type="Swing.Widgets.ExitWidget" id="13">
+        <location x="280" y="491" />
+        <size width="100" height="70" />
+        <data ref="10" />
+      </widget>
+      <widget type="Swing.Widgets.EntryWidget" id="15">
+        <location x="231" y="55" />
+        <size width="100" height="70" />
+        <data ref="9" />
+      </widget>
+      <widget type="Swing.Widgets.StateWidget" id="1de90998-adef-49af-8bb7-34e002556bcf" fakeloop="False" edge="null" statetype="Normal">
+        <location x="92" y="297" />
+        <size width="100" height="100" />
+        <data ref="1a4774a2-6d04-4cea-9946-3bf8c1920a82" />
+        <widgetcanvas>
+          <viewport>
+            <track x="33" y="272" />
+            <zoom f="0.764125" />
+          </viewport>
+          <widget type="Swing.Widgets.SupportedPosturesWidget" id="565d2d47-b093-43c8-8c74-6244f8bc2d51">
+            <location x="158" y="67" />
+            <size width="107" height="140" />
+            <data ref="1e53cb8a-fa54-4e51-95e3-403f5ebf916e" />
+            <case value="kneel--FullBody" />
+            <case value="kneel--UpperBody" />
+            <case value="sit-FullBody" />
+            <case value="sit-UpperBody" />
+            <case value="stand-FullBody" />
+            <case value="stand-UpperBody" />
+          </widget>
+          <widget type="Swing.Widgets.EntryPointWidget" id="74f61d8e-c6a2-43d2-8fbf-1da22ddb2d16">
+            <location x="24" y="42" />
+            <size width="30" height="30" />
+            <data ref="eac9c398-0a2a-4f07-bf09-8433324272fa" />
+          </widget>
+          <widget type="Swing.Widgets.ActionWidget" id="a6141a41-7bfc-4beb-8481-527be67500fa" showadvancedoptions="False">
+            <location x="494" y="-31" />
+            <size width="248" height="58" />
+            <data ref="03a26105-cd4d-45fc-a2af-9bc9132398c8" />
+          </widget>
+          <widget type="Swing.Widgets.ActionWidget" id="f1ff76a1-892b-46b1-8140-e0bce36d8f19" showadvancedoptions="False">
+            <location x="478" y="158" />
+            <size width="217" height="58" />
+            <data ref="b5659bff-70f9-4b53-9a39-5738f9efc47c" />
+          </widget>
+          <edge type="WidgetCanvas.Edge" id="06823920-df6a-4d2c-bc1b-b6663c04472b" origin="565d2d47-b093-43c8-8c74-6244f8bc2d51.6" endpoint="f1ff76a1-892b-46b1-8140-e0bce36d8f19.0" />
+          <edge type="WidgetCanvas.Edge" id="395136a2-3a0d-4881-bb00-ec7d07e307e5" origin="565d2d47-b093-43c8-8c74-6244f8bc2d51.2" endpoint="a6141a41-7bfc-4beb-8481-527be67500fa.0" />
+          <edge type="WidgetCanvas.Edge" id="75561f58-d27b-45d7-82ef-35a317ad05df" origin="565d2d47-b093-43c8-8c74-6244f8bc2d51.3" endpoint="a6141a41-7bfc-4beb-8481-527be67500fa.0" />
+          <edge type="WidgetCanvas.Edge" id="8ffff442-cee6-4178-a038-71e6c44d4022" origin="74f61d8e-c6a2-43d2-8fbf-1da22ddb2d16.0" endpoint="565d2d47-b093-43c8-8c74-6244f8bc2d51.0" />
+          <edge type="WidgetCanvas.Edge" id="ac186f42-4739-4b6b-af79-e39e50a1c2f8" origin="565d2d47-b093-43c8-8c74-6244f8bc2d51.4" endpoint="a6141a41-7bfc-4beb-8481-527be67500fa.0" />
+          <edge type="WidgetCanvas.Edge" id="b0bd7126-8b6b-4a6a-9020-da3764a795a0" origin="565d2d47-b093-43c8-8c74-6244f8bc2d51.5" endpoint="f1ff76a1-892b-46b1-8140-e0bce36d8f19.0" />
+          <edge type="WidgetCanvas.Edge" id="feb06553-bc97-4ea2-9796-4b8e035f4ba1" origin="565d2d47-b093-43c8-8c74-6244f8bc2d51.1" endpoint="a6141a41-7bfc-4beb-8481-527be67500fa.0" />
+        </widgetcanvas>
+      </widget>
+      <widget type="Swing.Widgets.StateWidget" id="2259b7b5-a2bd-4e94-b407-c8aa97bda8a8" fakeloop="False" edge="null" statetype="Normal">
+        <location x="266" y="301" />
+        <size width="100" height="100" />
+        <data ref="fa7a2e64-dc9b-4abf-b005-ee3e8d3b2405" />
+        <widgetcanvas>
+          <viewport>
+            <track x="0" y="0" />
+            <zoom f="1" />
+          </viewport>
+          <widget type="Swing.Widgets.ActionWidget" id="9060a51f-192a-4204-965e-73eaaa2802ab" showadvancedoptions="False">
+            <location x="384" y="321" />
+            <size width="217" height="58" />
+            <data ref="f2172871-4696-4e47-bba3-1edd771ebb8e" />
+          </widget>
+          <widget type="Swing.Widgets.SupportedPosturesWidget" id="9a3bee1d-64bc-4b8b-b268-ec09a6d7ab41">
+            <location x="160" y="226" />
+            <size width="107" height="140" />
+            <data ref="40b12c35-f9ef-487f-b4dd-c28b2fb8421d" />
+            <case value="kneel--FullBody" />
+            <case value="kneel--UpperBody" />
+            <case value="sit-FullBody" />
+            <case value="sit-UpperBody" />
+            <case value="stand-FullBody" />
+            <case value="stand-UpperBody" />
+          </widget>
+          <widget type="Swing.Widgets.ActionWidget" id="da906275-874b-42ab-a38d-40a6c221717e" showadvancedoptions="False">
+            <location x="390" y="178" />
+            <size width="220" height="58" />
+            <data ref="e390a963-98b9-4118-b044-ac3c5c4c0666" />
+          </widget>
+          <widget type="Swing.Widgets.EntryPointWidget" id="f26fba1c-fb10-4a0b-a430-3b61c0ddda6c">
+            <location x="50" y="100" />
+            <size width="30" height="30" />
+            <data ref="aff90d99-2d05-4eb4-b61d-efd0625ab938" />
+          </widget>
+          <edge type="WidgetCanvas.Edge" id="51c0d309-3aaa-4c92-a465-123a285af95a" origin="9a3bee1d-64bc-4b8b-b268-ec09a6d7ab41.6" endpoint="9060a51f-192a-4204-965e-73eaaa2802ab.0" />
+          <edge type="WidgetCanvas.Edge" id="555d8df3-d334-4d26-ad97-c9997b7c16ec" origin="9a3bee1d-64bc-4b8b-b268-ec09a6d7ab41.4" endpoint="da906275-874b-42ab-a38d-40a6c221717e.0" />
+          <edge type="WidgetCanvas.Edge" id="868bc0c9-7013-47d3-9ee3-ef248e2be767" origin="9a3bee1d-64bc-4b8b-b268-ec09a6d7ab41.5" endpoint="9060a51f-192a-4204-965e-73eaaa2802ab.0" />
+          <edge type="WidgetCanvas.Edge" id="86aa9640-b8ce-4eb6-ba13-69aa3834cdd3" origin="9a3bee1d-64bc-4b8b-b268-ec09a6d7ab41.1" endpoint="da906275-874b-42ab-a38d-40a6c221717e.0" />
+          <edge type="WidgetCanvas.Edge" id="d8028680-c66d-4369-af86-352fb08618fb" origin="9a3bee1d-64bc-4b8b-b268-ec09a6d7ab41.3" endpoint="da906275-874b-42ab-a38d-40a6c221717e.0" />
+          <edge type="WidgetCanvas.Edge" id="d81f168a-577c-4e0d-b7bf-710dd30abd9d" origin="9a3bee1d-64bc-4b8b-b268-ec09a6d7ab41.2" endpoint="da906275-874b-42ab-a38d-40a6c221717e.0" />
+          <edge type="WidgetCanvas.Edge" id="e7987bb1-b278-4800-8d4b-f5f6a315c080" origin="f26fba1c-fb10-4a0b-a430-3b61c0ddda6c.0" endpoint="9a3bee1d-64bc-4b8b-b268-ec09a6d7ab41.0" />
+        </widgetcanvas>
+      </widget>
+      <widget type="Swing.Widgets.StateWidget" id="63" fakeloop="False" edge="null" statetype="Normal">
+        <location x="441" y="292" />
+        <size width="100" height="100" />
+        <data ref="31" />
+        <widgetcanvas>
+          <viewport>
+            <track x="147" y="265" />
+            <zoom f="0.7614942" />
+          </viewport>
+          <widget type="Swing.Widgets.EntryPointWidget" id="108">
+            <location x="-42" y="35" />
+            <size width="30" height="30" />
+            <data ref="32" />
+          </widget>
+          <widget type="Swing.Widgets.SupportedPosturesWidget" id="110">
+            <location x="97" y="76" />
+            <size width="107" height="140" />
+            <data ref="33" />
+            <case value="kneel--FullBody" />
+            <case value="kneel--UpperBody" />
+            <case value="sit-FullBody" />
+            <case value="sit-UpperBody" />
+            <case value="stand-FullBody" />
+            <case value="stand-UpperBody" />
+          </widget>
+          <widget type="Swing.Widgets.ActionWidget" id="1e8b6650-c6bb-46b5-988a-1e3c3e631a73" showadvancedoptions="False">
+            <location x="386" y="-20" />
+            <size width="217" height="58" />
+            <data ref="4c383239-a404-4d7f-908c-3c2106df265a" />
+          </widget>
+          <widget type="Swing.Widgets.ActionWidget" id="2604131c-6d50-4fb7-9a2a-a4436c531e38" showadvancedoptions="False">
+            <location x="377" y="157" />
+            <size width="217" height="58" />
+            <data ref="73b627ba-3745-4aca-9b85-4bec99f814d0" />
+          </widget>
+          <widget type="Swing.Widgets.ActionWidget" id="738c74e5-355e-4b98-8c54-e28d3f5cdbcc" showadvancedoptions="False">
+            <location x="383" y="62" />
+            <size width="217" height="58" />
+            <data ref="c2d2a266-640a-4df2-85d0-eac92390d2ee" />
+          </widget>
+          <edge type="WidgetCanvas.Edge" id="114" origin="108.0" endpoint="110.0" />
+          <edge type="WidgetCanvas.Edge" id="377296e8-4af4-4d8f-8983-b45ccdbc8591" origin="110.5" endpoint="2604131c-6d50-4fb7-9a2a-a4436c531e38.0" />
+          <edge type="WidgetCanvas.Edge" id="6bcdd4cc-f092-4c00-82dd-18208771fe12" origin="110.2" endpoint="1e8b6650-c6bb-46b5-988a-1e3c3e631a73.0" />
+          <edge type="WidgetCanvas.Edge" id="94aaca86-9a48-4565-8242-ae21a213b721" origin="110.4" endpoint="738c74e5-355e-4b98-8c54-e28d3f5cdbcc.0" />
+          <edge type="WidgetCanvas.Edge" id="b36bdb31-b1fb-4e12-b846-6c75cb04310b" origin="110.1" endpoint="1e8b6650-c6bb-46b5-988a-1e3c3e631a73.0" />
+          <edge type="WidgetCanvas.Edge" id="e3574ec9-c4bf-4933-ae19-57c20a36ac56" origin="110.6" endpoint="2604131c-6d50-4fb7-9a2a-a4436c531e38.0" />
+          <edge type="WidgetCanvas.Edge" id="ff8f4234-61aa-434f-902a-7390817735e9" origin="110.3" endpoint="738c74e5-355e-4b98-8c54-e28d3f5cdbcc.0" />
+        </widgetcanvas>
+      </widget>
+      <edge type="WidgetCanvas.Edge" id="27d56eee-d801-48de-bd03-c357a7afffeb" origin="15.0" endpoint="63.0" />
+      <edge type="WidgetCanvas.Edge" id="38e3ee44-94e9-4828-a81e-d96a5be0e5be" origin="1de90998-adef-49af-8bb7-34e002556bcf.0" endpoint="13.0" />
+      <edge type="WidgetCanvas.Edge" id="4f0b3c24-2cfd-4441-a5eb-8f68e8df5cf5" origin="15.0" endpoint="2259b7b5-a2bd-4e94-b407-c8aa97bda8a8.0" />
+      <edge type="WidgetCanvas.Edge" id="cd0d27f6-0dc9-4425-8ce2-4ee55c0b904c" origin="15.0" endpoint="1de90998-adef-49af-8bb7-34e002556bcf.0" />
+      <edge type="WidgetCanvas.Edge" id="f1d94828-c75e-472f-adc9-ab4b35b32bde" origin="63.0" endpoint="13.0" />
+      <edge type="WidgetCanvas.Edge" id="fdaeb40f-ae43-4077-86c1-c0ce2400ae81" origin="2259b7b5-a2bd-4e94-b407-c8aa97bda8a8.0" endpoint="13.0" />
+      <Actor name="x" type="Sim" master="true" virtual="false" id="0" />
+      <Actor name="sitTemplate" type="Object" virtual="true" id="152" />
+      <Actor name="match" type="Prop" virtual="false" id="fddd59a7-ed39-404e-99e1-2a9cecc4a525" obj_def_id="65328" object_def_resource_key="c0db5ae7:00000000:000000000000ff30" />
+      <Actor name="firewood" type="Prop" virtual="false" id="d08852a0-3e6f-449c-9193-96a6fec969ff" obj_def_id="65341" object_def_resource_key="c0db5ae7:00000000:000000000000ff3d" />
+      <Actor name="campFire" type="Object" virtual="false" id="05226655-90a2-4bc7-8ac4-9cdf4512dd7a" />
+      <Parameter name="x:age" template="age" type="enum" labels="baby,unsupported_age,child,teen,youngadult,adult,elder" default="adult" id="1" />
+      <Parameter name="x:sex" template="sex" type="enum" labels="male,female" default="male" id="2" />
+      <PostureManifest statemachine_type="INTERACTION" actors="x">
+        <Support family="sit" compatibility="FullBody" carry_left="-" carry_right="*" surface="*" />
+        <Support family="sit" compatibility="FullBody" carry_left="*" carry_right="-" surface="*" />
+        <Support family="sit" compatibility="UpperBody" carry_left="*" carry_right="-" surface="*" />
+        <Support family="sit" compatibility="UpperBody" carry_left="-" carry_right="*" surface="*" />
+        <Support family="stand" compatibility="FullBody" carry_left="-" carry_right="*" surface="*" />
+        <Support family="stand" compatibility="FullBody" carry_left="*" carry_right="-" surface="*" />
+        <Support family="stand" compatibility="UpperBody" carry_left="-" carry_right="*" surface="*" />
+        <Support family="stand" compatibility="UpperBody" carry_left="*" carry_right="-" surface="*" />
+        <Support name="kneel" compatibility="UpperBody" carry_left="-" carry_right="-" surface="*" />
+        <Support name="kneel" compatibility="FullBody" carry_left="-" carry_right="-" surface="*" />
+      </PostureManifest>
+      <Option Filter=".*" DebugEnabled="False" Actor="x" Index="Display Eval Tree" Color="Color [Color [Color [Color [Color [Color [Color [Color [Color [Color [Color [Color [Color [Color [Color [Color [Color [Color [Color [Color [Color [Color [Color [Color [Color [Color [Color [Color [ControlLightLight]]]]]]]]]]]]]]]]]]]]]]]]]]]]" />
+    </widgetcanvas>
+    <testcaselist>
+      <graphs>
+        <testcasegraph name="LightSucceed" type="Swing.Testing.TestCaseGraph" id="194">
+          <description></description>
+          <decisionmaker type="Swing.Testing.RequestStatement" id="196" actorinstance="a2b2f046-611d-4836-86e6-0b577453e4f3" state="1a4774a2-6d04-4cea-9946-3bf8c1920a82" interrputiblity="Normal" />
+          <decisionmaker type="Swing.DataStructures.EntryPoint" id="201">
+            <target id="202" />
+          </decisionmaker>
+          <decisionmaker type="Swing.Testing.SceneStatement" id="202" scenename="campFireStanding" />
+        </testcasegraph>
+        <widgetcanvas>
+          <viewport>
+            <track x="-36" y="-41" />
+            <zoom f="1.12" />
+          </viewport>
+          <widget type="Swing.Testing.RequestWidget" id="197">
+            <location x="235" y="261" />
+            <size width="80" height="40" />
+            <data ref="196" />
+          </widget>
+          <widget type="Swing.Widgets.EntryPointWidget" id="204">
+            <location x="165" y="141" />
+            <size width="30" height="30" />
+            <data ref="201" />
+          </widget>
+          <widget type="Swing.Testing.SceneWidget" id="205">
+            <location x="235" y="201" />
+            <size width="80" height="40" />
+            <data ref="202" />
+          </widget>
+          <edge type="WidgetCanvas.Edge" id="206" origin="205.1" endpoint="197.0" />
+          <edge type="WidgetCanvas.Edge" id="207" origin="204.0" endpoint="205.0" />
+        </widgetcanvas>
+        <testcasegraph name="LightFail" type="Swing.Testing.TestCaseGraph" id="4be1a3be-1aff-4b41-b87d-ede5cef70e16">
+          <description></description>
+          <decisionmaker type="Swing.Testing.RequestStatement" id="01264cbd-b6c2-4bb6-a876-dfeb82494828" actorinstance="a2b2f046-611d-4836-86e6-0b577453e4f3" state="fa7a2e64-dc9b-4abf-b005-ee3e8d3b2405" interrputiblity="Normal" />
+          <decisionmaker type="Swing.Testing.SceneStatement" id="1cf746f1-edc9-4a6a-9fbb-f10483fe7aca" scenename="campFireStanding" />
+          <decisionmaker type="Swing.DataStructures.EntryPoint" id="b351e22d-8a64-430d-bbfd-72444711cd7c">
+            <target id="1cf746f1-edc9-4a6a-9fbb-f10483fe7aca" />
+          </decisionmaker>
+        </testcasegraph>
+        <widgetcanvas>
+          <viewport>
+            <track x="0" y="0" />
+            <zoom f="1" />
+          </viewport>
+          <widget type="Swing.Testing.RequestWidget" id="2ee826c3-1b8a-4ab6-a606-8ef6b02fef09">
+            <location x="235" y="261" />
+            <size width="80" height="40" />
+            <data ref="01264cbd-b6c2-4bb6-a876-dfeb82494828" />
+          </widget>
+          <widget type="Swing.Testing.SceneWidget" id="489c3ff6-49e7-4135-846f-13a3ed8cf4e8">
+            <location x="235" y="201" />
+            <size width="80" height="40" />
+            <data ref="1cf746f1-edc9-4a6a-9fbb-f10483fe7aca" />
+          </widget>
+          <widget type="Swing.Widgets.EntryPointWidget" id="ccde46d5-34e2-4f23-9694-cb6625418e7e">
+            <location x="165" y="141" />
+            <size width="30" height="30" />
+            <data ref="b351e22d-8a64-430d-bbfd-72444711cd7c" />
+          </widget>
+          <edge type="WidgetCanvas.Edge" id="4dff0ddf-a0aa-461f-b300-bf8a607b30f0" origin="ccde46d5-34e2-4f23-9694-cb6625418e7e.0" endpoint="489c3ff6-49e7-4135-846f-13a3ed8cf4e8.0" />
+          <edge type="WidgetCanvas.Edge" id="97ab8579-df5f-4e20-99f9-ed31db830bf1" origin="489c3ff6-49e7-4135-846f-13a3ed8cf4e8.1" endpoint="2ee826c3-1b8a-4ab6-a606-8ef6b02fef09.0" />
+        </widgetcanvas>
+        <testcasegraph name="AddLog" type="Swing.Testing.TestCaseGraph" id="79c3acec-864f-407a-94af-5c0dedcc9ef3">
+          <description></description>
+          <decisionmaker type="Swing.DataStructures.EntryPoint" id="0edb0553-3a9d-4136-a2b3-b66eae61901e">
+            <target id="184fae0a-0362-4ff5-b964-621dc84bf691" />
+          </decisionmaker>
+          <decisionmaker type="Swing.Testing.SceneStatement" id="184fae0a-0362-4ff5-b964-621dc84bf691" scenename="campFireStanding" />
+          <decisionmaker type="Swing.Testing.RequestStatement" id="eee337f4-b31d-4e58-9715-4f4d11c3d133" actorinstance="a2b2f046-611d-4836-86e6-0b577453e4f3" state="31" interrputiblity="Normal" />
+        </testcasegraph>
+        <widgetcanvas>
+          <viewport>
+            <track x="0" y="0" />
+            <zoom f="1" />
+          </viewport>
+          <widget type="Swing.Widgets.EntryPointWidget" id="5976c519-cbf1-4faf-a618-2b943a28909d">
+            <location x="165" y="141" />
+            <size width="30" height="30" />
+            <data ref="0edb0553-3a9d-4136-a2b3-b66eae61901e" />
+          </widget>
+          <widget type="Swing.Testing.SceneWidget" id="816764cc-01bd-46b8-9de2-2b3fec2c7e02">
+            <location x="235" y="201" />
+            <size width="80" height="40" />
+            <data ref="184fae0a-0362-4ff5-b964-621dc84bf691" />
+          </widget>
+          <widget type="Swing.Testing.RequestWidget" id="e59d55c9-6006-4697-931a-b83c26f68f30">
+            <location x="235" y="261" />
+            <size width="80" height="40" />
+            <data ref="eee337f4-b31d-4e58-9715-4f4d11c3d133" />
+          </widget>
+          <edge type="WidgetCanvas.Edge" id="8651c3f3-fde6-491c-abc9-b54124e6498e" origin="816764cc-01bd-46b8-9de2-2b3fec2c7e02.1" endpoint="e59d55c9-6006-4697-931a-b83c26f68f30.0" />
+          <edge type="WidgetCanvas.Edge" id="bf7e440a-074d-4fc4-890e-03e3198a5f22" origin="5976c519-cbf1-4faf-a618-2b943a28909d.0" endpoint="816764cc-01bd-46b8-9de2-2b3fec2c7e02.0" />
+        </widgetcanvas>
+        <testcasegraph name="LightSucceed_Seated" type="Swing.Testing.TestCaseGraph" id="50b27520-9e65-4998-b4a7-163cf63a7669">
+          <description></description>
+          <decisionmaker type="Swing.Testing.RequestStatement" id="63472c4c-ffc1-488a-803f-8c6b3d54171a" actorinstance="a2b2f046-611d-4836-86e6-0b577453e4f3" state="1a4774a2-6d04-4cea-9946-3bf8c1920a82" interrputiblity="Normal" />
+          <decisionmaker type="Swing.Testing.SceneStatement" id="77790a3f-1aa7-4ef7-ad07-602447bdc303" scenename="campFireSeated" />
+          <decisionmaker type="Swing.DataStructures.EntryPoint" id="8ded9667-780c-4830-9721-6962b34069f8">
+            <target id="77790a3f-1aa7-4ef7-ad07-602447bdc303" />
+          </decisionmaker>
+        </testcasegraph>
+        <widgetcanvas>
+          <viewport>
+            <track x="0" y="0" />
+            <zoom f="1" />
+          </viewport>
+          <widget type="Swing.Testing.SceneWidget" id="08ceae5f-6077-417a-ba01-eef9ee1665c6">
+            <location x="235" y="201" />
+            <size width="80" height="40" />
+            <data ref="77790a3f-1aa7-4ef7-ad07-602447bdc303" />
+          </widget>
+          <widget type="Swing.Testing.RequestWidget" id="7e31c34d-d77f-4f5f-9639-c82bd17987c0">
+            <location x="235" y="261" />
+            <size width="80" height="40" />
+            <data ref="63472c4c-ffc1-488a-803f-8c6b3d54171a" />
+          </widget>
+          <widget type="Swing.Widgets.EntryPointWidget" id="fb3f751b-da46-4f58-9f3a-e3d3d4af63f0">
+            <location x="165" y="141" />
+            <size width="30" height="30" />
+            <data ref="8ded9667-780c-4830-9721-6962b34069f8" />
+          </widget>
+          <edge type="WidgetCanvas.Edge" id="258731c3-daf8-400d-a05e-81aa428937d5" origin="08ceae5f-6077-417a-ba01-eef9ee1665c6.1" endpoint="7e31c34d-d77f-4f5f-9639-c82bd17987c0.0" />
+          <edge type="WidgetCanvas.Edge" id="4ca57e83-e978-43a3-b9fc-1146199bdbb3" origin="fb3f751b-da46-4f58-9f3a-e3d3d4af63f0.0" endpoint="08ceae5f-6077-417a-ba01-eef9ee1665c6.0" />
+        </widgetcanvas>
+        <testcasegraph name="LightFail_Seated" type="Swing.Testing.TestCaseGraph" id="7bc50cab-88a0-4fd7-95f3-b4c191eaffa1">
+          <description></description>
+          <decisionmaker type="Swing.DataStructures.EntryPoint" id="72e6d6f1-15c1-4e57-a5ff-e4e79c8b26a9">
+            <target id="d4038cfa-d304-4169-a871-490056753873" />
+          </decisionmaker>
+          <decisionmaker type="Swing.Testing.RequestStatement" id="95afd6b7-8e06-4d10-b936-85ef4a6526d5" actorinstance="a2b2f046-611d-4836-86e6-0b577453e4f3" state="fa7a2e64-dc9b-4abf-b005-ee3e8d3b2405" interrputiblity="Normal" />
+          <decisionmaker type="Swing.Testing.SceneStatement" id="d4038cfa-d304-4169-a871-490056753873" scenename="campFireSeated" />
+        </testcasegraph>
+        <widgetcanvas>
+          <viewport>
+            <track x="0" y="0" />
+            <zoom f="1" />
+          </viewport>
+          <widget type="Swing.Testing.SceneWidget" id="75d9619b-b7b3-4648-aeb0-8a1d9eb687aa">
+            <location x="235" y="201" />
+            <size width="80" height="40" />
+            <data ref="d4038cfa-d304-4169-a871-490056753873" />
+          </widget>
+          <widget type="Swing.Testing.RequestWidget" id="b1afb0cb-bac2-4558-8447-46d0886e4fcb">
+            <location x="235" y="261" />
+            <size width="80" height="40" />
+            <data ref="95afd6b7-8e06-4d10-b936-85ef4a6526d5" />
+          </widget>
+          <widget type="Swing.Widgets.EntryPointWidget" id="df1023cb-4480-4727-8122-9af260a9ee9f">
+            <location x="165" y="141" />
+            <size width="30" height="30" />
+            <data ref="72e6d6f1-15c1-4e57-a5ff-e4e79c8b26a9" />
+          </widget>
+          <edge type="WidgetCanvas.Edge" id="89eda778-4d9b-46b9-a1c9-fe6c6579e4ae" origin="75d9619b-b7b3-4648-aeb0-8a1d9eb687aa.1" endpoint="b1afb0cb-bac2-4558-8447-46d0886e4fcb.0" />
+          <edge type="WidgetCanvas.Edge" id="bf55bbf8-39ab-4bd0-ba6d-5badde18ada0" origin="df1023cb-4480-4727-8122-9af260a9ee9f.0" endpoint="75d9619b-b7b3-4648-aeb0-8a1d9eb687aa.0" />
+        </widgetcanvas>
+        <testcasegraph name="AddLog_Seated" type="Swing.Testing.TestCaseGraph" id="daa10e06-c672-427b-809c-2f0ef2943812">
+          <description></description>
+          <decisionmaker type="Swing.Testing.RequestStatement" id="94fb5181-01d2-420c-824f-a3cc9656d6b5" actorinstance="a2b2f046-611d-4836-86e6-0b577453e4f3" state="31" interrputiblity="Normal" />
+          <decisionmaker type="Swing.Testing.SceneStatement" id="b1a3a878-57d4-453a-858e-4edd52550f1c" scenename="campFireSeated" />
+          <decisionmaker type="Swing.DataStructures.EntryPoint" id="dfb1e74c-1339-4776-835c-2b0ae8407c09">
+            <target id="b1a3a878-57d4-453a-858e-4edd52550f1c" />
+          </decisionmaker>
+        </testcasegraph>
+        <widgetcanvas>
+          <viewport>
+            <track x="0" y="0" />
+            <zoom f="1" />
+          </viewport>
+          <widget type="Swing.Testing.SceneWidget" id="aab290ba-f920-4979-95d6-5f1944a4403d">
+            <location x="235" y="201" />
+            <size width="80" height="40" />
+            <data ref="b1a3a878-57d4-453a-858e-4edd52550f1c" />
+          </widget>
+          <widget type="Swing.Widgets.EntryPointWidget" id="eb1e4e98-253f-462a-95c4-fdf1d6a7c4d3">
+            <location x="165" y="141" />
+            <size width="30" height="30" />
+            <data ref="dfb1e74c-1339-4776-835c-2b0ae8407c09" />
+          </widget>
+          <widget type="Swing.Testing.RequestWidget" id="ed4bf521-dd8a-45e8-86f1-28439783751f">
+            <location x="235" y="261" />
+            <size width="80" height="40" />
+            <data ref="94fb5181-01d2-420c-824f-a3cc9656d6b5" />
+          </widget>
+          <edge type="WidgetCanvas.Edge" id="26777f5b-ee5a-4f90-be6b-a57d99b4709d" origin="aab290ba-f920-4979-95d6-5f1944a4403d.1" endpoint="ed4bf521-dd8a-45e8-86f1-28439783751f.0" />
+          <edge type="WidgetCanvas.Edge" id="690967e7-b658-4750-93dd-ab631a3b1b89" origin="eb1e4e98-253f-462a-95c4-fdf1d6a7c4d3.0" endpoint="aab290ba-f920-4979-95d6-5f1944a4403d.0" />
+        </widgetcanvas>
+        <testcasegraph name="AddLog_kneel" type="Swing.Testing.TestCaseGraph" id="dc35545e-75ea-4a8d-9874-0f20aca28437">
+          <description></description>
+          <decisionmaker type="Swing.Testing.RequestStatement" id="32affe25-2ace-47a2-ab09-e8289bb57f3a" actorinstance="a2b2f046-611d-4836-86e6-0b577453e4f3" state="31" interrputiblity="Normal" />
+          <decisionmaker type="Swing.DataStructures.EntryPoint" id="c4abd053-6cef-4a84-bf87-4b72be6d417e">
+            <target id="ff647023-7b67-466a-ba35-b3068b3c34e0" />
+          </decisionmaker>
+          <decisionmaker type="Swing.Testing.SceneStatement" id="ff647023-7b67-466a-ba35-b3068b3c34e0" scenename="campFireKneel" />
+        </testcasegraph>
+        <widgetcanvas>
+          <viewport>
+            <track x="0" y="0" />
+            <zoom f="1" />
+          </viewport>
+          <widget type="Swing.Testing.SceneWidget" id="312265ff-c64a-46f2-a49a-bb35ba090714">
+            <location x="235" y="201" />
+            <size width="80" height="40" />
+            <data ref="ff647023-7b67-466a-ba35-b3068b3c34e0" />
+          </widget>
+          <widget type="Swing.Widgets.EntryPointWidget" id="67324600-7e3a-4ad0-8e52-f6ea5262e0d6">
+            <location x="165" y="141" />
+            <size width="30" height="30" />
+            <data ref="c4abd053-6cef-4a84-bf87-4b72be6d417e" />
+          </widget>
+          <widget type="Swing.Testing.RequestWidget" id="a787a3b4-d2a2-4e29-89b5-4bd97325010b">
+            <location x="235" y="261" />
+            <size width="80" height="40" />
+            <data ref="32affe25-2ace-47a2-ab09-e8289bb57f3a" />
+          </widget>
+          <edge type="WidgetCanvas.Edge" id="17bf235a-6d90-48bf-a789-9d46c599ded3" origin="67324600-7e3a-4ad0-8e52-f6ea5262e0d6.0" endpoint="312265ff-c64a-46f2-a49a-bb35ba090714.0" />
+          <edge type="WidgetCanvas.Edge" id="51b23ca8-1963-460a-b0b1-a87d83ec5144" origin="312265ff-c64a-46f2-a49a-bb35ba090714.1" endpoint="a787a3b4-d2a2-4e29-89b5-4bd97325010b.0" />
+        </widgetcanvas>
+      </graphs>
+    </testcaselist>
+    <blendmasklist />
+    <Lighting>
+      <Key0Light Rot="17.3" Height="0.9" Red="1" Green="1" Blue="1" Intensity="0.05" />
+      <Key1Light Rot="213.5" Height="0.45" Red="1" Green="1" Blue="1" Intensity="0.1" />
+      <Rim0Light Red="0.28" Green="0.15" Blue="0.06" Intensity="1.8" />
+      <Rim1Light Red="0" Green="0.3" Blue="0.4" Intensity="2.11" />
+      <DirectonalLight Yaw="0.5585054" Pitch="-0.9948377" Red="0.8" Green="0.8" Blue="0.8" Intensity="0.8" />
+      <AmbientLight Red="0.53" Green="0.76" Blue="0.53" Intensity="0.2" />
+      <ShadowLight Red="0.53" Green="0.76" Blue="0.53" Intensity="0.2" />
+    </Lighting>
+    <CameraData>
+      <EyePos posx="-1.840988" posy="0.7825091" posz="0.2886564" />
+      <TargetPos posx="-0.1180906" posy="0.3960371" posz="-0.866137" />
+    </CameraData>
+    <FocusData ActiveActorInstance="x">
+      <ActorInstanceFocus ActorInstance="x" CarryEnabled="false" HorizValue="0" VertValue="0" FocusPostureType="PostureStand" CarryLeftAnim="" CarryRightAnim="" CarryLeftEnabled="false" CarryRightEnabled="false" />
+    </FocusData>
+    <SceneSetUp>
+      <Models>
+        <Model name="ymAdam" alias="ymAdam_1" obj_def_id="314150333418808286">
+          <Position mode="Relative" targetactor="campFire" />
+        </Model>
+        <Model name="campfire_bm" alias="campfire_1" obj_def_id="65348">
+          <Position mode="Absolute" posx="0" posy="0" posz="0" rotx="0" roty="0" rotz="0" />
+        </Model>
+      </Models>
+      <VirtualActors>
+        <VirtualActor name="sitTemplate" instances="1" />
+      </VirtualActors>
+      <ActorInstances>
+        <ActorInstance name="x" postureinswing="kneel,,FullBody" parameters="x:age,x:sex" parametersinswing="adult,male" modelname="ymAdam_1" subroot="" pairedactors="" id="a2b2f046-611d-4836-86e6-0b577453e4f3" />
+        <ActorInstance name="sitTemplate_Inst1" postureinswing="" parameters="" parametersinswing="" modelname="unset" subroot="" pairedactors="" id="c974504e-8644-405f-9f74-c2fc9e0d73e9" />
+        <ActorInstance name="campFire" postureinswing="" parameters="" parametersinswing="" modelname="campfire_1" subroot="" pairedactors="" id="cdbe3822-a483-4715-a15b-17b3b41811df" />
+      </ActorInstances>
+    </SceneSetUp>
+    <SceneList>
+      <SceneSetUp name="campFireSeated">
+        <Models>
+          <Model name="ymAdam" alias="ymAdam_1" obj_def_id="314150333418808286">
+            <Position mode="Relative" targetactor="sitTemplate_Inst1" />
+          </Model>
+          <Model name="sitDining_bm" alias="sitDining_2" obj_def_id="7399">
+            <Position mode="Absolute" posx="0" posy="0" posz="-1.39" rotx="0" roty="0" rotz="0" />
+          </Model>
+          <Model name="campfire_bm" alias="campfire_1" obj_def_id="65348">
+            <Position mode="Absolute" posx="0" posy="0" posz="0" rotx="0" roty="0" rotz="0" />
+          </Model>
+        </Models>
+        <VirtualActors>
+          <VirtualActor name="sitTemplate" instances="1" />
+        </VirtualActors>
+        <ActorInstances>
+          <ActorInstance name="x" postureinswing="sit,FullBody" parameters="x:age,x:sex" parametersinswing="adult,male" modelname="ymAdam_1" subroot="" pairedactors="sitTemplate_Inst1" id="7cfea9a7-f709-415a-90fb-58db184f57ce" />
+          <ActorInstance name="sitTemplate_Inst1" postureinswing="" parameters="" parametersinswing="" modelname="sitDining_2" subroot="" pairedactors="" id="bcb93e3b-64e0-459c-b65b-38815b156f70" />
+          <ActorInstance name="campFire" postureinswing="" parameters="" parametersinswing="" modelname="campfire_1" subroot="" pairedactors="" id="11c2eb63-ccb3-4a35-811a-846fbe05a7b9" />
+        </ActorInstances>
+      </SceneSetUp>
+      <SceneSetUp name="campFireStanding">
+        <Models>
+          <Model name="ymAdam" alias="ymAdam_1" obj_def_id="314150333418808286">
+            <Position mode="Relative" targetactor="campFire" />
+          </Model>
+          <Model name="campfire_bm" alias="campfire_1" obj_def_id="65348">
+            <Position mode="Absolute" posx="0" posy="0" posz="0" rotx="0" roty="0" rotz="0" />
+          </Model>
+        </Models>
+        <VirtualActors>
+          <VirtualActor name="sitTemplate" instances="1" />
+        </VirtualActors>
+        <ActorInstances>
+          <ActorInstance name="x" postureinswing="stand,FullBody" parameters="x:age,x:sex" parametersinswing="adult,male" modelname="ymAdam_1" subroot="" pairedactors="" id="a48b58ba-4d6c-4d54-9ac6-41998aa907c4" />
+          <ActorInstance name="sitTemplate_Inst1" postureinswing="" parameters="" parametersinswing="" modelname="unset" subroot="" pairedactors="" id="b3da230d-420e-4b10-9e49-e5fc012daa87" />
+          <ActorInstance name="campFire" postureinswing="" parameters="" parametersinswing="" modelname="campfire_1" subroot="" pairedactors="" id="01593497-099b-4917-acce-86d873dc8061" />
+        </ActorInstances>
+      </SceneSetUp>
+      <SceneSetUp name="campFireKneel">
+        <Models>
+          <Model name="ymAdam" alias="ymAdam_1" obj_def_id="314150333418808286">
+            <Position mode="Relative" targetactor="campFire" />
+          </Model>
+          <Model name="campfire_bm" alias="campfire_1" obj_def_id="65348">
+            <Position mode="Absolute" posx="0" posy="0" posz="0" rotx="0" roty="0" rotz="0" />
+          </Model>
+        </Models>
+        <VirtualActors>
+          <VirtualActor name="sitTemplate" instances="1" />
+        </VirtualActors>
+        <ActorInstances>
+          <ActorInstance name="x" postureinswing="kneel,,FullBody" parameters="x:age,x:sex" parametersinswing="adult,male" modelname="ymAdam_1" subroot="" pairedactors="" id="dc7997f8-c0fd-477e-84b3-13926ee8d771" />
+          <ActorInstance name="sitTemplate_Inst1" postureinswing="" parameters="" parametersinswing="" modelname="unset" subroot="" pairedactors="" id="b6f789d3-7242-4507-a97f-5ee02915766a" />
+          <ActorInstance name="campFire" postureinswing="" parameters="" parametersinswing="" modelname="campfire_1" subroot="" pairedactors="" id="4d2f725d-9a89-4535-ab49-ef3ef05bda32" />
+        </ActorInstances>
+      </SceneSetUp>
+    </SceneList>
+  </SwingPrivate>
 </ASM>

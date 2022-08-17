@@ -7,15 +7,31 @@
   <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
   <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
   <Parameter name="x:carryState" type="enum" labels="none,left,right,both" default="right" />
+  <Parameter name="x:isWerewolf" type="bool" labels="" default="False" />
   <IkConfiguration name="p2o_toyBox_breatheIdle.ma">
     <SourceFile name="p2o_toyBox_breatheIdle.ma">
       <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="toy" actor="toy" />
     </SourceFile>
   </IkConfiguration>
   <IkConfiguration name="p2o_toyBox_breatheIdle_seated.ma">
     <SourceFile name="p2o_toyBox_breatheIdle_seated.ma">
       <MapNamespace namespace="sitTemplate" actor="sitTemplate" />
       <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="toy" actor="toy" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="p2o_werewolfBasics_toyBox_biteIdle.ma">
+    <SourceFile name="p2o_werewolfBasics_toyBox_biteIdle.ma">
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="toy" actor="toy" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="p2o_werewolfBasics_toyBox_biteIdle_seated.ma">
+    <SourceFile name="p2o_werewolfBasics_toyBox_biteIdle_seated.ma">
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="toy" actor="toy" />
+      <MapNamespace namespace="sitTemplate" actor="sitTemplate" />
     </SourceFile>
   </IkConfiguration>
   <PostureManifest actors="" />
@@ -57,48 +73,80 @@
   <Connection from="entry" to="Mirror" />
   <State name="Biting" type="public" skippable="false" interrupt_this="false" focus="body only" facialoverlays="false" tailoverlays="true">
     <description />
-    <PostureSelector parameter="x:posture" unique_id="7">
+    <PostureSelector parameter="x:posture" unique_id="15">
       <Choice value="-sit-FullBody" track="carryinteraction" mask="">
-        <Controller target="x" controller="@ClipController(clip=p2o_toyBox_toy_bite_seated_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p2o_toyBox_breatheIdle_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="3">
-          <TransitionClassList>
-            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
-          </TransitionClassList>
-        </Controller>
-        <MakeController unique_id="2">
-          <Controller target="x" controller="@ClipController(clip=p2o_toyBox_breatheIdle_seated_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p2o_toyBox_breatheIdle_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="1">
-            <TransitionClassList>
-              <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
-            </TransitionClassList>
-          </Controller>
-        </MakeController>
+        <ParameterSelector parameter="x:isWerewolf" unique_id="7">
+          <Choice value="false">
+            <Controller target="x" controller="@ClipController(clip=p2o_toyBox_toy_bite_seated_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p2o_toyBox_breatheIdle_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="3">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+            <MakeController unique_id="2">
+              <Controller target="x" controller="@ClipController(clip=p2o_toyBox_breatheIdle_seated_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p2o_toyBox_breatheIdle_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="1">
+                <TransitionClassList>
+                  <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                </TransitionClassList>
+              </Controller>
+            </MakeController>
+          </Choice>
+          <Choice value="true">
+            <Controller target="x" controller="@ClipController(clip=p2o_werewolfBasics_toyBox_toy_bite_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p2o_werewolfBasics_toyBox_biteIdle_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="6">
+              <TransitionClassList />
+            </Controller>
+            <MakeController unique_id="5">
+              <Controller target="x" controller="@ClipController(clip=p2o_toyBox_breatheIdle_seated_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p2o_toyBox_breatheIdle_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="4">
+                <TransitionClassList>
+                  <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                </TransitionClassList>
+              </Controller>
+            </MakeController>
+          </Choice>
+        </ParameterSelector>
       </Choice>
       <Choice value="-stand-FullBody" track="carryinteraction" mask="">
-        <Controller target="x" controller="@ClipController(clip=p2o_toyBox_toy_bite_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p2o_toyBox_breatheIdle.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="6">
-          <TransitionClassList>
-            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
-          </TransitionClassList>
-        </Controller>
-        <MakeController unique_id="5">
-          <Controller target="x" controller="@ClipController(clip=p2o_toyBox_breatheIdle_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p2o_toyBox_breatheIdle.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="4">
-            <TransitionClassList>
-              <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
-            </TransitionClassList>
-          </Controller>
-        </MakeController>
+        <ParameterSelector parameter="x:isWerewolf" unique_id="14">
+          <Choice value="false">
+            <Controller target="x" controller="@ClipController(clip=p2o_toyBox_toy_bite_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p2o_toyBox_breatheIdle.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="10">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+            <MakeController unique_id="9">
+              <Controller target="x" controller="@ClipController(clip=p2o_toyBox_breatheIdle_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p2o_toyBox_breatheIdle.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="8">
+                <TransitionClassList>
+                  <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                </TransitionClassList>
+              </Controller>
+            </MakeController>
+          </Choice>
+          <Choice value="true">
+            <Controller target="x" controller="@ClipController(clip=p2o_werewolfBasics_toyBox_toy_bite_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p2o_werewolfBasics_toyBox_biteIdle.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="13">
+              <TransitionClassList />
+            </Controller>
+            <MakeController unique_id="12">
+              <Controller target="x" controller="@ClipController(clip=p2o_toyBox_breatheIdle_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p2o_toyBox_breatheIdle.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="11">
+                <TransitionClassList>
+                  <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                </TransitionClassList>
+              </Controller>
+            </MakeController>
+          </Choice>
+        </ParameterSelector>
       </Choice>
     </PostureSelector>
   </State>
   <State name="Contemplate" type="public" skippable="false" interrupt_this="false" focus="body only" facialoverlays="false" tailoverlays="true">
     <description />
-    <PostureSelector parameter="x:posture" unique_id="14">
+    <PostureSelector parameter="x:posture" unique_id="22">
       <Choice value="-sit-FullBody" track="carryinteraction" mask="">
-        <Controller target="x" controller="@ClipController(clip=p2o_toyBox_toy_contemplate_seated_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p2o_toyBox_breatheIdle_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="10">
+        <Controller target="x" controller="@ClipController(clip=p2o_toyBox_toy_contemplate_seated_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p2o_toyBox_breatheIdle_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="18">
           <TransitionClassList>
             <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
           </TransitionClassList>
         </Controller>
-        <MakeController unique_id="9">
-          <Controller target="x" controller="@ClipController(clip=p2o_toyBox_breatheIdle_seated_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p2o_toyBox_breatheIdle_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="8">
+        <MakeController unique_id="17">
+          <Controller target="x" controller="@ClipController(clip=p2o_toyBox_breatheIdle_seated_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p2o_toyBox_breatheIdle_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="16">
             <TransitionClassList>
               <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
             </TransitionClassList>
@@ -106,13 +154,13 @@
         </MakeController>
       </Choice>
       <Choice value="-stand-FullBody" track="carryinteraction" mask="">
-        <Controller target="x" controller="@ClipController(clip=p2o_toyBox_toy_contemplate_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p2o_toyBox_breatheIdle.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="13">
+        <Controller target="x" controller="@ClipController(clip=p2o_toyBox_toy_contemplate_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p2o_toyBox_breatheIdle.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="21">
           <TransitionClassList>
             <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
           </TransitionClassList>
         </Controller>
-        <MakeController unique_id="12">
-          <Controller target="x" controller="@ClipController(clip=p2o_toyBox_breatheIdle_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p2o_toyBox_breatheIdle.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="11">
+        <MakeController unique_id="20">
+          <Controller target="x" controller="@ClipController(clip=p2o_toyBox_breatheIdle_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p2o_toyBox_breatheIdle.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="19">
             <TransitionClassList>
               <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
             </TransitionClassList>
@@ -126,15 +174,15 @@
   </State>
   <State name="Hugs" type="public" skippable="false" interrupt_this="false" focus="body only" facialoverlays="false" tailoverlays="true">
     <description />
-    <PostureSelector parameter="x:posture" unique_id="21">
+    <PostureSelector parameter="x:posture" unique_id="29">
       <Choice value="-sit-FullBody" track="carryinteraction" mask="">
-        <Controller target="x" controller="@ClipController(clip=p2o_toyBox_toy_hugs_seated_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p2o_toyBox_breatheIdle_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="17">
+        <Controller target="x" controller="@ClipController(clip=p2o_toyBox_toy_hugs_seated_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p2o_toyBox_breatheIdle_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="25">
           <TransitionClassList>
             <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
           </TransitionClassList>
         </Controller>
-        <MakeController unique_id="16">
-          <Controller target="x" controller="@ClipController(clip=p2o_toyBox_breatheIdle_seated_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p2o_toyBox_breatheIdle_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="15">
+        <MakeController unique_id="24">
+          <Controller target="x" controller="@ClipController(clip=p2o_toyBox_breatheIdle_seated_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p2o_toyBox_breatheIdle_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="23">
             <TransitionClassList>
               <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
             </TransitionClassList>
@@ -142,13 +190,13 @@
         </MakeController>
       </Choice>
       <Choice value="-stand-FullBody" track="carryinteraction" mask="">
-        <Controller target="x" controller="@ClipController(clip=p2o_toyBox_toy_hugs_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p2o_toyBox_breatheIdle.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="20">
+        <Controller target="x" controller="@ClipController(clip=p2o_toyBox_toy_hugs_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p2o_toyBox_breatheIdle.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="28">
           <TransitionClassList>
             <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
           </TransitionClassList>
         </Controller>
-        <MakeController unique_id="19">
-          <Controller target="x" controller="@ClipController(clip=p2o_toyBox_breatheIdle_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p2o_toyBox_breatheIdle.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="18">
+        <MakeController unique_id="27">
+          <Controller target="x" controller="@ClipController(clip=p2o_toyBox_breatheIdle_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p2o_toyBox_breatheIdle.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="26">
             <TransitionClassList>
               <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
             </TransitionClassList>
@@ -160,16 +208,16 @@
   <State name="Idle" type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" focus="full body" facialoverlays="false" tailoverlays="true">
     <description />
     <MakeController>
-      <PostureSelector parameter="x:posture" unique_id="24">
+      <PostureSelector parameter="x:posture" unique_id="32">
         <Choice value="-sit-FullBody" track="carryinteraction" mask="">
-          <Controller target="x" controller="@ClipController(clip=p2o_toyBox_breatheIdle_seated_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p2o_toyBox_breatheIdle_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="22">
+          <Controller target="x" controller="@ClipController(clip=p2o_toyBox_breatheIdle_seated_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p2o_toyBox_breatheIdle_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="30">
             <TransitionClassList>
               <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
             </TransitionClassList>
           </Controller>
         </Choice>
         <Choice value="-stand-FullBody" track="carryinteraction" mask="">
-          <Controller target="x" controller="@ClipController(clip=p2o_toyBox_breatheIdle_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p2o_toyBox_breatheIdle.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="23">
+          <Controller target="x" controller="@ClipController(clip=p2o_toyBox_breatheIdle_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p2o_toyBox_breatheIdle.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="31">
             <TransitionClassList>
               <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
             </TransitionClassList>
@@ -180,15 +228,15 @@
   </State>
   <State name="Launch" type="public" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
     <description />
-    <PostureSelector parameter="x:posture" unique_id="31">
+    <PostureSelector parameter="x:posture" unique_id="39">
       <Choice value="-sit-FullBody" track="carryinteraction" mask="">
-        <Controller target="x" controller="@ClipController(clip=p2o_toyBox_toy_launch_seated_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p2o_toyBox_breatheIdle_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="27">
+        <Controller target="x" controller="@ClipController(clip=p2o_toyBox_toy_launch_seated_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p2o_toyBox_breatheIdle_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="35">
           <TransitionClassList>
             <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
           </TransitionClassList>
         </Controller>
-        <MakeController unique_id="26">
-          <Controller target="x" controller="@ClipController(clip=p2o_toyBox_breatheIdle_seated_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p2o_toyBox_breatheIdle_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="25">
+        <MakeController unique_id="34">
+          <Controller target="x" controller="@ClipController(clip=p2o_toyBox_breatheIdle_seated_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p2o_toyBox_breatheIdle_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="33">
             <TransitionClassList>
               <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
             </TransitionClassList>
@@ -196,13 +244,13 @@
         </MakeController>
       </Choice>
       <Choice value="-stand-FullBody" track="carryinteraction" mask="">
-        <Controller target="x" controller="@ClipController(clip=p2o_toyBox_toy_launch_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p2o_toyBox_breatheIdle.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="30">
+        <Controller target="x" controller="@ClipController(clip=p2o_toyBox_toy_launch_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p2o_toyBox_breatheIdle.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="38">
           <TransitionClassList>
             <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
           </TransitionClassList>
         </Controller>
-        <MakeController unique_id="29">
-          <Controller target="x" controller="@ClipController(clip=p2o_toyBox_breatheIdle_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p2o_toyBox_breatheIdle.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="28">
+        <MakeController unique_id="37">
+          <Controller target="x" controller="@ClipController(clip=p2o_toyBox_breatheIdle_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p2o_toyBox_breatheIdle.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="36">
             <TransitionClassList>
               <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
             </TransitionClassList>
@@ -213,11 +261,11 @@
   </State>
   <State name="Mirror" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
     <description />
-    <ParameterSelector parameter="x:carryState" unique_id="34">
+    <ParameterSelector parameter="x:carryState" unique_id="42">
       <Choice value="none" />
       <Choice value="left">
-        <SetMirror target="x" mirror="true" unique_id="33" />
-        <SetMirror target="toy" mirror="true" unique_id="32" />
+        <SetMirror target="x" mirror="true" unique_id="41" />
+        <SetMirror target="toy" mirror="true" unique_id="40" />
       </Choice>
       <Choice value="right" />
       <Choice value="both" />
@@ -225,15 +273,15 @@
   </State>
   <State name="Moves Like a Car" type="public" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
     <description />
-    <PostureSelector parameter="x:posture" unique_id="41">
+    <PostureSelector parameter="x:posture" unique_id="49">
       <Choice value="-sit-FullBody" track="carryinteraction" mask="">
-        <Controller target="x" controller="@ClipController(clip=p2o_toyBox_toy_movesLikeCar_seated_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p2o_toyBox_breatheIdle_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="37">
+        <Controller target="x" controller="@ClipController(clip=p2o_toyBox_toy_movesLikeCar_seated_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p2o_toyBox_breatheIdle_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="45">
           <TransitionClassList>
             <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
           </TransitionClassList>
         </Controller>
-        <MakeController unique_id="36">
-          <Controller target="x" controller="@ClipController(clip=p2o_toyBox_breatheIdle_seated_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p2o_toyBox_breatheIdle_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="35">
+        <MakeController unique_id="44">
+          <Controller target="x" controller="@ClipController(clip=p2o_toyBox_breatheIdle_seated_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p2o_toyBox_breatheIdle_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="43">
             <TransitionClassList>
               <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
             </TransitionClassList>
@@ -241,13 +289,13 @@
         </MakeController>
       </Choice>
       <Choice value="-stand-FullBody" track="carryinteraction" mask="">
-        <Controller target="x" controller="@ClipController(clip=p2o_toyBox_toy_movesLikeCar_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p2o_toyBox_breatheIdle.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="40">
+        <Controller target="x" controller="@ClipController(clip=p2o_toyBox_toy_movesLikeCar_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p2o_toyBox_breatheIdle.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="48">
           <TransitionClassList>
             <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
           </TransitionClassList>
         </Controller>
-        <MakeController unique_id="39">
-          <Controller target="x" controller="@ClipController(clip=p2o_toyBox_breatheIdle_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p2o_toyBox_breatheIdle.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="38">
+        <MakeController unique_id="47">
+          <Controller target="x" controller="@ClipController(clip=p2o_toyBox_breatheIdle_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p2o_toyBox_breatheIdle.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="46">
             <TransitionClassList>
               <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
             </TransitionClassList>
@@ -258,16 +306,16 @@
   </State>
   <State name="Start" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
     <description />
-    <PostureSelector parameter="x:posture" unique_id="44">
+    <PostureSelector parameter="x:posture" unique_id="52">
       <Choice value="-sit-FullBody" track="carryinteraction" mask="">
-        <Controller target="x" controller="@ClipController(clip=p2o_toyBox_toy_start_seated_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p2o_toyBox_breatheIdle_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="42">
+        <Controller target="x" controller="@ClipController(clip=p2o_toyBox_toy_start_seated_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p2o_toyBox_breatheIdle_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="50">
           <TransitionClassList>
             <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
           </TransitionClassList>
         </Controller>
       </Choice>
       <Choice value="-stand-FullBody" track="carryinteraction" mask="">
-        <Controller target="x" controller="@ClipController(clip=p2o_toyBox_toy_start_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p2o_toyBox_breatheIdle.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="43">
+        <Controller target="x" controller="@ClipController(clip=p2o_toyBox_toy_start_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p2o_toyBox_breatheIdle.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="51">
           <TransitionClassList>
             <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
           </TransitionClassList>
@@ -277,16 +325,16 @@
   </State>
   <State name="Stop" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
     <description />
-    <PostureSelector parameter="x:posture" unique_id="47">
+    <PostureSelector parameter="x:posture" unique_id="55">
       <Choice value="-sit-FullBody" track="carryinteraction" mask="">
-        <Controller target="x" controller="@ClipController(clip=p2o_toyBox_toy_stop_seated_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p2o_toyBox_breatheIdle_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="45">
+        <Controller target="x" controller="@ClipController(clip=p2o_toyBox_toy_stop_seated_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p2o_toyBox_breatheIdle_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="53">
           <TransitionClassList>
             <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
           </TransitionClassList>
         </Controller>
       </Choice>
       <Choice value="-stand-FullBody" track="carryinteraction" mask="">
-        <Controller target="x" controller="@ClipController(clip=p2o_toyBox_toy_stop_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p2o_toyBox_breatheIdle.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="46">
+        <Controller target="x" controller="@ClipController(clip=p2o_toyBox_toy_stop_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p2o_toyBox_breatheIdle.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="54">
           <TransitionClassList>
             <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
           </TransitionClassList>
@@ -296,15 +344,15 @@
   </State>
   <State name="Walks" type="public" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
     <description />
-    <PostureSelector parameter="x:posture" unique_id="54">
+    <PostureSelector parameter="x:posture" unique_id="62">
       <Choice value="-sit-FullBody" track="carryinteraction" mask="">
-        <Controller target="x" controller="@ClipController(clip=p2o_toyBox_toy_walksAround_seated_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p2o_toyBox_breatheIdle_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="50">
+        <Controller target="x" controller="@ClipController(clip=p2o_toyBox_toy_walksAround_seated_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p2o_toyBox_breatheIdle_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="58">
           <TransitionClassList>
             <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
           </TransitionClassList>
         </Controller>
-        <MakeController unique_id="49">
-          <Controller target="x" controller="@ClipController(clip=p2o_toyBox_breatheIdle_seated_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p2o_toyBox_breatheIdle_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="48">
+        <MakeController unique_id="57">
+          <Controller target="x" controller="@ClipController(clip=p2o_toyBox_breatheIdle_seated_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p2o_toyBox_breatheIdle_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="56">
             <TransitionClassList>
               <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
             </TransitionClassList>
@@ -312,13 +360,13 @@
         </MakeController>
       </Choice>
       <Choice value="-stand-FullBody" track="carryinteraction" mask="">
-        <Controller target="x" controller="@ClipController(clip=p2o_toyBox_toy_walksAround_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p2o_toyBox_breatheIdle.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="53">
+        <Controller target="x" controller="@ClipController(clip=p2o_toyBox_toy_walksAround_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p2o_toyBox_breatheIdle.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="61">
           <TransitionClassList>
             <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
           </TransitionClassList>
         </Controller>
-        <MakeController unique_id="52">
-          <Controller target="x" controller="@ClipController(clip=p2o_toyBox_breatheIdle_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p2o_toyBox_breatheIdle.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="51">
+        <MakeController unique_id="60">
+          <Controller target="x" controller="@ClipController(clip=p2o_toyBox_breatheIdle_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p2o_toyBox_breatheIdle.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="59">
             <TransitionClassList>
               <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
             </TransitionClassList>

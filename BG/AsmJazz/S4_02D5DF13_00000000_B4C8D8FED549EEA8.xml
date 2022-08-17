@@ -1,0 +1,66 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="Pet_Stand_Posture" dcc="sage">
+  <Actor name="x" type="Sim" master="true" virtual="false" />
+  <Actor name="postureObject" type="Object" virtual="true" />
+  <Parameter name="x:age" type="enum" labels="baby,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
+  <Parameter name="x:species" type="enum" labels="dog,smalldog,cat,fox" default="fox" />
+  <IkConfiguration name="ac_stand_posture.ma">
+    <SourceFile name="ac_stand_posture.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="al_stand_posture.ma">
+    <SourceFile name="al_stand_posture.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="ad_stand_posture.ma">
+    <SourceFile name="ad_stand_posture.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="ax_stand_posture.ma">
+    <SourceFile name="ax_stand_posture.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <PostureManifest>
+    <Provide name="stand" family="stand" compatibility="FullBody" carry_left="*" carry_right="*" surface="*" />
+  </PostureManifest>
+  <State type="public" skippable="false" interrupt_this="false" name="GetIn" focus="full body" facialoverlays="false" tailoverlays="false" />
+  <State type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" name="Posture" focus="full body" facialoverlays="false" tailoverlays="false" />
+  <Connection from="GetIn" to="Posture" />
+  <Connection from="Posture" to="exit" />
+  <Connection from="entry" to="GetIn" />
+  <State name="GetIn" type="public" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="false">
+    <description />
+  </State>
+  <State name="Posture" type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" focus="full body" facialoverlays="false" tailoverlays="false">
+    <description />
+    <MakeController>
+      <ParameterSelector parameter="x:species" unique_id="5">
+        <Choice value="dog">
+          <Controller target="x" controller="@ClipController(clip=ad_stand_posture_x, loop_count=#1)" overridePosture="false" mask="" track="low" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ad_stand_posture.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="1">
+            <TransitionClassList />
+          </Controller>
+        </Choice>
+        <Choice value="smalldog">
+          <Controller target="x" controller="@ClipController(clip=al_stand_posture_x, loop_count=#1)" overridePosture="false" mask="" track="low" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="al_stand_posture.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="2">
+            <TransitionClassList />
+          </Controller>
+        </Choice>
+        <Choice value="cat">
+          <Controller target="x" controller="@ClipController(clip=ac_stand_posture_x, loop_count=#1)" overridePosture="false" mask="" track="low" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ac_stand_posture.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="3">
+            <TransitionClassList />
+          </Controller>
+        </Choice>
+        <Choice value="fox">
+          <Controller target="x" controller="@ClipController(clip=ax_stand_posture_x, loop_count=#1)" overridePosture="false" mask="" track="low" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ax_stand_posture.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="4">
+            <TransitionClassList />
+          </Controller>
+        </Choice>
+      </ParameterSelector>
+    </MakeController>
+  </State>
+</ASM>

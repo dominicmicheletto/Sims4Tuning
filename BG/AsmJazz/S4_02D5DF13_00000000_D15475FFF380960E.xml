@@ -3,6 +3,7 @@
   <Actor name="sitTemplate" type="Object" virtual="true" />
   <Actor name="x" type="Sim" master="true" virtual="false" />
   <Actor name="bathtub" type="Object" virtual="true" />
+  <Actor name="bedIKRef" type="Object" virtual="true" />
   <Parameter name="Intensity" type="enum" labels="Low,High" default="Low" />
   <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="baby" />
   <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
@@ -208,6 +209,7 @@
     <Support name="sitIntimate" family="none" compatibility="FullBody" carry_left="*" carry_right="*" surface="*" />
     <Support name="sitInHighChair" family="none" compatibility="FullBody" carry_left="-" carry_right="-" surface="*" />
     <Support name="pet_sitIntimate" family="none" compatibility="FullBody" carry_left="-" carry_right="-" surface="*" />
+    <Support name="bed_Relax" family="none" compatibility="FullBody" carry_left="*" carry_right="*" surface="*" />
   </PostureManifest>
   <State type="public" skippable="false" interrupt_this="false" name="High Intensity" focus="full body" facialoverlays="false" tailoverlays="true" />
   <State type="public" skippable="false" interrupt_this="false" name="High Intensity - Footstomp" focus="full body" facialoverlays="false" tailoverlays="true" />
@@ -229,7 +231,7 @@
   <Connection from="entry" to="Low Intensity" />
   <State name="High Intensity" type="public" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
     <description />
-    <PostureSelector parameter="x:posture" unique_id="42">
+    <PostureSelector parameter="x:posture" unique_id="43">
       <Choice value="Bathtub_Bubblebath--FullBody" track="normal" mask="">
         <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="1">
           <Choice weight="100" avoidRepeat="False" />
@@ -239,6 +241,7 @@
       <Choice value="bathTub_TakeBath--FullBody" track="normal" mask="">
         <Reference target="1" />
       </Choice>
+      <Choice value="bed_Relax--FullBody" track="normal" mask="" />
       <Choice value="kneel--UpperBody" track="normal" mask="Trackmask_UpperBody">
         <ParameterSelector parameter="x:age" unique_id="19">
           <Choice value="baby" />
@@ -272,7 +275,7 @@
                     </Controller>
                   </Choice>
                   <Choice weight="100" avoidRepeat="False">
-                    <Controller target="x" controller="@ClipController(clip=a_react_angry_high_stomp_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_angry_high_stomp_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="6">
+                    <Controller target="x" controller="@ClipController(clip=a_react_angry_high_stomp_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_angry_high_stomp_seated.ma" focus="none" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="6">
                       <TransitionClassList>
                         <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
                       </TransitionClassList>
@@ -385,7 +388,7 @@
         </ParameterSelector>
       </Choice>
       <Choice value="-movingStand-UpperBody" track="normalplus" mask="Trackmask_SoftArms">
-        <ParameterSelector parameter="x:age" unique_id="37">
+        <ParameterSelector parameter="x:age" unique_id="38">
           <Choice value="baby" />
           <Choice value="toddler">
             <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="22">
@@ -406,9 +409,9 @@
             </RandomSelector>
           </Choice>
           <Choice value="child">
-            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="32">
+            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="33">
               <Choice weight="100" avoidRepeat="False">
-                <ParameterSelector parameter="x:carryState" unique_id="29">
+                <ParameterSelector parameter="x:carryState" unique_id="28">
                   <Choice value="none">
                     <Controller target="x" controller="@ClipController(clip=a_react_angry_yellAt_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_angry_yellAt.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="23">
                       <TransitionClassList>
@@ -424,7 +427,7 @@
                     <Reference target="23" />
                   </Choice>
                   <Choice value="both">
-                    <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="28">
+                    <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="27">
                       <Choice weight="100" avoidRepeat="False">
                         <Controller target="x" controller="@ClipController(clip=a_react_angry_footstomp_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_angry_footstomp.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="25">
                           <TransitionClassList>
@@ -434,13 +437,6 @@
                       </Choice>
                       <Choice weight="100" avoidRepeat="False">
                         <Controller target="x" controller="@ClipController(clip=a_react_angry_high_handsOnFace_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_angry_high_handsOnFace.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="26">
-                          <TransitionClassList>
-                            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
-                          </TransitionClassList>
-                        </Controller>
-                      </Choice>
-                      <Choice weight="100" avoidRepeat="False">
-                        <Controller target="x" controller="@ClipController(clip=a_react_angry_high_stomp_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_angry_high_stomp.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="27">
                           <TransitionClassList>
                             <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
                           </TransitionClassList>
@@ -457,46 +453,63 @@
                 <Reference target="26" />
               </Choice>
               <Choice weight="100" avoidRepeat="False">
-                <Reference target="27" />
-              </Choice>
-              <Choice weight="100" avoidRepeat="False">
-                <ParameterSelector parameter="x:carryState" unique_id="31">
+                <ParameterSelector parameter="x:carryState" unique_id="30">
                   <Choice value="none">
-                    <Controller target="x" controller="@ClipController(clip=a_react_angry_high_fistPump_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_angry_high_fistPump.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="30">
+                    <Controller target="x" controller="@ClipController(clip=a_react_angry_high_stomp_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_angry_high_stomp.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="29">
                       <TransitionClassList>
                         <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
                       </TransitionClassList>
                     </Controller>
                   </Choice>
                   <Choice value="left">
-                    <Reference target="30" />
+                    <Reference target="27" />
                   </Choice>
                   <Choice value="right">
-                    <Reference target="30" />
+                    <Reference target="27" />
                   </Choice>
                   <Choice value="both">
-                    <Reference target="28" />
+                    <Reference target="27" />
+                  </Choice>
+                </ParameterSelector>
+              </Choice>
+              <Choice weight="100" avoidRepeat="False">
+                <ParameterSelector parameter="x:carryState" unique_id="32">
+                  <Choice value="none">
+                    <Controller target="x" controller="@ClipController(clip=a_react_angry_high_fistPump_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_angry_high_fistPump.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="31">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                  </Choice>
+                  <Choice value="left">
+                    <Reference target="31" />
+                  </Choice>
+                  <Choice value="right">
+                    <Reference target="31" />
+                  </Choice>
+                  <Choice value="both">
+                    <Reference target="27" />
                   </Choice>
                 </ParameterSelector>
               </Choice>
             </RandomSelector>
           </Choice>
           <Choice value="teen">
-            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="36">
+            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="37">
               <Choice weight="100" avoidRepeat="False">
-                <Reference target="32" />
+                <Reference target="33" />
               </Choice>
               <Choice weight="100" avoidRepeat="False">
-                <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="35">
+                <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="36">
                   <Choice weight="100" avoidRepeat="False">
-                    <Controller target="x" controller="@ClipController(clip=t_react_exasperated_whyMe_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="t_react_exasperated_whyMe.ma" focus="body only" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="33">
+                    <Controller target="x" controller="@ClipController(clip=t_react_exasperated_whyMe_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="t_react_exasperated_whyMe.ma" focus="body only" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="34">
                       <TransitionClassList>
                         <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
                       </TransitionClassList>
                     </Controller>
                   </Choice>
                   <Choice weight="34" avoidRepeat="False">
-                    <Controller target="x" controller="@ClipController(clip=t_react_exasperated_eyeRoll_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="t_react_exasperated_eyeRoll.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="34">
+                    <Controller target="x" controller="@ClipController(clip=t_react_exasperated_eyeRoll_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="t_react_exasperated_eyeRoll.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="35">
                       <TransitionClassList>
                         <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
                       </TransitionClassList>
@@ -507,13 +520,13 @@
             </RandomSelector>
           </Choice>
           <Choice value="youngadult">
-            <Reference target="32" />
+            <Reference target="33" />
           </Choice>
           <Choice value="adult">
-            <Reference target="32" />
+            <Reference target="33" />
           </Choice>
           <Choice value="elder">
-            <Reference target="32" />
+            <Reference target="33" />
           </Choice>
         </ParameterSelector>
       </Choice>
@@ -522,19 +535,19 @@
         <Reference target="19" />
       </Choice>
       <Choice value="sitInHighChair--FullBody" track="normal" mask="">
-        <ParameterSelector parameter="x:age" unique_id="41">
+        <ParameterSelector parameter="x:age" unique_id="42">
           <Choice value="baby" />
           <Choice value="toddler">
-            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="40">
+            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="41">
               <Choice weight="100" avoidRepeat="False">
-                <Controller target="x" controller="@ClipController(clip=p_react_angry_footStomp_seatedHighChair_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_react_angry_footStomp_seatedHighChair.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="38">
+                <Controller target="x" controller="@ClipController(clip=p_react_angry_footStomp_seatedHighChair_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_react_angry_footStomp_seatedHighChair.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="39">
                   <TransitionClassList>
                     <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
                   </TransitionClassList>
                 </Controller>
               </Choice>
               <Choice weight="100" avoidRepeat="False">
-                <Controller target="x" controller="@ClipController(clip=p_react_angry_shakeFist_seatedHighChair_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_react_angry_shakeFist_seatedHighChair.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="39">
+                <Controller target="x" controller="@ClipController(clip=p_react_angry_shakeFist_seatedHighChair_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_react_angry_shakeFist_seatedHighChair.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="40">
                   <TransitionClassList>
                     <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
                   </TransitionClassList>
@@ -556,96 +569,97 @@
         <Reference target="19" />
       </Choice>
       <Choice value="-stand-FullBody" track="normal" mask="">
-        <Reference target="37" />
+        <Reference target="38" />
       </Choice>
       <Choice value="-stand-UpperBody" track="normal" mask="Trackmask_UpperBody">
-        <Reference target="37" />
+        <Reference target="38" />
       </Choice>
     </PostureSelector>
   </State>
   <State name="High Intensity - Footstomp" type="public" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
     <description />
-    <PostureSelector parameter="x:posture" unique_id="52">
+    <PostureSelector parameter="x:posture" unique_id="53">
       <Choice value="Bathtub_Bubblebath--FullBody" track="normal" mask="">
-        <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="43">
+        <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="44">
           <Choice weight="100" avoidRepeat="False" />
           <Choice weight="100" avoidRepeat="False" />
         </RandomSelector>
       </Choice>
       <Choice value="bathTub_TakeBath--FullBody" track="normal" mask="">
-        <Reference target="43" />
+        <Reference target="44" />
       </Choice>
+      <Choice value="bed_Relax--FullBody" track="normal" mask="" />
       <Choice value="kneel--UpperBody" track="normal" mask="Trackmask_UpperBody">
-        <ParameterSelector parameter="x:age" unique_id="46">
+        <ParameterSelector parameter="x:age" unique_id="47">
           <Choice value="baby" />
           <Choice value="toddler">
-            <Controller target="x" controller="@ClipController(clip=p_react_angry_footStomp_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_react_angry_footStomp_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="44">
+            <Controller target="x" controller="@ClipController(clip=p_react_angry_footStomp_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_react_angry_footStomp_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="45">
               <TransitionClassList>
                 <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
               </TransitionClassList>
             </Controller>
           </Choice>
           <Choice value="child">
-            <Controller target="x" controller="@ClipController(clip=a_react_angry_footstomp_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_angry_footstomp_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="45">
+            <Controller target="x" controller="@ClipController(clip=a_react_angry_footstomp_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_angry_footstomp_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="46">
               <TransitionClassList>
                 <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
               </TransitionClassList>
             </Controller>
           </Choice>
           <Choice value="teen">
-            <Reference target="45" />
+            <Reference target="46" />
           </Choice>
           <Choice value="youngadult">
-            <Reference target="45" />
+            <Reference target="46" />
           </Choice>
           <Choice value="adult">
-            <Reference target="45" />
+            <Reference target="46" />
           </Choice>
           <Choice value="elder">
-            <Reference target="45" />
+            <Reference target="46" />
           </Choice>
         </ParameterSelector>
       </Choice>
       <Choice value="-movingStand-UpperBody" track="normalplus" mask="Trackmask_SoftArms">
-        <ParameterSelector parameter="x:age" unique_id="49">
+        <ParameterSelector parameter="x:age" unique_id="50">
           <Choice value="baby" />
           <Choice value="toddler">
-            <Controller target="x" controller="@ClipController(clip=p_react_angry_footStomp_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_react_angry_footStomp.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="47">
+            <Controller target="x" controller="@ClipController(clip=p_react_angry_footStomp_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_react_angry_footStomp.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="48">
               <TransitionClassList>
                 <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
               </TransitionClassList>
             </Controller>
           </Choice>
           <Choice value="child">
-            <Controller target="x" controller="@ClipController(clip=a_react_angry_footstomp_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_angry_footstomp.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="48">
+            <Controller target="x" controller="@ClipController(clip=a_react_angry_footstomp_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_angry_footstomp.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="49">
               <TransitionClassList>
                 <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
               </TransitionClassList>
             </Controller>
           </Choice>
           <Choice value="teen">
-            <Reference target="48" />
+            <Reference target="49" />
           </Choice>
           <Choice value="youngadult">
-            <Reference target="48" />
+            <Reference target="49" />
           </Choice>
           <Choice value="adult">
-            <Reference target="48" />
+            <Reference target="49" />
           </Choice>
           <Choice value="elder">
-            <Reference target="48" />
+            <Reference target="49" />
           </Choice>
         </ParameterSelector>
       </Choice>
       <Choice value="pet_sitIntimate--FullBody" track="normal" mask="" />
       <Choice value="-sit-FullBody" track="normal" mask="">
-        <Reference target="46" />
+        <Reference target="47" />
       </Choice>
       <Choice value="sitInHighChair--FullBody" track="normal" mask="">
-        <ParameterSelector parameter="x:age" unique_id="51">
+        <ParameterSelector parameter="x:age" unique_id="52">
           <Choice value="baby" />
           <Choice value="toddler">
-            <Controller target="x" controller="@ClipController(clip=p_react_angry_footStomp_seatedHighChair_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_react_angry_footStomp_seatedHighChair.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="50">
+            <Controller target="x" controller="@ClipController(clip=p_react_angry_footStomp_seatedHighChair_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_react_angry_footStomp_seatedHighChair.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="51">
               <TransitionClassList>
                 <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
               </TransitionClassList>
@@ -659,102 +673,103 @@
         </ParameterSelector>
       </Choice>
       <Choice value="sitIntimate--FullBody" track="normal" mask="">
-        <Reference target="43" />
+        <Reference target="44" />
       </Choice>
       <Choice value="-sit-UpperBody" track="normal" mask="Trackmask_UpperBody">
-        <Reference target="46" />
+        <Reference target="47" />
       </Choice>
       <Choice value="-stand-FullBody" track="normal" mask="">
-        <Reference target="49" />
+        <Reference target="50" />
       </Choice>
       <Choice value="-stand-UpperBody" track="normal" mask="Trackmask_UpperBody">
-        <Reference target="49" />
+        <Reference target="50" />
       </Choice>
     </PostureSelector>
   </State>
   <State name="High Intensity - HandsOnFace" type="public" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
     <description />
-    <PostureSelector parameter="x:posture" unique_id="62">
+    <PostureSelector parameter="x:posture" unique_id="63">
       <Choice value="Bathtub_Bubblebath--FullBody" track="normal" mask="">
-        <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="53">
+        <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="54">
           <Choice weight="100" avoidRepeat="False" />
           <Choice weight="100" avoidRepeat="False" />
         </RandomSelector>
       </Choice>
       <Choice value="bathTub_TakeBath--FullBody" track="normal" mask="">
-        <Reference target="53" />
+        <Reference target="54" />
       </Choice>
+      <Choice value="bed_Relax--FullBody" track="normal" mask="" />
       <Choice value="kneel--UpperBody" track="normal" mask="Trackmask_UpperBody">
-        <ParameterSelector parameter="x:age" unique_id="56">
+        <ParameterSelector parameter="x:age" unique_id="57">
           <Choice value="baby" />
           <Choice value="toddler">
-            <Controller target="x" controller="@ClipController(clip=p_react_angry_shakeFist_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_react_angry_shakeFist_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="54">
+            <Controller target="x" controller="@ClipController(clip=p_react_angry_shakeFist_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_react_angry_shakeFist_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="55">
               <TransitionClassList>
                 <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
               </TransitionClassList>
             </Controller>
           </Choice>
           <Choice value="child">
-            <Controller target="x" controller="@ClipController(clip=a_react_angry_high_handsOnFace_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_angry_high_handsOnFace_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="55">
+            <Controller target="x" controller="@ClipController(clip=a_react_angry_high_handsOnFace_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_angry_high_handsOnFace_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="56">
               <TransitionClassList>
                 <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
               </TransitionClassList>
             </Controller>
           </Choice>
           <Choice value="teen">
-            <Reference target="55" />
+            <Reference target="56" />
           </Choice>
           <Choice value="youngadult">
-            <Reference target="55" />
+            <Reference target="56" />
           </Choice>
           <Choice value="adult">
-            <Reference target="55" />
+            <Reference target="56" />
           </Choice>
           <Choice value="elder">
-            <Reference target="55" />
+            <Reference target="56" />
           </Choice>
         </ParameterSelector>
       </Choice>
       <Choice value="-movingStand-UpperBody" track="normalplus" mask="Trackmask_SoftArms">
-        <ParameterSelector parameter="x:age" unique_id="59">
+        <ParameterSelector parameter="x:age" unique_id="60">
           <Choice value="baby" />
           <Choice value="toddler">
-            <Controller target="x" controller="@ClipController(clip=p_react_angry_shakeFist_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_react_angry_shakeFist_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="57">
+            <Controller target="x" controller="@ClipController(clip=p_react_angry_shakeFist_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_react_angry_shakeFist_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="58">
               <TransitionClassList>
                 <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
               </TransitionClassList>
             </Controller>
           </Choice>
           <Choice value="child">
-            <Controller target="x" controller="@ClipController(clip=a_react_angry_high_handsOnFace_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_angry_high_handsOnFace.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="58">
+            <Controller target="x" controller="@ClipController(clip=a_react_angry_high_handsOnFace_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_angry_high_handsOnFace.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="59">
               <TransitionClassList>
                 <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
               </TransitionClassList>
             </Controller>
           </Choice>
           <Choice value="teen">
-            <Reference target="58" />
+            <Reference target="59" />
           </Choice>
           <Choice value="youngadult">
-            <Reference target="58" />
+            <Reference target="59" />
           </Choice>
           <Choice value="adult">
-            <Reference target="58" />
+            <Reference target="59" />
           </Choice>
           <Choice value="elder">
-            <Reference target="58" />
+            <Reference target="59" />
           </Choice>
         </ParameterSelector>
       </Choice>
       <Choice value="pet_sitIntimate--FullBody" track="normal" mask="" />
       <Choice value="-sit-FullBody" track="normal" mask="">
-        <Reference target="56" />
+        <Reference target="57" />
       </Choice>
       <Choice value="sitInHighChair--FullBody" track="normal" mask="">
-        <ParameterSelector parameter="x:age" unique_id="61">
+        <ParameterSelector parameter="x:age" unique_id="62">
           <Choice value="baby" />
           <Choice value="toddler">
-            <Controller target="x" controller="@ClipController(clip=p_react_angry_shakeFist_seatedHighChair_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_react_angry_shakeFist_seatedHighChair.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="60">
+            <Controller target="x" controller="@ClipController(clip=p_react_angry_shakeFist_seatedHighChair_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_react_angry_shakeFist_seatedHighChair.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="61">
               <TransitionClassList>
                 <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
               </TransitionClassList>
@@ -768,136 +783,137 @@
         </ParameterSelector>
       </Choice>
       <Choice value="sitIntimate--FullBody" track="normal" mask="">
-        <Reference target="53" />
+        <Reference target="54" />
       </Choice>
       <Choice value="-sit-UpperBody" track="normal" mask="Trackmask_UpperBody">
-        <Reference target="56" />
+        <Reference target="57" />
       </Choice>
       <Choice value="-stand-FullBody" track="normal" mask="">
-        <Reference target="59" />
+        <Reference target="60" />
       </Choice>
       <Choice value="-stand-UpperBody" track="normal" mask="Trackmask_UpperBody">
-        <Reference target="59" />
+        <Reference target="60" />
       </Choice>
     </PostureSelector>
   </State>
   <State name="High Intensity - YellAt" type="public" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
     <description />
-    <PostureSelector parameter="x:posture" unique_id="78">
+    <PostureSelector parameter="x:posture" unique_id="79">
       <Choice value="Bathtub_Bubblebath--FullBody" track="normal" mask="">
-        <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="63">
+        <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="64">
           <Choice weight="100" avoidRepeat="False" />
           <Choice weight="100" avoidRepeat="False" />
         </RandomSelector>
       </Choice>
       <Choice value="bathTub_TakeBath--FullBody" track="normal" mask="">
-        <Reference target="63" />
+        <Reference target="64" />
       </Choice>
+      <Choice value="bed_Relax--FullBody" track="normal" mask="" />
       <Choice value="kneel--UpperBody" track="normal" mask="Trackmask_UpperBody">
-        <ParameterSelector parameter="x:age" unique_id="69">
+        <ParameterSelector parameter="x:age" unique_id="70">
           <Choice value="baby" />
           <Choice value="toddler">
-            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="64">
+            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="65">
               <Choice weight="100" avoidRepeat="False" />
               <Choice weight="100" avoidRepeat="False" />
             </RandomSelector>
           </Choice>
           <Choice value="child">
-            <Controller target="x" controller="@ClipController(clip=a_react_angry_high_stomp_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_angry_high_stomp_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="65">
+            <Controller target="x" controller="@ClipController(clip=a_react_angry_high_stomp_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_angry_high_stomp_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="66">
               <TransitionClassList>
                 <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
               </TransitionClassList>
             </Controller>
           </Choice>
           <Choice value="teen">
-            <ParameterSelector parameter="x:carryState" unique_id="68">
+            <ParameterSelector parameter="x:carryState" unique_id="69">
               <Choice value="none">
-                <Controller target="x" controller="@ClipController(clip=a_react_angry_yellAt_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_angry_yellAt_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="66">
+                <Controller target="x" controller="@ClipController(clip=a_react_angry_yellAt_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_angry_yellAt_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="67">
                   <TransitionClassList>
                     <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
                   </TransitionClassList>
                 </Controller>
               </Choice>
               <Choice value="left">
-                <SetMirror target="x" mirror="true" unique_id="67" />
-                <Reference target="66" />
+                <SetMirror target="x" mirror="true" unique_id="68" />
+                <Reference target="67" />
               </Choice>
               <Choice value="right">
-                <Reference target="66" />
+                <Reference target="67" />
               </Choice>
               <Choice value="both">
-                <Reference target="65" />
+                <Reference target="66" />
               </Choice>
             </ParameterSelector>
           </Choice>
           <Choice value="youngadult">
-            <Reference target="68" />
+            <Reference target="69" />
           </Choice>
           <Choice value="adult">
-            <Reference target="68" />
+            <Reference target="69" />
           </Choice>
           <Choice value="elder">
-            <Reference target="68" />
+            <Reference target="69" />
           </Choice>
         </ParameterSelector>
       </Choice>
       <Choice value="-movingStand-UpperBody" track="normalplus" mask="Trackmask_SoftArms">
-        <ParameterSelector parameter="x:age" unique_id="75">
+        <ParameterSelector parameter="x:age" unique_id="76">
           <Choice value="baby" />
           <Choice value="toddler">
-            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="70">
+            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="71">
               <Choice weight="100" avoidRepeat="False" />
               <Choice weight="100" avoidRepeat="False" />
             </RandomSelector>
           </Choice>
           <Choice value="child">
-            <Controller target="x" controller="@ClipController(clip=a_react_angry_high_stomp_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_angry_high_stomp.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="71">
+            <Controller target="x" controller="@ClipController(clip=a_react_angry_high_stomp_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_angry_high_stomp.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="72">
               <TransitionClassList>
                 <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
               </TransitionClassList>
             </Controller>
           </Choice>
           <Choice value="teen">
-            <ParameterSelector parameter="x:carryState" unique_id="74">
+            <ParameterSelector parameter="x:carryState" unique_id="75">
               <Choice value="none">
-                <Controller target="x" controller="@ClipController(clip=a_react_angry_yellAt_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_angry_yellAt.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="72">
+                <Controller target="x" controller="@ClipController(clip=a_react_angry_yellAt_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_angry_yellAt.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="73">
                   <TransitionClassList>
                     <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
                   </TransitionClassList>
                 </Controller>
               </Choice>
               <Choice value="left">
-                <SetMirror target="x" mirror="true" unique_id="73" />
-                <Reference target="72" />
+                <SetMirror target="x" mirror="true" unique_id="74" />
+                <Reference target="73" />
               </Choice>
               <Choice value="right">
-                <Reference target="72" />
+                <Reference target="73" />
               </Choice>
               <Choice value="both">
-                <Reference target="71" />
+                <Reference target="72" />
               </Choice>
             </ParameterSelector>
           </Choice>
           <Choice value="youngadult">
-            <Reference target="74" />
+            <Reference target="75" />
           </Choice>
           <Choice value="adult">
-            <Reference target="74" />
+            <Reference target="75" />
           </Choice>
           <Choice value="elder">
-            <Reference target="74" />
+            <Reference target="75" />
           </Choice>
         </ParameterSelector>
       </Choice>
       <Choice value="pet_sitIntimate--FullBody" track="normal" mask="" />
       <Choice value="-sit-FullBody" track="normal" mask="">
-        <Reference target="69" />
+        <Reference target="70" />
       </Choice>
       <Choice value="sitInHighChair--FullBody" track="normal" mask="">
-        <ParameterSelector parameter="x:age" unique_id="77">
+        <ParameterSelector parameter="x:age" unique_id="78">
           <Choice value="baby" />
           <Choice value="toddler">
-            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="76">
+            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="77">
               <Choice weight="100" avoidRepeat="False" />
               <Choice weight="100" avoidRepeat="False" />
             </RandomSelector>
@@ -910,53 +926,54 @@
         </ParameterSelector>
       </Choice>
       <Choice value="sitIntimate--FullBody" track="normal" mask="">
-        <Reference target="63" />
+        <Reference target="64" />
       </Choice>
       <Choice value="-sit-UpperBody" track="normal" mask="Trackmask_UpperBody">
-        <Reference target="69" />
+        <Reference target="70" />
       </Choice>
       <Choice value="-stand-FullBody" track="normal" mask="">
-        <Reference target="75" />
+        <Reference target="76" />
       </Choice>
       <Choice value="-stand-UpperBody" track="normal" mask="Trackmask_UpperBody">
-        <Reference target="75" />
+        <Reference target="76" />
       </Choice>
     </PostureSelector>
   </State>
   <State name="High Intensity_withFingersInEars" type="public" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
     <description />
-    <PostureSelector parameter="x:posture" unique_id="118">
+    <PostureSelector parameter="x:posture" unique_id="119">
       <Choice value="Bathtub_Bubblebath--FullBody" track="normal" mask="">
-        <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="79">
+        <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="80">
           <Choice weight="100" avoidRepeat="False" />
           <Choice weight="100" avoidRepeat="False" />
         </RandomSelector>
       </Choice>
       <Choice value="bathTub_TakeBath--FullBody" track="normal" mask="">
-        <Reference target="79" />
+        <Reference target="80" />
       </Choice>
+      <Choice value="bed_Relax--FullBody" track="normal" mask="" />
       <Choice value="kneel--UpperBody" track="normal" mask="Trackmask_UpperBody">
-        <ParameterSelector parameter="x:age" unique_id="97">
+        <ParameterSelector parameter="x:age" unique_id="98">
           <Choice value="baby" />
           <Choice value="toddler">
-            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="80">
+            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="81">
               <Choice weight="100" avoidRepeat="False" />
               <Choice weight="100" avoidRepeat="False" />
             </RandomSelector>
           </Choice>
           <Choice value="child">
-            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="88">
+            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="89">
               <Choice weight="100" avoidRepeat="False">
-                <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="83">
+                <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="84">
                   <Choice weight="100" avoidRepeat="False">
-                    <Controller target="x" controller="@ClipController(clip=a_react_angry_footstomp_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_angry_footstomp_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="81">
+                    <Controller target="x" controller="@ClipController(clip=a_react_angry_footstomp_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_angry_footstomp_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="82">
                       <TransitionClassList>
                         <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
                       </TransitionClassList>
                     </Controller>
                   </Choice>
                   <Choice weight="100" avoidRepeat="False">
-                    <Controller target="x" controller="@ClipController(clip=a_react_angry_high_stomp_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_angry_high_stomp_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="82">
+                    <Controller target="x" controller="@ClipController(clip=a_react_angry_high_stomp_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_angry_high_stomp_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="83">
                       <TransitionClassList>
                         <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
                       </TransitionClassList>
@@ -965,75 +982,75 @@
                 </RandomSelector>
               </Choice>
               <Choice weight="100" avoidRepeat="False">
-                <Reference target="81" />
+                <Reference target="82" />
               </Choice>
               <Choice weight="100" avoidRepeat="False">
-                <ParameterSelector parameter="x:carryState" unique_id="85">
+                <ParameterSelector parameter="x:carryState" unique_id="86">
                   <Choice value="none">
-                    <Controller target="x" controller="@ClipController(clip=a_react_angry_high_handsOnFace_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_angry_high_handsOnFace_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="84">
+                    <Controller target="x" controller="@ClipController(clip=a_react_angry_high_handsOnFace_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_angry_high_handsOnFace_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="85">
                       <TransitionClassList>
                         <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
                       </TransitionClassList>
                     </Controller>
                   </Choice>
                   <Choice value="left">
-                    <Reference target="83" />
+                    <Reference target="84" />
                   </Choice>
                   <Choice value="right">
-                    <Reference target="83" />
+                    <Reference target="84" />
                   </Choice>
                   <Choice value="both">
-                    <Reference target="83" />
+                    <Reference target="84" />
                   </Choice>
                 </ParameterSelector>
               </Choice>
               <Choice weight="100" avoidRepeat="False">
-                <Reference target="82" />
+                <Reference target="83" />
               </Choice>
               <Choice weight="100" avoidRepeat="False">
-                <ParameterSelector parameter="x:carryState" unique_id="87">
+                <ParameterSelector parameter="x:carryState" unique_id="88">
                   <Choice value="none">
-                    <Controller target="x" controller="@ClipController(clip=a_react_angry_high_fistPump_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_angry_high_fistPump_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="86">
+                    <Controller target="x" controller="@ClipController(clip=a_react_angry_high_fistPump_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_angry_high_fistPump_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="87">
                       <TransitionClassList>
                         <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
                       </TransitionClassList>
                     </Controller>
                   </Choice>
                   <Choice value="left">
-                    <Reference target="86" />
+                    <Reference target="87" />
                   </Choice>
                   <Choice value="right">
-                    <Reference target="86" />
+                    <Reference target="87" />
                   </Choice>
                   <Choice value="both">
-                    <Reference target="83" />
+                    <Reference target="84" />
                   </Choice>
                 </ParameterSelector>
               </Choice>
             </RandomSelector>
           </Choice>
           <Choice value="teen">
-            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="96">
+            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="97">
               <Choice weight="100" avoidRepeat="False">
-                <ParameterSelector parameter="x:carryState" unique_id="93">
+                <ParameterSelector parameter="x:carryState" unique_id="94">
                   <Choice value="none">
-                    <Controller target="x" controller="@ClipController(clip=t_react_annoyed_fingersInEars_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="t_react_annoyed_fingersInEars_seated.ma" focus="body only" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="89">
+                    <Controller target="x" controller="@ClipController(clip=t_react_annoyed_fingersInEars_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="t_react_annoyed_fingersInEars_seated.ma" focus="body only" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="90">
                       <TransitionClassList>
                         <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
                       </TransitionClassList>
                     </Controller>
                   </Choice>
                   <Choice value="left">
-                    <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="92">
+                    <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="93">
                       <Choice weight="34" avoidRepeat="False">
-                        <Controller target="x" controller="@ClipController(clip=t_react_exasperated_eyeRoll_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="t_react_exasperated_eyeRoll_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="90">
+                        <Controller target="x" controller="@ClipController(clip=t_react_exasperated_eyeRoll_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="t_react_exasperated_eyeRoll_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="91">
                           <TransitionClassList>
                             <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
                           </TransitionClassList>
                         </Controller>
                       </Choice>
                       <Choice weight="100" avoidRepeat="False">
-                        <Controller target="x" controller="@ClipController(clip=t_react_exasperated_whyMe_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="t_react_exasperated_whyMe_seated.ma" focus="body only" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="91">
+                        <Controller target="x" controller="@ClipController(clip=t_react_exasperated_whyMe_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="t_react_exasperated_whyMe_seated.ma" focus="body only" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="92">
                           <TransitionClassList>
                             <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
                           </TransitionClassList>
@@ -1042,94 +1059,94 @@
                     </RandomSelector>
                   </Choice>
                   <Choice value="right">
-                    <Reference target="92" />
+                    <Reference target="93" />
                   </Choice>
                   <Choice value="both">
-                    <Reference target="92" />
+                    <Reference target="93" />
                   </Choice>
                 </ParameterSelector>
               </Choice>
               <Choice weight="100" avoidRepeat="False">
-                <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="95">
+                <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="96">
                   <Choice weight="100" avoidRepeat="False">
-                    <Controller target="x" controller="@ClipController(clip=a_react_angry_yellAt_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_angry_yellAt_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="94">
+                    <Controller target="x" controller="@ClipController(clip=a_react_angry_yellAt_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_angry_yellAt_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="95">
                       <TransitionClassList>
                         <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
                       </TransitionClassList>
                     </Controller>
                   </Choice>
                   <Choice weight="100" avoidRepeat="False">
-                    <Reference target="81" />
-                  </Choice>
-                  <Choice weight="100" avoidRepeat="False">
-                    <Reference target="85" />
-                  </Choice>
-                  <Choice weight="100" avoidRepeat="False">
                     <Reference target="82" />
                   </Choice>
                   <Choice weight="100" avoidRepeat="False">
-                    <Reference target="87" />
+                    <Reference target="86" />
+                  </Choice>
+                  <Choice weight="100" avoidRepeat="False">
+                    <Reference target="83" />
+                  </Choice>
+                  <Choice weight="100" avoidRepeat="False">
+                    <Reference target="88" />
                   </Choice>
                 </RandomSelector>
               </Choice>
             </RandomSelector>
           </Choice>
           <Choice value="youngadult">
-            <Reference target="95" />
+            <Reference target="96" />
           </Choice>
           <Choice value="adult">
-            <Reference target="95" />
+            <Reference target="96" />
           </Choice>
           <Choice value="elder">
-            <Reference target="95" />
+            <Reference target="96" />
           </Choice>
         </ParameterSelector>
       </Choice>
       <Choice value="-movingStand-UpperBody" track="normalplus" mask="Trackmask_SoftArms">
-        <ParameterSelector parameter="x:age" unique_id="115">
+        <ParameterSelector parameter="x:age" unique_id="116">
           <Choice value="baby" />
           <Choice value="toddler">
-            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="98">
+            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="99">
               <Choice weight="100" avoidRepeat="False" />
               <Choice weight="100" avoidRepeat="False" />
             </RandomSelector>
           </Choice>
           <Choice value="child">
-            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="108">
+            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="109">
               <Choice weight="100" avoidRepeat="False">
-                <ParameterSelector parameter="x:carryState" unique_id="105">
+                <ParameterSelector parameter="x:carryState" unique_id="106">
                   <Choice value="none">
-                    <Controller target="x" controller="@ClipController(clip=a_react_angry_yellAt_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_angry_yellAt.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="99">
+                    <Controller target="x" controller="@ClipController(clip=a_react_angry_yellAt_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_angry_yellAt.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="100">
                       <TransitionClassList>
                         <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
                       </TransitionClassList>
                     </Controller>
                   </Choice>
                   <Choice value="left">
-                    <SetMirror target="x" mirror="true" unique_id="100" />
-                    <Reference target="99" />
+                    <SetMirror target="x" mirror="true" unique_id="101" />
+                    <Reference target="100" />
                   </Choice>
                   <Choice value="right">
-                    <Reference target="99" />
+                    <Reference target="100" />
                   </Choice>
                   <Choice value="both">
-                    <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="104">
+                    <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="105">
                       <Choice weight="100" avoidRepeat="False">
-                        <Controller target="x" controller="@ClipController(clip=a_react_angry_footstomp_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_angry_footstomp.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="101">
+                        <Controller target="x" controller="@ClipController(clip=a_react_angry_footstomp_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_angry_footstomp.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="102">
                           <TransitionClassList>
                             <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
                           </TransitionClassList>
                         </Controller>
                       </Choice>
                       <Choice weight="100" avoidRepeat="False">
-                        <Controller target="x" controller="@ClipController(clip=a_react_angry_high_handsOnFace_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_angry_high_handsOnFace.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="102">
+                        <Controller target="x" controller="@ClipController(clip=a_react_angry_high_handsOnFace_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_angry_high_handsOnFace.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="103">
                           <TransitionClassList>
                             <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
                           </TransitionClassList>
                         </Controller>
                       </Choice>
                       <Choice weight="100" avoidRepeat="False">
-                        <Controller target="x" controller="@ClipController(clip=a_react_angry_high_stomp_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_angry_high_stomp.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="103">
+                        <Controller target="x" controller="@ClipController(clip=a_react_angry_high_stomp_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_angry_high_stomp.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="104">
                           <TransitionClassList>
                             <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
                           </TransitionClassList>
@@ -1138,9 +1155,6 @@
                     </RandomSelector>
                   </Choice>
                 </ParameterSelector>
-              </Choice>
-              <Choice weight="100" avoidRepeat="False">
-                <Reference target="101" />
               </Choice>
               <Choice weight="100" avoidRepeat="False">
                 <Reference target="102" />
@@ -1149,52 +1163,55 @@
                 <Reference target="103" />
               </Choice>
               <Choice weight="100" avoidRepeat="False">
-                <ParameterSelector parameter="x:carryState" unique_id="107">
+                <Reference target="104" />
+              </Choice>
+              <Choice weight="100" avoidRepeat="False">
+                <ParameterSelector parameter="x:carryState" unique_id="108">
                   <Choice value="none">
-                    <Controller target="x" controller="@ClipController(clip=a_react_angry_high_fistPump_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_angry_high_fistPump.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="106">
+                    <Controller target="x" controller="@ClipController(clip=a_react_angry_high_fistPump_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_angry_high_fistPump.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="107">
                       <TransitionClassList>
                         <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
                       </TransitionClassList>
                     </Controller>
                   </Choice>
                   <Choice value="left">
-                    <Reference target="106" />
+                    <Reference target="107" />
                   </Choice>
                   <Choice value="right">
-                    <Reference target="106" />
+                    <Reference target="107" />
                   </Choice>
                   <Choice value="both">
-                    <Reference target="104" />
+                    <Reference target="105" />
                   </Choice>
                 </ParameterSelector>
               </Choice>
             </RandomSelector>
           </Choice>
           <Choice value="teen">
-            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="114">
+            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="115">
               <Choice weight="100" avoidRepeat="False">
-                <Reference target="108" />
+                <Reference target="109" />
               </Choice>
               <Choice weight="100" avoidRepeat="False">
-                <ParameterSelector parameter="x:carryState" unique_id="113">
+                <ParameterSelector parameter="x:carryState" unique_id="114">
                   <Choice value="none">
-                    <Controller target="x" controller="@ClipController(clip=t_react_annoyed_fingersInEars_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="t_react_annoyed_fingersInEars.ma" focus="body only" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="109">
+                    <Controller target="x" controller="@ClipController(clip=t_react_annoyed_fingersInEars_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="t_react_annoyed_fingersInEars.ma" focus="body only" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="110">
                       <TransitionClassList>
                         <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
                       </TransitionClassList>
                     </Controller>
                   </Choice>
                   <Choice value="left">
-                    <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="112">
+                    <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="113">
                       <Choice weight="100" avoidRepeat="False">
-                        <Controller target="x" controller="@ClipController(clip=t_react_exasperated_whyMe_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="t_react_exasperated_whyMe.ma" focus="body only" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="110">
+                        <Controller target="x" controller="@ClipController(clip=t_react_exasperated_whyMe_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="t_react_exasperated_whyMe.ma" focus="body only" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="111">
                           <TransitionClassList>
                             <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
                           </TransitionClassList>
                         </Controller>
                       </Choice>
                       <Choice weight="34" avoidRepeat="False">
-                        <Controller target="x" controller="@ClipController(clip=t_react_exasperated_eyeRoll_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="t_react_exasperated_eyeRoll.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="111">
+                        <Controller target="x" controller="@ClipController(clip=t_react_exasperated_eyeRoll_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="t_react_exasperated_eyeRoll.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="112">
                           <TransitionClassList>
                             <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
                           </TransitionClassList>
@@ -1203,35 +1220,35 @@
                     </RandomSelector>
                   </Choice>
                   <Choice value="right">
-                    <Reference target="112" />
+                    <Reference target="113" />
                   </Choice>
                   <Choice value="both">
-                    <Reference target="112" />
+                    <Reference target="113" />
                   </Choice>
                 </ParameterSelector>
               </Choice>
             </RandomSelector>
           </Choice>
           <Choice value="youngadult">
-            <Reference target="108" />
+            <Reference target="109" />
           </Choice>
           <Choice value="adult">
-            <Reference target="108" />
+            <Reference target="109" />
           </Choice>
           <Choice value="elder">
-            <Reference target="108" />
+            <Reference target="109" />
           </Choice>
         </ParameterSelector>
       </Choice>
       <Choice value="pet_sitIntimate--FullBody" track="normal" mask="" />
       <Choice value="-sit-FullBody" track="normal" mask="">
-        <Reference target="97" />
+        <Reference target="98" />
       </Choice>
       <Choice value="sitInHighChair--FullBody" track="normal" mask="">
-        <ParameterSelector parameter="x:age" unique_id="117">
+        <ParameterSelector parameter="x:age" unique_id="118">
           <Choice value="baby" />
           <Choice value="toddler">
-            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="116">
+            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="117">
               <Choice weight="100" avoidRepeat="False" />
               <Choice weight="100" avoidRepeat="False" />
             </RandomSelector>
@@ -1244,45 +1261,46 @@
         </ParameterSelector>
       </Choice>
       <Choice value="sitIntimate--FullBody" track="normal" mask="">
-        <Reference target="79" />
+        <Reference target="80" />
       </Choice>
       <Choice value="-sit-UpperBody" track="normal" mask="Trackmask_UpperBody">
-        <Reference target="97" />
+        <Reference target="98" />
       </Choice>
       <Choice value="-stand-FullBody" track="normal" mask="">
-        <Reference target="115" />
+        <Reference target="116" />
       </Choice>
       <Choice value="-stand-UpperBody" track="normal" mask="Trackmask_UpperBody">
-        <Reference target="115" />
+        <Reference target="116" />
       </Choice>
     </PostureSelector>
   </State>
   <State name="Low Intensity" type="public" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
     <description />
-    <PostureSelector parameter="x:posture" unique_id="172">
+    <PostureSelector parameter="x:posture" unique_id="173">
       <Choice value="Bathtub_Bubblebath--FullBody" track="normal" mask="">
-        <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="119">
+        <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="120">
           <Choice weight="100" avoidRepeat="False" />
           <Choice weight="100" avoidRepeat="False" />
         </RandomSelector>
       </Choice>
       <Choice value="bathTub_TakeBath--FullBody" track="normal" mask="">
-        <Reference target="119" />
+        <Reference target="120" />
       </Choice>
+      <Choice value="bed_Relax--FullBody" track="normal" mask="" />
       <Choice value="kneel--UpperBody" track="normal" mask="Trackmask_UpperBody">
-        <ParameterSelector parameter="x:age" unique_id="145">
+        <ParameterSelector parameter="x:age" unique_id="146">
           <Choice value="baby" />
           <Choice value="toddler">
-            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="122">
+            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="123">
               <Choice weight="100" avoidRepeat="False">
-                <Controller target="x" controller="@ClipController(clip=p_react_angry_shakeFist_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_react_angry_shakeFist_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="120">
+                <Controller target="x" controller="@ClipController(clip=p_react_angry_shakeFist_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_react_angry_shakeFist_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="121">
                   <TransitionClassList>
                     <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
                   </TransitionClassList>
                 </Controller>
               </Choice>
               <Choice weight="50" avoidRepeat="False">
-                <Controller target="x" controller="@ClipController(clip=p_react_angry_footStomp_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_react_angry_footStomp_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="121">
+                <Controller target="x" controller="@ClipController(clip=p_react_angry_footStomp_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_react_angry_footStomp_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="122">
                   <TransitionClassList>
                     <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
                   </TransitionClassList>
@@ -1291,49 +1309,46 @@
             </RandomSelector>
           </Choice>
           <Choice value="child">
-            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="130">
+            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="131">
               <Choice weight="100" avoidRepeat="False">
-                <Controller target="x" controller="@ClipController(clip=a_react_angry_annoyedSigh_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_angry_annoyedSigh_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="123">
+                <Controller target="x" controller="@ClipController(clip=a_react_angry_annoyedSigh_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_angry_annoyedSigh_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="124">
                   <TransitionClassList>
                     <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
                   </TransitionClassList>
                 </Controller>
               </Choice>
               <Choice weight="100" avoidRepeat="False">
-                <Controller target="x" controller="@ClipController(clip=a_react_angry_exhaleShakeHead_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_angry_exhaleShakeHead_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="124">
+                <Controller target="x" controller="@ClipController(clip=a_react_angry_exhaleShakeHead_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_angry_exhaleShakeHead_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="125">
                   <TransitionClassList>
                     <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
                   </TransitionClassList>
                 </Controller>
               </Choice>
               <Choice weight="100" avoidRepeat="False">
-                <Controller target="x" controller="@ClipController(clip=a_react_angry_footstomp_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_angry_footstomp_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="125">
+                <Controller target="x" controller="@ClipController(clip=a_react_angry_footstomp_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_angry_footstomp_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="126">
                   <TransitionClassList>
                     <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
                   </TransitionClassList>
                 </Controller>
               </Choice>
               <Choice weight="100" avoidRepeat="False">
-                <Controller target="x" controller="@ClipController(clip=a_react_angry_groan_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_angry_groan_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="126">
+                <Controller target="x" controller="@ClipController(clip=a_react_angry_groan_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_angry_groan_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="127">
                   <TransitionClassList>
                     <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
                   </TransitionClassList>
                 </Controller>
               </Choice>
               <Choice weight="100" avoidRepeat="False">
-                <ParameterSelector parameter="x:carryState" unique_id="129">
+                <ParameterSelector parameter="x:carryState" unique_id="130">
                   <Choice value="none">
-                    <Controller target="x" controller="@ClipController(clip=a_react_angry_shakeHead_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_angry_shakehead_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="127">
+                    <Controller target="x" controller="@ClipController(clip=a_react_angry_shakeHead_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_angry_shakehead_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="128">
                       <TransitionClassList>
                         <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
                       </TransitionClassList>
                     </Controller>
                   </Choice>
                   <Choice value="left">
-                    <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="128">
-                      <Choice weight="100" avoidRepeat="False">
-                        <Reference target="123" />
-                      </Choice>
+                    <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="129">
                       <Choice weight="100" avoidRepeat="False">
                         <Reference target="124" />
                       </Choice>
@@ -1343,31 +1358,34 @@
                       <Choice weight="100" avoidRepeat="False">
                         <Reference target="126" />
                       </Choice>
+                      <Choice weight="100" avoidRepeat="False">
+                        <Reference target="127" />
+                      </Choice>
                     </RandomSelector>
                   </Choice>
                   <Choice value="right">
-                    <Reference target="128" />
+                    <Reference target="129" />
                   </Choice>
                   <Choice value="both">
-                    <Reference target="128" />
+                    <Reference target="129" />
                   </Choice>
                 </ParameterSelector>
               </Choice>
             </RandomSelector>
           </Choice>
           <Choice value="teen">
-            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="144">
+            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="145">
               <Choice weight="100" avoidRepeat="False">
-                <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="133">
+                <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="134">
                   <Choice weight="100" avoidRepeat="False">
-                    <Controller target="x" controller="@ClipController(clip=t_react_exasperated_eyeRoll_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="t_react_exasperated_eyeRoll_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="131">
+                    <Controller target="x" controller="@ClipController(clip=t_react_exasperated_eyeRoll_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="t_react_exasperated_eyeRoll_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="132">
                       <TransitionClassList>
                         <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
                       </TransitionClassList>
                     </Controller>
                   </Choice>
                   <Choice weight="100" avoidRepeat="False">
-                    <Controller target="x" controller="@ClipController(clip=t_react_exasperated_whyMe_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="t_react_exasperated_whyMe_seated.ma" focus="body only" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="132">
+                    <Controller target="x" controller="@ClipController(clip=t_react_exasperated_whyMe_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="t_react_exasperated_whyMe_seated.ma" focus="body only" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="133">
                       <TransitionClassList>
                         <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
                       </TransitionClassList>
@@ -1376,49 +1394,46 @@
                 </RandomSelector>
               </Choice>
               <Choice weight="100" avoidRepeat="False">
-                <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="143">
+                <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="144">
                   <Choice weight="100" avoidRepeat="False">
-                    <Controller target="x" controller="@ClipController(clip=a_react_angry_annoyedSigh_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_angry_annoyedSigh_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="134">
+                    <Controller target="x" controller="@ClipController(clip=a_react_angry_annoyedSigh_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_angry_annoyedSigh_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="135">
                       <TransitionClassList>
                         <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
                       </TransitionClassList>
                     </Controller>
                   </Choice>
                   <Choice weight="100" avoidRepeat="False">
-                    <Controller target="x" controller="@ClipController(clip=a_react_angry_exhaleShakeHead_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_angry_exhaleShakeHead_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="135">
+                    <Controller target="x" controller="@ClipController(clip=a_react_angry_exhaleShakeHead_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_angry_exhaleShakeHead_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="136">
                       <TransitionClassList>
                         <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
                       </TransitionClassList>
                     </Controller>
                   </Choice>
                   <Choice weight="100" avoidRepeat="False">
-                    <Controller target="x" controller="@ClipController(clip=a_react_angry_footstomp_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_angry_footstomp_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="136">
+                    <Controller target="x" controller="@ClipController(clip=a_react_angry_footstomp_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_angry_footstomp_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="137">
                       <TransitionClassList>
                         <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
                       </TransitionClassList>
                     </Controller>
                   </Choice>
                   <Choice weight="100" avoidRepeat="False">
-                    <Controller target="x" controller="@ClipController(clip=a_react_angry_groan_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_angry_groan_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="137">
+                    <Controller target="x" controller="@ClipController(clip=a_react_angry_groan_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_angry_groan_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="138">
                       <TransitionClassList>
                         <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
                       </TransitionClassList>
                     </Controller>
                   </Choice>
                   <Choice weight="100" avoidRepeat="False">
-                    <ParameterSelector parameter="x:carryState" unique_id="140">
+                    <ParameterSelector parameter="x:carryState" unique_id="141">
                       <Choice value="none">
-                        <Controller target="x" controller="@ClipController(clip=a_react_angry_shakeHead_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_angry_shakehead_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="138">
+                        <Controller target="x" controller="@ClipController(clip=a_react_angry_shakeHead_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_angry_shakehead_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="139">
                           <TransitionClassList>
                             <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
                           </TransitionClassList>
                         </Controller>
                       </Choice>
                       <Choice value="left">
-                        <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="139">
-                          <Choice weight="100" avoidRepeat="False">
-                            <Reference target="134" />
-                          </Choice>
+                        <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="140">
                           <Choice weight="100" avoidRepeat="False">
                             <Reference target="135" />
                           </Choice>
@@ -1428,25 +1443,28 @@
                           <Choice weight="100" avoidRepeat="False">
                             <Reference target="137" />
                           </Choice>
+                          <Choice weight="100" avoidRepeat="False">
+                            <Reference target="138" />
+                          </Choice>
                         </RandomSelector>
                       </Choice>
                       <Choice value="right">
-                        <Reference target="139" />
+                        <Reference target="140" />
                       </Choice>
                       <Choice value="both">
-                        <Reference target="139" />
+                        <Reference target="140" />
                       </Choice>
                     </ParameterSelector>
                   </Choice>
                   <Choice weight="50" avoidRepeat="False">
-                    <Controller target="x" controller="@ClipController(clip=a2a_mischief_GS_insult_mutter_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_mischief_GS_insult_mutter_seated.ma" focus="body only" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="141">
+                    <Controller target="x" controller="@ClipController(clip=a2a_mischief_GS_insult_mutter_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_mischief_GS_insult_mutter_seated.ma" focus="body only" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="142">
                       <TransitionClassList>
                         <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
                       </TransitionClassList>
                     </Controller>
                   </Choice>
                   <Choice weight="50" avoidRepeat="False">
-                    <Controller target="x" controller="@ClipController(clip=a2a_mischief_GS_insult_scorn_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_mischief_GS_insult_scorn_seated.ma" focus="body only" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="142">
+                    <Controller target="x" controller="@ClipController(clip=a2a_mischief_GS_insult_scorn_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_mischief_GS_insult_scorn_seated.ma" focus="body only" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="143">
                       <TransitionClassList>
                         <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
                       </TransitionClassList>
@@ -1457,30 +1475,30 @@
             </RandomSelector>
           </Choice>
           <Choice value="youngadult">
-            <Reference target="143" />
+            <Reference target="144" />
           </Choice>
           <Choice value="adult">
-            <Reference target="143" />
+            <Reference target="144" />
           </Choice>
           <Choice value="elder">
-            <Reference target="143" />
+            <Reference target="144" />
           </Choice>
         </ParameterSelector>
       </Choice>
       <Choice value="-movingStand-UpperBody" track="normalplus" mask="Trackmask_SoftArms">
-        <ParameterSelector parameter="x:age" unique_id="167">
+        <ParameterSelector parameter="x:age" unique_id="168">
           <Choice value="baby" />
           <Choice value="toddler">
-            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="148">
+            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="149">
               <Choice weight="50" avoidRepeat="False">
-                <Controller target="x" controller="@ClipController(clip=p_react_angry_footStomp_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_react_angry_footStomp.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="146">
+                <Controller target="x" controller="@ClipController(clip=p_react_angry_footStomp_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_react_angry_footStomp.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="147">
                   <TransitionClassList>
                     <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
                   </TransitionClassList>
                 </Controller>
               </Choice>
               <Choice weight="100" avoidRepeat="False">
-                <Controller target="x" controller="@ClipController(clip=p_react_angry_shakeFist_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_react_angry_shakeFist_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="147">
+                <Controller target="x" controller="@ClipController(clip=p_react_angry_shakeFist_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_react_angry_shakeFist_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="148">
                   <TransitionClassList>
                     <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
                   </TransitionClassList>
@@ -1489,37 +1507,37 @@
             </RandomSelector>
           </Choice>
           <Choice value="child">
-            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="154">
+            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="155">
               <Choice weight="100" avoidRepeat="False">
-                <Controller target="x" controller="@ClipController(clip=a_react_angry_annoyedSigh_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_angry_annoyedSigh.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="149">
+                <Controller target="x" controller="@ClipController(clip=a_react_angry_annoyedSigh_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_angry_annoyedSigh.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="150">
                   <TransitionClassList>
                     <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
                   </TransitionClassList>
                 </Controller>
               </Choice>
               <Choice weight="100" avoidRepeat="False">
-                <Controller target="x" controller="@ClipController(clip=a_react_angry_exhaleShakeHead_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_angry_exhaleShakeHead.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="150">
+                <Controller target="x" controller="@ClipController(clip=a_react_angry_exhaleShakeHead_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_angry_exhaleShakeHead.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="151">
                   <TransitionClassList>
                     <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
                   </TransitionClassList>
                 </Controller>
               </Choice>
               <Choice weight="100" avoidRepeat="False">
-                <Controller target="x" controller="@ClipController(clip=a_react_angry_footstomp_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_angry_footstomp.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="151">
+                <Controller target="x" controller="@ClipController(clip=a_react_angry_footstomp_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_angry_footstomp.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="152">
                   <TransitionClassList>
                     <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
                   </TransitionClassList>
                 </Controller>
               </Choice>
               <Choice weight="100" avoidRepeat="False">
-                <Controller target="x" controller="@ClipController(clip=a_react_angry_groan_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_angry_groan.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="152">
+                <Controller target="x" controller="@ClipController(clip=a_react_angry_groan_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_angry_groan.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="153">
                   <TransitionClassList>
                     <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
                   </TransitionClassList>
                 </Controller>
               </Choice>
               <Choice weight="100" avoidRepeat="False">
-                <Controller target="x" controller="@ClipController(clip=a_react_angry_shakeHead_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_angry_shakehead.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="153">
+                <Controller target="x" controller="@ClipController(clip=a_react_angry_shakeHead_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_angry_shakehead.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="154">
                   <TransitionClassList>
                     <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
                   </TransitionClassList>
@@ -1528,18 +1546,18 @@
             </RandomSelector>
           </Choice>
           <Choice value="teen">
-            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="166">
+            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="167">
               <Choice weight="100" avoidRepeat="False">
-                <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="157">
+                <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="158">
                   <Choice weight="100" avoidRepeat="False">
-                    <Controller target="x" controller="@ClipController(clip=t_react_exasperated_eyeRoll_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="t_react_exasperated_eyeRoll.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="155">
+                    <Controller target="x" controller="@ClipController(clip=t_react_exasperated_eyeRoll_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="t_react_exasperated_eyeRoll.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="156">
                       <TransitionClassList>
                         <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
                       </TransitionClassList>
                     </Controller>
                   </Choice>
                   <Choice weight="100" avoidRepeat="False">
-                    <Controller target="x" controller="@ClipController(clip=t_react_exasperated_whyMe_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="t_react_exasperated_whyMe.ma" focus="body only" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="156">
+                    <Controller target="x" controller="@ClipController(clip=t_react_exasperated_whyMe_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="t_react_exasperated_whyMe.ma" focus="body only" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="157">
                       <TransitionClassList>
                         <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
                       </TransitionClassList>
@@ -1548,51 +1566,51 @@
                 </RandomSelector>
               </Choice>
               <Choice weight="100" avoidRepeat="False">
-                <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="165">
+                <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="166">
                   <Choice weight="100" avoidRepeat="False">
-                    <Controller target="x" controller="@ClipController(clip=a_react_angry_annoyedSigh_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_angry_annoyedSigh.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="158">
+                    <Controller target="x" controller="@ClipController(clip=a_react_angry_annoyedSigh_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_angry_annoyedSigh.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="159">
                       <TransitionClassList>
                         <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
                       </TransitionClassList>
                     </Controller>
                   </Choice>
                   <Choice weight="100" avoidRepeat="False">
-                    <Controller target="x" controller="@ClipController(clip=a_react_angry_exhaleShakeHead_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_angry_exhaleShakeHead.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="159">
+                    <Controller target="x" controller="@ClipController(clip=a_react_angry_exhaleShakeHead_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_angry_exhaleShakeHead.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="160">
                       <TransitionClassList>
                         <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
                       </TransitionClassList>
                     </Controller>
                   </Choice>
                   <Choice weight="100" avoidRepeat="False">
-                    <Controller target="x" controller="@ClipController(clip=a_react_angry_footstomp_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_angry_footstomp.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="160">
+                    <Controller target="x" controller="@ClipController(clip=a_react_angry_footstomp_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_angry_footstomp.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="161">
                       <TransitionClassList>
                         <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
                       </TransitionClassList>
                     </Controller>
                   </Choice>
                   <Choice weight="100" avoidRepeat="False">
-                    <Controller target="x" controller="@ClipController(clip=a_react_angry_groan_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_angry_groan.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="161">
+                    <Controller target="x" controller="@ClipController(clip=a_react_angry_groan_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_angry_groan.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="162">
                       <TransitionClassList>
                         <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
                       </TransitionClassList>
                     </Controller>
                   </Choice>
                   <Choice weight="100" avoidRepeat="False">
-                    <Controller target="x" controller="@ClipController(clip=a_react_angry_shakeHead_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_angry_shakehead.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="162">
+                    <Controller target="x" controller="@ClipController(clip=a_react_angry_shakeHead_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_react_angry_shakehead.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="163">
                       <TransitionClassList>
                         <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
                       </TransitionClassList>
                     </Controller>
                   </Choice>
                   <Choice weight="100" avoidRepeat="False">
-                    <Controller target="x" controller="@ClipController(clip=a2a_mischief_GS_insult_mutter_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_mischief_GS_insult_mutter.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="163">
+                    <Controller target="x" controller="@ClipController(clip=a2a_mischief_GS_insult_mutter_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_mischief_GS_insult_mutter.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="164">
                       <TransitionClassList>
                         <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
                       </TransitionClassList>
                     </Controller>
                   </Choice>
                   <Choice weight="100" avoidRepeat="False">
-                    <Controller target="x" controller="@ClipController(clip=a2a_mischief_GS_insult_scorn_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_mischief_GS_insult_scorn.ma" focus="body only" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="164">
+                    <Controller target="x" controller="@ClipController(clip=a2a_mischief_GS_insult_scorn_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_mischief_GS_insult_scorn.ma" focus="body only" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="165">
                       <TransitionClassList>
                         <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
                       </TransitionClassList>
@@ -1603,34 +1621,34 @@
             </RandomSelector>
           </Choice>
           <Choice value="youngadult">
-            <Reference target="165" />
+            <Reference target="166" />
           </Choice>
           <Choice value="adult">
-            <Reference target="165" />
+            <Reference target="166" />
           </Choice>
           <Choice value="elder">
-            <Reference target="165" />
+            <Reference target="166" />
           </Choice>
         </ParameterSelector>
       </Choice>
       <Choice value="pet_sitIntimate--FullBody" track="normal" mask="" />
       <Choice value="-sit-FullBody" track="normal" mask="">
-        <Reference target="145" />
+        <Reference target="146" />
       </Choice>
       <Choice value="sitInHighChair--FullBody" track="normal" mask="">
-        <ParameterSelector parameter="x:age" unique_id="171">
+        <ParameterSelector parameter="x:age" unique_id="172">
           <Choice value="baby" />
           <Choice value="toddler">
-            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="170">
+            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="171">
               <Choice weight="50" avoidRepeat="False">
-                <Controller target="x" controller="@ClipController(clip=p_react_angry_footStomp_seatedHighChair_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_react_angry_footStomp_seatedHighChair.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="168">
+                <Controller target="x" controller="@ClipController(clip=p_react_angry_footStomp_seatedHighChair_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_react_angry_footStomp_seatedHighChair.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="169">
                   <TransitionClassList>
                     <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
                   </TransitionClassList>
                 </Controller>
               </Choice>
               <Choice weight="100" avoidRepeat="False">
-                <Controller target="x" controller="@ClipController(clip=p_react_angry_shakeFist_seatedHighChair_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_react_angry_shakeFist_seatedHighChair.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="169">
+                <Controller target="x" controller="@ClipController(clip=p_react_angry_shakeFist_seatedHighChair_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_react_angry_shakeFist_seatedHighChair.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="170">
                   <TransitionClassList>
                     <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
                   </TransitionClassList>
@@ -1646,16 +1664,16 @@
         </ParameterSelector>
       </Choice>
       <Choice value="sitIntimate--FullBody" track="normal" mask="">
-        <Reference target="119" />
+        <Reference target="120" />
       </Choice>
       <Choice value="-sit-UpperBody" track="normal" mask="Trackmask_UpperBody">
-        <Reference target="145" />
+        <Reference target="146" />
       </Choice>
       <Choice value="-stand-FullBody" track="normal" mask="">
-        <Reference target="167" />
+        <Reference target="168" />
       </Choice>
       <Choice value="-stand-UpperBody" track="normal" mask="Trackmask_UpperBody">
-        <Reference target="167" />
+        <Reference target="168" />
       </Choice>
     </PostureSelector>
   </State>

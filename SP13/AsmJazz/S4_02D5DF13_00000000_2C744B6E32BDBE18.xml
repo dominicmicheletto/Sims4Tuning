@@ -7,7 +7,6 @@
   <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
   <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
   <Parameter name="x:species" type="enum" labels="human,dog,smalldog,cat" default="human" />
-  <Parameter name="carryObject:carryTrack" type="enum" labels="left,right" default="right" />
   <IkConfiguration name="a2o_hamper_putGetLaundry.ma">
     <SourceFile name="a2o_hamper_putGetLaundry.ma">
       <MapNamespace namespace="hamper" actor="hamper" />
@@ -18,16 +17,13 @@
   <PostureManifest actors="" />
   <PostureManifest actors="x">
     <Support family="stand" compatibility="FullBody" carry_left="-" carry_right="carryObject" surface="*" />
-    <Support family="stand" compatibility="FullBody" carry_left="carryObject" carry_right="-" surface="*" />
   </PostureManifest>
   <State type="public" skippable="false" interrupt_this="false" name="Get_Laundry" focus="none" facialoverlays="false" tailoverlays="true" />
-  <State type="private" skippable="false" interrupt_this="false" name="Mirror" focus="full body" facialoverlays="false" tailoverlays="true" />
   <State type="public" skippable="false" interrupt_this="false" name="Put_Laundry" focus="none" facialoverlays="false" tailoverlays="true" />
   <Connection from="Get_Laundry" to="exit" />
-  <Connection from="Mirror" to="Get_Laundry" />
-  <Connection from="Mirror" to="Put_Laundry" />
   <Connection from="Put_Laundry" to="exit" />
-  <Connection from="entry" to="Mirror" />
+  <Connection from="entry" to="Get_Laundry" />
+  <Connection from="entry" to="Put_Laundry" />
   <State name="Get_Laundry" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
     <description />
     <PostureSelector parameter="x:posture" unique_id="3">
@@ -41,23 +37,14 @@
       </Choice>
     </PostureSelector>
   </State>
-  <State name="Mirror" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
-    <description />
-    <ParameterSelector parameter="carryObject:carryTrack" unique_id="5">
-      <Choice value="left">
-        <SetMirror target="x" mirror="true" unique_id="4" />
-      </Choice>
-      <Choice value="right" />
-    </ParameterSelector>
-  </State>
   <State name="Put_Laundry" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
     <description />
-    <PostureSelector parameter="x:posture" unique_id="8">
+    <PostureSelector parameter="x:posture" unique_id="6">
       <Choice value="-stand-FullBody" track="carryinteraction" mask="">
-        <Controller target="x" controller="@ClipController(clip=a2o_hamper_putLaundry_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_hamper_putGetLaundry.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="6">
+        <Controller target="x" controller="@ClipController(clip=a2o_hamper_putLaundry_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_hamper_putGetLaundry.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="4">
           <TransitionClassList />
         </Controller>
-        <Controller target="carryObject" controller="@ClipController(clip=a2o_hamper_putLaundry_carryObject, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_hamper_putGetLaundry.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="7">
+        <Controller target="carryObject" controller="@ClipController(clip=a2o_hamper_putLaundry_carryObject, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_hamper_putGetLaundry.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="5">
           <TransitionClassList />
         </Controller>
       </Choice>

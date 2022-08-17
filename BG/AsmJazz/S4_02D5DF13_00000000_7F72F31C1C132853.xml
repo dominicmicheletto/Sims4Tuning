@@ -1,0 +1,112 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="FruitPunchFountain" dcc="sage">
+  <Actor name="x" type="Sim" master="true" virtual="false" />
+  <Actor name="spiceBottle" type="Prop" virtual="false" object_def_resource_key="c0db5ae7:00000000:0000000000001d16#spiceBottleGEN_01_prop" />
+  <Actor name="toolMeasuringCup" type="Prop" virtual="false" object_def_resource_key="c0db5ae7:00000000:000000000001087e#toolMeasuringCup_bm" />
+  <Actor name="drinkCan" type="Prop" virtual="false" object_def_resource_key="c0db5ae7:00000000:00000000000029e3#drinkCanGENEnergy_01" />
+  <Actor name="fruitPunchFountain" type="Object" virtual="false" />
+  <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
+  <Parameter name="x:carryState" type="enum" labels="none,left,right,both" default="right" />
+  <IkConfiguration name="a2o_fruitPunchFountain_improve.ma">
+    <SourceFile name="a2o_fruitPunchFountain_improve.ma">
+      <MapNamespace namespace="spiceBottle" actor="spiceBottle" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_fruitPunchFountain_fill.ma">
+    <SourceFile name="a2o_fruitPunchFountain_fill.ma">
+      <MapNamespace namespace="toolMeasuringCup" actor="toolMeasuringCup" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_fruitPunchFountain_dipFinger.ma">
+    <SourceFile name="a2o_fruitPunchFountain_dipFinger.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2o_fruitPunchFountain_addExtra.ma">
+    <SourceFile name="a2o_fruitPunchFountain_addExtra.ma">
+      <MapNamespace namespace="drinkCan" actor="drinkCan" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <PostureManifest actors="" />
+  <PostureManifest actors="x">
+    <Support family="stand" compatibility="FullBody" carry_left="*" carry_right="-" surface="*" />
+    <Support family="stand" compatibility="FullBody" carry_left="-" carry_right="*" surface="*" />
+  </PostureManifest>
+  <State type="public" skippable="false" interrupt_this="false" name="DipFinger" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="Fill" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="Improve" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="SomethingExtra" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="mirror" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <Connection from="DipFinger" to="exit" />
+  <Connection from="Fill" to="exit" />
+  <Connection from="Improve" to="exit" />
+  <Connection from="SomethingExtra" to="exit" />
+  <Connection from="entry" to="mirror" />
+  <Connection from="mirror" to="DipFinger" />
+  <Connection from="mirror" to="Fill" />
+  <Connection from="mirror" to="Improve" />
+  <Connection from="mirror" to="SomethingExtra" />
+  <State name="DipFinger" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="2">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2o_fruitPunchFountain_dipFinger_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_fruitPunchFountain_dipFinger.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="1">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="Fill" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="4">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2o_fruitPunchFountain_fill_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_fruitPunchFountain_fill.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="3">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="Improve" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="6">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2o_fruitPunchFountain_improve_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_fruitPunchFountain_improve.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="5">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="SomethingExtra" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="8">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2o_fruitPunchFountain_addExtra_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_fruitPunchFountain_addExtra.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="7">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="mirror" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <ParameterSelector parameter="x:carryState" unique_id="10">
+      <Choice value="none" />
+      <Choice value="left" />
+      <Choice value="right">
+        <SetMirror target="x" mirror="true" unique_id="9" />
+      </Choice>
+      <Choice value="both" />
+    </ParameterSelector>
+  </State>
+</ASM>

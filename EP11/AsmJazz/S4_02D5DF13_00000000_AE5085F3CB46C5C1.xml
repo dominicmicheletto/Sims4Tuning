@@ -1,0 +1,73 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="Rabbit_RabbitHome" dcc="sage">
+  <Actor name="animalRabbit" type="Object" master="true" virtual="false" />
+  <Actor name="rabbitHome" type="Object" virtual="false" />
+  <Parameter name="animalRabbit:isParented" type="bool" labels="" default="False" />
+  <Parameter name="animalRabbit:walkstyle" type="enum" labels="animalRabbit_walk,animalRabbit_run" />
+  <Parameter name="rabbitHome:objectPosition" type="vector3" labels="" default="0,0,0" />
+  <Parameter name="rabbitHome:objectOrientation" type="quaternion" labels="" default="0,0,0,1" />
+  <IkConfiguration name="o_rabbit_idles.ma">
+    <SourceFile name="o_rabbit_idles.ma">
+      <MapNamespace namespace="x" actor="animalRabbit" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="o_rabbit_rabbitHome.ma">
+    <SourceFile name="o_rabbit_rabbitHome.ma">
+      <MapNamespace namespace="rabbitHome" actor="rabbitHome" />
+      <MapNamespace namespace="x" actor="animalRabbit" />
+    </SourceFile>
+  </IkConfiguration>
+  <PostureManifest actors="" />
+  <State type="private" skippable="false" interrupt_this="false" name="EnterHome" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="ExitHome" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" name="HiddenInHome" focus="none" facialoverlays="false" tailoverlays="true" />
+  <Connection from="EnterHome" to="HiddenInHome" />
+  <Connection from="ExitHome" to="exit" />
+  <Connection from="HiddenInHome" to="ExitHome" />
+  <Connection from="entry" to="EnterHome" />
+  <State name="EnterHome" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <ParameterSelector parameter="animalRabbit:isParented" unique_id="4">
+      <Choice value="false">
+        <FollowPath path="Rabbit_Home_Enter" default_walkstyle="animalRabbit_walk" walkstyle_override_param="animalRabbit:walkstyle" reference_actor="rabbitHome" reference_translation_param="rabbitHome:objectPosition" reference_orientation_param="rabbitHome:objectOrientation" trigger_posture_transition_event="False" reverse_path="False" target="animalRabbit" overridePosture="false" track="normal" transition_class_in="Default" transition_class_out="Default" unique_id="2">
+          <TransitionClassList />
+        </FollowPath>
+        <Controller target="animalRabbit" controller="@ClipController(clip=o_rabbit_rabbitHome_getin_animalRabbit, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="o_rabbit_rabbitHome.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="1">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+      <Choice value="true">
+        <Controller target="animalRabbit" controller="@ClipController(clip=o_rabbit_rabbitHome_spawnIn_animalRabbit, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="o_rabbit_rabbitHome.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="3">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+    </ParameterSelector>
+  </State>
+  <State name="ExitHome" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <ParameterSelector parameter="animalRabbit:isParented" unique_id="9">
+      <Choice value="false" />
+      <Choice value="true">
+        <Controller target="animalRabbit" controller="@ClipController(clip=o_rabbit_rabbitHome_getOut_animalRabbit, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="o_rabbit_rabbitHome.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="8">
+          <TransitionClassList />
+        </Controller>
+        <FollowPath path="Rabbit_Home_Exit" default_walkstyle="animalRabbit_walk" walkstyle_override_param="animalRabbit:walkstyle" reference_actor="rabbitHome" reference_translation_param="rabbitHome:objectPosition" reference_orientation_param="rabbitHome:objectOrientation" trigger_posture_transition_event="False" reverse_path="False" target="animalRabbit" overridePosture="false" track="normal" transition_class_in="Default" transition_class_out="Default" unique_id="7">
+          <TransitionClassList />
+        </FollowPath>
+        <MakeController unique_id="6">
+          <Controller target="animalRabbit" controller="@ClipController(clip=o_rabbit_idle_breathe_animalRabbit, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="o_rabbit_idles.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="5">
+            <TransitionClassList />
+          </Controller>
+        </MakeController>
+      </Choice>
+    </ParameterSelector>
+  </State>
+  <State name="HiddenInHome" type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <MakeController>
+      <Controller target="animalRabbit" controller="@ClipController(clip=o_rabbit_rabbitHome_loop_animalRabbit, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="o_rabbit_rabbitHome.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="10">
+        <TransitionClassList />
+      </Controller>
+    </MakeController>
+  </State>
+</ASM>

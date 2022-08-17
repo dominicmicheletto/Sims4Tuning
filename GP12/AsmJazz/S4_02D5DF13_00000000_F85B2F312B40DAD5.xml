@@ -1,0 +1,112 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="PremadeSims_Greg" dcc="sage">
+  <Actor name="x" type="Sim" master="true" virtual="false" />
+  <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
+  <IkConfiguration name="a_fire_panic_loops.ma">
+    <SourceFile name="a_fire_panic_loops.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a_premadeSims_distractGreg.ma">
+    <SourceFile name="a_premadeSims_distractGreg.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a_premadeSims_cryGreg.ma">
+    <SourceFile name="a_premadeSims_cryGreg.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <PostureManifest actors="" />
+  <PostureManifest actors="x">
+    <Support family="stand" compatibility="FullBody" carry_left="-" carry_right="-" surface="*" />
+    <Support family="stand" compatibility="UpperBody" carry_left="-" carry_right="-" surface="*" />
+  </PostureManifest>
+  <State type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" name="CryGreg" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="distract" focus="upper body" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="start" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="stop" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <Connection from="CryGreg" to="stop" />
+  <Connection from="distract" to="exit" />
+  <Connection from="entry" to="distract" />
+  <Connection from="entry" to="start" />
+  <Connection from="start" to="CryGreg" />
+  <Connection from="stop" to="exit" />
+  <State name="CryGreg" type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <MakeController>
+      <PostureSelector parameter="x:posture" unique_id="5">
+        <Choice value="-stand-FullBody" track="normal" mask="">
+          <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="4">
+            <Choice weight="93" avoidRepeat="False">
+              <Controller target="x" controller="@ClipController(clip=a_fire_panic_loop_panicLookAround_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_fire_panic_loops.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="1">
+                <TransitionClassList>
+                  <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                </TransitionClassList>
+              </Controller>
+            </Choice>
+            <Choice weight="35" avoidRepeat="True">
+              <Controller target="x" controller="@ClipController(clip=a_fire_panic_loop_holdingFace_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_fire_panic_loops.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="2">
+                <TransitionClassList>
+                  <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                </TransitionClassList>
+              </Controller>
+            </Choice>
+            <Choice weight="35" avoidRepeat="True">
+              <Controller target="x" controller="@ClipController(clip=a_premadeSims_cryGreg_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_premadeSims_cryGreg.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="3">
+                <TransitionClassList />
+              </Controller>
+            </Choice>
+          </RandomSelector>
+        </Choice>
+        <Choice value="-stand-UpperBody" track="normal" mask="Trackmask_UpperBody">
+          <Reference target="4" />
+        </Choice>
+      </PostureSelector>
+    </MakeController>
+  </State>
+  <State name="distract" type="public" skippable="false" interrupt_this="false" focus="upper body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="7">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a_premadeSims_distractGreg_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_premadeSims_distractGreg.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" lipsync="False" unique_id="6">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+      <Choice value="-stand-UpperBody" track="normal" mask="Trackmask_UpperBody">
+        <Reference target="6" />
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="start" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="9">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a_fire_panic_start_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_fire_panic_loops.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="8">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
+      <Choice value="-stand-UpperBody" track="normal" mask="Trackmask_UpperBody">
+        <Reference target="8" />
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="stop" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="11">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=a_fire_panic_stop_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_fire_panic_loops.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="10">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
+      <Choice value="-stand-UpperBody" track="normal" mask="Trackmask_UpperBody">
+        <Reference target="10" />
+      </Choice>
+    </PostureSelector>
+  </State>
+</ASM>

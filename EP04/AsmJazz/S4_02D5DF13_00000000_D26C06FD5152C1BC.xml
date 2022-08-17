@@ -2,7 +2,7 @@
 <ASM name="StandOnObject_Posture" dcc="sage">
   <Actor name="x" type="Sim" master="true" virtual="false" />
   <Actor name="postureObject" type="Object" virtual="true" />
-  <Parameter name="transitionPosture" type="enum" labels="sit,standOnObject,stand,layDown" default="sit" />
+  <Parameter name="transitionPosture" type="enum" labels="layDownOnObject,sit,standOnObject,stand" />
   <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
   <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
   <Parameter name="x:species" type="enum" labels="human,dog,smalldog,cat" default="human" />
@@ -245,61 +245,66 @@
   </State>
   <State name="getIn" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
     <description />
-    <ParameterSelector parameter="x:species" unique_id="213">
+    <ParameterSelector parameter="x:species" unique_id="215">
       <Choice value="human" />
       <Choice value="dog">
-        <ParameterSelector parameter="transitionPosture" unique_id="61">
+        <ParameterSelector parameter="transitionPosture" unique_id="62">
+          <Choice value="layDownOnObject">
+            <Controller target="x" controller="@ClipController(clip=ad_trans_down2stand_fast_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ad_trans_down2stand_fast.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="2">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
           <Choice value="sit">
-            <Controller target="x" controller="@ClipController(clip=ad_trans_sitOnGround2stand_fast_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ad_trans_sit2stand_fast.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="2">
+            <Controller target="x" controller="@ClipController(clip=ad_trans_sitOnGround2stand_fast_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ad_trans_sit2stand_fast.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="3">
               <TransitionClassList />
             </Controller>
           </Choice>
           <Choice value="standOnObject" />
           <Choice value="stand">
-            <ParameterSelector parameter="postureObject:objectName" unique_id="60">
+            <ParameterSelector parameter="postureObject:objectName" unique_id="61">
               <Choice value="bedSingle">
-                <ParameterSelector parameter="x:age" unique_id="59">
+                <ParameterSelector parameter="x:age" unique_id="60">
                   <Choice value="baby" />
                   <Choice value="toddler" />
                   <Choice value="child">
-                    <CustomController name="Puppy Jump Blend Tree " target="x" overridePosture="false" track="normal" transition_class_in="Default" transition_class_out="Default" unique_id="30">
+                    <CustomController name="Puppy Jump Blend Tree " target="x" overridePosture="false" track="normal" transition_class_in="Default" transition_class_out="Default" unique_id="31">
                       <TransitionClassList />
                       <ControllerTree>
-                        <BoundaryConditions pre_reference_actor="postureObject" pre_indeterminate="True" pre_offset="0,0,0,0,0,0" pre_mode="provide" post_reference_actor="x" post_mode="pass" unique_id="16">
-                          <DisableConformToSurface unique_id="15">
-                            <VariableJump preserve_initial_orientation="True" reference_actor="x" initial_translation_parameter="x:InitialTranslation" initial_orientation_parameter="x:InitialOrientation" target_translation_parameter="x:TargetTranslation" target_orientation_parameter="x:TargetOrientation" unique_id="14">
-                              <Blend1D mode="blend" type="static" transition_velocity="-1" syncpoint_schema="Jump" parameter="x:JumpRatio" unique_id="13">
+                        <BoundaryConditions pre_reference_actor="postureObject" pre_indeterminate="True" pre_offset="0,0,0,0,0,0" pre_mode="provide" post_reference_actor="x" post_mode="pass" unique_id="17">
+                          <DisableConformToSurface unique_id="16">
+                            <VariableJump preserve_initial_orientation="True" reference_actor="x" initial_translation_parameter="x:InitialTranslation" initial_orientation_parameter="x:InitialOrientation" target_translation_parameter="x:TargetTranslation" target_orientation_parameter="x:TargetOrientation" unique_id="15">
+                              <Blend1D mode="blend" type="static" transition_velocity="-1" syncpoint_schema="Jump" parameter="x:JumpRatio" unique_id="14">
                                 <Choice value="-0.5">
-                                  <Clip clip="cd2o_jumpDown_x" ik_configuration="cd2o_jumpDown.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="3" />
+                                  <Clip clip="cd2o_jumpDown_x" ik_configuration="cd2o_jumpDown.ma" mirror="False" unique_id="4" />
                                 </Choice>
                                 <Choice value="-0.0001">
-                                  <Blend1D mode="blend" type="static" transition_velocity="-1" syncpoint_schema="Jump" parameter="x:JumpDistance" unique_id="7">
+                                  <Blend1D mode="blend" type="static" transition_velocity="-1" syncpoint_schema="Jump" parameter="x:JumpDistance" unique_id="8">
                                     <Choice value="1">
-                                      <Clip clip="cd2o_jumpHorizontal_down_long_x" ik_configuration="cd2o_jumpHorizontal_down.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="4" />
+                                      <Clip clip="cd2o_jumpHorizontal_down_long_x" ik_configuration="cd2o_jumpHorizontal_down.ma" mirror="False" unique_id="5" />
                                     </Choice>
                                     <Choice value="0.5">
-                                      <Clip clip="cd2o_jumpHorizontal_down_x" ik_configuration="cd2o_jumpHorizontal_down.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="5" />
+                                      <Clip clip="cd2o_jumpHorizontal_down_x" ik_configuration="cd2o_jumpHorizontal_down.ma" mirror="False" unique_id="6" />
                                     </Choice>
                                     <Choice value="0.25">
-                                      <Clip clip="cd2o_jumpHorizontal_down_short_x" ik_configuration="cd2o_jumpHorizontal_down.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="6" />
+                                      <Clip clip="cd2o_jumpHorizontal_down_short_x" ik_configuration="cd2o_jumpHorizontal_down.ma" mirror="False" unique_id="7" />
                                     </Choice>
                                   </Blend1D>
                                 </Choice>
                                 <Choice value="0">
-                                  <Blend1D mode="blend" type="static" transition_velocity="-1" syncpoint_schema="Jump" parameter="x:JumpDistance" unique_id="11">
+                                  <Blend1D mode="blend" type="static" transition_velocity="-1" syncpoint_schema="Jump" parameter="x:JumpDistance" unique_id="12">
                                     <Choice value="1">
-                                      <Clip clip="cd2o_jumpHorizontal_up_long_x" ik_configuration="cd2o_jumpHorizontal_up.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="8" />
+                                      <Clip clip="cd2o_jumpHorizontal_up_long_x" ik_configuration="cd2o_jumpHorizontal_up.ma" mirror="False" unique_id="9" />
                                     </Choice>
                                     <Choice value="0.5">
-                                      <Clip clip="cd2o_jumpHorizontal_up_x" ik_configuration="cd2o_jumpHorizontal_up.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="9" />
+                                      <Clip clip="cd2o_jumpHorizontal_up_x" ik_configuration="cd2o_jumpHorizontal_up.ma" mirror="False" unique_id="10" />
                                     </Choice>
                                     <Choice value="0.25">
-                                      <Clip clip="cd2o_jumpHorizontal_up_short_x" ik_configuration="cd2o_jumpHorizontal_up.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="10" />
+                                      <Clip clip="cd2o_jumpHorizontal_up_short_x" ik_configuration="cd2o_jumpHorizontal_up.ma" mirror="False" unique_id="11" />
                                     </Choice>
                                   </Blend1D>
                                 </Choice>
                                 <Choice value="0.25">
-                                  <Clip clip="cd2o_jumpUp_x" ik_configuration="cd2o_jumpUp.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="12" />
+                                  <Clip clip="cd2o_jumpUp_x" ik_configuration="cd2o_jumpUp.ma" mirror="False" unique_id="13" />
                                 </Choice>
                               </Blend1D>
                             </VariableJump>
@@ -307,36 +312,36 @@
                         </BoundaryConditions>
                       </ControllerTree>
                     </CustomController>
-                    <CustomController name="Turn Blend Tree (4) " target="x" overridePosture="false" track="normal" transition_class_in="Default" transition_class_out="Default" unique_id="29">
+                    <CustomController name="Turn Blend Tree (4) " target="x" overridePosture="false" track="normal" transition_class_in="Default" transition_class_out="Default" unique_id="30">
                       <TransitionClassList />
                       <ControllerTree>
-                        <BoundaryConditions pre_reference_actor="x" pre_mode="pass" post_reference_actor="postureObject" post_reference_joint="_universalTransition_slot_" post_offset="0,0,0,0,0,0" post_mode="provide" unique_id="28">
-                          <DisableConformToSurface unique_id="27">
-                            <SnapOnEvent event_id="999" target_translation_parameter="x:TargetTranslation" target_orientation_parameter="x:TargetOrientation" unique_id="26">
-                              <Blend1D mode="blend" type="static" transition_velocity="-1" parameter="x:TurnAngle" unique_id="25">
+                        <BoundaryConditions pre_reference_actor="x" pre_mode="pass" post_reference_actor="postureObject" post_reference_joint="_universalTransition_slot_" post_offset="0,0,0,0,0,0" post_mode="provide" unique_id="29">
+                          <DisableConformToSurface unique_id="28">
+                            <SnapOnEvent event_id="999" target_translation_parameter="x:TargetTranslation" target_orientation_parameter="x:TargetOrientation" unique_id="27">
+                              <Blend1D mode="blend" type="static" transition_velocity="-1" parameter="x:TurnAngle" unique_id="26">
                                 <Choice value="-180">
-                                  <Clip clip="ac_loco_2step_turnInPlace_180_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="17" />
+                                  <Clip clip="ac_loco_2step_turnInPlace_180_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="False" unique_id="18" />
                                 </Choice>
                                 <Choice value="-90" low="true">
-                                  <Clip clip="ac_loco_2step_turnInPlace_90_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="18" />
+                                  <Clip clip="ac_loco_2step_turnInPlace_90_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="False" unique_id="19" />
                                 </Choice>
                                 <Choice value="-90">
-                                  <Clip clip="ac_loco_1step_turnInPlace_90_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="19" />
+                                  <Clip clip="ac_loco_1step_turnInPlace_90_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="False" unique_id="20" />
                                 </Choice>
                                 <Choice value="0" low="true">
-                                  <Clip clip="ac_loco_1Step_turnInPlace_0_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="20" />
+                                  <Clip clip="ac_loco_1Step_turnInPlace_0_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="False" unique_id="21" />
                                 </Choice>
                                 <Choice value="0">
-                                  <Clip clip="ac_loco_1Step_turnInPlace_0_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="True" start_frame_offset="0" end_frame_offset="0" unique_id="21" />
+                                  <Clip clip="ac_loco_1Step_turnInPlace_0_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="True" unique_id="22" />
                                 </Choice>
                                 <Choice value="90" low="true">
-                                  <Clip clip="ac_loco_1step_turnInPlace_90_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="True" start_frame_offset="0" end_frame_offset="0" unique_id="22" />
+                                  <Clip clip="ac_loco_1step_turnInPlace_90_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="True" unique_id="23" />
                                 </Choice>
                                 <Choice value="90">
-                                  <Clip clip="ac_loco_2step_turnInPlace_90_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="True" start_frame_offset="0" end_frame_offset="0" unique_id="23" />
+                                  <Clip clip="ac_loco_2step_turnInPlace_90_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="True" unique_id="24" />
                                 </Choice>
                                 <Choice value="180">
-                                  <Clip clip="ac_loco_2step_turnInPlace_180_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="True" start_frame_offset="0" end_frame_offset="0" unique_id="24" />
+                                  <Clip clip="ac_loco_2step_turnInPlace_180_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="True" unique_id="25" />
                                 </Choice>
                               </Blend1D>
                             </SnapOnEvent>
@@ -346,44 +351,44 @@
                     </CustomController>
                   </Choice>
                   <Choice value="teen">
-                    <CustomController name="Dog Jump Blend Tree" target="x" overridePosture="false" track="normal" transition_class_in="Default" transition_class_out="Default" unique_id="58">
+                    <CustomController name="Dog Jump Blend Tree" target="x" overridePosture="false" track="normal" transition_class_in="Default" transition_class_out="Default" unique_id="59">
                       <TransitionClassList />
                       <ControllerTree>
-                        <BoundaryConditions pre_reference_actor="postureObject" pre_indeterminate="True" pre_offset="0,0,0,0,0,0" pre_mode="provide" post_reference_actor="x" post_mode="pass" unique_id="44">
-                          <DisableConformToSurface unique_id="43">
-                            <VariableJump preserve_initial_orientation="True" reference_actor="x" initial_translation_parameter="x:InitialTranslation" initial_orientation_parameter="x:InitialOrientation" target_translation_parameter="x:TargetTranslation" target_orientation_parameter="x:TargetOrientation" unique_id="42">
-                              <Blend1D mode="blend" type="static" transition_velocity="-1" syncpoint_schema="Jump" parameter="x:JumpRatio" unique_id="41">
+                        <BoundaryConditions pre_reference_actor="postureObject" pre_indeterminate="True" pre_offset="0,0,0,0,0,0" pre_mode="provide" post_reference_actor="x" post_mode="pass" unique_id="45">
+                          <DisableConformToSurface unique_id="44">
+                            <VariableJump preserve_initial_orientation="True" reference_actor="x" initial_translation_parameter="x:InitialTranslation" initial_orientation_parameter="x:InitialOrientation" target_translation_parameter="x:TargetTranslation" target_orientation_parameter="x:TargetOrientation" unique_id="43">
+                              <Blend1D mode="blend" type="static" transition_velocity="-1" syncpoint_schema="Jump" parameter="x:JumpRatio" unique_id="42">
                                 <Choice value="-1">
-                                  <Clip clip="ad2o_jumpDown_x" ik_configuration="ad2o_jumpDown.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="31" />
+                                  <Clip clip="ad2o_jumpDown_x" ik_configuration="ad2o_jumpDown.ma" mirror="False" unique_id="32" />
                                 </Choice>
                                 <Choice value="-0.0001">
-                                  <Blend1D mode="blend" type="static" transition_velocity="-1" syncpoint_schema="Jump" parameter="x:JumpDistance" unique_id="35">
+                                  <Blend1D mode="blend" type="static" transition_velocity="-1" syncpoint_schema="Jump" parameter="x:JumpDistance" unique_id="36">
                                     <Choice value="2">
-                                      <Clip clip="ad2o_jumpHorizontal_down_long_x" ik_configuration="ad2o_jumpHorizontal_down.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="32" />
+                                      <Clip clip="ad2o_jumpHorizontal_down_long_x" ik_configuration="ad2o_jumpHorizontal_down.ma" mirror="False" unique_id="33" />
                                     </Choice>
                                     <Choice value="1">
-                                      <Clip clip="ad2o_jumpHorizontal_down_x" ik_configuration="ad2o_jumpHorizontal_down.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="33" />
+                                      <Clip clip="ad2o_jumpHorizontal_down_x" ik_configuration="ad2o_jumpHorizontal_down.ma" mirror="False" unique_id="34" />
                                     </Choice>
                                     <Choice value="0.5">
-                                      <Clip clip="ad2o_jumpHorizontal_down_short_x" ik_configuration="ad2o_jumpHorizontal_down.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="34" />
+                                      <Clip clip="ad2o_jumpHorizontal_down_short_x" ik_configuration="ad2o_jumpHorizontal_down.ma" mirror="False" unique_id="35" />
                                     </Choice>
                                   </Blend1D>
                                 </Choice>
                                 <Choice value="0">
-                                  <Blend1D mode="blend" type="static" transition_velocity="-1" syncpoint_schema="Jump" parameter="x:JumpDistance" unique_id="39">
+                                  <Blend1D mode="blend" type="static" transition_velocity="-1" syncpoint_schema="Jump" parameter="x:JumpDistance" unique_id="40">
                                     <Choice value="2">
-                                      <Clip clip="ad2o_jumpHorizontal_up_long_x" ik_configuration="ad2o_jumpHorizontal_up.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="36" />
+                                      <Clip clip="ad2o_jumpHorizontal_up_long_x" ik_configuration="ad2o_jumpHorizontal_up.ma" mirror="False" unique_id="37" />
                                     </Choice>
                                     <Choice value="1">
-                                      <Clip clip="ad2o_jumpHorizontal_up_x" ik_configuration="ad2o_jumpHorizontal_up.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="37" />
+                                      <Clip clip="ad2o_jumpHorizontal_up_x" ik_configuration="ad2o_jumpHorizontal_up.ma" mirror="False" unique_id="38" />
                                     </Choice>
                                     <Choice value="0.5">
-                                      <Clip clip="ad2o_jumpHorizontal_up_short_x" ik_configuration="ad2o_jumpHorizontal_up.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="38" />
+                                      <Clip clip="ad2o_jumpHorizontal_up_short_x" ik_configuration="ad2o_jumpHorizontal_up.ma" mirror="False" unique_id="39" />
                                     </Choice>
                                   </Blend1D>
                                 </Choice>
                                 <Choice value="1">
-                                  <Clip clip="ad2o_jumpUp_x" ik_configuration="ad2o_jumpUp.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="40" />
+                                  <Clip clip="ad2o_jumpUp_x" ik_configuration="ad2o_jumpUp.ma" mirror="False" unique_id="41" />
                                 </Choice>
                               </Blend1D>
                             </VariableJump>
@@ -391,36 +396,36 @@
                         </BoundaryConditions>
                       </ControllerTree>
                     </CustomController>
-                    <CustomController name="Turn Blend Tree (3)" target="x" overridePosture="false" track="normal" transition_class_in="Default" transition_class_out="Default" unique_id="57">
+                    <CustomController name="Turn Blend Tree (3)" target="x" overridePosture="false" track="normal" transition_class_in="Default" transition_class_out="Default" unique_id="58">
                       <TransitionClassList />
                       <ControllerTree>
-                        <BoundaryConditions pre_reference_actor="x" pre_mode="pass" post_reference_actor="postureObject" post_reference_joint="_universalTransition_slot_" post_offset="0,0,0,0,0,0" post_mode="provide" unique_id="56">
-                          <DisableConformToSurface unique_id="55">
-                            <SnapOnEvent event_id="999" target_translation_parameter="x:TargetTranslation" target_orientation_parameter="x:TargetOrientation" unique_id="54">
-                              <Blend1D mode="blend" type="static" transition_velocity="-1" parameter="x:TurnAngle" unique_id="53">
+                        <BoundaryConditions pre_reference_actor="x" pre_mode="pass" post_reference_actor="postureObject" post_reference_joint="_universalTransition_slot_" post_offset="0,0,0,0,0,0" post_mode="provide" unique_id="57">
+                          <DisableConformToSurface unique_id="56">
+                            <SnapOnEvent event_id="999" target_translation_parameter="x:TargetTranslation" target_orientation_parameter="x:TargetOrientation" unique_id="55">
+                              <Blend1D mode="blend" type="static" transition_velocity="-1" parameter="x:TurnAngle" unique_id="54">
                                 <Choice value="-180">
-                                  <Clip clip="ac_loco_2step_turnInPlace_180_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="45" />
+                                  <Clip clip="ac_loco_2step_turnInPlace_180_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="False" unique_id="46" />
                                 </Choice>
                                 <Choice value="-90" low="true">
-                                  <Clip clip="ac_loco_2step_turnInPlace_90_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="46" />
+                                  <Clip clip="ac_loco_2step_turnInPlace_90_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="False" unique_id="47" />
                                 </Choice>
                                 <Choice value="-90">
-                                  <Clip clip="ac_loco_1step_turnInPlace_90_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="47" />
+                                  <Clip clip="ac_loco_1step_turnInPlace_90_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="False" unique_id="48" />
                                 </Choice>
                                 <Choice value="0" low="true">
-                                  <Clip clip="ac_loco_1Step_turnInPlace_0_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="48" />
+                                  <Clip clip="ac_loco_1Step_turnInPlace_0_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="False" unique_id="49" />
                                 </Choice>
                                 <Choice value="0">
-                                  <Clip clip="ac_loco_1Step_turnInPlace_0_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="True" start_frame_offset="0" end_frame_offset="0" unique_id="49" />
+                                  <Clip clip="ac_loco_1Step_turnInPlace_0_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="True" unique_id="50" />
                                 </Choice>
                                 <Choice value="90" low="true">
-                                  <Clip clip="ac_loco_1step_turnInPlace_90_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="True" start_frame_offset="0" end_frame_offset="0" unique_id="50" />
+                                  <Clip clip="ac_loco_1step_turnInPlace_90_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="True" unique_id="51" />
                                 </Choice>
                                 <Choice value="90">
-                                  <Clip clip="ac_loco_2step_turnInPlace_90_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="True" start_frame_offset="0" end_frame_offset="0" unique_id="51" />
+                                  <Clip clip="ac_loco_2step_turnInPlace_90_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="True" unique_id="52" />
                                 </Choice>
                                 <Choice value="180">
-                                  <Clip clip="ac_loco_2step_turnInPlace_180_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="True" start_frame_offset="0" end_frame_offset="0" unique_id="52" />
+                                  <Clip clip="ac_loco_2step_turnInPlace_180_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="True" unique_id="53" />
                                 </Choice>
                               </Blend1D>
                             </SnapOnEvent>
@@ -430,98 +435,102 @@
                     </CustomController>
                   </Choice>
                   <Choice value="youngadult">
+                    <Reference target="59" />
                     <Reference target="58" />
-                    <Reference target="57" />
                   </Choice>
                   <Choice value="adult">
+                    <Reference target="59" />
                     <Reference target="58" />
-                    <Reference target="57" />
                   </Choice>
                   <Choice value="elder">
+                    <Reference target="59" />
                     <Reference target="58" />
-                    <Reference target="57" />
                   </Choice>
                 </ParameterSelector>
               </Choice>
               <Choice value="bedDouble">
-                <Reference target="59" />
+                <Reference target="60" />
               </Choice>
               <Choice value="sofa">
-                <Reference target="59" />
+                <Reference target="60" />
               </Choice>
               <Choice value="litterbox">
-                <Reference target="59" />
+                <Reference target="60" />
               </Choice>
               <Choice value="catcondo">
-                <Reference target="59" />
+                <Reference target="60" />
               </Choice>
               <Choice value="petbed">
-                <Reference target="59" />
+                <Reference target="60" />
               </Choice>
             </ParameterSelector>
           </Choice>
-          <Choice value="layDown" />
         </ParameterSelector>
       </Choice>
       <Choice value="smalldog">
-        <ParameterSelector parameter="transitionPosture" unique_id="123">
+        <ParameterSelector parameter="transitionPosture" unique_id="124">
+          <Choice value="layDownOnObject">
+            <Controller target="x" controller="@ClipController(clip=al_trans_down2stand_fast_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="al_trans_down2stand_fast.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="63">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
           <Choice value="sit">
-            <Controller target="x" controller="@ClipController(clip=al_trans_sitOnGround2stand_fast_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="al_trans_sit2stand_fast.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="62">
+            <Controller target="x" controller="@ClipController(clip=al_trans_sitOnGround2stand_fast_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="al_trans_sit2stand_fast.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="64">
               <TransitionClassList />
             </Controller>
           </Choice>
           <Choice value="standOnObject" />
           <Choice value="stand">
-            <ParameterSelector parameter="postureObject:objectName" unique_id="121">
+            <ParameterSelector parameter="postureObject:objectName" unique_id="123">
               <Choice value="bedSingle" />
               <Choice value="bedDouble" />
               <Choice value="sofa">
-                <ParameterSelector parameter="x:age" unique_id="120">
+                <ParameterSelector parameter="x:age" unique_id="122">
                   <Choice value="baby" />
                   <Choice value="toddler" />
                   <Choice value="child" />
                   <Choice value="teen" />
                   <Choice value="youngadult">
-                    <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="119">
+                    <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="121">
                       <Choice weight="50" avoidRepeat="False">
-                        <CustomController name="Small Dog Jump Blend Tree " target="x" overridePosture="false" track="normal" transition_class_in="Default" transition_class_out="Default" unique_id="90">
+                        <CustomController name="Small Dog Jump Blend Tree " target="x" overridePosture="false" track="normal" transition_class_in="Default" transition_class_out="Default" unique_id="92">
                           <TransitionClassList />
                           <ControllerTree>
-                            <BoundaryConditions pre_reference_actor="postureObject" pre_indeterminate="True" pre_offset="0,0,0,0,0,0" pre_mode="provide" post_reference_actor="x" post_mode="pass" unique_id="76">
-                              <DisableConformToSurface unique_id="75">
-                                <VariableJump preserve_initial_orientation="True" reference_actor="x" initial_translation_parameter="x:InitialTranslation" initial_orientation_parameter="x:InitialOrientation" target_translation_parameter="x:TargetTranslation" target_orientation_parameter="x:TargetOrientation" unique_id="74">
-                                  <Blend1D mode="blend" type="static" transition_velocity="-1" syncpoint_schema="Jump" parameter="x:JumpRatio" unique_id="73">
+                            <BoundaryConditions pre_reference_actor="postureObject" pre_indeterminate="True" pre_offset="0,0,0,0,0,0" pre_mode="provide" post_reference_actor="x" post_mode="pass" unique_id="78">
+                              <DisableConformToSurface unique_id="77">
+                                <VariableJump preserve_initial_orientation="True" reference_actor="x" initial_translation_parameter="x:InitialTranslation" initial_orientation_parameter="x:InitialOrientation" target_translation_parameter="x:TargetTranslation" target_orientation_parameter="x:TargetOrientation" unique_id="76">
+                                  <Blend1D mode="blend" type="static" transition_velocity="-1" syncpoint_schema="Jump" parameter="x:JumpRatio" unique_id="75">
                                     <Choice value="-1">
-                                      <Clip clip="al2o_jumpDown_x" ik_configuration="al2o_jumpDown.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="63" />
+                                      <Clip clip="al2o_jumpDown_x" ik_configuration="al2o_jumpDown.ma" mirror="False" unique_id="65" />
                                     </Choice>
                                     <Choice value="-0.0001">
-                                      <Blend1D mode="blend" type="static" transition_velocity="-1" syncpoint_schema="Jump" parameter="x:JumpDistance" unique_id="67">
+                                      <Blend1D mode="blend" type="static" transition_velocity="-1" syncpoint_schema="Jump" parameter="x:JumpDistance" unique_id="69">
                                         <Choice value="2">
-                                          <Clip clip="al2o_jumpHorizontal_down_long_x" ik_configuration="al2o_jumpHorizontal_down.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="64" />
+                                          <Clip clip="al2o_jumpHorizontal_down_long_x" ik_configuration="al2o_jumpHorizontal_down.ma" mirror="False" unique_id="66" />
                                         </Choice>
                                         <Choice value="1">
-                                          <Clip clip="al2o_jumpHorizontal_down_x" ik_configuration="al2o_jumpHorizontal_down.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="65" />
+                                          <Clip clip="al2o_jumpHorizontal_down_x" ik_configuration="al2o_jumpHorizontal_down.ma" mirror="False" unique_id="67" />
                                         </Choice>
                                         <Choice value="0.5">
-                                          <Clip clip="al2o_jumpHorizontal_down_short_x" ik_configuration="al2o_jumpHorizontal_down.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="66" />
+                                          <Clip clip="al2o_jumpHorizontal_down_short_x" ik_configuration="al2o_jumpHorizontal_down.ma" mirror="False" unique_id="68" />
                                         </Choice>
                                       </Blend1D>
                                     </Choice>
                                     <Choice value="0">
-                                      <Blend1D mode="blend" type="static" transition_velocity="-1" syncpoint_schema="Jump" parameter="x:JumpDistance" unique_id="71">
+                                      <Blend1D mode="blend" type="static" transition_velocity="-1" syncpoint_schema="Jump" parameter="x:JumpDistance" unique_id="73">
                                         <Choice value="2">
-                                          <Clip clip="al2o_jumpHorizontal_up_long_x" ik_configuration="al2o_jumpHorizontal_up.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="68" />
+                                          <Clip clip="al2o_jumpHorizontal_up_long_x" ik_configuration="al2o_jumpHorizontal_up.ma" mirror="False" unique_id="70" />
                                         </Choice>
                                         <Choice value="1">
-                                          <Clip clip="al2o_jumpHorizontal_up_x" ik_configuration="al2o_jumpHorizontal_up.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="69" />
+                                          <Clip clip="al2o_jumpHorizontal_up_x" ik_configuration="al2o_jumpHorizontal_up.ma" mirror="False" unique_id="71" />
                                         </Choice>
                                         <Choice value="0.5">
-                                          <Clip clip="al2o_jumpHorizontal_up_short_x" ik_configuration="al2o_jumpHorizontal_up.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="70" />
+                                          <Clip clip="al2o_jumpHorizontal_up_short_x" ik_configuration="al2o_jumpHorizontal_up.ma" mirror="False" unique_id="72" />
                                         </Choice>
                                       </Blend1D>
                                     </Choice>
                                     <Choice value="1">
-                                      <Clip clip="al2o_jumpUp_x" ik_configuration="al2o_jumpUp.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="72" />
+                                      <Clip clip="al2o_jumpUp_x" ik_configuration="al2o_jumpUp.ma" mirror="False" unique_id="74" />
                                     </Choice>
                                   </Blend1D>
                                 </VariableJump>
@@ -529,36 +538,36 @@
                             </BoundaryConditions>
                           </ControllerTree>
                         </CustomController>
-                        <CustomController name="Turn Blend Tree (5)" target="x" overridePosture="false" track="normal" transition_class_in="Default" transition_class_out="Default" unique_id="89">
+                        <CustomController name="Turn Blend Tree (5)" target="x" overridePosture="false" track="normal" transition_class_in="Default" transition_class_out="Default" unique_id="91">
                           <TransitionClassList />
                           <ControllerTree>
-                            <BoundaryConditions pre_reference_actor="x" pre_mode="pass" post_reference_actor="postureObject" post_reference_joint="_universalTransition_slot_" post_offset="0,0,0,0,0,0" post_mode="provide" unique_id="88">
-                              <DisableConformToSurface unique_id="87">
-                                <SnapOnEvent event_id="999" target_translation_parameter="x:TargetTranslation" target_orientation_parameter="x:TargetOrientation" unique_id="86">
-                                  <Blend1D mode="blend" type="static" transition_velocity="-1" parameter="x:TurnAngle" unique_id="85">
+                            <BoundaryConditions pre_reference_actor="x" pre_mode="pass" post_reference_actor="postureObject" post_reference_joint="_universalTransition_slot_" post_offset="0,0,0,0,0,0" post_mode="provide" unique_id="90">
+                              <DisableConformToSurface unique_id="89">
+                                <SnapOnEvent event_id="999" target_translation_parameter="x:TargetTranslation" target_orientation_parameter="x:TargetOrientation" unique_id="88">
+                                  <Blend1D mode="blend" type="static" transition_velocity="-1" parameter="x:TurnAngle" unique_id="87">
                                     <Choice value="-180">
-                                      <Clip clip="al_loco_2step_turnInPlace_180_R" ik_configuration="al_loco_turnInPlace_R.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="77" />
+                                      <Clip clip="al_loco_2step_turnInPlace_180_R" ik_configuration="al_loco_turnInPlace_R.ma" mirror="False" unique_id="79" />
                                     </Choice>
                                     <Choice value="-90" low="true">
-                                      <Clip clip="al_loco_2step_turnInPlace_90_R" ik_configuration="al_loco_turnInPlace_R.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="78" />
+                                      <Clip clip="al_loco_2step_turnInPlace_90_R" ik_configuration="al_loco_turnInPlace_R.ma" mirror="False" unique_id="80" />
                                     </Choice>
                                     <Choice value="-90">
-                                      <Clip clip="al_loco_1step_turnInPlace_90_R" ik_configuration="al_loco_turnInPlace_R.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="79" />
+                                      <Clip clip="al_loco_1step_turnInPlace_90_R" ik_configuration="al_loco_turnInPlace_R.ma" mirror="False" unique_id="81" />
                                     </Choice>
                                     <Choice value="0" low="true">
-                                      <Clip clip="al_loco_1Step_turnInPlace_0_R" ik_configuration="al_loco_turnInPlace_R.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="80" />
+                                      <Clip clip="al_loco_1Step_turnInPlace_0_R" ik_configuration="al_loco_turnInPlace_R.ma" mirror="False" unique_id="82" />
                                     </Choice>
                                     <Choice value="0">
-                                      <Clip clip="al_loco_1Step_turnInPlace_0_R" ik_configuration="al_loco_turnInPlace_R.ma" mirror="True" start_frame_offset="0" end_frame_offset="0" unique_id="81" />
+                                      <Clip clip="al_loco_1Step_turnInPlace_0_R" ik_configuration="al_loco_turnInPlace_R.ma" mirror="True" unique_id="83" />
                                     </Choice>
                                     <Choice value="90" low="true">
-                                      <Clip clip="al_loco_1step_turnInPlace_90_R" ik_configuration="al_loco_turnInPlace_R.ma" mirror="True" start_frame_offset="0" end_frame_offset="0" unique_id="82" />
+                                      <Clip clip="al_loco_1step_turnInPlace_90_R" ik_configuration="al_loco_turnInPlace_R.ma" mirror="True" unique_id="84" />
                                     </Choice>
                                     <Choice value="90">
-                                      <Clip clip="al_loco_2step_turnInPlace_90_R" ik_configuration="al_loco_turnInPlace_R.ma" mirror="True" start_frame_offset="0" end_frame_offset="0" unique_id="83" />
+                                      <Clip clip="al_loco_2step_turnInPlace_90_R" ik_configuration="al_loco_turnInPlace_R.ma" mirror="True" unique_id="85" />
                                     </Choice>
                                     <Choice value="180">
-                                      <Clip clip="al_loco_2step_turnInPlace_180_R" ik_configuration="al_loco_turnInPlace_R.ma" mirror="True" start_frame_offset="0" end_frame_offset="0" unique_id="84" />
+                                      <Clip clip="al_loco_2step_turnInPlace_180_R" ik_configuration="al_loco_turnInPlace_R.ma" mirror="True" unique_id="86" />
                                     </Choice>
                                   </Blend1D>
                                 </SnapOnEvent>
@@ -568,44 +577,44 @@
                         </CustomController>
                       </Choice>
                       <Choice weight="29" avoidRepeat="False">
-                        <CustomController name="Small Dog Jump Blend Tree butt Wiggle " target="x" overridePosture="false" track="normal" transition_class_in="Default" transition_class_out="Default" unique_id="118">
+                        <CustomController name="Small Dog Jump Blend Tree butt Wiggle " target="x" overridePosture="false" track="normal" transition_class_in="Default" transition_class_out="Default" unique_id="120">
                           <TransitionClassList />
                           <ControllerTree>
-                            <BoundaryConditions pre_reference_actor="postureObject" pre_indeterminate="True" pre_offset="0,0,0,0,0,0" pre_mode="provide" post_reference_actor="x" post_mode="pass" unique_id="104">
-                              <DisableConformToSurface unique_id="103">
-                                <VariableJump preserve_initial_orientation="True" reference_actor="x" initial_translation_parameter="x:InitialTranslation" initial_orientation_parameter="x:InitialOrientation" target_translation_parameter="x:TargetTranslation" target_orientation_parameter="x:TargetOrientation" unique_id="102">
-                                  <Blend1D mode="blend" type="static" transition_velocity="-1" syncpoint_schema="Jump" parameter="x:JumpRatio" unique_id="101">
+                            <BoundaryConditions pre_reference_actor="postureObject" pre_indeterminate="True" pre_offset="0,0,0,0,0,0" pre_mode="provide" post_reference_actor="x" post_mode="pass" unique_id="106">
+                              <DisableConformToSurface unique_id="105">
+                                <VariableJump preserve_initial_orientation="True" reference_actor="x" initial_translation_parameter="x:InitialTranslation" initial_orientation_parameter="x:InitialOrientation" target_translation_parameter="x:TargetTranslation" target_orientation_parameter="x:TargetOrientation" unique_id="104">
+                                  <Blend1D mode="blend" type="static" transition_velocity="-1" syncpoint_schema="Jump" parameter="x:JumpRatio" unique_id="103">
                                     <Choice value="-1">
-                                      <Clip clip="ac2o_jumpDown_x" ik_configuration="ac2o_catSurface_jumpDown.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="91" />
+                                      <Clip clip="ac2o_jumpDown_x" ik_configuration="ac2o_catSurface_jumpDown.ma" mirror="False" unique_id="93" />
                                     </Choice>
                                     <Choice value="-0.0001">
-                                      <Blend1D mode="blend" type="static" transition_velocity="-1" syncpoint_schema="Jump" parameter="x:JumpDistance" unique_id="95">
+                                      <Blend1D mode="blend" type="static" transition_velocity="-1" syncpoint_schema="Jump" parameter="x:JumpDistance" unique_id="97">
                                         <Choice value="2">
-                                          <Clip clip="ac2o_jumpHorizontal_down_long_x" ik_configuration="ac2o_catSurface_jumpHorizontal_down_long.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="92" />
+                                          <Clip clip="ac2o_jumpHorizontal_down_long_x" ik_configuration="ac2o_catSurface_jumpHorizontal_down_long.ma" mirror="False" unique_id="94" />
                                         </Choice>
                                         <Choice value="1">
-                                          <Clip clip="ac2o_jumpHorizontal_down_x" ik_configuration="ac2o_catSurface_jumpHorizontal_down.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="93" />
+                                          <Clip clip="ac2o_jumpHorizontal_down_x" ik_configuration="ac2o_catSurface_jumpHorizontal_down.ma" mirror="False" unique_id="95" />
                                         </Choice>
                                         <Choice value="0.5">
-                                          <Clip clip="ac2o_jumpHorizontal_down_short_x" ik_configuration="ac2o_catSurface_jumpHorizontal_up_short.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="94" />
+                                          <Clip clip="ac2o_jumpHorizontal_down_short_x" ik_configuration="ac2o_catSurface_jumpHorizontal_up_short.ma" mirror="False" unique_id="96" />
                                         </Choice>
                                       </Blend1D>
                                     </Choice>
                                     <Choice value="0">
-                                      <Blend1D mode="blend" type="static" transition_velocity="-1" syncpoint_schema="Jump" parameter="x:JumpDistance" unique_id="99">
+                                      <Blend1D mode="blend" type="static" transition_velocity="-1" syncpoint_schema="Jump" parameter="x:JumpDistance" unique_id="101">
                                         <Choice value="2">
-                                          <Clip clip="al2o_jumpHorizontal_up_long_wiggle_x" ik_configuration="al2o_jumpHorizontal_up_long_wiggle.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="96" />
+                                          <Clip clip="al2o_jumpHorizontal_up_long_wiggle_x" ik_configuration="al2o_jumpHorizontal_up_long_wiggle.ma" mirror="False" unique_id="98" />
                                         </Choice>
                                         <Choice value="1">
-                                          <Clip clip="al2o_jumpHorizontal_up_wiggle_x" ik_configuration="al2o_jumpHorizontal_up_wiggle.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="97" />
+                                          <Clip clip="al2o_jumpHorizontal_up_wiggle_x" ik_configuration="al2o_jumpHorizontal_up_wiggle.ma" mirror="False" unique_id="99" />
                                         </Choice>
                                         <Choice value="0.5">
-                                          <Clip clip="al2o_jumpHorizontal_up_short_wiggle_x" ik_configuration="al2o_jumpHorizontal_up_short_wiggle.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="98" />
+                                          <Clip clip="al2o_jumpHorizontal_up_short_wiggle_x" ik_configuration="al2o_jumpHorizontal_up_short_wiggle.ma" mirror="False" unique_id="100" />
                                         </Choice>
                                       </Blend1D>
                                     </Choice>
                                     <Choice value="1">
-                                      <Clip clip="al2o_jumpUp_wiggle_x" ik_configuration="al2o_jumpUp_wiggle.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="100" />
+                                      <Clip clip="al2o_jumpUp_wiggle_x" ik_configuration="al2o_jumpUp_wiggle.ma" mirror="False" unique_id="102" />
                                     </Choice>
                                   </Blend1D>
                                 </VariableJump>
@@ -613,36 +622,36 @@
                             </BoundaryConditions>
                           </ControllerTree>
                         </CustomController>
-                        <CustomController name="Turn Blend Tree (5) (2)" target="x" overridePosture="false" track="normal" transition_class_in="Default" transition_class_out="Default" unique_id="117">
+                        <CustomController name="Turn Blend Tree (5) (2)" target="x" overridePosture="false" track="normal" transition_class_in="Default" transition_class_out="Default" unique_id="119">
                           <TransitionClassList />
                           <ControllerTree>
-                            <BoundaryConditions pre_reference_actor="x" pre_mode="pass" post_reference_actor="postureObject" post_reference_joint="_universalTransition_slot_" post_offset="0,0,0,0,0,0" post_mode="provide" unique_id="116">
-                              <DisableConformToSurface unique_id="115">
-                                <SnapOnEvent event_id="999" target_translation_parameter="x:TargetTranslation" target_orientation_parameter="x:TargetOrientation" unique_id="114">
-                                  <Blend1D mode="blend" type="static" transition_velocity="-1" parameter="x:TurnAngle" unique_id="113">
+                            <BoundaryConditions pre_reference_actor="x" pre_mode="pass" post_reference_actor="postureObject" post_reference_joint="_universalTransition_slot_" post_offset="0,0,0,0,0,0" post_mode="provide" unique_id="118">
+                              <DisableConformToSurface unique_id="117">
+                                <SnapOnEvent event_id="999" target_translation_parameter="x:TargetTranslation" target_orientation_parameter="x:TargetOrientation" unique_id="116">
+                                  <Blend1D mode="blend" type="static" transition_velocity="-1" parameter="x:TurnAngle" unique_id="115">
                                     <Choice value="-180">
-                                      <Clip clip="al_loco_2step_turnInPlace_180_R" ik_configuration="al_loco_turnInPlace_R.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="105" />
+                                      <Clip clip="al_loco_2step_turnInPlace_180_R" ik_configuration="al_loco_turnInPlace_R.ma" mirror="False" unique_id="107" />
                                     </Choice>
                                     <Choice value="-90" low="true">
-                                      <Clip clip="al_loco_2step_turnInPlace_90_R" ik_configuration="al_loco_turnInPlace_R.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="106" />
+                                      <Clip clip="al_loco_2step_turnInPlace_90_R" ik_configuration="al_loco_turnInPlace_R.ma" mirror="False" unique_id="108" />
                                     </Choice>
                                     <Choice value="-90">
-                                      <Clip clip="al_loco_1step_turnInPlace_90_R" ik_configuration="al_loco_turnInPlace_R.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="107" />
+                                      <Clip clip="al_loco_1step_turnInPlace_90_R" ik_configuration="al_loco_turnInPlace_R.ma" mirror="False" unique_id="109" />
                                     </Choice>
                                     <Choice value="0" low="true">
-                                      <Clip clip="al_loco_1Step_turnInPlace_0_R" ik_configuration="al_loco_turnInPlace_R.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="108" />
+                                      <Clip clip="al_loco_1Step_turnInPlace_0_R" ik_configuration="al_loco_turnInPlace_R.ma" mirror="False" unique_id="110" />
                                     </Choice>
                                     <Choice value="0">
-                                      <Clip clip="al_loco_1Step_turnInPlace_0_R" ik_configuration="al_loco_turnInPlace_R.ma" mirror="True" start_frame_offset="0" end_frame_offset="0" unique_id="109" />
+                                      <Clip clip="al_loco_1Step_turnInPlace_0_R" ik_configuration="al_loco_turnInPlace_R.ma" mirror="True" unique_id="111" />
                                     </Choice>
                                     <Choice value="90" low="true">
-                                      <Clip clip="al_loco_1step_turnInPlace_90_R" ik_configuration="al_loco_turnInPlace_R.ma" mirror="True" start_frame_offset="0" end_frame_offset="0" unique_id="110" />
+                                      <Clip clip="al_loco_1step_turnInPlace_90_R" ik_configuration="al_loco_turnInPlace_R.ma" mirror="True" unique_id="112" />
                                     </Choice>
                                     <Choice value="90">
-                                      <Clip clip="al_loco_2step_turnInPlace_90_R" ik_configuration="al_loco_turnInPlace_R.ma" mirror="True" start_frame_offset="0" end_frame_offset="0" unique_id="111" />
+                                      <Clip clip="al_loco_2step_turnInPlace_90_R" ik_configuration="al_loco_turnInPlace_R.ma" mirror="True" unique_id="113" />
                                     </Choice>
                                     <Choice value="180">
-                                      <Clip clip="al_loco_2step_turnInPlace_180_R" ik_configuration="al_loco_turnInPlace_R.ma" mirror="True" start_frame_offset="0" end_frame_offset="0" unique_id="112" />
+                                      <Clip clip="al_loco_2step_turnInPlace_180_R" ik_configuration="al_loco_turnInPlace_R.ma" mirror="True" unique_id="114" />
                                     </Choice>
                                   </Blend1D>
                                 </SnapOnEvent>
@@ -654,84 +663,84 @@
                     </RandomSelector>
                   </Choice>
                   <Choice value="adult">
-                    <Reference target="119" />
+                    <Reference target="121" />
                   </Choice>
                   <Choice value="elder">
-                    <Reference target="119" />
+                    <Reference target="121" />
                   </Choice>
                 </ParameterSelector>
               </Choice>
               <Choice value="litterbox">
-                <Reference target="120" />
+                <Reference target="122" />
               </Choice>
               <Choice value="catcondo">
-                <Reference target="120" />
+                <Reference target="122" />
               </Choice>
               <Choice value="petbed">
-                <Reference target="120" />
+                <Reference target="122" />
               </Choice>
             </ParameterSelector>
-          </Choice>
-          <Choice value="layDown">
-            <Controller target="x" controller="@ClipController(clip=al_trans_down2stand_fast_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="al_trans_down2stand_fast.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="122">
-              <TransitionClassList />
-            </Controller>
           </Choice>
         </ParameterSelector>
       </Choice>
       <Choice value="cat">
-        <ParameterSelector parameter="transitionPosture" unique_id="212">
+        <ParameterSelector parameter="transitionPosture" unique_id="214">
+          <Choice value="layDownOnObject">
+            <Controller target="x" controller="@ClipController(clip=ac_trans_down2stand_fast_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ac_trans_down2stand.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="125">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
           <Choice value="sit">
-            <Controller target="x" controller="@ClipController(clip=ac_trans_sitOnGround2stand_fast_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ac_trans_sitOnGround2stand.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="124">
+            <Controller target="x" controller="@ClipController(clip=ac_trans_sitOnGround2stand_fast_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ac_trans_sitOnGround2stand.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="126">
               <TransitionClassList />
             </Controller>
           </Choice>
           <Choice value="standOnObject" />
           <Choice value="stand">
-            <ParameterSelector parameter="postureObject:objectName" unique_id="211">
+            <ParameterSelector parameter="postureObject:objectName" unique_id="213">
               <Choice value="bedSingle">
-                <ParameterSelector parameter="x:age" unique_id="210">
+                <ParameterSelector parameter="x:age" unique_id="212">
                   <Choice value="baby" />
                   <Choice value="toddler" />
                   <Choice value="child">
-                    <CustomController name="Kitten Jump Blend Tree" target="x" overridePosture="false" track="normal" transition_class_in="Default" transition_class_out="Default" unique_id="152">
+                    <CustomController name="Kitten Jump Blend Tree" target="x" overridePosture="false" track="normal" transition_class_in="Default" transition_class_out="Default" unique_id="154">
                       <TransitionClassList />
                       <ControllerTree>
-                        <BoundaryConditions pre_reference_actor="postureObject" pre_indeterminate="True" pre_offset="0,0,0,0,0,0" pre_mode="provide" post_reference_actor="x" post_mode="pass" unique_id="138">
-                          <DisableConformToSurface unique_id="137">
-                            <VariableJump preserve_initial_orientation="True" reference_actor="x" initial_translation_parameter="x:InitialTranslation" initial_orientation_parameter="x:InitialOrientation" target_translation_parameter="x:TargetTranslation" target_orientation_parameter="x:TargetOrientation" unique_id="136">
-                              <Blend1D mode="blend" type="static" transition_velocity="-1" syncpoint_schema="Jump" parameter="x:JumpRatio" unique_id="135">
+                        <BoundaryConditions pre_reference_actor="postureObject" pre_indeterminate="True" pre_offset="0,0,0,0,0,0" pre_mode="provide" post_reference_actor="x" post_mode="pass" unique_id="140">
+                          <DisableConformToSurface unique_id="139">
+                            <VariableJump preserve_initial_orientation="True" reference_actor="x" initial_translation_parameter="x:InitialTranslation" initial_orientation_parameter="x:InitialOrientation" target_translation_parameter="x:TargetTranslation" target_orientation_parameter="x:TargetOrientation" unique_id="138">
+                              <Blend1D mode="blend" type="static" transition_velocity="-1" syncpoint_schema="Jump" parameter="x:JumpRatio" unique_id="137">
                                 <Choice value="-0.5">
-                                  <Clip clip="cc2o_jumpDown_x" ik_configuration="cc2o_catSurface_jumpDown.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="125" />
+                                  <Clip clip="cc2o_jumpDown_x" ik_configuration="cc2o_catSurface_jumpDown.ma" mirror="False" unique_id="127" />
                                 </Choice>
                                 <Choice value="-0.0001">
-                                  <Blend1D mode="blend" type="static" transition_velocity="-1" syncpoint_schema="Jump" parameter="x:JumpDistance" unique_id="129">
+                                  <Blend1D mode="blend" type="static" transition_velocity="-1" syncpoint_schema="Jump" parameter="x:JumpDistance" unique_id="131">
                                     <Choice value="1">
-                                      <Clip clip="cc2o_jumpHorizontal_down_long_x" ik_configuration="cc2o_catSurface_jumpHorizontal_up_long.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="126" />
+                                      <Clip clip="cc2o_jumpHorizontal_down_long_x" ik_configuration="cc2o_catSurface_jumpHorizontal_up_long.ma" mirror="False" unique_id="128" />
                                     </Choice>
                                     <Choice value="0.5">
-                                      <Clip clip="cc2o_jumpHorizontal_down_x" ik_configuration="cc2o_catSurface_jumpHorizontal_down.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="127" />
+                                      <Clip clip="cc2o_jumpHorizontal_down_x" ik_configuration="cc2o_catSurface_jumpHorizontal_down.ma" mirror="False" unique_id="129" />
                                     </Choice>
                                     <Choice value="0.25">
-                                      <Clip clip="cc2o_jumpHorizontal_down_short_x" ik_configuration="cc2o_catSurface_jumpHorizontal_up_short.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="128" />
+                                      <Clip clip="cc2o_jumpHorizontal_down_short_x" ik_configuration="cc2o_catSurface_jumpHorizontal_up_short.ma" mirror="False" unique_id="130" />
                                     </Choice>
                                   </Blend1D>
                                 </Choice>
                                 <Choice value="0">
-                                  <Blend1D mode="blend" type="static" transition_velocity="-1" syncpoint_schema="Jump" parameter="x:JumpDistance" unique_id="133">
+                                  <Blend1D mode="blend" type="static" transition_velocity="-1" syncpoint_schema="Jump" parameter="x:JumpDistance" unique_id="135">
                                     <Choice value="1">
-                                      <Clip clip="cc2o_jumpHorizontal_up_long_x" ik_configuration="cc2o_catSurface_jumpHorizontal_up_long.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="130" />
+                                      <Clip clip="cc2o_jumpHorizontal_up_long_x" ik_configuration="cc2o_catSurface_jumpHorizontal_up_long.ma" mirror="False" unique_id="132" />
                                     </Choice>
                                     <Choice value="0.5">
-                                      <Clip clip="cc2o_jumpHorizontal_up_x" ik_configuration="cc2o_catSurface_jumpHorizontal_up.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="131" />
+                                      <Clip clip="cc2o_jumpHorizontal_up_x" ik_configuration="cc2o_catSurface_jumpHorizontal_up.ma" mirror="False" unique_id="133" />
                                     </Choice>
                                     <Choice value="0.25">
-                                      <Clip clip="cc2o_jumpHorizontal_up_short_x" ik_configuration="cc2o_catSurface_jumpHorizontal_up_short.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="132" />
+                                      <Clip clip="cc2o_jumpHorizontal_up_short_x" ik_configuration="cc2o_catSurface_jumpHorizontal_up_short.ma" mirror="False" unique_id="134" />
                                     </Choice>
                                   </Blend1D>
                                 </Choice>
                                 <Choice value="0.5">
-                                  <Clip clip="cc2o_jumpUp_x" ik_configuration="cc2o_catSurface_jump.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="134" />
+                                  <Clip clip="cc2o_jumpUp_x" ik_configuration="cc2o_catSurface_jump.ma" mirror="False" unique_id="136" />
                                 </Choice>
                               </Blend1D>
                             </VariableJump>
@@ -739,36 +748,36 @@
                         </BoundaryConditions>
                       </ControllerTree>
                     </CustomController>
-                    <CustomController name="Turn Blend Tree (2)" target="x" overridePosture="false" track="normal" transition_class_in="Default" transition_class_out="Default" unique_id="151">
+                    <CustomController name="Turn Blend Tree (2)" target="x" overridePosture="false" track="normal" transition_class_in="Default" transition_class_out="Default" unique_id="153">
                       <TransitionClassList />
                       <ControllerTree>
-                        <BoundaryConditions pre_reference_actor="x" pre_mode="pass" post_reference_actor="postureObject" post_reference_joint="_universalTransition_slot_" post_offset="0,0,0,0,0,0" post_mode="provide" unique_id="150">
-                          <DisableConformToSurface unique_id="149">
-                            <SnapOnEvent event_id="999" target_translation_parameter="x:TargetTranslation" target_orientation_parameter="x:TargetOrientation" unique_id="148">
-                              <Blend1D mode="blend" type="static" transition_velocity="-1" parameter="x:TurnAngle" unique_id="147">
+                        <BoundaryConditions pre_reference_actor="x" pre_mode="pass" post_reference_actor="postureObject" post_reference_joint="_universalTransition_slot_" post_offset="0,0,0,0,0,0" post_mode="provide" unique_id="152">
+                          <DisableConformToSurface unique_id="151">
+                            <SnapOnEvent event_id="999" target_translation_parameter="x:TargetTranslation" target_orientation_parameter="x:TargetOrientation" unique_id="150">
+                              <Blend1D mode="blend" type="static" transition_velocity="-1" parameter="x:TurnAngle" unique_id="149">
                                 <Choice value="-180">
-                                  <Clip clip="ac_loco_2step_turnInPlace_180_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="139" />
+                                  <Clip clip="ac_loco_2step_turnInPlace_180_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="False" unique_id="141" />
                                 </Choice>
                                 <Choice value="-90" low="true">
-                                  <Clip clip="ac_loco_2step_turnInPlace_90_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="140" />
+                                  <Clip clip="ac_loco_2step_turnInPlace_90_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="False" unique_id="142" />
                                 </Choice>
                                 <Choice value="-90">
-                                  <Clip clip="ac_loco_1step_turnInPlace_90_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="141" />
+                                  <Clip clip="ac_loco_1step_turnInPlace_90_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="False" unique_id="143" />
                                 </Choice>
                                 <Choice value="0" low="true">
-                                  <Clip clip="ac_loco_1Step_turnInPlace_0_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="142" />
+                                  <Clip clip="ac_loco_1Step_turnInPlace_0_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="False" unique_id="144" />
                                 </Choice>
                                 <Choice value="0">
-                                  <Clip clip="ac_loco_1Step_turnInPlace_0_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="True" start_frame_offset="0" end_frame_offset="0" unique_id="143" />
+                                  <Clip clip="ac_loco_1Step_turnInPlace_0_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="True" unique_id="145" />
                                 </Choice>
                                 <Choice value="90" low="true">
-                                  <Clip clip="ac_loco_1step_turnInPlace_90_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="True" start_frame_offset="0" end_frame_offset="0" unique_id="144" />
+                                  <Clip clip="ac_loco_1step_turnInPlace_90_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="True" unique_id="146" />
                                 </Choice>
                                 <Choice value="90">
-                                  <Clip clip="ac_loco_2step_turnInPlace_90_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="True" start_frame_offset="0" end_frame_offset="0" unique_id="145" />
+                                  <Clip clip="ac_loco_2step_turnInPlace_90_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="True" unique_id="147" />
                                 </Choice>
                                 <Choice value="180">
-                                  <Clip clip="ac_loco_2step_turnInPlace_180_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="True" start_frame_offset="0" end_frame_offset="0" unique_id="146" />
+                                  <Clip clip="ac_loco_2step_turnInPlace_180_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="True" unique_id="148" />
                                 </Choice>
                               </Blend1D>
                             </SnapOnEvent>
@@ -778,46 +787,46 @@
                     </CustomController>
                   </Choice>
                   <Choice value="teen">
-                    <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="209">
+                    <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="211">
                       <Choice weight="50" avoidRepeat="False">
-                        <CustomController name="Cat Jump Blend Tree" target="x" overridePosture="false" track="normal" transition_class_in="Default" transition_class_out="Default" unique_id="180">
+                        <CustomController name="Cat Jump Blend Tree" target="x" overridePosture="false" track="normal" transition_class_in="Default" transition_class_out="Default" unique_id="182">
                           <TransitionClassList />
                           <ControllerTree>
-                            <BoundaryConditions pre_reference_actor="postureObject" pre_indeterminate="True" pre_offset="0,0,0,0,0,0" pre_mode="provide" post_reference_actor="x" post_mode="pass" unique_id="166">
-                              <DisableConformToSurface unique_id="165">
-                                <VariableJump preserve_initial_orientation="True" reference_actor="x" initial_translation_parameter="x:InitialTranslation" initial_orientation_parameter="x:InitialOrientation" target_translation_parameter="x:TargetTranslation" target_orientation_parameter="x:TargetOrientation" unique_id="164">
-                                  <Blend1D mode="blend" type="static" transition_velocity="-1" syncpoint_schema="Jump" parameter="x:JumpRatio" unique_id="163">
+                            <BoundaryConditions pre_reference_actor="postureObject" pre_indeterminate="True" pre_offset="0,0,0,0,0,0" pre_mode="provide" post_reference_actor="x" post_mode="pass" unique_id="168">
+                              <DisableConformToSurface unique_id="167">
+                                <VariableJump preserve_initial_orientation="True" reference_actor="x" initial_translation_parameter="x:InitialTranslation" initial_orientation_parameter="x:InitialOrientation" target_translation_parameter="x:TargetTranslation" target_orientation_parameter="x:TargetOrientation" unique_id="166">
+                                  <Blend1D mode="blend" type="static" transition_velocity="-1" syncpoint_schema="Jump" parameter="x:JumpRatio" unique_id="165">
                                     <Choice value="-1">
-                                      <Clip clip="ac2o_jumpDown_x" ik_configuration="ac2o_catSurface_jumpDown.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="153" />
+                                      <Clip clip="ac2o_jumpDown_x" ik_configuration="ac2o_catSurface_jumpDown.ma" mirror="False" unique_id="155" />
                                     </Choice>
                                     <Choice value="-0.0001">
-                                      <Blend1D mode="blend" type="static" transition_velocity="-1" syncpoint_schema="Jump" parameter="x:JumpDistance" unique_id="157">
+                                      <Blend1D mode="blend" type="static" transition_velocity="-1" syncpoint_schema="Jump" parameter="x:JumpDistance" unique_id="159">
                                         <Choice value="2">
-                                          <Clip clip="ac2o_jumpHorizontal_down_long_x" ik_configuration="ac2o_catSurface_jumpHorizontal_down_long.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="154" />
+                                          <Clip clip="ac2o_jumpHorizontal_down_long_x" ik_configuration="ac2o_catSurface_jumpHorizontal_down_long.ma" mirror="False" unique_id="156" />
                                         </Choice>
                                         <Choice value="1">
-                                          <Clip clip="ac2o_jumpHorizontal_down_x" ik_configuration="ac2o_catSurface_jumpHorizontal_down.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="155" />
+                                          <Clip clip="ac2o_jumpHorizontal_down_x" ik_configuration="ac2o_catSurface_jumpHorizontal_down.ma" mirror="False" unique_id="157" />
                                         </Choice>
                                         <Choice value="0.5">
-                                          <Clip clip="ac2o_jumpHorizontal_down_short_x" ik_configuration="ac2o_catSurface_jumpHorizontal_up_short.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="156" />
+                                          <Clip clip="ac2o_jumpHorizontal_down_short_x" ik_configuration="ac2o_catSurface_jumpHorizontal_up_short.ma" mirror="False" unique_id="158" />
                                         </Choice>
                                       </Blend1D>
                                     </Choice>
                                     <Choice value="0">
-                                      <Blend1D mode="blend" type="static" transition_velocity="-1" syncpoint_schema="Jump" parameter="x:JumpDistance" unique_id="161">
+                                      <Blend1D mode="blend" type="static" transition_velocity="-1" syncpoint_schema="Jump" parameter="x:JumpDistance" unique_id="163">
                                         <Choice value="2">
-                                          <Clip clip="ac2o_jumpHorizontal_up_long_x" ik_configuration="ac2o_catSurface_jumpHorizontal_up_long.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="158" />
+                                          <Clip clip="ac2o_jumpHorizontal_up_long_x" ik_configuration="ac2o_catSurface_jumpHorizontal_up_long.ma" mirror="False" unique_id="160" />
                                         </Choice>
                                         <Choice value="1">
-                                          <Clip clip="ac2o_jumpHorizontal_up_x" ik_configuration="ac2o_catSurface_jumpHorizontal_up.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="159" />
+                                          <Clip clip="ac2o_jumpHorizontal_up_x" ik_configuration="ac2o_catSurface_jumpHorizontal_up.ma" mirror="False" unique_id="161" />
                                         </Choice>
                                         <Choice value="0.5">
-                                          <Clip clip="ac2o_jumpHorizontal_up_short_x" ik_configuration="ac2o_catSurface_jumpHorizontal_up_short.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="160" />
+                                          <Clip clip="ac2o_jumpHorizontal_up_short_x" ik_configuration="ac2o_catSurface_jumpHorizontal_up_short.ma" mirror="False" unique_id="162" />
                                         </Choice>
                                       </Blend1D>
                                     </Choice>
                                     <Choice value="1">
-                                      <Clip clip="ac2o_jumpUp_x" ik_configuration="ac2o_catSurface_jump.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="162" />
+                                      <Clip clip="ac2o_jumpUp_x" ik_configuration="ac2o_catSurface_jump.ma" mirror="False" unique_id="164" />
                                     </Choice>
                                   </Blend1D>
                                 </VariableJump>
@@ -825,36 +834,36 @@
                             </BoundaryConditions>
                           </ControllerTree>
                         </CustomController>
-                        <CustomController name="Turn Blend Tree" target="x" overridePosture="false" track="normal" transition_class_in="Default" transition_class_out="Default" unique_id="179">
+                        <CustomController name="Turn Blend Tree" target="x" overridePosture="false" track="normal" transition_class_in="Default" transition_class_out="Default" unique_id="181">
                           <TransitionClassList />
                           <ControllerTree>
-                            <BoundaryConditions pre_reference_actor="x" pre_mode="pass" post_reference_actor="postureObject" post_reference_joint="_universalTransition_slot_" post_offset="0,0,0,0,0,0" post_mode="provide" unique_id="178">
-                              <DisableConformToSurface unique_id="177">
-                                <SnapOnEvent event_id="999" target_translation_parameter="x:TargetTranslation" target_orientation_parameter="x:TargetOrientation" unique_id="176">
-                                  <Blend1D mode="blend" type="static" transition_velocity="-1" parameter="x:TurnAngle" unique_id="175">
+                            <BoundaryConditions pre_reference_actor="x" pre_mode="pass" post_reference_actor="postureObject" post_reference_joint="_universalTransition_slot_" post_offset="0,0,0,0,0,0" post_mode="provide" unique_id="180">
+                              <DisableConformToSurface unique_id="179">
+                                <SnapOnEvent event_id="999" target_translation_parameter="x:TargetTranslation" target_orientation_parameter="x:TargetOrientation" unique_id="178">
+                                  <Blend1D mode="blend" type="static" transition_velocity="-1" parameter="x:TurnAngle" unique_id="177">
                                     <Choice value="-180">
-                                      <Clip clip="ac_loco_2step_turnInPlace_180_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="167" />
+                                      <Clip clip="ac_loco_2step_turnInPlace_180_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="False" unique_id="169" />
                                     </Choice>
                                     <Choice value="-90" low="true">
-                                      <Clip clip="ac_loco_2step_turnInPlace_90_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="168" />
+                                      <Clip clip="ac_loco_2step_turnInPlace_90_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="False" unique_id="170" />
                                     </Choice>
                                     <Choice value="-90">
-                                      <Clip clip="ac_loco_1step_turnInPlace_90_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="169" />
+                                      <Clip clip="ac_loco_1step_turnInPlace_90_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="False" unique_id="171" />
                                     </Choice>
                                     <Choice value="0" low="true">
-                                      <Clip clip="ac_loco_1Step_turnInPlace_0_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="170" />
+                                      <Clip clip="ac_loco_1Step_turnInPlace_0_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="False" unique_id="172" />
                                     </Choice>
                                     <Choice value="0">
-                                      <Clip clip="ac_loco_1Step_turnInPlace_0_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="True" start_frame_offset="0" end_frame_offset="0" unique_id="171" />
+                                      <Clip clip="ac_loco_1Step_turnInPlace_0_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="True" unique_id="173" />
                                     </Choice>
                                     <Choice value="90" low="true">
-                                      <Clip clip="ac_loco_1step_turnInPlace_90_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="True" start_frame_offset="0" end_frame_offset="0" unique_id="172" />
+                                      <Clip clip="ac_loco_1step_turnInPlace_90_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="True" unique_id="174" />
                                     </Choice>
                                     <Choice value="90">
-                                      <Clip clip="ac_loco_2step_turnInPlace_90_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="True" start_frame_offset="0" end_frame_offset="0" unique_id="173" />
+                                      <Clip clip="ac_loco_2step_turnInPlace_90_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="True" unique_id="175" />
                                     </Choice>
                                     <Choice value="180">
-                                      <Clip clip="ac_loco_2step_turnInPlace_180_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="True" start_frame_offset="0" end_frame_offset="0" unique_id="174" />
+                                      <Clip clip="ac_loco_2step_turnInPlace_180_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="True" unique_id="176" />
                                     </Choice>
                                   </Blend1D>
                                 </SnapOnEvent>
@@ -864,44 +873,44 @@
                         </CustomController>
                       </Choice>
                       <Choice weight="29" avoidRepeat="False">
-                        <CustomController name="Cat Jump Blend Tree butt Wiggle" target="x" overridePosture="false" track="normal" transition_class_in="Default" transition_class_out="Default" unique_id="208">
+                        <CustomController name="Cat Jump Blend Tree butt Wiggle" target="x" overridePosture="false" track="normal" transition_class_in="Default" transition_class_out="Default" unique_id="210">
                           <TransitionClassList />
                           <ControllerTree>
-                            <BoundaryConditions pre_reference_actor="postureObject" pre_indeterminate="True" pre_offset="0,0,0,0,0,0" pre_mode="provide" post_reference_actor="x" post_mode="pass" unique_id="194">
-                              <DisableConformToSurface unique_id="193">
-                                <VariableJump preserve_initial_orientation="True" reference_actor="x" initial_translation_parameter="x:InitialTranslation" initial_orientation_parameter="x:InitialOrientation" target_translation_parameter="x:TargetTranslation" target_orientation_parameter="x:TargetOrientation" unique_id="192">
-                                  <Blend1D mode="blend" type="static" transition_velocity="-1" syncpoint_schema="Jump" parameter="x:JumpRatio" unique_id="191">
+                            <BoundaryConditions pre_reference_actor="postureObject" pre_indeterminate="True" pre_offset="0,0,0,0,0,0" pre_mode="provide" post_reference_actor="x" post_mode="pass" unique_id="196">
+                              <DisableConformToSurface unique_id="195">
+                                <VariableJump preserve_initial_orientation="True" reference_actor="x" initial_translation_parameter="x:InitialTranslation" initial_orientation_parameter="x:InitialOrientation" target_translation_parameter="x:TargetTranslation" target_orientation_parameter="x:TargetOrientation" unique_id="194">
+                                  <Blend1D mode="blend" type="static" transition_velocity="-1" syncpoint_schema="Jump" parameter="x:JumpRatio" unique_id="193">
                                     <Choice value="-1">
-                                      <Clip clip="ac2o_jumpDown_x" ik_configuration="ac2o_catSurface_jumpDown.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="181" />
+                                      <Clip clip="ac2o_jumpDown_x" ik_configuration="ac2o_catSurface_jumpDown.ma" mirror="False" unique_id="183" />
                                     </Choice>
                                     <Choice value="-0.0001">
-                                      <Blend1D mode="blend" type="static" transition_velocity="-1" syncpoint_schema="Jump" parameter="x:JumpDistance" unique_id="185">
+                                      <Blend1D mode="blend" type="static" transition_velocity="-1" syncpoint_schema="Jump" parameter="x:JumpDistance" unique_id="187">
                                         <Choice value="2">
-                                          <Clip clip="ac2o_jumpHorizontal_down_long_x" ik_configuration="ac2o_catSurface_jumpHorizontal_down_long.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="182" />
+                                          <Clip clip="ac2o_jumpHorizontal_down_long_x" ik_configuration="ac2o_catSurface_jumpHorizontal_down_long.ma" mirror="False" unique_id="184" />
                                         </Choice>
                                         <Choice value="1">
-                                          <Clip clip="ac2o_jumpHorizontal_down_x" ik_configuration="ac2o_catSurface_jumpHorizontal_down.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="183" />
+                                          <Clip clip="ac2o_jumpHorizontal_down_x" ik_configuration="ac2o_catSurface_jumpHorizontal_down.ma" mirror="False" unique_id="185" />
                                         </Choice>
                                         <Choice value="0.5">
-                                          <Clip clip="ac2o_jumpHorizontal_down_short_x" ik_configuration="ac2o_catSurface_jumpHorizontal_up_short.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="184" />
+                                          <Clip clip="ac2o_jumpHorizontal_down_short_x" ik_configuration="ac2o_catSurface_jumpHorizontal_up_short.ma" mirror="False" unique_id="186" />
                                         </Choice>
                                       </Blend1D>
                                     </Choice>
                                     <Choice value="0">
-                                      <Blend1D mode="blend" type="static" transition_velocity="-1" syncpoint_schema="Jump" parameter="x:JumpDistance" unique_id="189">
+                                      <Blend1D mode="blend" type="static" transition_velocity="-1" syncpoint_schema="Jump" parameter="x:JumpDistance" unique_id="191">
                                         <Choice value="2">
-                                          <Clip clip="ac2o_jumpHorizontal_up_long_wiggle_x" ik_configuration="ac2o_catSurface_jumpHorizontal_up_long_wiggle.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="186" />
+                                          <Clip clip="ac2o_jumpHorizontal_up_long_wiggle_x" ik_configuration="ac2o_catSurface_jumpHorizontal_up_long_wiggle.ma" mirror="False" unique_id="188" />
                                         </Choice>
                                         <Choice value="1">
-                                          <Clip clip="ac2o_jumpHorizontal_up_wiggle_x" ik_configuration="ac2o_catSurface_jumpHorizontal_up_wiggle.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="187" />
+                                          <Clip clip="ac2o_jumpHorizontal_up_wiggle_x" ik_configuration="ac2o_catSurface_jumpHorizontal_up_wiggle.ma" mirror="False" unique_id="189" />
                                         </Choice>
                                         <Choice value="0.5">
-                                          <Clip clip="ac2o_jumpHorizontal_up_short_wiggle_x" ik_configuration="ac2o_catSurface_jumpHorizontal_up_short_wiggle.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="188" />
+                                          <Clip clip="ac2o_jumpHorizontal_up_short_wiggle_x" ik_configuration="ac2o_catSurface_jumpHorizontal_up_short_wiggle.ma" mirror="False" unique_id="190" />
                                         </Choice>
                                       </Blend1D>
                                     </Choice>
                                     <Choice value="1">
-                                      <Clip clip="ac2o_jumpUp_wiggle_x" ik_configuration="ac2o_catSurface_jump_wiggle.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="190" />
+                                      <Clip clip="ac2o_jumpUp_wiggle_x" ik_configuration="ac2o_catSurface_jump_wiggle.ma" mirror="False" unique_id="192" />
                                     </Choice>
                                   </Blend1D>
                                 </VariableJump>
@@ -909,36 +918,36 @@
                             </BoundaryConditions>
                           </ControllerTree>
                         </CustomController>
-                        <CustomController name="Turn Blend Tree (4)" target="x" overridePosture="false" track="normal" transition_class_in="Default" transition_class_out="Default" unique_id="207">
+                        <CustomController name="Turn Blend Tree (4)" target="x" overridePosture="false" track="normal" transition_class_in="Default" transition_class_out="Default" unique_id="209">
                           <TransitionClassList />
                           <ControllerTree>
-                            <BoundaryConditions pre_reference_actor="x" pre_mode="pass" post_reference_actor="postureObject" post_reference_joint="_universalTransition_slot_" post_offset="0,0,0,0,0,0" post_mode="provide" unique_id="206">
-                              <DisableConformToSurface unique_id="205">
-                                <SnapOnEvent event_id="999" target_translation_parameter="x:TargetTranslation" target_orientation_parameter="x:TargetOrientation" unique_id="204">
-                                  <Blend1D mode="blend" type="static" transition_velocity="-1" parameter="x:TurnAngle" unique_id="203">
+                            <BoundaryConditions pre_reference_actor="x" pre_mode="pass" post_reference_actor="postureObject" post_reference_joint="_universalTransition_slot_" post_offset="0,0,0,0,0,0" post_mode="provide" unique_id="208">
+                              <DisableConformToSurface unique_id="207">
+                                <SnapOnEvent event_id="999" target_translation_parameter="x:TargetTranslation" target_orientation_parameter="x:TargetOrientation" unique_id="206">
+                                  <Blend1D mode="blend" type="static" transition_velocity="-1" parameter="x:TurnAngle" unique_id="205">
                                     <Choice value="-180">
-                                      <Clip clip="ac_loco_2step_turnInPlace_180_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="195" />
+                                      <Clip clip="ac_loco_2step_turnInPlace_180_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="False" unique_id="197" />
                                     </Choice>
                                     <Choice value="-90" low="true">
-                                      <Clip clip="ac_loco_2step_turnInPlace_90_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="196" />
+                                      <Clip clip="ac_loco_2step_turnInPlace_90_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="False" unique_id="198" />
                                     </Choice>
                                     <Choice value="-90">
-                                      <Clip clip="ac_loco_1step_turnInPlace_90_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="197" />
+                                      <Clip clip="ac_loco_1step_turnInPlace_90_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="False" unique_id="199" />
                                     </Choice>
                                     <Choice value="0" low="true">
-                                      <Clip clip="ac_loco_1Step_turnInPlace_0_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="198" />
+                                      <Clip clip="ac_loco_1Step_turnInPlace_0_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="False" unique_id="200" />
                                     </Choice>
                                     <Choice value="0">
-                                      <Clip clip="ac_loco_1Step_turnInPlace_0_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="True" start_frame_offset="0" end_frame_offset="0" unique_id="199" />
+                                      <Clip clip="ac_loco_1Step_turnInPlace_0_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="True" unique_id="201" />
                                     </Choice>
                                     <Choice value="90" low="true">
-                                      <Clip clip="ac_loco_1step_turnInPlace_90_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="True" start_frame_offset="0" end_frame_offset="0" unique_id="200" />
+                                      <Clip clip="ac_loco_1step_turnInPlace_90_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="True" unique_id="202" />
                                     </Choice>
                                     <Choice value="90">
-                                      <Clip clip="ac_loco_2step_turnInPlace_90_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="True" start_frame_offset="0" end_frame_offset="0" unique_id="201" />
+                                      <Clip clip="ac_loco_2step_turnInPlace_90_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="True" unique_id="203" />
                                     </Choice>
                                     <Choice value="180">
-                                      <Clip clip="ac_loco_2step_turnInPlace_180_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="True" start_frame_offset="0" end_frame_offset="0" unique_id="202" />
+                                      <Clip clip="ac_loco_2step_turnInPlace_180_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="True" unique_id="204" />
                                     </Choice>
                                   </Blend1D>
                                 </SnapOnEvent>
@@ -950,131 +959,131 @@
                     </RandomSelector>
                   </Choice>
                   <Choice value="youngadult">
-                    <Reference target="209" />
+                    <Reference target="211" />
                   </Choice>
                   <Choice value="adult">
-                    <Reference target="209" />
+                    <Reference target="211" />
                   </Choice>
                   <Choice value="elder">
-                    <Reference target="209" />
+                    <Reference target="211" />
                   </Choice>
                 </ParameterSelector>
               </Choice>
               <Choice value="bedDouble">
-                <Reference target="210" />
+                <Reference target="212" />
               </Choice>
               <Choice value="sofa">
-                <Reference target="210" />
+                <Reference target="212" />
               </Choice>
               <Choice value="litterbox">
-                <Reference target="210" />
+                <Reference target="212" />
               </Choice>
               <Choice value="catcondo">
-                <Reference target="210" />
+                <Reference target="212" />
               </Choice>
               <Choice value="petbed">
-                <Reference target="210" />
+                <Reference target="212" />
               </Choice>
             </ParameterSelector>
           </Choice>
-          <Choice value="layDown" />
         </ParameterSelector>
       </Choice>
     </ParameterSelector>
   </State>
   <State name="getOut" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
     <description />
-    <ParameterSelector parameter="x:species" unique_id="363">
+    <ParameterSelector parameter="x:species" unique_id="365">
       <Choice value="human" />
       <Choice value="dog">
-        <ParameterSelector parameter="transitionPosture" unique_id="272">
+        <ParameterSelector parameter="transitionPosture" unique_id="274">
+          <Choice value="layDownOnObject" />
           <Choice value="sit" />
           <Choice value="standOnObject" />
           <Choice value="stand">
-            <ParameterSelector parameter="postureObject:objectName" unique_id="271">
+            <ParameterSelector parameter="postureObject:objectName" unique_id="273">
               <Choice value="bedSingle">
-                <ParameterSelector parameter="x:age" unique_id="270">
+                <ParameterSelector parameter="x:age" unique_id="272">
                   <Choice value="baby" />
                   <Choice value="toddler" />
                   <Choice value="child">
-                    <CustomController name="Configure Parameters (4) " target="x" overridePosture="false" track="normal" transition_class_in="Default" transition_class_out="Default" unique_id="241">
+                    <CustomController name="Configure Parameters (4) " target="x" overridePosture="false" track="normal" transition_class_in="Default" transition_class_out="Default" unique_id="243">
                       <TransitionClassList />
                       <ControllerTree>
-                        <VariableJump preserve_initial_orientation="False" reference_actor="x" initial_translation_parameter="x:InitialTranslation" initial_orientation_parameter="x:InitialOrientation" target_translation_parameter="x:TargetTranslation" target_orientation_parameter="x:TargetOrientation" unique_id="214" />
+                        <VariableJump preserve_initial_orientation="False" reference_actor="x" initial_translation_parameter="x:InitialTranslation" initial_orientation_parameter="x:InitialOrientation" target_translation_parameter="x:TargetTranslation" target_orientation_parameter="x:TargetOrientation" unique_id="216" />
                       </ControllerTree>
                     </CustomController>
-                    <CustomController name="Turn Blend Tree (4) " target="x" overridePosture="false" track="normal" transition_class_in="Default" transition_class_out="Default" unique_id="240">
+                    <CustomController name="Turn Blend Tree (4) " target="x" overridePosture="false" track="normal" transition_class_in="Default" transition_class_out="Default" unique_id="242">
                       <TransitionClassList />
                       <ControllerTree>
-                        <BoundaryConditions pre_reference_actor="postureObject" pre_reference_joint="_universalTransition_slot_" pre_offset="0,0,0,0,0,0" pre_mode="provide" post_reference_actor="x" post_mode="pass" unique_id="225">
-                          <DisableConformToSurface unique_id="224">
-                            <Blend1D mode="blend" type="static" transition_velocity="-1" parameter="x:TurnAngle" unique_id="223">
+                        <BoundaryConditions pre_reference_actor="postureObject" pre_reference_joint="_universalTransition_slot_" pre_offset="0,0,0,0,0,0" pre_mode="provide" post_reference_actor="x" post_mode="pass" unique_id="227">
+                          <DisableConformToSurface unique_id="226">
+                            <Blend1D mode="blend" type="static" transition_velocity="-1" parameter="x:TurnAngle" unique_id="225">
                               <Choice value="-180">
-                                <Clip clip="ac_loco_2step_turnInPlace_180_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="215" />
+                                <Clip clip="ac_loco_2step_turnInPlace_180_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="False" unique_id="217" />
                               </Choice>
                               <Choice value="-90" low="true">
-                                <Clip clip="ac_loco_2step_turnInPlace_90_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="216" />
+                                <Clip clip="ac_loco_2step_turnInPlace_90_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="False" unique_id="218" />
                               </Choice>
                               <Choice value="-90">
-                                <Clip clip="ac_loco_1step_turnInPlace_90_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="217" />
+                                <Clip clip="ac_loco_1step_turnInPlace_90_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="False" unique_id="219" />
                               </Choice>
                               <Choice value="0" low="true">
-                                <Clip clip="ac_loco_1Step_turnInPlace_0_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="218" />
+                                <Clip clip="ac_loco_1Step_turnInPlace_0_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="False" unique_id="220" />
                               </Choice>
                               <Choice value="0">
-                                <Clip clip="ac_loco_1Step_turnInPlace_0_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="True" start_frame_offset="0" end_frame_offset="0" unique_id="219" />
+                                <Clip clip="ac_loco_1Step_turnInPlace_0_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="True" unique_id="221" />
                               </Choice>
                               <Choice value="90" low="true">
-                                <Clip clip="ac_loco_1step_turnInPlace_90_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="True" start_frame_offset="0" end_frame_offset="0" unique_id="220" />
+                                <Clip clip="ac_loco_1step_turnInPlace_90_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="True" unique_id="222" />
                               </Choice>
                               <Choice value="90">
-                                <Clip clip="ac_loco_2step_turnInPlace_90_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="True" start_frame_offset="0" end_frame_offset="0" unique_id="221" />
+                                <Clip clip="ac_loco_2step_turnInPlace_90_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="True" unique_id="223" />
                               </Choice>
                               <Choice value="180">
-                                <Clip clip="ac_loco_2step_turnInPlace_180_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="True" start_frame_offset="0" end_frame_offset="0" unique_id="222" />
+                                <Clip clip="ac_loco_2step_turnInPlace_180_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="True" unique_id="224" />
                               </Choice>
                             </Blend1D>
                           </DisableConformToSurface>
                         </BoundaryConditions>
                       </ControllerTree>
                     </CustomController>
-                    <CustomController name="Puppy Jump Blend Tree " target="x" overridePosture="false" track="normal" transition_class_in="Default" transition_class_out="Default" unique_id="239">
+                    <CustomController name="Puppy Jump Blend Tree " target="x" overridePosture="false" track="normal" transition_class_in="Default" transition_class_out="Default" unique_id="241">
                       <TransitionClassList />
                       <ControllerTree>
-                        <BoundaryConditions pre_reference_actor="x" pre_mode="pass" post_reference_actor="postureObject" post_indeterminate="True" post_offset="0,0,0,0,0,0" post_mode="provide" unique_id="238">
-                          <VariableJump preserve_initial_orientation="False" reference_actor="x" initial_translation_parameter="x:InitialTranslation" initial_orientation_parameter="x:InitialOrientation" target_translation_parameter="x:TargetTranslation" target_orientation_parameter="x:TargetOrientation" unique_id="237">
-                            <Blend1D mode="blend" type="static" transition_velocity="-1" syncpoint_schema="Jump" parameter="x:JumpRatio" unique_id="236">
+                        <BoundaryConditions pre_reference_actor="x" pre_mode="pass" post_reference_actor="postureObject" post_indeterminate="True" post_offset="0,0,0,0,0,0" post_mode="provide" unique_id="240">
+                          <VariableJump preserve_initial_orientation="False" reference_actor="x" initial_translation_parameter="x:InitialTranslation" initial_orientation_parameter="x:InitialOrientation" target_translation_parameter="x:TargetTranslation" target_orientation_parameter="x:TargetOrientation" unique_id="239">
+                            <Blend1D mode="blend" type="static" transition_velocity="-1" syncpoint_schema="Jump" parameter="x:JumpRatio" unique_id="238">
                               <Choice value="-0.5">
-                                <Clip clip="cd2o_jumpDown_x" ik_configuration="cd2o_jumpDown.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="226" />
+                                <Clip clip="cd2o_jumpDown_x" ik_configuration="cd2o_jumpDown.ma" mirror="False" unique_id="228" />
                               </Choice>
                               <Choice value="-0.0001">
-                                <Blend1D mode="blend" type="static" transition_velocity="-1" syncpoint_schema="Jump" parameter="x:JumpDistance" unique_id="230">
+                                <Blend1D mode="blend" type="static" transition_velocity="-1" syncpoint_schema="Jump" parameter="x:JumpDistance" unique_id="232">
                                   <Choice value="1">
-                                    <Clip clip="cd2o_jumpHorizontal_down_long_x" ik_configuration="cd2o_jumpHorizontal_down.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="227" />
+                                    <Clip clip="cd2o_jumpHorizontal_down_long_x" ik_configuration="cd2o_jumpHorizontal_down.ma" mirror="False" unique_id="229" />
                                   </Choice>
                                   <Choice value="0.5">
-                                    <Clip clip="cd2o_jumpHorizontal_down_x" ik_configuration="cd2o_jumpHorizontal_down.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="228" />
+                                    <Clip clip="cd2o_jumpHorizontal_down_x" ik_configuration="cd2o_jumpHorizontal_down.ma" mirror="False" unique_id="230" />
                                   </Choice>
                                   <Choice value="0.25">
-                                    <Clip clip="cd2o_jumpHorizontal_down_short_x" ik_configuration="cd2o_jumpHorizontal_down.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="229" />
+                                    <Clip clip="cd2o_jumpHorizontal_down_short_x" ik_configuration="cd2o_jumpHorizontal_down.ma" mirror="False" unique_id="231" />
                                   </Choice>
                                 </Blend1D>
                               </Choice>
                               <Choice value="0">
-                                <Blend1D mode="blend" type="static" transition_velocity="-1" syncpoint_schema="Jump" parameter="x:JumpDistance" unique_id="234">
+                                <Blend1D mode="blend" type="static" transition_velocity="-1" syncpoint_schema="Jump" parameter="x:JumpDistance" unique_id="236">
                                   <Choice value="1">
-                                    <Clip clip="cd2o_jumpHorizontal_up_long_x" ik_configuration="cd2o_jumpHorizontal_up.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="231" />
+                                    <Clip clip="cd2o_jumpHorizontal_up_long_x" ik_configuration="cd2o_jumpHorizontal_up.ma" mirror="False" unique_id="233" />
                                   </Choice>
                                   <Choice value="0.5">
-                                    <Clip clip="cd2o_jumpHorizontal_up_x" ik_configuration="cd2o_jumpHorizontal_up.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="232" />
+                                    <Clip clip="cd2o_jumpHorizontal_up_x" ik_configuration="cd2o_jumpHorizontal_up.ma" mirror="False" unique_id="234" />
                                   </Choice>
                                   <Choice value="0.25">
-                                    <Clip clip="cd2o_jumpHorizontal_up_short_x" ik_configuration="cd2o_jumpHorizontal_up.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="233" />
+                                    <Clip clip="cd2o_jumpHorizontal_up_short_x" ik_configuration="cd2o_jumpHorizontal_up.ma" mirror="False" unique_id="235" />
                                   </Choice>
                                 </Blend1D>
                               </Choice>
                               <Choice value="0.25">
-                                <Clip clip="cd2o_jumpUp_x" ik_configuration="cd2o_jumpUp.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="235" />
+                                <Clip clip="cd2o_jumpUp_x" ik_configuration="cd2o_jumpUp.ma" mirror="False" unique_id="237" />
                               </Choice>
                             </Blend1D>
                           </VariableJump>
@@ -1083,84 +1092,84 @@
                     </CustomController>
                   </Choice>
                   <Choice value="teen">
-                    <CustomController name="Configure Parameters (2)" target="x" overridePosture="false" track="normal" transition_class_in="Default" transition_class_out="Default" unique_id="269">
+                    <CustomController name="Configure Parameters (2)" target="x" overridePosture="false" track="normal" transition_class_in="Default" transition_class_out="Default" unique_id="271">
                       <TransitionClassList />
                       <ControllerTree>
-                        <VariableJump preserve_initial_orientation="False" reference_actor="x" initial_translation_parameter="x:InitialTranslation" initial_orientation_parameter="x:InitialOrientation" target_translation_parameter="x:TargetTranslation" target_orientation_parameter="x:TargetOrientation" unique_id="242" />
+                        <VariableJump preserve_initial_orientation="False" reference_actor="x" initial_translation_parameter="x:InitialTranslation" initial_orientation_parameter="x:InitialOrientation" target_translation_parameter="x:TargetTranslation" target_orientation_parameter="x:TargetOrientation" unique_id="244" />
                       </ControllerTree>
                     </CustomController>
-                    <CustomController name="Turn Blend Tree (2)" target="x" overridePosture="false" track="normal" transition_class_in="Default" transition_class_out="Default" unique_id="268">
+                    <CustomController name="Turn Blend Tree (2)" target="x" overridePosture="false" track="normal" transition_class_in="Default" transition_class_out="Default" unique_id="270">
                       <TransitionClassList />
                       <ControllerTree>
-                        <BoundaryConditions pre_reference_actor="postureObject" pre_reference_joint="_universalTransition_slot_" pre_offset="0,0,0,0,0,0" pre_mode="provide" post_reference_actor="x" post_mode="pass" unique_id="253">
-                          <DisableConformToSurface unique_id="252">
-                            <Blend1D mode="blend" type="static" transition_velocity="-1" parameter="x:TurnAngle" unique_id="251">
+                        <BoundaryConditions pre_reference_actor="postureObject" pre_reference_joint="_universalTransition_slot_" pre_offset="0,0,0,0,0,0" pre_mode="provide" post_reference_actor="x" post_mode="pass" unique_id="255">
+                          <DisableConformToSurface unique_id="254">
+                            <Blend1D mode="blend" type="static" transition_velocity="-1" parameter="x:TurnAngle" unique_id="253">
                               <Choice value="-180">
-                                <Clip clip="ac_loco_2step_turnInPlace_180_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="243" />
+                                <Clip clip="ac_loco_2step_turnInPlace_180_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="False" unique_id="245" />
                               </Choice>
                               <Choice value="-90" low="true">
-                                <Clip clip="ac_loco_2step_turnInPlace_90_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="244" />
+                                <Clip clip="ac_loco_2step_turnInPlace_90_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="False" unique_id="246" />
                               </Choice>
                               <Choice value="-90">
-                                <Clip clip="ac_loco_1step_turnInPlace_90_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="245" />
+                                <Clip clip="ac_loco_1step_turnInPlace_90_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="False" unique_id="247" />
                               </Choice>
                               <Choice value="0" low="true">
-                                <Clip clip="ac_loco_1Step_turnInPlace_0_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="246" />
+                                <Clip clip="ac_loco_1Step_turnInPlace_0_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="False" unique_id="248" />
                               </Choice>
                               <Choice value="0">
-                                <Clip clip="ac_loco_1Step_turnInPlace_0_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="True" start_frame_offset="0" end_frame_offset="0" unique_id="247" />
+                                <Clip clip="ac_loco_1Step_turnInPlace_0_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="True" unique_id="249" />
                               </Choice>
                               <Choice value="90" low="true">
-                                <Clip clip="ac_loco_1step_turnInPlace_90_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="True" start_frame_offset="0" end_frame_offset="0" unique_id="248" />
+                                <Clip clip="ac_loco_1step_turnInPlace_90_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="True" unique_id="250" />
                               </Choice>
                               <Choice value="90">
-                                <Clip clip="ac_loco_2step_turnInPlace_90_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="True" start_frame_offset="0" end_frame_offset="0" unique_id="249" />
+                                <Clip clip="ac_loco_2step_turnInPlace_90_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="True" unique_id="251" />
                               </Choice>
                               <Choice value="180">
-                                <Clip clip="ac_loco_2step_turnInPlace_180_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="True" start_frame_offset="0" end_frame_offset="0" unique_id="250" />
+                                <Clip clip="ac_loco_2step_turnInPlace_180_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="True" unique_id="252" />
                               </Choice>
                             </Blend1D>
                           </DisableConformToSurface>
                         </BoundaryConditions>
                       </ControllerTree>
                     </CustomController>
-                    <CustomController name="Dog Jump Blend Tree" target="x" overridePosture="false" track="normal" transition_class_in="Default" transition_class_out="Default" unique_id="267">
+                    <CustomController name="Dog Jump Blend Tree" target="x" overridePosture="false" track="normal" transition_class_in="Default" transition_class_out="Default" unique_id="269">
                       <TransitionClassList />
                       <ControllerTree>
-                        <BoundaryConditions pre_reference_actor="x" pre_mode="pass" post_reference_actor="postureObject" post_indeterminate="True" post_offset="0,0,0,0,0,0" post_mode="provide" unique_id="266">
-                          <VariableJump preserve_initial_orientation="False" reference_actor="x" initial_translation_parameter="x:InitialTranslation" initial_orientation_parameter="x:InitialOrientation" target_translation_parameter="x:TargetTranslation" target_orientation_parameter="x:TargetOrientation" unique_id="265">
-                            <Blend1D mode="blend" type="static" transition_velocity="-1" syncpoint_schema="Jump" parameter="x:JumpRatio" unique_id="264">
+                        <BoundaryConditions pre_reference_actor="x" pre_mode="pass" post_reference_actor="postureObject" post_indeterminate="True" post_offset="0,0,0,0,0,0" post_mode="provide" unique_id="268">
+                          <VariableJump preserve_initial_orientation="False" reference_actor="x" initial_translation_parameter="x:InitialTranslation" initial_orientation_parameter="x:InitialOrientation" target_translation_parameter="x:TargetTranslation" target_orientation_parameter="x:TargetOrientation" unique_id="267">
+                            <Blend1D mode="blend" type="static" transition_velocity="-1" syncpoint_schema="Jump" parameter="x:JumpRatio" unique_id="266">
                               <Choice value="-1">
-                                <Clip clip="ad2o_jumpDown_x" ik_configuration="ad2o_jumpDown.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="254" />
+                                <Clip clip="ad2o_jumpDown_x" ik_configuration="ad2o_jumpDown.ma" mirror="False" unique_id="256" />
                               </Choice>
                               <Choice value="-0.0001">
-                                <Blend1D mode="blend" type="static" transition_velocity="-1" syncpoint_schema="Jump" parameter="x:JumpDistance" unique_id="258">
+                                <Blend1D mode="blend" type="static" transition_velocity="-1" syncpoint_schema="Jump" parameter="x:JumpDistance" unique_id="260">
                                   <Choice value="2">
-                                    <Clip clip="ad2o_jumpHorizontal_down_long_x" ik_configuration="ad2o_jumpHorizontal_down.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="255" />
+                                    <Clip clip="ad2o_jumpHorizontal_down_long_x" ik_configuration="ad2o_jumpHorizontal_down.ma" mirror="False" unique_id="257" />
                                   </Choice>
                                   <Choice value="1">
-                                    <Clip clip="ad2o_jumpHorizontal_down_x" ik_configuration="ad2o_jumpHorizontal_down.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="256" />
+                                    <Clip clip="ad2o_jumpHorizontal_down_x" ik_configuration="ad2o_jumpHorizontal_down.ma" mirror="False" unique_id="258" />
                                   </Choice>
                                   <Choice value="0.5">
-                                    <Clip clip="ad2o_jumpHorizontal_down_short_x" ik_configuration="ad2o_jumpHorizontal_down.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="257" />
+                                    <Clip clip="ad2o_jumpHorizontal_down_short_x" ik_configuration="ad2o_jumpHorizontal_down.ma" mirror="False" unique_id="259" />
                                   </Choice>
                                 </Blend1D>
                               </Choice>
                               <Choice value="0">
-                                <Blend1D mode="blend" type="static" transition_velocity="-1" syncpoint_schema="Jump" parameter="x:JumpDistance" unique_id="262">
+                                <Blend1D mode="blend" type="static" transition_velocity="-1" syncpoint_schema="Jump" parameter="x:JumpDistance" unique_id="264">
                                   <Choice value="2">
-                                    <Clip clip="ad2o_jumpHorizontal_up_long_x" ik_configuration="ad2o_jumpHorizontal_up.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="259" />
+                                    <Clip clip="ad2o_jumpHorizontal_up_long_x" ik_configuration="ad2o_jumpHorizontal_up.ma" mirror="False" unique_id="261" />
                                   </Choice>
                                   <Choice value="1">
-                                    <Clip clip="ad2o_jumpHorizontal_up_x" ik_configuration="ad2o_jumpHorizontal_up.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="260" />
+                                    <Clip clip="ad2o_jumpHorizontal_up_x" ik_configuration="ad2o_jumpHorizontal_up.ma" mirror="False" unique_id="262" />
                                   </Choice>
                                   <Choice value="0.5">
-                                    <Clip clip="ad2o_jumpHorizontal_up_short_x" ik_configuration="ad2o_jumpHorizontal_up.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="261" />
+                                    <Clip clip="ad2o_jumpHorizontal_up_short_x" ik_configuration="ad2o_jumpHorizontal_up.ma" mirror="False" unique_id="263" />
                                   </Choice>
                                 </Blend1D>
                               </Choice>
                               <Choice value="1">
-                                <Clip clip="ad2o_jumpUp_x" ik_configuration="ad2o_jumpUp.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="263" />
+                                <Clip clip="ad2o_jumpUp_x" ik_configuration="ad2o_jumpUp.ma" mirror="False" unique_id="265" />
                               </Choice>
                             </Blend1D>
                           </VariableJump>
@@ -1169,132 +1178,132 @@
                     </CustomController>
                   </Choice>
                   <Choice value="youngadult">
+                    <Reference target="271" />
+                    <Reference target="270" />
                     <Reference target="269" />
-                    <Reference target="268" />
-                    <Reference target="267" />
                   </Choice>
                   <Choice value="adult">
+                    <Reference target="271" />
+                    <Reference target="270" />
                     <Reference target="269" />
-                    <Reference target="268" />
-                    <Reference target="267" />
                   </Choice>
                   <Choice value="elder">
+                    <Reference target="271" />
+                    <Reference target="270" />
                     <Reference target="269" />
-                    <Reference target="268" />
-                    <Reference target="267" />
                   </Choice>
                 </ParameterSelector>
               </Choice>
               <Choice value="bedDouble">
-                <Reference target="270" />
+                <Reference target="272" />
               </Choice>
               <Choice value="sofa">
-                <Reference target="270" />
+                <Reference target="272" />
               </Choice>
               <Choice value="litterbox">
-                <Reference target="270" />
+                <Reference target="272" />
               </Choice>
               <Choice value="catcondo">
-                <Reference target="270" />
+                <Reference target="272" />
               </Choice>
               <Choice value="petbed">
-                <Reference target="270" />
+                <Reference target="272" />
               </Choice>
             </ParameterSelector>
           </Choice>
-          <Choice value="layDown" />
         </ParameterSelector>
       </Choice>
       <Choice value="smalldog">
-        <ParameterSelector parameter="transitionPosture" unique_id="303">
+        <ParameterSelector parameter="transitionPosture" unique_id="305">
+          <Choice value="layDownOnObject" />
           <Choice value="sit" />
           <Choice value="standOnObject" />
           <Choice value="stand">
-            <ParameterSelector parameter="postureObject:objectName" unique_id="302">
+            <ParameterSelector parameter="postureObject:objectName" unique_id="304">
               <Choice value="bedSingle">
-                <ParameterSelector parameter="x:age" unique_id="301">
+                <ParameterSelector parameter="x:age" unique_id="303">
                   <Choice value="baby" />
                   <Choice value="toddler" />
                   <Choice value="child" />
                   <Choice value="teen">
-                    <CustomController name="Configure Parameters (4)" target="x" overridePosture="false" track="normal" transition_class_in="Default" transition_class_out="Default" unique_id="300">
+                    <CustomController name="Configure Parameters (4)" target="x" overridePosture="false" track="normal" transition_class_in="Default" transition_class_out="Default" unique_id="302">
                       <TransitionClassList />
                       <ControllerTree>
-                        <VariableJump preserve_initial_orientation="False" reference_actor="x" initial_translation_parameter="x:InitialTranslation" initial_orientation_parameter="x:InitialOrientation" target_translation_parameter="x:TargetTranslation" target_orientation_parameter="x:TargetOrientation" unique_id="273" />
+                        <VariableJump preserve_initial_orientation="False" reference_actor="x" initial_translation_parameter="x:InitialTranslation" initial_orientation_parameter="x:InitialOrientation" target_translation_parameter="x:TargetTranslation" target_orientation_parameter="x:TargetOrientation" unique_id="275" />
                       </ControllerTree>
                     </CustomController>
-                    <CustomController name="Turn Blend Tree (5)" target="x" overridePosture="false" track="normal" transition_class_in="Default" transition_class_out="Default" unique_id="299">
+                    <CustomController name="Turn Blend Tree (5)" target="x" overridePosture="false" track="normal" transition_class_in="Default" transition_class_out="Default" unique_id="301">
                       <TransitionClassList />
                       <ControllerTree>
-                        <BoundaryConditions pre_reference_actor="postureObject" pre_reference_joint="_universalTransition_slot_" pre_offset="0,0,0,0,0,0" pre_mode="provide" post_reference_actor="x" post_mode="pass" unique_id="284">
-                          <DisableConformToSurface unique_id="283">
-                            <Blend1D mode="blend" type="static" transition_velocity="-1" parameter="x:TurnAngle" unique_id="282">
+                        <BoundaryConditions pre_reference_actor="postureObject" pre_reference_joint="_universalTransition_slot_" pre_offset="0,0,0,0,0,0" pre_mode="provide" post_reference_actor="x" post_mode="pass" unique_id="286">
+                          <DisableConformToSurface unique_id="285">
+                            <Blend1D mode="blend" type="static" transition_velocity="-1" parameter="x:TurnAngle" unique_id="284">
                               <Choice value="-180">
-                                <Clip clip="al_loco_2step_turnInPlace_180_R" ik_configuration="al_loco_turnInPlace_R.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="274" />
+                                <Clip clip="al_loco_2step_turnInPlace_180_R" ik_configuration="al_loco_turnInPlace_R.ma" mirror="False" unique_id="276" />
                               </Choice>
                               <Choice value="-90" low="true">
-                                <Clip clip="al_loco_2step_turnInPlace_90_R" ik_configuration="al_loco_turnInPlace_R.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="275" />
+                                <Clip clip="al_loco_2step_turnInPlace_90_R" ik_configuration="al_loco_turnInPlace_R.ma" mirror="False" unique_id="277" />
                               </Choice>
                               <Choice value="-90">
-                                <Clip clip="al_loco_1step_turnInPlace_90_R" ik_configuration="al_loco_turnInPlace_R.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="276" />
+                                <Clip clip="al_loco_1step_turnInPlace_90_R" ik_configuration="al_loco_turnInPlace_R.ma" mirror="False" unique_id="278" />
                               </Choice>
                               <Choice value="0" low="true">
-                                <Clip clip="al_loco_1Step_turnInPlace_0_R" ik_configuration="al_loco_turnInPlace_R.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="277" />
+                                <Clip clip="al_loco_1Step_turnInPlace_0_R" ik_configuration="al_loco_turnInPlace_R.ma" mirror="False" unique_id="279" />
                               </Choice>
                               <Choice value="0">
-                                <Clip clip="al_loco_1Step_turnInPlace_0_R" ik_configuration="al_loco_turnInPlace_R.ma" mirror="True" start_frame_offset="0" end_frame_offset="0" unique_id="278" />
+                                <Clip clip="al_loco_1Step_turnInPlace_0_R" ik_configuration="al_loco_turnInPlace_R.ma" mirror="True" unique_id="280" />
                               </Choice>
                               <Choice value="90" low="true">
-                                <Clip clip="al_loco_1step_turnInPlace_90_R" ik_configuration="al_loco_turnInPlace_R.ma" mirror="True" start_frame_offset="0" end_frame_offset="0" unique_id="279" />
+                                <Clip clip="al_loco_1step_turnInPlace_90_R" ik_configuration="al_loco_turnInPlace_R.ma" mirror="True" unique_id="281" />
                               </Choice>
                               <Choice value="90">
-                                <Clip clip="al_loco_2step_turnInPlace_90_R" ik_configuration="al_loco_turnInPlace_R.ma" mirror="True" start_frame_offset="0" end_frame_offset="0" unique_id="280" />
+                                <Clip clip="al_loco_2step_turnInPlace_90_R" ik_configuration="al_loco_turnInPlace_R.ma" mirror="True" unique_id="282" />
                               </Choice>
                               <Choice value="180">
-                                <Clip clip="al_loco_2step_turnInPlace_180_R" ik_configuration="al_loco_turnInPlace_R.ma" mirror="True" start_frame_offset="0" end_frame_offset="0" unique_id="281" />
+                                <Clip clip="al_loco_2step_turnInPlace_180_R" ik_configuration="al_loco_turnInPlace_R.ma" mirror="True" unique_id="283" />
                               </Choice>
                             </Blend1D>
                           </DisableConformToSurface>
                         </BoundaryConditions>
                       </ControllerTree>
                     </CustomController>
-                    <CustomController name="Small Dog Jump Blend Tree " target="x" overridePosture="false" track="normal" transition_class_in="Default" transition_class_out="Default" unique_id="298">
+                    <CustomController name="Small Dog Jump Blend Tree " target="x" overridePosture="false" track="normal" transition_class_in="Default" transition_class_out="Default" unique_id="300">
                       <TransitionClassList />
                       <ControllerTree>
-                        <BoundaryConditions pre_reference_actor="x" pre_mode="pass" post_reference_actor="postureObject" post_indeterminate="True" post_offset="0,0,0,0,0,0" post_mode="provide" unique_id="297">
-                          <VariableJump preserve_initial_orientation="False" reference_actor="x" initial_translation_parameter="x:InitialTranslation" initial_orientation_parameter="x:InitialOrientation" target_translation_parameter="x:TargetTranslation" target_orientation_parameter="x:TargetOrientation" unique_id="296">
-                            <Blend1D mode="blend" type="static" transition_velocity="-1" syncpoint_schema="Jump" parameter="x:JumpRatio" unique_id="295">
+                        <BoundaryConditions pre_reference_actor="x" pre_mode="pass" post_reference_actor="postureObject" post_indeterminate="True" post_offset="0,0,0,0,0,0" post_mode="provide" unique_id="299">
+                          <VariableJump preserve_initial_orientation="False" reference_actor="x" initial_translation_parameter="x:InitialTranslation" initial_orientation_parameter="x:InitialOrientation" target_translation_parameter="x:TargetTranslation" target_orientation_parameter="x:TargetOrientation" unique_id="298">
+                            <Blend1D mode="blend" type="static" transition_velocity="-1" syncpoint_schema="Jump" parameter="x:JumpRatio" unique_id="297">
                               <Choice value="-1">
-                                <Clip clip="al2o_jumpDown_x" ik_configuration="al2o_jumpDown.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="285" />
+                                <Clip clip="al2o_jumpDown_x" ik_configuration="al2o_jumpDown.ma" mirror="False" unique_id="287" />
                               </Choice>
                               <Choice value="-0.0001">
-                                <Blend1D mode="blend" type="static" transition_velocity="-1" syncpoint_schema="Jump" parameter="x:JumpDistance" unique_id="289">
+                                <Blend1D mode="blend" type="static" transition_velocity="-1" syncpoint_schema="Jump" parameter="x:JumpDistance" unique_id="291">
                                   <Choice value="2">
-                                    <Clip clip="al2o_jumpHorizontal_down_long_x" ik_configuration="al2o_jumpHorizontal_down.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="286" />
+                                    <Clip clip="al2o_jumpHorizontal_down_long_x" ik_configuration="al2o_jumpHorizontal_down.ma" mirror="False" unique_id="288" />
                                   </Choice>
                                   <Choice value="1">
-                                    <Clip clip="al2o_jumpHorizontal_down_x" ik_configuration="al2o_jumpHorizontal_down.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="287" />
+                                    <Clip clip="al2o_jumpHorizontal_down_x" ik_configuration="al2o_jumpHorizontal_down.ma" mirror="False" unique_id="289" />
                                   </Choice>
                                   <Choice value="0.5">
-                                    <Clip clip="al2o_jumpHorizontal_down_short_x" ik_configuration="al2o_jumpHorizontal_down.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="288" />
+                                    <Clip clip="al2o_jumpHorizontal_down_short_x" ik_configuration="al2o_jumpHorizontal_down.ma" mirror="False" unique_id="290" />
                                   </Choice>
                                 </Blend1D>
                               </Choice>
                               <Choice value="0">
-                                <Blend1D mode="blend" type="static" transition_velocity="-1" syncpoint_schema="Jump" parameter="x:JumpDistance" unique_id="293">
+                                <Blend1D mode="blend" type="static" transition_velocity="-1" syncpoint_schema="Jump" parameter="x:JumpDistance" unique_id="295">
                                   <Choice value="2">
-                                    <Clip clip="al2o_jumpHorizontal_up_long_x" ik_configuration="al2o_jumpHorizontal_up.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="290" />
+                                    <Clip clip="al2o_jumpHorizontal_up_long_x" ik_configuration="al2o_jumpHorizontal_up.ma" mirror="False" unique_id="292" />
                                   </Choice>
                                   <Choice value="1">
-                                    <Clip clip="al2o_jumpHorizontal_up_x" ik_configuration="al2o_jumpHorizontal_up.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="291" />
+                                    <Clip clip="al2o_jumpHorizontal_up_x" ik_configuration="al2o_jumpHorizontal_up.ma" mirror="False" unique_id="293" />
                                   </Choice>
                                   <Choice value="0.5">
-                                    <Clip clip="al2o_jumpHorizontal_up_short_x" ik_configuration="al2o_jumpHorizontal_up.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="292" />
+                                    <Clip clip="al2o_jumpHorizontal_up_short_x" ik_configuration="al2o_jumpHorizontal_up.ma" mirror="False" unique_id="294" />
                                   </Choice>
                                 </Blend1D>
                               </Choice>
                               <Choice value="1">
-                                <Clip clip="al2o_jumpUp_x" ik_configuration="al2o_jumpUp.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="294" />
+                                <Clip clip="al2o_jumpUp_x" ik_configuration="al2o_jumpUp.ma" mirror="False" unique_id="296" />
                               </Choice>
                             </Blend1D>
                           </VariableJump>
@@ -1303,131 +1312,131 @@
                     </CustomController>
                   </Choice>
                   <Choice value="youngadult">
+                    <Reference target="302" />
+                    <Reference target="301" />
                     <Reference target="300" />
-                    <Reference target="299" />
-                    <Reference target="298" />
                   </Choice>
                   <Choice value="adult">
+                    <Reference target="302" />
+                    <Reference target="301" />
                     <Reference target="300" />
-                    <Reference target="299" />
-                    <Reference target="298" />
                   </Choice>
                   <Choice value="elder">
+                    <Reference target="302" />
+                    <Reference target="301" />
                     <Reference target="300" />
-                    <Reference target="299" />
-                    <Reference target="298" />
                   </Choice>
                 </ParameterSelector>
               </Choice>
               <Choice value="bedDouble">
-                <Reference target="301" />
+                <Reference target="303" />
               </Choice>
               <Choice value="sofa">
-                <Reference target="301" />
+                <Reference target="303" />
               </Choice>
               <Choice value="litterbox">
-                <Reference target="301" />
+                <Reference target="303" />
               </Choice>
               <Choice value="catcondo">
-                <Reference target="301" />
+                <Reference target="303" />
               </Choice>
               <Choice value="petbed">
-                <Reference target="301" />
+                <Reference target="303" />
               </Choice>
             </ParameterSelector>
           </Choice>
-          <Choice value="layDown" />
         </ParameterSelector>
       </Choice>
       <Choice value="cat">
-        <ParameterSelector parameter="transitionPosture" unique_id="362">
+        <ParameterSelector parameter="transitionPosture" unique_id="364">
+          <Choice value="layDownOnObject" />
           <Choice value="sit" />
           <Choice value="standOnObject" />
           <Choice value="stand">
-            <ParameterSelector parameter="postureObject:objectName" unique_id="361">
+            <ParameterSelector parameter="postureObject:objectName" unique_id="363">
               <Choice value="bedSingle">
-                <ParameterSelector parameter="x:age" unique_id="360">
+                <ParameterSelector parameter="x:age" unique_id="362">
                   <Choice value="baby" />
                   <Choice value="toddler" />
                   <Choice value="child">
-                    <CustomController name="Configure Parameters (3)" target="x" overridePosture="false" track="normal" transition_class_in="Default" transition_class_out="Default" unique_id="331">
+                    <CustomController name="Configure Parameters (3)" target="x" overridePosture="false" track="normal" transition_class_in="Default" transition_class_out="Default" unique_id="333">
                       <TransitionClassList />
                       <ControllerTree>
-                        <VariableJump preserve_initial_orientation="False" reference_actor="x" initial_translation_parameter="x:InitialTranslation" initial_orientation_parameter="x:InitialOrientation" target_translation_parameter="x:TargetTranslation" target_orientation_parameter="x:TargetOrientation" unique_id="304" />
+                        <VariableJump preserve_initial_orientation="False" reference_actor="x" initial_translation_parameter="x:InitialTranslation" initial_orientation_parameter="x:InitialOrientation" target_translation_parameter="x:TargetTranslation" target_orientation_parameter="x:TargetOrientation" unique_id="306" />
                       </ControllerTree>
                     </CustomController>
-                    <CustomController name="Turn Blend Tree (3)" target="x" overridePosture="false" track="normal" transition_class_in="Default" transition_class_out="Default" unique_id="330">
+                    <CustomController name="Turn Blend Tree (3)" target="x" overridePosture="false" track="normal" transition_class_in="Default" transition_class_out="Default" unique_id="332">
                       <TransitionClassList />
                       <ControllerTree>
-                        <BoundaryConditions pre_reference_actor="postureObject" pre_reference_joint="_universalTransition_slot_" pre_offset="0,0,0,0,0,0" pre_mode="provide" post_reference_actor="x" post_mode="pass" unique_id="315">
-                          <DisableConformToSurface unique_id="314">
-                            <Blend1D mode="blend" type="static" transition_velocity="-1" parameter="x:TurnAngle" unique_id="313">
+                        <BoundaryConditions pre_reference_actor="postureObject" pre_reference_joint="_universalTransition_slot_" pre_offset="0,0,0,0,0,0" pre_mode="provide" post_reference_actor="x" post_mode="pass" unique_id="317">
+                          <DisableConformToSurface unique_id="316">
+                            <Blend1D mode="blend" type="static" transition_velocity="-1" parameter="x:TurnAngle" unique_id="315">
                               <Choice value="-180">
-                                <Clip clip="ac_loco_2step_turnInPlace_180_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="305" />
+                                <Clip clip="ac_loco_2step_turnInPlace_180_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="False" unique_id="307" />
                               </Choice>
                               <Choice value="-90" low="true">
-                                <Clip clip="ac_loco_2step_turnInPlace_90_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="306" />
+                                <Clip clip="ac_loco_2step_turnInPlace_90_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="False" unique_id="308" />
                               </Choice>
                               <Choice value="-90">
-                                <Clip clip="ac_loco_1step_turnInPlace_90_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="307" />
+                                <Clip clip="ac_loco_1step_turnInPlace_90_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="False" unique_id="309" />
                               </Choice>
                               <Choice value="0" low="true">
-                                <Clip clip="ac_loco_1Step_turnInPlace_0_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="308" />
+                                <Clip clip="ac_loco_1Step_turnInPlace_0_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="False" unique_id="310" />
                               </Choice>
                               <Choice value="0">
-                                <Clip clip="ac_loco_1Step_turnInPlace_0_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="True" start_frame_offset="0" end_frame_offset="0" unique_id="309" />
+                                <Clip clip="ac_loco_1Step_turnInPlace_0_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="True" unique_id="311" />
                               </Choice>
                               <Choice value="90" low="true">
-                                <Clip clip="ac_loco_1step_turnInPlace_90_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="True" start_frame_offset="0" end_frame_offset="0" unique_id="310" />
+                                <Clip clip="ac_loco_1step_turnInPlace_90_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="True" unique_id="312" />
                               </Choice>
                               <Choice value="90">
-                                <Clip clip="ac_loco_2step_turnInPlace_90_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="True" start_frame_offset="0" end_frame_offset="0" unique_id="311" />
+                                <Clip clip="ac_loco_2step_turnInPlace_90_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="True" unique_id="313" />
                               </Choice>
                               <Choice value="180">
-                                <Clip clip="ac_loco_2step_turnInPlace_180_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="True" start_frame_offset="0" end_frame_offset="0" unique_id="312" />
+                                <Clip clip="ac_loco_2step_turnInPlace_180_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="True" unique_id="314" />
                               </Choice>
                             </Blend1D>
                           </DisableConformToSurface>
                         </BoundaryConditions>
                       </ControllerTree>
                     </CustomController>
-                    <CustomController name="Kitten Jump Blend Tree" target="x" overridePosture="false" track="normal" transition_class_in="Default" transition_class_out="Default" unique_id="329">
+                    <CustomController name="Kitten Jump Blend Tree" target="x" overridePosture="false" track="normal" transition_class_in="Default" transition_class_out="Default" unique_id="331">
                       <TransitionClassList />
                       <ControllerTree>
-                        <BoundaryConditions pre_reference_actor="x" pre_mode="pass" post_reference_actor="postureObject" post_indeterminate="True" post_offset="0,0,0,0,0,0" post_mode="provide" unique_id="328">
-                          <VariableJump preserve_initial_orientation="False" reference_actor="x" initial_translation_parameter="x:InitialTranslation" initial_orientation_parameter="x:InitialOrientation" target_translation_parameter="x:TargetTranslation" target_orientation_parameter="x:TargetOrientation" unique_id="327">
-                            <Blend1D mode="blend" type="static" transition_velocity="-1" syncpoint_schema="Jump" parameter="x:JumpRatio" unique_id="326">
+                        <BoundaryConditions pre_reference_actor="x" pre_mode="pass" post_reference_actor="postureObject" post_indeterminate="True" post_offset="0,0,0,0,0,0" post_mode="provide" unique_id="330">
+                          <VariableJump preserve_initial_orientation="False" reference_actor="x" initial_translation_parameter="x:InitialTranslation" initial_orientation_parameter="x:InitialOrientation" target_translation_parameter="x:TargetTranslation" target_orientation_parameter="x:TargetOrientation" unique_id="329">
+                            <Blend1D mode="blend" type="static" transition_velocity="-1" syncpoint_schema="Jump" parameter="x:JumpRatio" unique_id="328">
                               <Choice value="-0.5">
-                                <Clip clip="cc2o_jumpDown_x" ik_configuration="cc2o_catSurface_jumpDown.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="316" />
+                                <Clip clip="cc2o_jumpDown_x" ik_configuration="cc2o_catSurface_jumpDown.ma" mirror="False" unique_id="318" />
                               </Choice>
                               <Choice value="-0.0001">
-                                <Blend1D mode="blend" type="static" transition_velocity="-1" syncpoint_schema="Jump" parameter="x:JumpDistance" unique_id="320">
+                                <Blend1D mode="blend" type="static" transition_velocity="-1" syncpoint_schema="Jump" parameter="x:JumpDistance" unique_id="322">
                                   <Choice value="1">
-                                    <Clip clip="cc2o_jumpHorizontal_down_long_x" ik_configuration="cc2o_catSurface_jumpHorizontal_up_long.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="317" />
+                                    <Clip clip="cc2o_jumpHorizontal_down_long_x" ik_configuration="cc2o_catSurface_jumpHorizontal_up_long.ma" mirror="False" unique_id="319" />
                                   </Choice>
                                   <Choice value="0.5">
-                                    <Clip clip="cc2o_jumpHorizontal_down_x" ik_configuration="cc2o_catSurface_jumpHorizontal_down.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="318" />
+                                    <Clip clip="cc2o_jumpHorizontal_down_x" ik_configuration="cc2o_catSurface_jumpHorizontal_down.ma" mirror="False" unique_id="320" />
                                   </Choice>
                                   <Choice value="0.25">
-                                    <Clip clip="cc2o_jumpHorizontal_down_short_x" ik_configuration="cc2o_catSurface_jumpHorizontal_up_short.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="319" />
+                                    <Clip clip="cc2o_jumpHorizontal_down_short_x" ik_configuration="cc2o_catSurface_jumpHorizontal_up_short.ma" mirror="False" unique_id="321" />
                                   </Choice>
                                 </Blend1D>
                               </Choice>
                               <Choice value="0">
-                                <Blend1D mode="blend" type="static" transition_velocity="-1" syncpoint_schema="Jump" parameter="x:JumpDistance" unique_id="324">
+                                <Blend1D mode="blend" type="static" transition_velocity="-1" syncpoint_schema="Jump" parameter="x:JumpDistance" unique_id="326">
                                   <Choice value="1">
-                                    <Clip clip="cc2o_jumpHorizontal_up_long_x" ik_configuration="cc2o_catSurface_jumpHorizontal_up_long.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="321" />
+                                    <Clip clip="cc2o_jumpHorizontal_up_long_x" ik_configuration="cc2o_catSurface_jumpHorizontal_up_long.ma" mirror="False" unique_id="323" />
                                   </Choice>
                                   <Choice value="0.5">
-                                    <Clip clip="cc2o_jumpHorizontal_up_x" ik_configuration="cc2o_catSurface_jumpHorizontal_up.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="322" />
+                                    <Clip clip="cc2o_jumpHorizontal_up_x" ik_configuration="cc2o_catSurface_jumpHorizontal_up.ma" mirror="False" unique_id="324" />
                                   </Choice>
                                   <Choice value="0.25">
-                                    <Clip clip="cc2o_jumpHorizontal_up_short_x" ik_configuration="cc2o_catSurface_jumpHorizontal_up_short.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="323" />
+                                    <Clip clip="cc2o_jumpHorizontal_up_short_x" ik_configuration="cc2o_catSurface_jumpHorizontal_up_short.ma" mirror="False" unique_id="325" />
                                   </Choice>
                                 </Blend1D>
                               </Choice>
                               <Choice value="0.5">
-                                <Clip clip="cc2o_jumpUp_x" ik_configuration="cc2o_catSurface_jump.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="325" />
+                                <Clip clip="cc2o_jumpUp_x" ik_configuration="cc2o_catSurface_jump.ma" mirror="False" unique_id="327" />
                               </Choice>
                             </Blend1D>
                           </VariableJump>
@@ -1436,84 +1445,84 @@
                     </CustomController>
                   </Choice>
                   <Choice value="teen">
-                    <CustomController name="Configure Parameters" target="x" overridePosture="false" track="normal" transition_class_in="Default" transition_class_out="Default" unique_id="359">
+                    <CustomController name="Configure Parameters" target="x" overridePosture="false" track="normal" transition_class_in="Default" transition_class_out="Default" unique_id="361">
                       <TransitionClassList />
                       <ControllerTree>
-                        <VariableJump preserve_initial_orientation="False" reference_actor="x" initial_translation_parameter="x:InitialTranslation" initial_orientation_parameter="x:InitialOrientation" target_translation_parameter="x:TargetTranslation" target_orientation_parameter="x:TargetOrientation" unique_id="332" />
+                        <VariableJump preserve_initial_orientation="False" reference_actor="x" initial_translation_parameter="x:InitialTranslation" initial_orientation_parameter="x:InitialOrientation" target_translation_parameter="x:TargetTranslation" target_orientation_parameter="x:TargetOrientation" unique_id="334" />
                       </ControllerTree>
                     </CustomController>
-                    <CustomController name="Turn Blend Tree" target="x" overridePosture="false" track="normal" transition_class_in="Default" transition_class_out="Default" unique_id="358">
+                    <CustomController name="Turn Blend Tree" target="x" overridePosture="false" track="normal" transition_class_in="Default" transition_class_out="Default" unique_id="360">
                       <TransitionClassList />
                       <ControllerTree>
-                        <BoundaryConditions pre_reference_actor="postureObject" pre_reference_joint="_universalTransition_slot_" pre_offset="0,0,0,0,0,0" pre_mode="provide" post_reference_actor="x" post_mode="pass" unique_id="343">
-                          <DisableConformToSurface unique_id="342">
-                            <Blend1D mode="blend" type="static" transition_velocity="-1" parameter="x:TurnAngle" unique_id="341">
+                        <BoundaryConditions pre_reference_actor="postureObject" pre_reference_joint="_universalTransition_slot_" pre_offset="0,0,0,0,0,0" pre_mode="provide" post_reference_actor="x" post_mode="pass" unique_id="345">
+                          <DisableConformToSurface unique_id="344">
+                            <Blend1D mode="blend" type="static" transition_velocity="-1" parameter="x:TurnAngle" unique_id="343">
                               <Choice value="-180">
-                                <Clip clip="ac_loco_2step_turnInPlace_180_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="333" />
+                                <Clip clip="ac_loco_2step_turnInPlace_180_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="False" unique_id="335" />
                               </Choice>
                               <Choice value="-90" low="true">
-                                <Clip clip="ac_loco_2step_turnInPlace_90_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="334" />
+                                <Clip clip="ac_loco_2step_turnInPlace_90_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="False" unique_id="336" />
                               </Choice>
                               <Choice value="-90">
-                                <Clip clip="ac_loco_1step_turnInPlace_90_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="335" />
+                                <Clip clip="ac_loco_1step_turnInPlace_90_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="False" unique_id="337" />
                               </Choice>
                               <Choice value="0" low="true">
-                                <Clip clip="ac_loco_1Step_turnInPlace_0_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="336" />
+                                <Clip clip="ac_loco_1Step_turnInPlace_0_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="False" unique_id="338" />
                               </Choice>
                               <Choice value="0">
-                                <Clip clip="ac_loco_1Step_turnInPlace_0_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="True" start_frame_offset="0" end_frame_offset="0" unique_id="337" />
+                                <Clip clip="ac_loco_1Step_turnInPlace_0_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="True" unique_id="339" />
                               </Choice>
                               <Choice value="90" low="true">
-                                <Clip clip="ac_loco_1step_turnInPlace_90_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="True" start_frame_offset="0" end_frame_offset="0" unique_id="338" />
+                                <Clip clip="ac_loco_1step_turnInPlace_90_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="True" unique_id="340" />
                               </Choice>
                               <Choice value="90">
-                                <Clip clip="ac_loco_2step_turnInPlace_90_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="True" start_frame_offset="0" end_frame_offset="0" unique_id="339" />
+                                <Clip clip="ac_loco_2step_turnInPlace_90_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="True" unique_id="341" />
                               </Choice>
                               <Choice value="180">
-                                <Clip clip="ac_loco_2step_turnInPlace_180_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="True" start_frame_offset="0" end_frame_offset="0" unique_id="340" />
+                                <Clip clip="ac_loco_2step_turnInPlace_180_R" ik_configuration="ac_loco_turnInPlace_R.ma" mirror="True" unique_id="342" />
                               </Choice>
                             </Blend1D>
                           </DisableConformToSurface>
                         </BoundaryConditions>
                       </ControllerTree>
                     </CustomController>
-                    <CustomController name="Cat Jump Blend Tree" target="x" overridePosture="false" track="normal" transition_class_in="Default" transition_class_out="Default" unique_id="357">
+                    <CustomController name="Cat Jump Blend Tree" target="x" overridePosture="false" track="normal" transition_class_in="Default" transition_class_out="Default" unique_id="359">
                       <TransitionClassList />
                       <ControllerTree>
-                        <BoundaryConditions pre_reference_actor="x" pre_mode="pass" post_reference_actor="postureObject" post_indeterminate="True" post_offset="0,0,0,0,0,0" post_mode="provide" unique_id="356">
-                          <VariableJump preserve_initial_orientation="False" reference_actor="x" initial_translation_parameter="x:InitialTranslation" initial_orientation_parameter="x:InitialOrientation" target_translation_parameter="x:TargetTranslation" target_orientation_parameter="x:TargetOrientation" unique_id="355">
-                            <Blend1D mode="blend" type="static" transition_velocity="-1" syncpoint_schema="Jump" parameter="x:JumpRatio" unique_id="354">
+                        <BoundaryConditions pre_reference_actor="x" pre_mode="pass" post_reference_actor="postureObject" post_indeterminate="True" post_offset="0,0,0,0,0,0" post_mode="provide" unique_id="358">
+                          <VariableJump preserve_initial_orientation="False" reference_actor="x" initial_translation_parameter="x:InitialTranslation" initial_orientation_parameter="x:InitialOrientation" target_translation_parameter="x:TargetTranslation" target_orientation_parameter="x:TargetOrientation" unique_id="357">
+                            <Blend1D mode="blend" type="static" transition_velocity="-1" syncpoint_schema="Jump" parameter="x:JumpRatio" unique_id="356">
                               <Choice value="-1">
-                                <Clip clip="ac2o_jumpDown_x" ik_configuration="ac2o_catSurface_jumpDown.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="344" />
+                                <Clip clip="ac2o_jumpDown_x" ik_configuration="ac2o_catSurface_jumpDown.ma" mirror="False" unique_id="346" />
                               </Choice>
                               <Choice value="-0.0001">
-                                <Blend1D mode="blend" type="static" transition_velocity="-1" syncpoint_schema="Jump" parameter="x:JumpDistance" unique_id="348">
+                                <Blend1D mode="blend" type="static" transition_velocity="-1" syncpoint_schema="Jump" parameter="x:JumpDistance" unique_id="350">
                                   <Choice value="2">
-                                    <Clip clip="ac2o_jumpHorizontal_down_long_x" ik_configuration="ac2o_catSurface_jumpHorizontal_down_long.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="345" />
+                                    <Clip clip="ac2o_jumpHorizontal_down_long_x" ik_configuration="ac2o_catSurface_jumpHorizontal_down_long.ma" mirror="False" unique_id="347" />
                                   </Choice>
                                   <Choice value="1">
-                                    <Clip clip="ac2o_jumpHorizontal_down_x" ik_configuration="ac2o_catSurface_jumpHorizontal_down.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="346" />
+                                    <Clip clip="ac2o_jumpHorizontal_down_x" ik_configuration="ac2o_catSurface_jumpHorizontal_down.ma" mirror="False" unique_id="348" />
                                   </Choice>
                                   <Choice value="0.5">
-                                    <Clip clip="ac2o_jumpHorizontal_down_short_x" ik_configuration="ac2o_catSurface_jumpHorizontal_up_short.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="347" />
+                                    <Clip clip="ac2o_jumpHorizontal_down_short_x" ik_configuration="ac2o_catSurface_jumpHorizontal_up_short.ma" mirror="False" unique_id="349" />
                                   </Choice>
                                 </Blend1D>
                               </Choice>
                               <Choice value="0">
-                                <Blend1D mode="blend" type="static" transition_velocity="-1" syncpoint_schema="Jump" parameter="x:JumpDistance" unique_id="352">
+                                <Blend1D mode="blend" type="static" transition_velocity="-1" syncpoint_schema="Jump" parameter="x:JumpDistance" unique_id="354">
                                   <Choice value="2">
-                                    <Clip clip="ac2o_jumpHorizontal_up_long_x" ik_configuration="ac2o_catSurface_jumpHorizontal_up_long.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="349" />
+                                    <Clip clip="ac2o_jumpHorizontal_up_long_x" ik_configuration="ac2o_catSurface_jumpHorizontal_up_long.ma" mirror="False" unique_id="351" />
                                   </Choice>
                                   <Choice value="1">
-                                    <Clip clip="ac2o_jumpHorizontal_up_x" ik_configuration="ac2o_catSurface_jumpHorizontal_up.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="350" />
+                                    <Clip clip="ac2o_jumpHorizontal_up_x" ik_configuration="ac2o_catSurface_jumpHorizontal_up.ma" mirror="False" unique_id="352" />
                                   </Choice>
                                   <Choice value="0.5">
-                                    <Clip clip="ac2o_jumpHorizontal_up_short_x" ik_configuration="ac2o_catSurface_jumpHorizontal_up_short.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="351" />
+                                    <Clip clip="ac2o_jumpHorizontal_up_short_x" ik_configuration="ac2o_catSurface_jumpHorizontal_up_short.ma" mirror="False" unique_id="353" />
                                   </Choice>
                                 </Blend1D>
                               </Choice>
                               <Choice value="1">
-                                <Clip clip="ac2o_jumpUp_x" ik_configuration="ac2o_catSurface_jump.ma" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="353" />
+                                <Clip clip="ac2o_jumpUp_x" ik_configuration="ac2o_catSurface_jump.ma" mirror="False" unique_id="355" />
                               </Choice>
                             </Blend1D>
                           </VariableJump>
@@ -1522,40 +1531,39 @@
                     </CustomController>
                   </Choice>
                   <Choice value="youngadult">
+                    <Reference target="361" />
+                    <Reference target="360" />
                     <Reference target="359" />
-                    <Reference target="358" />
-                    <Reference target="357" />
                   </Choice>
                   <Choice value="adult">
+                    <Reference target="361" />
+                    <Reference target="360" />
                     <Reference target="359" />
-                    <Reference target="358" />
-                    <Reference target="357" />
                   </Choice>
                   <Choice value="elder">
+                    <Reference target="361" />
+                    <Reference target="360" />
                     <Reference target="359" />
-                    <Reference target="358" />
-                    <Reference target="357" />
                   </Choice>
                 </ParameterSelector>
               </Choice>
               <Choice value="bedDouble">
-                <Reference target="360" />
+                <Reference target="362" />
               </Choice>
               <Choice value="sofa">
-                <Reference target="360" />
+                <Reference target="362" />
               </Choice>
               <Choice value="litterbox">
-                <Reference target="360" />
+                <Reference target="362" />
               </Choice>
               <Choice value="catcondo">
-                <Reference target="360" />
+                <Reference target="362" />
               </Choice>
               <Choice value="petbed">
-                <Reference target="360" />
+                <Reference target="362" />
               </Choice>
             </ParameterSelector>
           </Choice>
-          <Choice value="layDown" />
         </ParameterSelector>
       </Choice>
     </ParameterSelector>
