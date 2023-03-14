@@ -1,0 +1,63 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="Infant_Give" dcc="sage">
+  <Actor name="x" type="Sim" master="true" virtual="false" />
+  <Actor name="y" type="Sim" virtual="false" />
+  <Actor name="z" type="Sim" virtual="true" />
+  <Actor name="carryObject" type="Sim" virtual="false" />
+  <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder,infant" default="adult" />
+  <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
+  <Parameter name="x:species" type="enum" labels="human,dog,smalldog,cat,fox" default="human" />
+  <Parameter name="y:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder,infant" default="adult" />
+  <Parameter name="y:sex" type="enum" labels="male,female" default="male" />
+  <Parameter name="y:species" type="enum" labels="human,dog,smalldog,cat,fox" default="human" />
+  <Parameter name="z:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder,infant" default="adult" />
+  <Parameter name="z:sex" type="enum" labels="male,female" default="male" />
+  <Parameter name="z:species" type="enum" labels="human,dog,smalldog,cat,fox" default="human" />
+  <Parameter name="carryObject:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder,infant" default="adult" />
+  <Parameter name="carryObject:sex" type="enum" labels="male,female" default="male" />
+  <Parameter name="carryObject:species" type="enum" labels="human,dog,smalldog,cat,fox" default="human" />
+  <IkConfiguration name="a2a_soc_T_ask2HoldInfant.ma">
+    <SourceFile name="a2a_soc_T_ask2HoldInfant.ma">
+      <MapNamespace namespace="y" actor="y" />
+      <MapNamespace namespace="z" actor="carryObject" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <PostureManifest actors="" />
+  <PostureManifest actors="x">
+    <Support family="stand" compatibility="FullBody" carry_left="-" carry_right="carryObject" surface="-" />
+  </PostureManifest>
+  <PostureManifest actors="carryObject">
+    <Support name="carried_sim" family="none" compatibility="FullBody" carry_left="-" carry_right="-" surface="-" />
+  </PostureManifest>
+  <PostureManifest actors="y">
+    <Support family="stand" compatibility="FullBody" carry_left="-" carry_right="-" surface="-" />
+  </PostureManifest>
+  <State type="public" skippable="false" interrupt_this="false" name="Give" focus="none" facialoverlays="false" tailoverlays="true" />
+  <Connection from="Give" to="exit" />
+  <Connection from="entry" to="Give" />
+  <State name="Give" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="2">
+      <Choice value="-stand-FullBody" track="carryinteraction" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2a_soc_T_askToHoldInfant_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_soc_T_ask2HoldInfant.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="1">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+    </PostureSelector>
+    <PostureSelector parameter="y:posture" unique_id="4">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <Controller target="y" controller="@ClipController(clip=a2a_soc_T_askToHoldInfant_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_soc_T_ask2HoldInfant.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="3">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+    </PostureSelector>
+    <PostureSelector parameter="carryObject:posture" unique_id="6">
+      <Choice value="carried_sim--FullBody" track="normal" mask="">
+        <Controller target="carryObject" controller="@ClipController(clip=a2a_soc_T_askToHoldInfant_z, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2a_soc_T_ask2HoldInfant.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="5">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+    </PostureSelector>
+  </State>
+</ASM>

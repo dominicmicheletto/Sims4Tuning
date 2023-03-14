@@ -2,37 +2,245 @@
 <ASM name="Carried_Sim_Posture" dcc="sage">
   <Actor name="x" type="Sim" master="true" virtual="false" />
   <Actor name="z" type="Sim" virtual="true" />
-  <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="contextCarryHand" type="enum" labels="right,back" default="right" />
+  <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder,infant" default="adult" />
   <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
   <Parameter name="x:species" type="enum" labels="dog,cat,smalldog,human" default="dog" />
-  <Parameter name="z:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
-  <Parameter name="z:sex" type="enum" labels="male,female" default="male" />
+  <Parameter name="x:carryState" type="enum" labels="right,back" default="right" />
+  <Parameter name="z:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder,infant" default="adult" />
   <Parameter name="z:species" type="enum" labels="human,dog,smalldog,cat" default="human" />
+  <Parameter name="z:sex" type="enum" labels="male,female" default="male" />
+  <Parameter name="z:carryState" type="enum" labels="right,back" default="right" />
   <IkConfiguration name="a2p_pickup_putdown_standing_0.ma">
     <SourceFile name="a2p_pickup_putdown_standing_0.ma">
       <MapNamespace namespace="y" actor="x" />
       <MapNamespace namespace="x" actor="z" />
     </SourceFile>
   </IkConfiguration>
+  <IkConfiguration name="a2i_idle_carry_breathe.ma">
+    <SourceFile name="a2i_idle_carry_breathe.ma">
+      <MapNamespace namespace="y" actor="x" />
+      <MapNamespace namespace="x" actor="z" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2i_carryBack_pickup_putdown_standing.ma">
+    <SourceFile name="a2i_carryBack_pickup_putdown_standing.ma">
+      <MapNamespace namespace="x" actor="z" />
+      <MapNamespace namespace="y" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
   <PostureManifest>
-    <Provide name="carried_sim" family="none" compatibility="FullBody" carry_left="*" carry_right="*" surface="*" />
+    <Provide name="carried_sim" family="none" compatibility="FullBody" carry_left="*" carry_right="*" carry_back="*" surface="*" />
   </PostureManifest>
   <State type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" name="Carried_Sim_Posture" focus="head" facialoverlays="true" tailoverlays="true" />
   <State type="public" skippable="false" interrupt_this="false" name="GetIn" focus="full body" facialoverlays="false" tailoverlays="true" />
-  <Connection from="Carried_Sim_Posture" to="exit" />
+  <State type="private" skippable="false" interrupt_this="true" name="StartAdditive" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="true" name="StopAdditive" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <Connection from="Carried_Sim_Posture" to="StopAdditive" />
   <Connection from="GetIn" to="Carried_Sim_Posture" />
-  <Connection from="entry" to="GetIn" />
+  <Connection from="StartAdditive" to="GetIn" />
+  <Connection from="StopAdditive" to="exit" />
+  <Connection from="entry" to="StartAdditive" />
   <State name="Carried_Sim_Posture" type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" focus="head" facialoverlays="true" tailoverlays="true">
     <description />
     <MakeController>
-      <Controller target="x" controller="@ClipController(clip=a2p_idle_carry_posture_y, loop_count=#1)" overridePosture="false" mask="" track="low" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2p_pickup_putdown_standing_0.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="1">
-        <TransitionClassList>
-          <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
-        </TransitionClassList>
-      </Controller>
+      <ParameterSelector parameter="contextCarryHand" unique_id="6">
+        <Choice value="right">
+          <ParameterSelector parameter="x:age" unique_id="3">
+            <Choice value="baby" />
+            <Choice value="toddler">
+              <Controller target="x" controller="@ClipController(clip=a2p_idle_carry_posture_y, loop_count=#1)" overridePosture="false" mask="" track="low" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2p_pickup_putdown_standing_0.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="1">
+                <TransitionClassList>
+                  <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                </TransitionClassList>
+              </Controller>
+            </Choice>
+            <Choice value="child" />
+            <Choice value="teen" />
+            <Choice value="youngadult" />
+            <Choice value="adult" />
+            <Choice value="elder" />
+            <Choice value="infant">
+              <Controller target="x" controller="@ClipController(clip=a2i_idle_carry_posture_y, loop_count=#1)" overridePosture="false" mask="" track="low" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2i_idle_carry_breathe.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="2">
+                <TransitionClassList />
+              </Controller>
+            </Choice>
+          </ParameterSelector>
+        </Choice>
+        <Choice value="back">
+          <ParameterSelector parameter="x:age" unique_id="5">
+            <Choice value="baby" />
+            <Choice value="toddler" />
+            <Choice value="child" />
+            <Choice value="teen" />
+            <Choice value="youngadult" />
+            <Choice value="adult" />
+            <Choice value="elder" />
+            <Choice value="infant">
+              <Controller target="x" controller="@ClipController(clip=a2i_idle_carry_back_posture_y, loop_count=#1)" overridePosture="false" mask="" track="low" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2i_carryBack_pickup_putdown_standing.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="4">
+                <TransitionClassList />
+              </Controller>
+            </Choice>
+          </ParameterSelector>
+        </Choice>
+      </ParameterSelector>
     </MakeController>
   </State>
   <State name="GetIn" type="public" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
     <description />
+  </State>
+  <State name="StartAdditive" type="private" skippable="false" interrupt_this="true" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <ParameterSelector parameter="contextCarryHand" unique_id="51">
+      <Choice value="right">
+        <Stop target="x" track="normal_additive" blend_in="0" unique_id="7" />
+      </Choice>
+      <Choice value="back">
+        <MakeController unique_id="50">
+          <CustomController name="Custom Controller YZX" target="x" overridePosture="false" track="normal_additive" transition_class_in="Default" transition_class_out="Default" unique_id="49">
+            <TransitionClassList />
+            <ControllerTree>
+              <ReferenceMotion reference_actor="z" reference_joint_parameter="b__Spine2__" dampening_factors="1,1,1" offset_sensitivity="0,0,5" offset_constraint_low="-0.5,-0.5,-0.5" offset_constraint_high="0.5,0.5,0.5" torque_sensitivity="0.1,0,0" torque_constraint="0.2,0,0" torque_constraint_time="1.5" unique_id="48">
+                <Blend1D mode="blend" type="dynamic" transition_velocity="-1" parameter="RefMotion.BlendValueZ" unique_id="47">
+                  <Choice value="-1">
+                    <Blend1D mode="blend" type="dynamic" transition_velocity="-1" parameter="RefMotion.BlendValueY" unique_id="20">
+                      <Choice value="-1">
+                        <Blend1D mode="blend" type="dynamic" transition_velocity="-1" parameter="RefMotion.BlendValueX" unique_id="11">
+                          <Choice value="-1">
+                            <Clip clip="i_secondaryMotion_additiveClip_-Y-Z-X" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="8" />
+                          </Choice>
+                          <Choice value="0">
+                            <Clip clip="i_secondaryMotion_additiveClip_-Y-Z" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="9" />
+                          </Choice>
+                          <Choice value="1">
+                            <Clip clip="i_secondaryMotion_additiveClip_-Y-ZX" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="10" />
+                          </Choice>
+                        </Blend1D>
+                      </Choice>
+                      <Choice value="0">
+                        <Blend1D mode="blend" type="dynamic" transition_velocity="-1" parameter="RefMotion.BlendValueX" unique_id="15">
+                          <Choice value="-1">
+                            <Clip clip="i_secondaryMotion_additiveClip_-Z-X" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="12" />
+                          </Choice>
+                          <Choice value="0">
+                            <Clip mask="_infant_secondaryMotion_60" clip="i_secondaryMotion_additiveClip_-Z" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="13" />
+                          </Choice>
+                          <Choice value="1">
+                            <Clip clip="i_secondaryMotion_additiveClip_-ZX" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="14" />
+                          </Choice>
+                        </Blend1D>
+                      </Choice>
+                      <Choice value="1">
+                        <Blend1D mode="blend" type="dynamic" transition_velocity="-1" parameter="RefMotion.BlendValueX" unique_id="19">
+                          <Choice value="-1">
+                            <Clip clip="i_secondaryMotion_additiveClip_-ZY-X" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="16" />
+                          </Choice>
+                          <Choice value="0">
+                            <Clip clip="i_secondaryMotion_additiveClip_Y-Z" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="17" />
+                          </Choice>
+                          <Choice value="1">
+                            <Clip clip="i_secondaryMotion_additiveClip_-ZYX" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="18" />
+                          </Choice>
+                        </Blend1D>
+                      </Choice>
+                    </Blend1D>
+                  </Choice>
+                  <Choice value="0">
+                    <Blend1D mode="blend" type="dynamic" transition_velocity="-1" parameter="RefMotion.BlendValueY" unique_id="33">
+                      <Choice value="-1">
+                        <Blend1D mode="blend" type="dynamic" transition_velocity="-1" parameter="RefMotion.BlendValueX" unique_id="24">
+                          <Choice value="-1">
+                            <Clip clip="i_secondaryMotion_additiveClip_-Y-X" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="21" />
+                          </Choice>
+                          <Choice value="0">
+                            <Clip mask="_infant_secondaryMotion_60" clip="i_secondaryMotion_additiveClip_-Y" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="22" />
+                          </Choice>
+                          <Choice value="1">
+                            <Clip clip="i_secondaryMotion_additiveClip_-YX" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="23" />
+                          </Choice>
+                        </Blend1D>
+                      </Choice>
+                      <Choice value="0">
+                        <Blend1D mode="blend" type="dynamic" transition_velocity="-1" parameter="RefMotion.BlendValueX" unique_id="28">
+                          <Choice value="-1">
+                            <Clip clip="i_secondaryMotion_additiveClip_-X" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="25" />
+                          </Choice>
+                          <Choice value="0">
+                            <Clip clip="i_secondaryMotion_additiveClip_0" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="26" />
+                          </Choice>
+                          <Choice value="1">
+                            <Clip clip="i_secondaryMotion_additiveClip_X" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="27" />
+                          </Choice>
+                        </Blend1D>
+                      </Choice>
+                      <Choice value="1">
+                        <Blend1D mode="blend" type="dynamic" transition_velocity="-1" parameter="RefMotion.BlendValueX" unique_id="32">
+                          <Choice value="-1">
+                            <Clip clip="i_secondaryMotion_additiveClip_Y-X" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="29" />
+                          </Choice>
+                          <Choice value="0">
+                            <Clip mask="_infant_secondaryMotion_60" clip="i_secondaryMotion_additiveClip_Y" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="30" />
+                          </Choice>
+                          <Choice value="1">
+                            <Clip clip="i_secondaryMotion_additiveClip_YX" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="31" />
+                          </Choice>
+                        </Blend1D>
+                      </Choice>
+                    </Blend1D>
+                  </Choice>
+                  <Choice value="1">
+                    <Blend1D mode="blend" type="dynamic" transition_velocity="-1" parameter="RefMotion.BlendValueY" unique_id="46">
+                      <Choice value="-1">
+                        <Blend1D mode="blend" type="dynamic" transition_velocity="-1" parameter="RefMotion.BlendValueX" unique_id="37">
+                          <Choice value="-1">
+                            <Clip clip="i_secondaryMotion_additiveClip_Z-Y-X" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="34" />
+                          </Choice>
+                          <Choice value="0">
+                            <Clip mask="_infant_secondaryMotion_70" clip="i_secondaryMotion_additiveClip_-YZ" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="35" />
+                          </Choice>
+                          <Choice value="1">
+                            <Clip clip="i_secondaryMotion_additiveClip_Z-YX" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="36" />
+                          </Choice>
+                        </Blend1D>
+                      </Choice>
+                      <Choice value="0">
+                        <Blend1D mode="blend" type="dynamic" transition_velocity="-1" parameter="RefMotion.BlendValueX" unique_id="41">
+                          <Choice value="-1">
+                            <Clip clip="i_secondaryMotion_additiveClip_Z-X" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="38" />
+                          </Choice>
+                          <Choice value="0">
+                            <Clip mask="_infant_secondaryMotion_60" clip="i_secondaryMotion_additiveClip_Z" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="39" />
+                          </Choice>
+                          <Choice value="1">
+                            <Clip clip="i_secondaryMotion_additiveClip_ZX" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="40" />
+                          </Choice>
+                        </Blend1D>
+                      </Choice>
+                      <Choice value="1">
+                        <Blend1D mode="blend" type="dynamic" transition_velocity="-1" parameter="RefMotion.BlendValueX" unique_id="45">
+                          <Choice value="-1">
+                            <Clip clip="i_secondaryMotion_additiveClip_ZY-X" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="42" />
+                          </Choice>
+                          <Choice value="0">
+                            <Clip mask="_infant_secondaryMotion_70" clip="i_secondaryMotion_additiveClip_YZ" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="43" />
+                          </Choice>
+                          <Choice value="1">
+                            <Clip clip="i_secondaryMotion_additiveClip_ZYX" mirror="False" start_frame_offset="0" end_frame_offset="0" unique_id="44" />
+                          </Choice>
+                        </Blend1D>
+                      </Choice>
+                    </Blend1D>
+                  </Choice>
+                </Blend1D>
+              </ReferenceMotion>
+            </ControllerTree>
+          </CustomController>
+        </MakeController>
+      </Choice>
+    </ParameterSelector>
+  </State>
+  <State name="StopAdditive" type="private" skippable="false" interrupt_this="true" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <Stop target="x" track="normal_additive" blend_in="0" unique_id="52" />
   </State>
 </ASM>

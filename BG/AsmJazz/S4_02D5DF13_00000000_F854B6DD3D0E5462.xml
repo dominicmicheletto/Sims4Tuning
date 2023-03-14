@@ -2,12 +2,15 @@
 <ASM name="Carried_Sim_Idle" dcc="sage">
   <Actor name="x" type="Sim" master="true" virtual="false" />
   <Actor name="z" type="Sim" virtual="true" />
-  <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="contextCarryHand" type="enum" labels="right,back" default="right" />
+  <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder,infant" default="adult" />
   <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
   <Parameter name="x:species" type="enum" labels="dog,smalldog,human,cat" default="dog" />
-  <Parameter name="z:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="x:carryState" type="enum" labels="left,right,back" default="right" />
+  <Parameter name="z:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder,infant" default="adult" />
   <Parameter name="z:sex" type="enum" labels="male,female" default="male" />
   <Parameter name="z:species" type="enum" labels="human,dog,smalldog,cat" default="human" />
+  <Parameter name="z:carryState" type="enum" labels="none,left,right,both,back" default="right" />
   <IkConfiguration name="p_idle_weightShift_carried.ma">
     <SourceFile name="p_idle_weightShift_carried.ma">
       <MapNamespace namespace="z" actor="z" />
@@ -35,6 +38,47 @@
       <MapNamespace namespace="z" actor="z" />
     </SourceFile>
   </IkConfiguration>
+  <IkConfiguration name="i_idle_carry_Back.ma">
+    <SourceFile name="i_idle_carry_Back.ma">
+      <MapNamespace namespace="y" actor="z" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="i_idle_carry.ma">
+    <SourceFile name="i_idle_carry.ma">
+      <MapNamespace namespace="y" actor="z" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="i_idle_listen_loop_01_carried_back.ma">
+    <SourceFile name="i_idle_listen_loop_01_carried_back.ma">
+      <MapNamespace namespace="y" actor="z" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="i_idle_listen_loop_01_carried.ma">
+    <SourceFile name="i_idle_listen_loop_01_carried.ma">
+      <MapNamespace namespace="y" actor="z" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="i_idle_listen_loop_02_carried_back.ma">
+    <SourceFile name="i_idle_listen_loop_02_carried_back.ma">
+      <MapNamespace namespace="y" actor="z" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="i_idle_listen_loop_02_carried.ma">
+    <SourceFile name="i_idle_listen_loop_02_carried.ma">
+      <MapNamespace namespace="y" actor="z" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="i_idle_listen_loop_03_carried_back.ma">
+    <SourceFile name="i_idle_listen_loop_03_carried_back.ma">
+      <MapNamespace namespace="y" actor="z" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="i_idle_listen_loop_03_carried.ma">
+    <SourceFile name="i_idle_listen_loop_03_carried.ma">
+      <MapNamespace namespace="y" actor="z" />
+    </SourceFile>
+  </IkConfiguration>
   <PostureManifest actors="" />
   <PostureManifest actors="x">
     <Support name="carried_sim" family="none" compatibility="FullBody" carry_left="*" carry_right="*" surface="-" />
@@ -46,33 +90,95 @@
   <State name="Carry_Sim_Idle" type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" focus="head" facialoverlays="true" tailoverlays="true">
     <description />
     <MakeController>
-      <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="6">
-        <Choice weight="100" avoidRepeat="False">
-          <Controller target="x" controller="@ClipController(clip=p_idle_breath_carried_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_idle_breath_carried.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="1">
-            <TransitionClassList />
-          </Controller>
+      <ParameterSelector parameter="x:age" unique_id="18">
+        <Choice value="baby" />
+        <Choice value="toddler">
+          <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="6">
+            <Choice weight="100" avoidRepeat="False">
+              <Controller target="x" controller="@ClipController(clip=p_idle_breath_carried_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_idle_breath_carried.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="1">
+                <TransitionClassList />
+              </Controller>
+            </Choice>
+            <Choice weight="50" avoidRepeat="True">
+              <Controller target="x" controller="@ClipController(clip=p_idle_weightShift_carried_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_idle_weightShift_carried.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="2">
+                <TransitionClassList />
+              </Controller>
+            </Choice>
+            <Choice weight="50" avoidRepeat="False">
+              <Controller target="x" controller="@ClipController(clip=p2p_generic_GS_listen_loop_01_carry_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p2p_generic_GS_listen_loop_01_carry.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="3">
+                <TransitionClassList />
+              </Controller>
+            </Choice>
+            <Choice weight="50" avoidRepeat="True">
+              <Controller target="x" controller="@ClipController(clip=p2p_generic_GS_listen_loop_02_carry_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p2p_generic_GS_listen_loop_02_carry.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="4">
+                <TransitionClassList />
+              </Controller>
+            </Choice>
+            <Choice weight="50" avoidRepeat="True">
+              <Controller target="x" controller="@ClipController(clip=p2p_generic_GS_listen_loop_03_carry_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p2p_generic_GS_listen_loop_03_carry.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="5">
+                <TransitionClassList />
+              </Controller>
+            </Choice>
+          </RandomSelector>
         </Choice>
-        <Choice weight="50" avoidRepeat="True">
-          <Controller target="x" controller="@ClipController(clip=p_idle_weightShift_carried_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_idle_weightShift_carried.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="2">
-            <TransitionClassList />
-          </Controller>
+        <Choice value="child" />
+        <Choice value="teen" />
+        <Choice value="youngadult" />
+        <Choice value="adult" />
+        <Choice value="elder" />
+        <Choice value="infant">
+          <ParameterSelector parameter="contextCarryHand" unique_id="17">
+            <Choice value="right">
+              <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="11">
+                <Choice weight="50" avoidRepeat="False">
+                  <Controller target="x" controller="@ClipController(clip=i_idle_carry_breathe_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="i_idle_carry.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="7">
+                    <TransitionClassList />
+                  </Controller>
+                </Choice>
+                <Choice weight="50" avoidRepeat="False">
+                  <Controller target="x" controller="@ClipController(clip=i_idle_listen_loop_01_carried_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="i_idle_listen_loop_01_carried.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="8">
+                    <TransitionClassList />
+                  </Controller>
+                </Choice>
+                <Choice weight="50" avoidRepeat="False">
+                  <Controller target="x" controller="@ClipController(clip=i_idle_listen_loop_02_carried_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="i_idle_listen_loop_02_carried.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="9">
+                    <TransitionClassList />
+                  </Controller>
+                </Choice>
+                <Choice weight="50" avoidRepeat="False">
+                  <Controller target="x" controller="@ClipController(clip=i_idle_listen_loop_03_carried_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="i_idle_listen_loop_03_carried.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="10">
+                    <TransitionClassList />
+                  </Controller>
+                </Choice>
+              </RandomSelector>
+            </Choice>
+            <Choice value="back">
+              <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="16">
+                <Choice weight="50" avoidRepeat="False">
+                  <Controller target="x" controller="@ClipController(clip=i_idle_breathe_carried_back_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="i_idle_carry_Back.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="12">
+                    <TransitionClassList />
+                  </Controller>
+                </Choice>
+                <Choice weight="50" avoidRepeat="False">
+                  <Controller target="x" controller="@ClipController(clip=i_idle_listen_loop_01_carried_back_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="i_idle_listen_loop_01_carried_back.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="13">
+                    <TransitionClassList />
+                  </Controller>
+                </Choice>
+                <Choice weight="50" avoidRepeat="False">
+                  <Controller target="x" controller="@ClipController(clip=i_idle_listen_loop_02_carried_back_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="i_idle_listen_loop_02_carried_back.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="14">
+                    <TransitionClassList />
+                  </Controller>
+                </Choice>
+                <Choice weight="50" avoidRepeat="False">
+                  <Controller target="x" controller="@ClipController(clip=i_idle_listen_loop_03_carried_back_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="i_idle_listen_loop_03_carried_back.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="15">
+                    <TransitionClassList />
+                  </Controller>
+                </Choice>
+              </RandomSelector>
+            </Choice>
+          </ParameterSelector>
         </Choice>
-        <Choice weight="50" avoidRepeat="False">
-          <Controller target="x" controller="@ClipController(clip=p2p_generic_GS_listen_loop_01_carry_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p2p_generic_GS_listen_loop_01_carry.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="3">
-            <TransitionClassList />
-          </Controller>
-        </Choice>
-        <Choice weight="50" avoidRepeat="True">
-          <Controller target="x" controller="@ClipController(clip=p2p_generic_GS_listen_loop_02_carry_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p2p_generic_GS_listen_loop_02_carry.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="4">
-            <TransitionClassList />
-          </Controller>
-        </Choice>
-        <Choice weight="50" avoidRepeat="True">
-          <Controller target="x" controller="@ClipController(clip=p2p_generic_GS_listen_loop_03_carry_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p2p_generic_GS_listen_loop_03_carry.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="5">
-            <TransitionClassList />
-          </Controller>
-        </Choice>
-      </RandomSelector>
+      </ParameterSelector>
     </MakeController>
   </State>
 </ASM>

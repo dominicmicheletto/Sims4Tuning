@@ -1,0 +1,112 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="Repair_Upgrade_ChangingStation" dcc="sage">
+  <Actor name="x" type="Sim" master="true" virtual="false" />
+  <Actor name="toolHammer" type="Prop" virtual="false" object_def_resource_key="c0db5ae7:00000000:000000000000aea0#toolHammerGENRock_01" />
+  <Actor name="changeStation" type="Object" virtual="false" />
+  <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
+  <Parameter name="x:species" type="enum" labels="human,dog,smalldog,cat,fox" default="human" />
+  <Parameter name="changeStation:isWallMounted" type="bool" labels="" default="False" />
+  <IkConfiguration name="a2o_upgrade_changingStation.ma">
+    <SourceFile name="a2o_upgrade_changingStation.ma">
+      <MapNamespace namespace="toolHammer" actor="toolHammer" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <PostureManifest actors="" />
+  <PostureManifest actors="x">
+    <Support name="stand" family="none" compatibility="FullBody" carry_left="-" carry_right="-" surface="*" />
+  </PostureManifest>
+  <State type="private" skippable="false" interrupt_this="false" name="start" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="stop" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" name="upgrade/repair" focus="none" facialoverlays="false" tailoverlays="true" />
+  <Connection from="entry" to="start" />
+  <Connection from="start" to="upgrade/repair" />
+  <Connection from="stop" to="exit" />
+  <Connection from="upgrade/repair" to="stop" />
+  <State name="start" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="4">
+      <Choice value="stand--FullBody" track="normal" mask="">
+        <ParameterSelector parameter="changeStation:isWallMounted" unique_id="3">
+          <Choice value="false">
+            <Controller target="x" controller="@ClipController(clip=a2o_changeStation_upgrade_hammer_start_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_upgrade_changingStation.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="1">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
+          <Choice value="true">
+            <Controller target="changeStation" controller="@ClipController(clip=a2o_changeStation_upgrade_hammer_start_changeStation, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_upgrade_changingStation.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="2">
+              <TransitionClassList />
+            </Controller>
+            <Reference target="1" />
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="stop" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="8">
+      <Choice value="stand--FullBody" track="normal" mask="">
+        <ParameterSelector parameter="changeStation:isWallMounted" unique_id="7">
+          <Choice value="false">
+            <Controller target="x" controller="@ClipController(clip=a2o_changeStation_upgrade_hammer_stop_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_upgrade_changingStation.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="5">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
+          <Choice value="true">
+            <Reference target="5" />
+            <Controller target="changeStation" controller="@ClipController(clip=a2o_changeStation_upgrade_hammer_stop_changeStation, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_upgrade_changingStation.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="6">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="upgrade/repair" type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <MakeController>
+      <PostureSelector parameter="x:posture" unique_id="18">
+        <Choice value="stand--FullBody" track="normal" mask="">
+          <ParameterSelector parameter="changeStation:isWallMounted" unique_id="17">
+            <Choice value="false">
+              <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="11">
+                <Choice weight="100" avoidRepeat="False">
+                  <Controller target="x" controller="@ClipController(clip=a2o_changeStation_upgrade_hammer_loop1_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_upgrade_changingStation.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="9">
+                    <TransitionClassList />
+                  </Controller>
+                </Choice>
+                <Choice weight="34" avoidRepeat="False">
+                  <Controller target="x" controller="@ClipController(clip=a2o_changeStation_upgrade_hammer_loop2_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_upgrade_changingStation.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="10">
+                    <TransitionClassList />
+                  </Controller>
+                </Choice>
+              </RandomSelector>
+            </Choice>
+            <Choice value="true">
+              <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="16">
+                <Choice weight="100" avoidRepeat="False">
+                  <Controller target="changeStation" controller="@ClipController(clip=a2o_changeStation_upgrade_hammer_loop1_changeStation, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_upgrade_changingStation.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="12">
+                    <TransitionClassList />
+                  </Controller>
+                  <Controller target="x" controller="@ClipController(clip=a2o_changeStation_upgrade_hammer_loop1_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_upgrade_changingStation.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="13">
+                    <TransitionClassList />
+                  </Controller>
+                </Choice>
+                <Choice weight="34" avoidRepeat="False">
+                  <Controller target="x" controller="@ClipController(clip=a2o_changeStation_upgrade_hammer_loop2_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_upgrade_changingStation.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="14">
+                    <TransitionClassList />
+                  </Controller>
+                  <Controller target="changeStation" controller="@ClipController(clip=a2o_changeStation_upgrade_hammer_loop2_changeStation, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_upgrade_changingStation.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="15">
+                    <TransitionClassList />
+                  </Controller>
+                </Choice>
+              </RandomSelector>
+            </Choice>
+          </ParameterSelector>
+        </Choice>
+      </PostureSelector>
+    </MakeController>
+  </State>
+</ASM>

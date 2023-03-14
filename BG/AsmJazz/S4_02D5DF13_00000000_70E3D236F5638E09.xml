@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="TransferCarry_Infant_BackToRight" dcc="sage">
+  <Actor name="x" type="Sim" master="true" virtual="false" />
+  <Actor name="carryObject" type="Sim" virtual="false" />
+  <Actor name="z" type="Sim" virtual="true" />
+  <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder,infant" default="adult" />
+  <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
+  <Parameter name="carryObject:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder,infant" default="adult" />
+  <Parameter name="carryObject:sex" type="enum" labels="male,female" default="male" />
+  <Parameter name="z:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder,infant" default="adult" />
+  <Parameter name="z:sex" type="enum" labels="male,female" default="male" />
+  <IkConfiguration name="a2i_carryBack_pickup_putdown_standing.ma">
+    <SourceFile name="a2i_carryBack_pickup_putdown_standing.ma">
+      <MapNamespace namespace="y" actor="carryObject" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <PostureManifest actors="" />
+  <PostureManifest actors="x">
+    <Support family="stand" compatibility="FullBody" carry_left="-" carry_right="-" carry_back="carryObject" surface="*" />
+  </PostureManifest>
+  <PostureManifest actors="carryObject">
+    <Support name="carried_sim" family="none" compatibility="FullBody" carry_left="-" carry_right="-" surface="-" />
+  </PostureManifest>
+  <State type="public" skippable="false" interrupt_this="false" name="TransferToRight" focus="none" facialoverlays="false" tailoverlays="true" />
+  <Connection from="TransferToRight" to="exit" />
+  <Connection from="entry" to="TransferToRight" />
+  <State name="TransferToRight" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="2">
+      <Choice value="-stand-FullBody" track="carryinteraction" mask="">
+        <Controller target="x" controller="@ClipController(clip=a2i_trans_carry_back2stand_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2i_carryBack_pickup_putdown_standing.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="1">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+    </PostureSelector>
+    <PostureSelector parameter="carryObject:posture" unique_id="4">
+      <Choice value="carried_sim--FullBody" track="carryinteraction" mask="">
+        <Controller target="carryObject" controller="@ClipController(clip=a2i_trans_carry_back2stand_y, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2i_carryBack_pickup_putdown_standing.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="3">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+    </PostureSelector>
+  </State>
+</ASM>

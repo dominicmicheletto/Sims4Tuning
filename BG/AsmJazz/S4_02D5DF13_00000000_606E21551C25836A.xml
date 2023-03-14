@@ -5,9 +5,10 @@
   <Actor name="baby" type="Prop" virtual="false" object_def_resource_key="c0db5ae7:00000000:00000000000051f8#babyGEN_01" />
   <Actor name="y" type="Sim" virtual="false" />
   <Parameter name="isMirrored" type="bool" labels="" default="True" />
-  <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder,infant" default="adult" />
   <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
   <Parameter name="x:species" type="enum" labels="human,dog,smalldog,cat" default="human" />
+  <Parameter name="x:isAbleToSit" type="bool" labels="" default="False" />
   <Parameter name="y:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
   <Parameter name="y:sex" type="enum" labels="male,female" default="male" />
   <IkConfiguration name="t_portraitThumbnails_male_all.ma">
@@ -128,6 +129,17 @@
       <MapNamespace namespace="x" actor="x" />
     </SourceFile>
   </IkConfiguration>
+  <IkConfiguration name="i_portraitThumbnails_all.ma">
+    <SourceFile name="i_portraitThumbnails_all.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="i2a_portraitThumbnail_carried.ma">
+    <SourceFile name="i2a_portraitThumbnail_carried.ma">
+      <MapNamespace namespace="y" actor="y" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
   <PostureManifest actors="" />
   <PostureManifest actors="x">
     <Support family="stand" compatibility="FullBody" carry_left="*" carry_right="*" surface="*" />
@@ -138,6 +150,7 @@
   </PostureManifest>
   <State type="public" skippable="false" interrupt_this="false" name="Bassinet" focus="none" facialoverlays="false" tailoverlays="true" />
   <State type="public" skippable="false" interrupt_this="false" name="HoldBaby" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="HoldInfant" focus="full body" facialoverlays="false" tailoverlays="true" />
   <State type="public" skippable="false" interrupt_this="false" name="HoldPet" focus="full body" facialoverlays="false" tailoverlays="true" />
   <State type="public" skippable="false" interrupt_this="false" name="HoldToddler" focus="full body" facialoverlays="false" tailoverlays="true" />
   <State type="private" skippable="false" interrupt_this="false" name="Mirror" focus="full body" facialoverlays="false" tailoverlays="true" />
@@ -145,6 +158,7 @@
   <State type="public" skippable="false" interrupt_this="false" name="SinglePoses" focus="none" facialoverlays="false" tailoverlays="true" />
   <Connection from="Bassinet" to="exit" />
   <Connection from="HoldBaby" to="exit" />
+  <Connection from="HoldInfant" to="exit" />
   <Connection from="HoldPet" to="exit" />
   <Connection from="HoldToddler" to="exit" />
   <Connection from="Mirror" to="Pregnancy" />
@@ -153,6 +167,7 @@
   <Connection from="SinglePoses" to="exit" />
   <Connection from="entry" to="Bassinet" />
   <Connection from="entry" to="HoldBaby" />
+  <Connection from="entry" to="HoldInfant" />
   <Connection from="entry" to="HoldPet" />
   <Connection from="entry" to="HoldToddler" />
   <Connection from="entry" to="Mirror" />
@@ -180,48 +195,101 @@
         </Controller>
       </Choice>
       <Choice weight="100" avoidRepeat="False">
-        <Controller target="baby" controller="@ClipController(clip=a2o_portraitThumbnail_baby_cuddle_baby, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_portraitThumbnails_baby_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="4">
+        <Controller target="x" controller="@ClipController(clip=a2o_portraitThumbnail_baby_cuddle_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_portraitThumbnails_baby_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="4">
           <TransitionClassList>
             <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
           </TransitionClassList>
         </Controller>
-        <Controller target="x" controller="@ClipController(clip=a2o_portraitThumbnail_baby_cuddle_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_portraitThumbnails_baby_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="5">
-          <TransitionClassList>
-            <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
-          </TransitionClassList>
-        </Controller>
-      </Choice>
-      <Choice weight="100" avoidRepeat="False">
-        <Controller target="x" controller="@ClipController(clip=a2o_portraitThumbnail_baby_adore_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_portraitThumbnails_baby_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="6">
-          <TransitionClassList>
-            <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
-          </TransitionClassList>
-        </Controller>
-        <Controller target="baby" controller="@ClipController(clip=a2o_portraitThumbnail_baby_adore_baby, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_portraitThumbnails_baby_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="7">
+        <Controller target="baby" controller="@ClipController(clip=a2o_portraitThumbnail_baby_cuddle_baby, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_portraitThumbnails_baby_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="5">
           <TransitionClassList>
             <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
           </TransitionClassList>
         </Controller>
       </Choice>
       <Choice weight="100" avoidRepeat="False">
-        <Controller target="x" controller="@ClipController(clip=a2o_portraitThumbnail_baby_playWith_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_portraitThumbnails_baby_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="8">
+        <Controller target="baby" controller="@ClipController(clip=a2o_portraitThumbnail_baby_adore_baby, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_portraitThumbnails_baby_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="6">
           <TransitionClassList>
             <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
           </TransitionClassList>
         </Controller>
-        <Controller target="baby" controller="@ClipController(clip=a2o_portraitThumbnail_baby_playWith_baby, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_portraitThumbnails_baby_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="9">
+        <Controller target="x" controller="@ClipController(clip=a2o_portraitThumbnail_baby_adore_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_portraitThumbnails_baby_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="7">
           <TransitionClassList>
             <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
           </TransitionClassList>
         </Controller>
       </Choice>
       <Choice weight="100" avoidRepeat="False">
-        <Controller target="x" controller="@ClipController(clip=a2o_portraitThumbnail_baby_stinkyDiaper_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_portraitThumbnails_baby_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="10">
+        <Controller target="baby" controller="@ClipController(clip=a2o_portraitThumbnail_baby_playWith_baby, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_portraitThumbnails_baby_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="8">
           <TransitionClassList>
             <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
           </TransitionClassList>
         </Controller>
-        <Controller target="baby" controller="@ClipController(clip=a2o_portraitThumbnail_baby_stinkyDiaper_baby, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_portraitThumbnails_baby_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="11">
+        <Controller target="x" controller="@ClipController(clip=a2o_portraitThumbnail_baby_playWith_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_portraitThumbnails_baby_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="9">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
+      <Choice weight="100" avoidRepeat="False">
+        <Controller target="baby" controller="@ClipController(clip=a2o_portraitThumbnail_baby_stinkyDiaper_baby, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_portraitThumbnails_baby_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="10">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+        <Controller target="x" controller="@ClipController(clip=a2o_portraitThumbnail_baby_stinkyDiaper_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_portraitThumbnails_baby_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="11">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
+    </RandomSelector>
+  </State>
+  <State name="HoldInfant" type="public" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="21">
+      <Choice weight="100" avoidRepeat="False">
+        <Controller target="x" controller="@ClipController(clip=i2a_portraitThumbnail_carried_01_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="i2a_portraitThumbnail_carried.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="13">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+        <Controller target="y" controller="@ClipController(clip=i2a_portraitThumbnail_carried_01_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="i2a_portraitThumbnail_carried.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="14">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
+      <Choice weight="100" avoidRepeat="False">
+        <Controller target="y" controller="@ClipController(clip=i2a_travelThumbnail_carried_01_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="i2a_portraitThumbnail_carried.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="15">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+        <Controller target="x" controller="@ClipController(clip=i2a_travelThumbnail_carried_01_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="i2a_portraitThumbnail_carried.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="16">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
+      <Choice weight="100" avoidRepeat="False">
+        <Controller target="x" controller="@ClipController(clip=i2a_portraitThumbnail_carried_02_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="i2a_portraitThumbnail_carried.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="17">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+        <Controller target="y" controller="@ClipController(clip=i2a_portraitThumbnail_carried_02_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="i2a_portraitThumbnail_carried.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="18">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
+      <Choice weight="100" avoidRepeat="False">
+        <Controller target="y" controller="@ClipController(clip=i2a_portraitThumbnail_carried_03_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="i2a_portraitThumbnail_carried.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="19">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+        <Controller target="x" controller="@ClipController(clip=i2a_portraitThumbnail_carried_03_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="i2a_portraitThumbnail_carried.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="20">
           <TransitionClassList>
             <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
           </TransitionClassList>
@@ -231,28 +299,28 @@
   </State>
   <State name="HoldPet" type="public" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
     <description />
-    <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="19">
+    <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="28">
       <Choice weight="50" avoidRepeat="False">
-        <Controller target="y" controller="@ClipController(clip=al2a_portraitThumbnail_carried_01_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="al_portraitThumbnail_carriedAdult.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="13">
+        <Controller target="y" controller="@ClipController(clip=al2a_portraitThumbnail_carried_01_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="al_portraitThumbnail_carriedAdult.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="22">
           <TransitionClassList />
         </Controller>
-        <Controller target="x" controller="@ClipController(clip=al2a_portraitThumbnail_carried_01_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="al_portraitThumbnail_carriedAdult.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="14">
+        <Controller target="x" controller="@ClipController(clip=al2a_portraitThumbnail_carried_01_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="al_portraitThumbnail_carriedAdult.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="23">
           <TransitionClassList />
         </Controller>
       </Choice>
       <Choice weight="50" avoidRepeat="False">
-        <Controller target="y" controller="@ClipController(clip=al2a_portraitThumbnail_carried_02_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="al_portraitThumbnail_carriedAdult.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="15">
+        <Controller target="y" controller="@ClipController(clip=al2a_portraitThumbnail_carried_02_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="al_portraitThumbnail_carriedAdult.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="24">
           <TransitionClassList />
         </Controller>
-        <Controller target="x" controller="@ClipController(clip=al2a_portraitThumbnail_carried_02_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="al_portraitThumbnail_carriedAdult.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="16">
+        <Controller target="x" controller="@ClipController(clip=al2a_portraitThumbnail_carried_02_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="al_portraitThumbnail_carriedAdult.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="25">
           <TransitionClassList />
         </Controller>
       </Choice>
       <Choice weight="50" avoidRepeat="False">
-        <Controller target="x" controller="@ClipController(clip=al2a_portraitThumbnail_carried_03_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="al_portraitThumbnail_carriedAdult.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="17">
+        <Controller target="x" controller="@ClipController(clip=al2a_portraitThumbnail_carried_03_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="al_portraitThumbnail_carriedAdult.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="26">
           <TransitionClassList />
         </Controller>
-        <Controller target="y" controller="@ClipController(clip=al2a_portraitThumbnail_carried_03_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="al_portraitThumbnail_carriedAdult.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="18">
+        <Controller target="y" controller="@ClipController(clip=al2a_portraitThumbnail_carried_03_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="al_portraitThumbnail_carriedAdult.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="27">
           <TransitionClassList />
         </Controller>
       </Choice>
@@ -260,50 +328,50 @@
   </State>
   <State name="HoldToddler" type="public" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
     <description />
-    <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="28">
+    <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="37">
       <Choice weight="100" avoidRepeat="False">
-        <Controller target="y" controller="@ClipController(clip=p_portraitThumbnail_carried_01_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_travelThumbnails_carried.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="20">
+        <Controller target="y" controller="@ClipController(clip=p_portraitThumbnail_carried_01_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_travelThumbnails_carried.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="29">
           <TransitionClassList>
             <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
           </TransitionClassList>
         </Controller>
-        <Controller target="x" controller="@ClipController(clip=p_portraitThumbnail_carried_01_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_travelThumbnails_carried.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="21">
+        <Controller target="x" controller="@ClipController(clip=p_portraitThumbnail_carried_01_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_travelThumbnails_carried.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="30">
           <TransitionClassList>
             <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
           </TransitionClassList>
         </Controller>
       </Choice>
       <Choice weight="100" avoidRepeat="False">
-        <Controller target="y" controller="@ClipController(clip=p_travelThumbnail_carried_01_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_travelThumbnails_carried.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="22">
+        <Controller target="y" controller="@ClipController(clip=p_travelThumbnail_carried_01_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_travelThumbnails_carried.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="31">
           <TransitionClassList>
             <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
           </TransitionClassList>
         </Controller>
-        <Controller target="x" controller="@ClipController(clip=p_travelThumbnail_carried_01_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_travelThumbnails_carried.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="23">
-          <TransitionClassList>
-            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
-          </TransitionClassList>
-        </Controller>
-      </Choice>
-      <Choice weight="100" avoidRepeat="False">
-        <Controller target="y" controller="@ClipController(clip=p_portraitThumbnail_carried_02_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_travelThumbnails_carried.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="24">
-          <TransitionClassList>
-            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
-          </TransitionClassList>
-        </Controller>
-        <Controller target="x" controller="@ClipController(clip=p_portraitThumbnail_carried_02_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_travelThumbnails_carried.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="25">
+        <Controller target="x" controller="@ClipController(clip=p_travelThumbnail_carried_01_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_travelThumbnails_carried.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="32">
           <TransitionClassList>
             <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
           </TransitionClassList>
         </Controller>
       </Choice>
       <Choice weight="100" avoidRepeat="False">
-        <Controller target="y" controller="@ClipController(clip=p_portraitThumbnail_carried_03_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_travelThumbnails_carried.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="26">
+        <Controller target="y" controller="@ClipController(clip=p_portraitThumbnail_carried_02_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_travelThumbnails_carried.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="33">
           <TransitionClassList>
             <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
           </TransitionClassList>
         </Controller>
-        <Controller target="x" controller="@ClipController(clip=p_portraitThumbnail_carried_03_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_travelThumbnails_carried.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="27">
+        <Controller target="x" controller="@ClipController(clip=p_portraitThumbnail_carried_02_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_travelThumbnails_carried.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="34">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+      </Choice>
+      <Choice weight="100" avoidRepeat="False">
+        <Controller target="y" controller="@ClipController(clip=p_portraitThumbnail_carried_03_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_travelThumbnails_carried.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="35">
+          <TransitionClassList>
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          </TransitionClassList>
+        </Controller>
+        <Controller target="x" controller="@ClipController(clip=p_portraitThumbnail_carried_03_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_travelThumbnails_carried.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="36">
           <TransitionClassList>
             <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
           </TransitionClassList>
@@ -313,34 +381,34 @@
   </State>
   <State name="Mirror" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
     <description />
-    <PostureSelector parameter="x:posture" unique_id="32">
+    <PostureSelector parameter="x:posture" unique_id="41">
       <Choice value="carried_sim--FullBody" track="normal" mask="">
-        <RandomSelector repeatweight="1" allow_empty_choices="True" unique_id="31">
+        <RandomSelector repeatweight="1" allow_empty_choices="True" unique_id="40">
           <Choice weight="100" avoidRepeat="False">
-            <SetMirror target="x" mirror="true" unique_id="29" />
+            <SetMirror target="x" mirror="true" unique_id="38" />
           </Choice>
           <Choice weight="100" avoidRepeat="False">
-            <SetMirror target="x" mirror="false" unique_id="30" />
+            <SetMirror target="x" mirror="false" unique_id="39" />
           </Choice>
         </RandomSelector>
       </Choice>
       <Choice value="-stand-FullBody" track="normal" mask="">
-        <Reference target="31" />
+        <Reference target="40" />
       </Choice>
     </PostureSelector>
   </State>
   <State name="Pregnancy" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
     <description />
-    <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="35">
+    <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="44">
       <Choice weight="100" avoidRepeat="False">
-        <Controller target="x" controller="@ClipController(clip=a_portraitThumbnail_pregnant_01_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_portraitThumbnails_pregnant_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="33">
+        <Controller target="x" controller="@ClipController(clip=a_portraitThumbnail_pregnant_01_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_portraitThumbnails_pregnant_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="42">
           <TransitionClassList>
             <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
           </TransitionClassList>
         </Controller>
       </Choice>
       <Choice weight="100" avoidRepeat="False">
-        <Controller target="x" controller="@ClipController(clip=a_portraitThumbnail_pregnant_02_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_portraitThumbnails_pregnant_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="34">
+        <Controller target="x" controller="@ClipController(clip=a_portraitThumbnail_pregnant_02_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_portraitThumbnails_pregnant_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="43">
           <TransitionClassList>
             <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
           </TransitionClassList>
@@ -350,56 +418,56 @@
   </State>
   <State name="SinglePoses" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
     <description />
-    <ParameterSelector parameter="x:species" unique_id="151">
+    <ParameterSelector parameter="x:species" unique_id="170">
       <Choice value="human">
-        <ParameterSelector parameter="x:age" unique_id="104">
+        <ParameterSelector parameter="x:age" unique_id="123">
           <Choice value="baby" />
           <Choice value="toddler">
-            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="43">
+            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="52">
               <Choice weight="100" avoidRepeat="False">
-                <Controller target="x" controller="@ClipController(clip=p_portraitThumbnail_06_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_portraitThumbnails_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="36">
+                <Controller target="x" controller="@ClipController(clip=p_portraitThumbnail_06_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_portraitThumbnails_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="45">
                   <TransitionClassList>
                     <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
                   </TransitionClassList>
                 </Controller>
               </Choice>
               <Choice weight="100" avoidRepeat="False">
-                <Controller target="x" controller="@ClipController(clip=p_portraitThumbnail_01_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_portraitThumbnails_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="37">
+                <Controller target="x" controller="@ClipController(clip=p_portraitThumbnail_01_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_portraitThumbnails_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="46">
                   <TransitionClassList>
                     <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
                   </TransitionClassList>
                 </Controller>
               </Choice>
               <Choice weight="100" avoidRepeat="False">
-                <Controller target="x" controller="@ClipController(clip=p_portraitThumbnail_02_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_portraitThumbnails_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="38">
+                <Controller target="x" controller="@ClipController(clip=p_portraitThumbnail_02_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_portraitThumbnails_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="47">
                   <TransitionClassList>
                     <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
                   </TransitionClassList>
                 </Controller>
               </Choice>
               <Choice weight="100" avoidRepeat="False">
-                <Controller target="x" controller="@ClipController(clip=p_portraitThumbnail_05_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_portraitThumbnails_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="39">
+                <Controller target="x" controller="@ClipController(clip=p_portraitThumbnail_05_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_portraitThumbnails_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="48">
                   <TransitionClassList>
                     <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
                   </TransitionClassList>
                 </Controller>
               </Choice>
               <Choice weight="100" avoidRepeat="False">
-                <Controller target="x" controller="@ClipController(clip=p_portraitThumbnail_04_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_portraitThumbnails_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="40">
+                <Controller target="x" controller="@ClipController(clip=p_portraitThumbnail_04_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_portraitThumbnails_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="49">
                   <TransitionClassList>
                     <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
                   </TransitionClassList>
                 </Controller>
               </Choice>
               <Choice weight="100" avoidRepeat="False">
-                <Controller target="x" controller="@ClipController(clip=p_portraitThumbnail_03_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_portraitThumbnails_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="41">
+                <Controller target="x" controller="@ClipController(clip=p_portraitThumbnail_03_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_portraitThumbnails_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="50">
                   <TransitionClassList>
                     <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
                   </TransitionClassList>
                 </Controller>
               </Choice>
               <Choice weight="100" avoidRepeat="False">
-                <Controller target="x" controller="@ClipController(clip=p_portraitThumbnail_07_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_portraitThumbnails_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="42">
+                <Controller target="x" controller="@ClipController(clip=p_portraitThumbnail_07_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_portraitThumbnails_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="51">
                   <TransitionClassList>
                     <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
                   </TransitionClassList>
@@ -408,41 +476,41 @@
             </RandomSelector>
           </Choice>
           <Choice value="child">
-            <ParameterSelector parameter="x:sex" unique_id="66">
+            <ParameterSelector parameter="x:sex" unique_id="75">
               <Choice value="male">
-                <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="57">
+                <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="66">
                   <Choice weight="67" avoidRepeat="False">
-                    <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="49">
+                    <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="58">
                       <Choice weight="100" avoidRepeat="False">
-                        <Controller target="x" controller="@ClipController(clip=c_portraitThumbnail_male_02_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c_portraitThumbnails_male_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="44">
+                        <Controller target="x" controller="@ClipController(clip=c_portraitThumbnail_male_02_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c_portraitThumbnails_male_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="53">
                           <TransitionClassList>
                             <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
                           </TransitionClassList>
                         </Controller>
                       </Choice>
                       <Choice weight="100" avoidRepeat="False">
-                        <Controller target="x" controller="@ClipController(clip=c_portraitThumbnail_male_01_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c_portraitThumbnails_male_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="45">
+                        <Controller target="x" controller="@ClipController(clip=c_portraitThumbnail_male_01_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c_portraitThumbnails_male_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="54">
                           <TransitionClassList>
                             <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
                           </TransitionClassList>
                         </Controller>
                       </Choice>
                       <Choice weight="100" avoidRepeat="False">
-                        <Controller target="x" controller="@ClipController(clip=c_portraitThumbnail_male_04_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c_portraitThumbnails_male_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="46">
+                        <Controller target="x" controller="@ClipController(clip=c_portraitThumbnail_male_04_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c_portraitThumbnails_male_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="55">
                           <TransitionClassList>
                             <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
                           </TransitionClassList>
                         </Controller>
                       </Choice>
                       <Choice weight="100" avoidRepeat="False">
-                        <Controller target="x" controller="@ClipController(clip=c_portraitThumbnail_male_03_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c_portraitThumbnails_male_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="47">
+                        <Controller target="x" controller="@ClipController(clip=c_portraitThumbnail_male_03_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c_portraitThumbnails_male_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="56">
                           <TransitionClassList>
                             <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
                           </TransitionClassList>
                         </Controller>
                       </Choice>
                       <Choice weight="100" avoidRepeat="False">
-                        <Controller target="x" controller="@ClipController(clip=c_portraitThumbnail_male_05_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c_portraitThumbnails_male_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="48">
+                        <Controller target="x" controller="@ClipController(clip=c_portraitThumbnail_male_05_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c_portraitThumbnails_male_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="57">
                           <TransitionClassList>
                             <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
                           </TransitionClassList>
@@ -451,44 +519,44 @@
                     </RandomSelector>
                   </Choice>
                   <Choice weight="100" avoidRepeat="False">
-                    <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="56">
+                    <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="65">
                       <Choice weight="100" avoidRepeat="False">
-                        <Controller target="x" controller="@ClipController(clip=c_portraitThumbnail_02_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c_portraitThumbnails_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="50">
+                        <Controller target="x" controller="@ClipController(clip=c_portraitThumbnail_02_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c_portraitThumbnails_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="59">
                           <TransitionClassList>
                             <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
                           </TransitionClassList>
                         </Controller>
                       </Choice>
                       <Choice weight="100" avoidRepeat="False">
-                        <Controller target="x" controller="@ClipController(clip=c_portraitThumbnail_04_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c_portraitThumbnails_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="51">
+                        <Controller target="x" controller="@ClipController(clip=c_portraitThumbnail_04_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c_portraitThumbnails_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="60">
                           <TransitionClassList>
                             <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
                           </TransitionClassList>
                         </Controller>
                       </Choice>
                       <Choice weight="100" avoidRepeat="False">
-                        <Controller target="x" controller="@ClipController(clip=c_portraitThumbnail_01_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c_portraitThumbnails_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="52">
+                        <Controller target="x" controller="@ClipController(clip=c_portraitThumbnail_01_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c_portraitThumbnails_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="61">
                           <TransitionClassList>
                             <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
                           </TransitionClassList>
                         </Controller>
                       </Choice>
                       <Choice weight="100" avoidRepeat="False">
-                        <Controller target="x" controller="@ClipController(clip=c_portraitThumbnail_05_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c_portraitThumbnails_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="53">
+                        <Controller target="x" controller="@ClipController(clip=c_portraitThumbnail_05_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c_portraitThumbnails_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="62">
                           <TransitionClassList>
                             <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
                           </TransitionClassList>
                         </Controller>
                       </Choice>
                       <Choice weight="100" avoidRepeat="False">
-                        <Controller target="x" controller="@ClipController(clip=c_portraitThumbnail_03_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c_portraitThumbnails_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="54">
+                        <Controller target="x" controller="@ClipController(clip=c_portraitThumbnail_03_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c_portraitThumbnails_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="63">
                           <TransitionClassList>
                             <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
                           </TransitionClassList>
                         </Controller>
                       </Choice>
                       <Choice weight="100" avoidRepeat="False">
-                        <Controller target="x" controller="@ClipController(clip=c_portraitThumbnail_06_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c_portraitThumbnails_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="55">
+                        <Controller target="x" controller="@ClipController(clip=c_portraitThumbnail_06_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c_portraitThumbnails_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="64">
                           <TransitionClassList>
                             <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
                           </TransitionClassList>
@@ -499,49 +567,49 @@
                 </RandomSelector>
               </Choice>
               <Choice value="female">
-                <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="65">
+                <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="74">
                   <Choice weight="100" avoidRepeat="False">
-                    <Reference target="56" />
+                    <Reference target="65" />
                   </Choice>
                   <Choice weight="100" avoidRepeat="False">
-                    <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="64">
+                    <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="73">
                       <Choice weight="100" avoidRepeat="False">
-                        <Controller target="x" controller="@ClipController(clip=c_portraitThumbnail_female_04_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c_portraitThumbnails_female_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="58">
+                        <Controller target="x" controller="@ClipController(clip=c_portraitThumbnail_female_04_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c_portraitThumbnails_female_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="67">
                           <TransitionClassList>
                             <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
                           </TransitionClassList>
                         </Controller>
                       </Choice>
                       <Choice weight="100" avoidRepeat="False">
-                        <Controller target="x" controller="@ClipController(clip=c_portraitThumbnail_female_03_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c_portraitThumbnails_female_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="59">
+                        <Controller target="x" controller="@ClipController(clip=c_portraitThumbnail_female_03_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c_portraitThumbnails_female_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="68">
                           <TransitionClassList>
                             <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
                           </TransitionClassList>
                         </Controller>
                       </Choice>
                       <Choice weight="100" avoidRepeat="False">
-                        <Controller target="x" controller="@ClipController(clip=c_portraitThumbnail_female_05_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c_portraitThumbnails_female_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="60">
+                        <Controller target="x" controller="@ClipController(clip=c_portraitThumbnail_female_05_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c_portraitThumbnails_female_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="69">
                           <TransitionClassList>
                             <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
                           </TransitionClassList>
                         </Controller>
                       </Choice>
                       <Choice weight="100" avoidRepeat="False">
-                        <Controller target="x" controller="@ClipController(clip=c_portraitThumbnail_female_02_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c_portraitThumbnails_female_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="61">
+                        <Controller target="x" controller="@ClipController(clip=c_portraitThumbnail_female_02_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c_portraitThumbnails_female_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="70">
                           <TransitionClassList>
                             <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
                           </TransitionClassList>
                         </Controller>
                       </Choice>
                       <Choice weight="100" avoidRepeat="False">
-                        <Controller target="x" controller="@ClipController(clip=c_portraitThumbnail_female_01_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c_portraitThumbnails_female_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="62">
+                        <Controller target="x" controller="@ClipController(clip=c_portraitThumbnail_female_01_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c_portraitThumbnails_female_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="71">
                           <TransitionClassList>
                             <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
                           </TransitionClassList>
                         </Controller>
                       </Choice>
                       <Choice weight="100" avoidRepeat="False">
-                        <Controller target="x" controller="@ClipController(clip=c_portraitThumbnail_female_06_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c_portraitThumbnails_female_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="63">
+                        <Controller target="x" controller="@ClipController(clip=c_portraitThumbnail_female_06_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c_portraitThumbnails_female_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="72">
                           <TransitionClassList>
                             <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
                           </TransitionClassList>
@@ -554,225 +622,98 @@
             </ParameterSelector>
           </Choice>
           <Choice value="teen">
-            <ParameterSelector parameter="x:sex" unique_id="94">
-              <Choice value="male">
-                <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="82">
-                  <Choice weight="34" avoidRepeat="False">
-                    <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="69">
-                      <Choice weight="100" avoidRepeat="False">
-                        <Controller target="x" controller="@ClipController(clip=t_portraitThumbnail_male_02_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="t_portraitThumbnails_male_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="67">
-                          <TransitionClassList>
-                            <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
-                          </TransitionClassList>
-                        </Controller>
-                      </Choice>
-                      <Choice weight="100" avoidRepeat="False">
-                        <Controller target="x" controller="@ClipController(clip=t_portraitThumbnail_male_01_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="t_portraitThumbnails_male_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="68">
-                          <TransitionClassList>
-                            <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
-                          </TransitionClassList>
-                        </Controller>
-                      </Choice>
-                    </RandomSelector>
-                  </Choice>
-                  <Choice weight="100" avoidRepeat="False">
-                    <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="76">
-                      <Choice weight="100" avoidRepeat="False">
-                        <Controller target="x" controller="@ClipController(clip=a_portraitThumbnail_male_02_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_portraitThumbnails_male_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="70">
-                          <TransitionClassList>
-                            <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
-                          </TransitionClassList>
-                        </Controller>
-                      </Choice>
-                      <Choice weight="100" avoidRepeat="False">
-                        <Controller target="x" controller="@ClipController(clip=a_portraitThumbnail_male_06_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_portraitThumbnails_male_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="71">
-                          <TransitionClassList>
-                            <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
-                          </TransitionClassList>
-                        </Controller>
-                      </Choice>
-                      <Choice weight="100" avoidRepeat="False">
-                        <Controller target="x" controller="@ClipController(clip=a_portraitThumbnail_male_05_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_portraitThumbnails_male_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="72">
-                          <TransitionClassList>
-                            <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
-                          </TransitionClassList>
-                        </Controller>
-                      </Choice>
-                      <Choice weight="100" avoidRepeat="False">
-                        <Controller target="x" controller="@ClipController(clip=a_portraitThumbnail_male_01_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_portraitThumbnails_male_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="73">
-                          <TransitionClassList>
-                            <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
-                          </TransitionClassList>
-                        </Controller>
-                      </Choice>
-                      <Choice weight="100" avoidRepeat="False">
-                        <Controller target="x" controller="@ClipController(clip=a_portraitThumbnail_male_03_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_portraitThumbnails_male_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="74">
-                          <TransitionClassList>
-                            <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
-                          </TransitionClassList>
-                        </Controller>
-                      </Choice>
-                      <Choice weight="100" avoidRepeat="False">
-                        <Controller target="x" controller="@ClipController(clip=a_portraitThumbnail_male_04_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_portraitThumbnails_male_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="75">
-                          <TransitionClassList>
-                            <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
-                          </TransitionClassList>
-                        </Controller>
-                      </Choice>
-                    </RandomSelector>
-                  </Choice>
-                  <Choice weight="67" avoidRepeat="False">
-                    <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="81">
-                      <Choice weight="100" avoidRepeat="False">
-                        <Controller target="x" controller="@ClipController(clip=a_portraitThumbnail_generic_02_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_portraitThumbnails_universal_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="77">
-                          <TransitionClassList>
-                            <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
-                          </TransitionClassList>
-                        </Controller>
-                      </Choice>
-                      <Choice weight="100" avoidRepeat="False">
-                        <Controller target="x" controller="@ClipController(clip=a_portraitThumbnail_generic_04_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_portraitThumbnails_universal_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="78">
-                          <TransitionClassList>
-                            <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
-                          </TransitionClassList>
-                        </Controller>
-                      </Choice>
-                      <Choice weight="100" avoidRepeat="False">
-                        <Controller target="x" controller="@ClipController(clip=a_portraitThumbnail_generic_03_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_portraitThumbnails_universal_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="79">
-                          <TransitionClassList>
-                            <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
-                          </TransitionClassList>
-                        </Controller>
-                      </Choice>
-                      <Choice weight="100" avoidRepeat="False">
-                        <Controller target="x" controller="@ClipController(clip=a_portraitThumbnail_generic_01_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_portraitThumbnails_universal_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="80">
-                          <TransitionClassList>
-                            <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
-                          </TransitionClassList>
-                        </Controller>
-                      </Choice>
-                    </RandomSelector>
-                  </Choice>
-                </RandomSelector>
-              </Choice>
-              <Choice value="female">
-                <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="93">
-                  <Choice weight="67" avoidRepeat="False">
-                    <Reference target="81" />
-                  </Choice>
-                  <Choice weight="100" avoidRepeat="False">
-                    <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="89">
-                      <Choice weight="100" avoidRepeat="False">
-                        <Controller target="x" controller="@ClipController(clip=a_portraitThumbnail_female_02_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_portraitThumbnails_female_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="83">
-                          <TransitionClassList>
-                            <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
-                          </TransitionClassList>
-                        </Controller>
-                      </Choice>
-                      <Choice weight="100" avoidRepeat="False">
-                        <Controller target="x" controller="@ClipController(clip=a_portraitThumbnail_female_04_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_portraitThumbnails_female_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="84">
-                          <TransitionClassList>
-                            <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
-                          </TransitionClassList>
-                        </Controller>
-                      </Choice>
-                      <Choice weight="100" avoidRepeat="False">
-                        <Controller target="x" controller="@ClipController(clip=a_portraitThumbnail_female_06_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_portraitThumbnails_female_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="85">
-                          <TransitionClassList>
-                            <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
-                          </TransitionClassList>
-                        </Controller>
-                      </Choice>
-                      <Choice weight="100" avoidRepeat="False">
-                        <Controller target="x" controller="@ClipController(clip=a_portraitThumbnail_female_01_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_portraitThumbnails_female_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="86">
-                          <TransitionClassList>
-                            <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
-                          </TransitionClassList>
-                        </Controller>
-                      </Choice>
-                      <Choice weight="100" avoidRepeat="False">
-                        <Controller target="x" controller="@ClipController(clip=a_portraitThumbnail_female_03_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_portraitThumbnails_female_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="87">
-                          <TransitionClassList>
-                            <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
-                          </TransitionClassList>
-                        </Controller>
-                      </Choice>
-                      <Choice weight="100" avoidRepeat="False">
-                        <Controller target="x" controller="@ClipController(clip=a_portraitThumbnail_female_05_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_portraitThumbnails_female_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="88">
-                          <TransitionClassList>
-                            <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
-                          </TransitionClassList>
-                        </Controller>
-                      </Choice>
-                    </RandomSelector>
-                  </Choice>
-                  <Choice weight="34" avoidRepeat="False">
-                    <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="92">
-                      <Choice weight="100" avoidRepeat="False">
-                        <Controller target="x" controller="@ClipController(clip=t_portraitThumbnail_female_01_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="t_portraitThumbnails_female_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="90">
-                          <TransitionClassList>
-                            <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
-                          </TransitionClassList>
-                        </Controller>
-                      </Choice>
-                      <Choice weight="100" avoidRepeat="False">
-                        <Controller target="x" controller="@ClipController(clip=t_portraitThumbnail_female_02_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="t_portraitThumbnails_female_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="91">
-                          <TransitionClassList>
-                            <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
-                          </TransitionClassList>
-                        </Controller>
-                      </Choice>
-                    </RandomSelector>
-                  </Choice>
-                </RandomSelector>
-              </Choice>
-            </ParameterSelector>
-          </Choice>
-          <Choice value="youngadult">
-            <ParameterSelector parameter="x:sex" unique_id="97">
-              <Choice value="male">
-                <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="95">
-                  <Choice weight="100" avoidRepeat="False">
-                    <Reference target="76" />
-                  </Choice>
-                  <Choice weight="67" avoidRepeat="False">
-                    <Reference target="81" />
-                  </Choice>
-                </RandomSelector>
-              </Choice>
-              <Choice value="female">
-                <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="96">
-                  <Choice weight="67" avoidRepeat="False">
-                    <Reference target="81" />
-                  </Choice>
-                  <Choice weight="100" avoidRepeat="False">
-                    <Reference target="89" />
-                  </Choice>
-                </RandomSelector>
-              </Choice>
-            </ParameterSelector>
-          </Choice>
-          <Choice value="adult">
-            <Reference target="97" />
-          </Choice>
-          <Choice value="elder">
             <ParameterSelector parameter="x:sex" unique_id="103">
               <Choice value="male">
-                <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="101">
-                  <Choice weight="100" avoidRepeat="False">
-                    <Reference target="76" />
-                  </Choice>
+                <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="91">
                   <Choice weight="34" avoidRepeat="False">
-                    <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="100">
+                    <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="78">
                       <Choice weight="100" avoidRepeat="False">
-                        <Controller target="x" controller="@ClipController(clip=a_portraitThumbnail_elder_02_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="e_portraitThumbnails_generic_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="98">
+                        <Controller target="x" controller="@ClipController(clip=t_portraitThumbnail_male_02_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="t_portraitThumbnails_male_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="76">
                           <TransitionClassList>
                             <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
                           </TransitionClassList>
                         </Controller>
                       </Choice>
                       <Choice weight="100" avoidRepeat="False">
-                        <Controller target="x" controller="@ClipController(clip=a_portraitThumbnail_elder_01_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="e_portraitThumbnails_generic_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="99">
+                        <Controller target="x" controller="@ClipController(clip=t_portraitThumbnail_male_01_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="t_portraitThumbnails_male_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="77">
+                          <TransitionClassList>
+                            <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                          </TransitionClassList>
+                        </Controller>
+                      </Choice>
+                    </RandomSelector>
+                  </Choice>
+                  <Choice weight="100" avoidRepeat="False">
+                    <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="85">
+                      <Choice weight="100" avoidRepeat="False">
+                        <Controller target="x" controller="@ClipController(clip=a_portraitThumbnail_male_02_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_portraitThumbnails_male_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="79">
+                          <TransitionClassList>
+                            <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                          </TransitionClassList>
+                        </Controller>
+                      </Choice>
+                      <Choice weight="100" avoidRepeat="False">
+                        <Controller target="x" controller="@ClipController(clip=a_portraitThumbnail_male_06_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_portraitThumbnails_male_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="80">
+                          <TransitionClassList>
+                            <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                          </TransitionClassList>
+                        </Controller>
+                      </Choice>
+                      <Choice weight="100" avoidRepeat="False">
+                        <Controller target="x" controller="@ClipController(clip=a_portraitThumbnail_male_05_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_portraitThumbnails_male_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="81">
+                          <TransitionClassList>
+                            <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                          </TransitionClassList>
+                        </Controller>
+                      </Choice>
+                      <Choice weight="100" avoidRepeat="False">
+                        <Controller target="x" controller="@ClipController(clip=a_portraitThumbnail_male_01_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_portraitThumbnails_male_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="82">
+                          <TransitionClassList>
+                            <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                          </TransitionClassList>
+                        </Controller>
+                      </Choice>
+                      <Choice weight="100" avoidRepeat="False">
+                        <Controller target="x" controller="@ClipController(clip=a_portraitThumbnail_male_03_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_portraitThumbnails_male_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="83">
+                          <TransitionClassList>
+                            <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                          </TransitionClassList>
+                        </Controller>
+                      </Choice>
+                      <Choice weight="100" avoidRepeat="False">
+                        <Controller target="x" controller="@ClipController(clip=a_portraitThumbnail_male_04_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_portraitThumbnails_male_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="84">
+                          <TransitionClassList>
+                            <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                          </TransitionClassList>
+                        </Controller>
+                      </Choice>
+                    </RandomSelector>
+                  </Choice>
+                  <Choice weight="67" avoidRepeat="False">
+                    <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="90">
+                      <Choice weight="100" avoidRepeat="False">
+                        <Controller target="x" controller="@ClipController(clip=a_portraitThumbnail_generic_02_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_portraitThumbnails_universal_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="86">
+                          <TransitionClassList>
+                            <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                          </TransitionClassList>
+                        </Controller>
+                      </Choice>
+                      <Choice weight="100" avoidRepeat="False">
+                        <Controller target="x" controller="@ClipController(clip=a_portraitThumbnail_generic_04_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_portraitThumbnails_universal_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="87">
+                          <TransitionClassList>
+                            <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                          </TransitionClassList>
+                        </Controller>
+                      </Choice>
+                      <Choice weight="100" avoidRepeat="False">
+                        <Controller target="x" controller="@ClipController(clip=a_portraitThumbnail_generic_03_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_portraitThumbnails_universal_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="88">
+                          <TransitionClassList>
+                            <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                          </TransitionClassList>
+                        </Controller>
+                      </Choice>
+                      <Choice weight="100" avoidRepeat="False">
+                        <Controller target="x" controller="@ClipController(clip=a_portraitThumbnail_generic_01_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_portraitThumbnails_universal_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="89">
                           <TransitionClassList>
                             <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
                           </TransitionClassList>
@@ -784,11 +725,208 @@
               </Choice>
               <Choice value="female">
                 <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="102">
+                  <Choice weight="67" avoidRepeat="False">
+                    <Reference target="90" />
+                  </Choice>
                   <Choice weight="100" avoidRepeat="False">
-                    <Reference target="89" />
+                    <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="98">
+                      <Choice weight="100" avoidRepeat="False">
+                        <Controller target="x" controller="@ClipController(clip=a_portraitThumbnail_female_02_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_portraitThumbnails_female_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="92">
+                          <TransitionClassList>
+                            <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                          </TransitionClassList>
+                        </Controller>
+                      </Choice>
+                      <Choice weight="100" avoidRepeat="False">
+                        <Controller target="x" controller="@ClipController(clip=a_portraitThumbnail_female_04_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_portraitThumbnails_female_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="93">
+                          <TransitionClassList>
+                            <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                          </TransitionClassList>
+                        </Controller>
+                      </Choice>
+                      <Choice weight="100" avoidRepeat="False">
+                        <Controller target="x" controller="@ClipController(clip=a_portraitThumbnail_female_06_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_portraitThumbnails_female_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="94">
+                          <TransitionClassList>
+                            <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                          </TransitionClassList>
+                        </Controller>
+                      </Choice>
+                      <Choice weight="100" avoidRepeat="False">
+                        <Controller target="x" controller="@ClipController(clip=a_portraitThumbnail_female_01_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_portraitThumbnails_female_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="95">
+                          <TransitionClassList>
+                            <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                          </TransitionClassList>
+                        </Controller>
+                      </Choice>
+                      <Choice weight="100" avoidRepeat="False">
+                        <Controller target="x" controller="@ClipController(clip=a_portraitThumbnail_female_03_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_portraitThumbnails_female_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="96">
+                          <TransitionClassList>
+                            <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                          </TransitionClassList>
+                        </Controller>
+                      </Choice>
+                      <Choice weight="100" avoidRepeat="False">
+                        <Controller target="x" controller="@ClipController(clip=a_portraitThumbnail_female_05_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_portraitThumbnails_female_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="97">
+                          <TransitionClassList>
+                            <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                          </TransitionClassList>
+                        </Controller>
+                      </Choice>
+                    </RandomSelector>
                   </Choice>
                   <Choice weight="34" avoidRepeat="False">
-                    <Reference target="100" />
+                    <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="101">
+                      <Choice weight="100" avoidRepeat="False">
+                        <Controller target="x" controller="@ClipController(clip=t_portraitThumbnail_female_01_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="t_portraitThumbnails_female_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="99">
+                          <TransitionClassList>
+                            <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                          </TransitionClassList>
+                        </Controller>
+                      </Choice>
+                      <Choice weight="100" avoidRepeat="False">
+                        <Controller target="x" controller="@ClipController(clip=t_portraitThumbnail_female_02_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="t_portraitThumbnails_female_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="100">
+                          <TransitionClassList>
+                            <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                          </TransitionClassList>
+                        </Controller>
+                      </Choice>
+                    </RandomSelector>
+                  </Choice>
+                </RandomSelector>
+              </Choice>
+            </ParameterSelector>
+          </Choice>
+          <Choice value="youngadult">
+            <ParameterSelector parameter="x:sex" unique_id="106">
+              <Choice value="male">
+                <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="104">
+                  <Choice weight="100" avoidRepeat="False">
+                    <Reference target="85" />
+                  </Choice>
+                  <Choice weight="67" avoidRepeat="False">
+                    <Reference target="90" />
+                  </Choice>
+                </RandomSelector>
+              </Choice>
+              <Choice value="female">
+                <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="105">
+                  <Choice weight="67" avoidRepeat="False">
+                    <Reference target="90" />
+                  </Choice>
+                  <Choice weight="100" avoidRepeat="False">
+                    <Reference target="98" />
+                  </Choice>
+                </RandomSelector>
+              </Choice>
+            </ParameterSelector>
+          </Choice>
+          <Choice value="adult">
+            <Reference target="106" />
+          </Choice>
+          <Choice value="elder">
+            <ParameterSelector parameter="x:sex" unique_id="112">
+              <Choice value="male">
+                <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="110">
+                  <Choice weight="100" avoidRepeat="False">
+                    <Reference target="85" />
+                  </Choice>
+                  <Choice weight="34" avoidRepeat="False">
+                    <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="109">
+                      <Choice weight="100" avoidRepeat="False">
+                        <Controller target="x" controller="@ClipController(clip=a_portraitThumbnail_elder_02_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="e_portraitThumbnails_generic_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="107">
+                          <TransitionClassList>
+                            <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                          </TransitionClassList>
+                        </Controller>
+                      </Choice>
+                      <Choice weight="100" avoidRepeat="False">
+                        <Controller target="x" controller="@ClipController(clip=a_portraitThumbnail_elder_01_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="e_portraitThumbnails_generic_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="108">
+                          <TransitionClassList>
+                            <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                          </TransitionClassList>
+                        </Controller>
+                      </Choice>
+                    </RandomSelector>
+                  </Choice>
+                </RandomSelector>
+              </Choice>
+              <Choice value="female">
+                <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="111">
+                  <Choice weight="100" avoidRepeat="False">
+                    <Reference target="98" />
+                  </Choice>
+                  <Choice weight="34" avoidRepeat="False">
+                    <Reference target="109" />
+                  </Choice>
+                </RandomSelector>
+              </Choice>
+            </ParameterSelector>
+          </Choice>
+          <Choice value="infant">
+            <ParameterSelector parameter="x:isAbleToSit" unique_id="122">
+              <Choice value="false">
+                <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="116">
+                  <Choice weight="50" avoidRepeat="False">
+                    <Controller target="x" controller="@ClipController(clip=i_portraitThumbnail_01_layOnBack_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="i_portraitThumbnails_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="113">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                  </Choice>
+                  <Choice weight="50" avoidRepeat="False">
+                    <Controller target="x" controller="@ClipController(clip=i_portraitThumbnail_02_layOnBack_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="i_portraitThumbnails_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="114">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                  </Choice>
+                  <Choice weight="50" avoidRepeat="False">
+                    <Controller target="x" controller="@ClipController(clip=i_portraitThumbnail_03_layOnBack_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="i_portraitThumbnails_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="115">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                  </Choice>
+                </RandomSelector>
+              </Choice>
+              <Choice value="true">
+                <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="121">
+                  <Choice weight="50" avoidRepeat="False">
+                    <Controller target="x" controller="@ClipController(clip=i_portraitThumbnail_04_sit_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="i_portraitThumbnails_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="117">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                  </Choice>
+                  <Choice weight="50" avoidRepeat="False">
+                    <Controller target="x" controller="@ClipController(clip=i_portraitThumbnail_05_sit_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="i_portraitThumbnails_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="118">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                  </Choice>
+                  <Choice weight="50" avoidRepeat="False">
+                    <Controller target="x" controller="@ClipController(clip=i_portraitThumbnail_06_sit_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="i_portraitThumbnails_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="119">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                  </Choice>
+                  <Choice weight="50" avoidRepeat="False">
+                    <Controller target="x" controller="@ClipController(clip=i_portraitThumbnail_07_sit_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="i_portraitThumbnails_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="120">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                  </Choice>
+                  <Choice weight="50" avoidRepeat="False">
+                    <Reference target="113" />
+                  </Choice>
+                  <Choice weight="50" avoidRepeat="False">
+                    <Reference target="114" />
+                  </Choice>
+                  <Choice weight="50" avoidRepeat="False">
+                    <Reference target="115" />
                   </Choice>
                 </RandomSelector>
               </Choice>
@@ -797,249 +935,252 @@
         </ParameterSelector>
       </Choice>
       <Choice value="dog">
-        <ParameterSelector parameter="x:age" unique_id="121">
+        <ParameterSelector parameter="x:age" unique_id="140">
           <Choice value="baby" />
           <Choice value="toddler" />
           <Choice value="child">
-            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="109">
+            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="128">
               <Choice weight="50" avoidRepeat="False">
-                <Controller target="x" controller="@ClipController(clip=cd_portraitThumbnail_generic_01_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="cd_portraitThumbnail_generic.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="105">
+                <Controller target="x" controller="@ClipController(clip=cd_portraitThumbnail_generic_01_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="cd_portraitThumbnail_generic.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="124">
                   <TransitionClassList />
                 </Controller>
               </Choice>
               <Choice weight="50" avoidRepeat="False">
-                <Controller target="x" controller="@ClipController(clip=cd_portraitThumbnail_generic_02_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="cd_portraitThumbnail_generic.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="106">
+                <Controller target="x" controller="@ClipController(clip=cd_portraitThumbnail_generic_02_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="cd_portraitThumbnail_generic.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="125">
                   <TransitionClassList />
                 </Controller>
               </Choice>
               <Choice weight="50" avoidRepeat="False">
-                <Controller target="x" controller="@ClipController(clip=cd_portraitThumbnail_generic_03_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="cd_portraitThumbnail_generic.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="107">
+                <Controller target="x" controller="@ClipController(clip=cd_portraitThumbnail_generic_03_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="cd_portraitThumbnail_generic.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="126">
                   <TransitionClassList />
                 </Controller>
               </Choice>
               <Choice weight="50" avoidRepeat="False">
-                <Controller target="x" controller="@ClipController(clip=cd_portraitThumbnail_generic_04_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="cd_portraitThumbnail_generic.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="108">
+                <Controller target="x" controller="@ClipController(clip=cd_portraitThumbnail_generic_04_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="cd_portraitThumbnail_generic.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="127">
                   <TransitionClassList />
                 </Controller>
               </Choice>
             </RandomSelector>
           </Choice>
           <Choice value="teen">
-            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="117">
+            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="136">
               <Choice weight="50" avoidRepeat="False">
-                <Controller target="x" controller="@ClipController(clip=ad_portraitThumbnail_generic_01_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ad_portraitThumbnail_generic.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="110">
+                <Controller target="x" controller="@ClipController(clip=ad_portraitThumbnail_generic_01_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ad_portraitThumbnail_generic.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="129">
                   <TransitionClassList />
                 </Controller>
               </Choice>
               <Choice weight="50" avoidRepeat="False">
-                <Controller target="x" controller="@ClipController(clip=ad_portraitThumbnail_generic_02_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ad_portraitThumbnail_generic.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="111">
+                <Controller target="x" controller="@ClipController(clip=ad_portraitThumbnail_generic_02_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ad_portraitThumbnail_generic.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="130">
                   <TransitionClassList />
                 </Controller>
               </Choice>
               <Choice weight="50" avoidRepeat="False">
-                <Controller target="x" controller="@ClipController(clip=ad_portraitThumbnail_generic_03_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ad_portraitThumbnail_generic.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="112">
+                <Controller target="x" controller="@ClipController(clip=ad_portraitThumbnail_generic_03_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ad_portraitThumbnail_generic.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="131">
                   <TransitionClassList />
                 </Controller>
               </Choice>
               <Choice weight="50" avoidRepeat="False">
-                <Controller target="x" controller="@ClipController(clip=ad_portraitThumbnail_generic_04_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ad_portraitThumbnail_generic.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="113">
+                <Controller target="x" controller="@ClipController(clip=ad_portraitThumbnail_generic_04_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ad_portraitThumbnail_generic.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="132">
                   <TransitionClassList />
                 </Controller>
               </Choice>
               <Choice weight="50" avoidRepeat="False">
-                <Controller target="x" controller="@ClipController(clip=ad_portraitThumbnail_generic_05_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ad_portraitThumbnail_generic.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="114">
+                <Controller target="x" controller="@ClipController(clip=ad_portraitThumbnail_generic_05_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ad_portraitThumbnail_generic.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="133">
                   <TransitionClassList />
                 </Controller>
               </Choice>
               <Choice weight="50" avoidRepeat="False">
-                <Controller target="x" controller="@ClipController(clip=ad_portraitThumbnail_generic_06_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ad_portraitThumbnail_generic.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="115">
+                <Controller target="x" controller="@ClipController(clip=ad_portraitThumbnail_generic_06_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ad_portraitThumbnail_generic.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="134">
                   <TransitionClassList />
                 </Controller>
               </Choice>
               <Choice weight="50" avoidRepeat="False">
-                <Controller target="x" controller="@ClipController(clip=ad_portraitThumbnail_generic_07_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ad_portraitThumbnail_generic.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="116">
+                <Controller target="x" controller="@ClipController(clip=ad_portraitThumbnail_generic_07_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ad_portraitThumbnail_generic.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="135">
                   <TransitionClassList />
                 </Controller>
               </Choice>
             </RandomSelector>
           </Choice>
           <Choice value="youngadult">
-            <Reference target="117" />
+            <Reference target="136" />
           </Choice>
           <Choice value="adult">
-            <Reference target="117" />
+            <Reference target="136" />
           </Choice>
           <Choice value="elder">
-            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="120">
+            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="139">
               <Choice weight="50" avoidRepeat="False">
-                <Controller target="x" controller="@ClipController(clip=ed_portraitThumbnail_generic_01_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ed_portraitThumbnail_generic.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="118">
+                <Controller target="x" controller="@ClipController(clip=ed_portraitThumbnail_generic_01_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ed_portraitThumbnail_generic.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="137">
                   <TransitionClassList />
                 </Controller>
               </Choice>
               <Choice weight="50" avoidRepeat="False">
-                <Controller target="x" controller="@ClipController(clip=ed_portraitThumbnail_generic_02_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ed_portraitThumbnail_generic.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="119">
+                <Controller target="x" controller="@ClipController(clip=ed_portraitThumbnail_generic_02_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ed_portraitThumbnail_generic.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="138">
                   <TransitionClassList />
                 </Controller>
               </Choice>
             </RandomSelector>
           </Choice>
+          <Choice value="infant" />
         </ParameterSelector>
       </Choice>
       <Choice value="smalldog">
-        <ParameterSelector parameter="x:age" unique_id="133">
+        <ParameterSelector parameter="x:age" unique_id="152">
           <Choice value="baby" />
           <Choice value="toddler" />
           <Choice value="child">
-            <Reference target="109" />
+            <Reference target="128" />
           </Choice>
           <Choice value="teen">
-            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="129">
+            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="148">
               <Choice weight="50" avoidRepeat="False">
-                <Controller target="x" controller="@ClipController(clip=al_portraitThumbnail_generic_01_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="al_portraitThumbnail_generic.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="122">
+                <Controller target="x" controller="@ClipController(clip=al_portraitThumbnail_generic_01_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="al_portraitThumbnail_generic.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="141">
                   <TransitionClassList />
                 </Controller>
               </Choice>
               <Choice weight="50" avoidRepeat="False">
-                <Controller target="x" controller="@ClipController(clip=al_portraitThumbnail_generic_02_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="al_portraitThumbnail_generic.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="123">
+                <Controller target="x" controller="@ClipController(clip=al_portraitThumbnail_generic_02_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="al_portraitThumbnail_generic.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="142">
                   <TransitionClassList />
                 </Controller>
               </Choice>
               <Choice weight="50" avoidRepeat="False">
-                <Controller target="x" controller="@ClipController(clip=al_portraitThumbnail_generic_03_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="al_portraitThumbnail_generic.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="124">
+                <Controller target="x" controller="@ClipController(clip=al_portraitThumbnail_generic_03_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="al_portraitThumbnail_generic.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="143">
                   <TransitionClassList />
                 </Controller>
               </Choice>
               <Choice weight="50" avoidRepeat="False">
-                <Controller target="x" controller="@ClipController(clip=al_portraitThumbnail_generic_04_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="al_portraitThumbnail_generic.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="125">
+                <Controller target="x" controller="@ClipController(clip=al_portraitThumbnail_generic_04_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="al_portraitThumbnail_generic.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="144">
                   <TransitionClassList />
                 </Controller>
               </Choice>
               <Choice weight="50" avoidRepeat="False">
-                <Controller target="x" controller="@ClipController(clip=al_portraitThumbnail_generic_05_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="al_portraitThumbnail_generic.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="126">
+                <Controller target="x" controller="@ClipController(clip=al_portraitThumbnail_generic_05_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="al_portraitThumbnail_generic.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="145">
                   <TransitionClassList />
                 </Controller>
               </Choice>
               <Choice weight="50" avoidRepeat="False">
-                <Controller target="x" controller="@ClipController(clip=al_portraitThumbnail_generic_06_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="al_portraitThumbnail_generic.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="127">
+                <Controller target="x" controller="@ClipController(clip=al_portraitThumbnail_generic_06_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="al_portraitThumbnail_generic.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="146">
                   <TransitionClassList />
                 </Controller>
               </Choice>
               <Choice weight="50" avoidRepeat="False">
-                <Controller target="x" controller="@ClipController(clip=al_portraitThumbnail_generic_07_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="al_portraitThumbnail_generic.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="128">
+                <Controller target="x" controller="@ClipController(clip=al_portraitThumbnail_generic_07_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="al_portraitThumbnail_generic.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="147">
                   <TransitionClassList />
                 </Controller>
               </Choice>
             </RandomSelector>
           </Choice>
           <Choice value="youngadult">
-            <Reference target="129" />
+            <Reference target="148" />
           </Choice>
           <Choice value="adult">
-            <Reference target="129" />
+            <Reference target="148" />
           </Choice>
           <Choice value="elder">
-            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="132">
+            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="151">
               <Choice weight="50" avoidRepeat="False">
-                <Controller target="x" controller="@ClipController(clip=el_portraitThumbnail_generic_01_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="el_portraitThumbnail_generic.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="130">
+                <Controller target="x" controller="@ClipController(clip=el_portraitThumbnail_generic_01_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="el_portraitThumbnail_generic.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="149">
                   <TransitionClassList />
                 </Controller>
               </Choice>
               <Choice weight="50" avoidRepeat="False">
-                <Controller target="x" controller="@ClipController(clip=el_portraitThumbnail_generic_02_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="el_portraitThumbnail_generic.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="131">
+                <Controller target="x" controller="@ClipController(clip=el_portraitThumbnail_generic_02_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="el_portraitThumbnail_generic.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="150">
                   <TransitionClassList />
                 </Controller>
               </Choice>
             </RandomSelector>
           </Choice>
+          <Choice value="infant" />
         </ParameterSelector>
       </Choice>
       <Choice value="cat">
-        <ParameterSelector parameter="x:age" unique_id="150">
+        <ParameterSelector parameter="x:age" unique_id="169">
           <Choice value="baby" />
           <Choice value="toddler" />
           <Choice value="child">
-            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="138">
+            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="157">
               <Choice weight="50" avoidRepeat="False">
-                <Controller target="x" controller="@ClipController(clip=cc_portraitThumbnail_generic_01_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="cc_portraitThumbnail_generic.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="134">
+                <Controller target="x" controller="@ClipController(clip=cc_portraitThumbnail_generic_01_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="cc_portraitThumbnail_generic.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="153">
                   <TransitionClassList />
                 </Controller>
               </Choice>
               <Choice weight="50" avoidRepeat="False">
-                <Controller target="x" controller="@ClipController(clip=cc_portraitThumbnail_generic_02_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="cc_portraitThumbnail_generic.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="135">
+                <Controller target="x" controller="@ClipController(clip=cc_portraitThumbnail_generic_02_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="cc_portraitThumbnail_generic.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="154">
                   <TransitionClassList />
                 </Controller>
               </Choice>
               <Choice weight="50" avoidRepeat="False">
-                <Controller target="x" controller="@ClipController(clip=cc_portraitThumbnail_generic_03_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="cc_portraitThumbnail_generic.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="136">
+                <Controller target="x" controller="@ClipController(clip=cc_portraitThumbnail_generic_03_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="cc_portraitThumbnail_generic.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="155">
                   <TransitionClassList />
                 </Controller>
               </Choice>
               <Choice weight="50" avoidRepeat="False">
-                <Controller target="x" controller="@ClipController(clip=cc_portraitThumbnail_generic_04_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="cc_portraitThumbnail_generic.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="137">
+                <Controller target="x" controller="@ClipController(clip=cc_portraitThumbnail_generic_04_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="cc_portraitThumbnail_generic.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="156">
                   <TransitionClassList />
                 </Controller>
               </Choice>
             </RandomSelector>
           </Choice>
           <Choice value="teen">
-            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="146">
+            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="165">
               <Choice weight="50" avoidRepeat="False">
-                <Controller target="x" controller="@ClipController(clip=ac_portraitThumbnail_generic_01_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ac_portraitThumbnail_generic.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="139">
+                <Controller target="x" controller="@ClipController(clip=ac_portraitThumbnail_generic_01_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ac_portraitThumbnail_generic.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="158">
                   <TransitionClassList />
                 </Controller>
               </Choice>
               <Choice weight="50" avoidRepeat="False">
-                <Controller target="x" controller="@ClipController(clip=ac_portraitThumbnail_generic_02_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ac_portraitThumbnail_generic.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="140">
+                <Controller target="x" controller="@ClipController(clip=ac_portraitThumbnail_generic_02_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ac_portraitThumbnail_generic.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="159">
                   <TransitionClassList />
                 </Controller>
               </Choice>
               <Choice weight="50" avoidRepeat="False">
-                <Controller target="x" controller="@ClipController(clip=ac_portraitThumbnail_generic_03_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ac_portraitThumbnail_generic.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="141">
+                <Controller target="x" controller="@ClipController(clip=ac_portraitThumbnail_generic_03_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ac_portraitThumbnail_generic.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="160">
                   <TransitionClassList />
                 </Controller>
               </Choice>
               <Choice weight="50" avoidRepeat="False">
-                <Controller target="x" controller="@ClipController(clip=ac_portraitThumbnail_generic_04_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ac_portraitThumbnail_generic.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="142">
+                <Controller target="x" controller="@ClipController(clip=ac_portraitThumbnail_generic_04_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ac_portraitThumbnail_generic.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="161">
                   <TransitionClassList />
                 </Controller>
               </Choice>
               <Choice weight="50" avoidRepeat="False">
-                <Controller target="x" controller="@ClipController(clip=ac_portraitThumbnail_generic_05_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ac_portraitThumbnail_generic.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="143">
+                <Controller target="x" controller="@ClipController(clip=ac_portraitThumbnail_generic_05_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ac_portraitThumbnail_generic.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="162">
                   <TransitionClassList />
                 </Controller>
               </Choice>
               <Choice weight="50" avoidRepeat="False">
-                <Controller target="x" controller="@ClipController(clip=ac_portraitThumbnail_generic_06_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ac_portraitThumbnail_generic.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="144">
+                <Controller target="x" controller="@ClipController(clip=ac_portraitThumbnail_generic_06_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ac_portraitThumbnail_generic.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="163">
                   <TransitionClassList />
                 </Controller>
               </Choice>
               <Choice weight="50" avoidRepeat="False">
-                <Controller target="x" controller="@ClipController(clip=ac_portraitThumbnail_generic_07_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ac_portraitThumbnail_generic.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="145">
+                <Controller target="x" controller="@ClipController(clip=ac_portraitThumbnail_generic_07_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ac_portraitThumbnail_generic.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="164">
                   <TransitionClassList />
                 </Controller>
               </Choice>
             </RandomSelector>
           </Choice>
           <Choice value="youngadult">
-            <Reference target="146" />
+            <Reference target="165" />
           </Choice>
           <Choice value="adult">
-            <Reference target="146" />
+            <Reference target="165" />
           </Choice>
           <Choice value="elder">
-            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="149">
+            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="168">
               <Choice weight="50" avoidRepeat="False">
-                <Controller target="x" controller="@ClipController(clip=ec_portraitThumbnail_generic_01_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ec_portraitThumbnail_generic.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="147">
+                <Controller target="x" controller="@ClipController(clip=ec_portraitThumbnail_generic_01_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ec_portraitThumbnail_generic.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="166">
                   <TransitionClassList />
                 </Controller>
               </Choice>
               <Choice weight="50" avoidRepeat="False">
-                <Controller target="x" controller="@ClipController(clip=ec_portraitThumbnail_generic_02_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ec_portraitThumbnail_generic.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="148">
+                <Controller target="x" controller="@ClipController(clip=ec_portraitThumbnail_generic_02_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="ec_portraitThumbnail_generic.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="167">
                   <TransitionClassList />
                 </Controller>
               </Choice>
             </RandomSelector>
           </Choice>
+          <Choice value="infant" />
         </ParameterSelector>
       </Choice>
     </ParameterSelector>

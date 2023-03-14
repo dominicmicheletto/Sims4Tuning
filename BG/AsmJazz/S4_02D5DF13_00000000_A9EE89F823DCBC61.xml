@@ -4,7 +4,7 @@
   <Actor name="sitTemplate" type="Object" virtual="true" />
   <Actor name="y" type="Sim" virtual="false" />
   <Actor name="z" type="Sim" virtual="false" />
-  <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder,infant" default="adult" />
   <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
   <Parameter name="y:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
   <Parameter name="y:sex" type="enum" labels="male,female" default="male" />
@@ -106,6 +106,42 @@
       <MapNamespace namespace="x" actor="x" />
     </SourceFile>
   </IkConfiguration>
+  <IkConfiguration name="i_idle_watch_01_layOnBack.ma">
+    <SourceFile name="i_idle_watch_01_layOnBack.ma">
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="sitTemplate" actor="sitTemplate" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="i_idle_watch_01_seated.ma">
+    <SourceFile name="i_idle_watch_01_seated.ma">
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="sitTemplate" actor="sitTemplate" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="i_idle_watch_01_seatedHighChair.ma">
+    <SourceFile name="i_idle_watch_01_seatedHighChair.ma">
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="sitTemplate" actor="sitTemplate" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="i_idle_watch_02_layOnBack.ma">
+    <SourceFile name="i_idle_watch_02_layOnBack.ma">
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="sitTemplate" actor="sitTemplate" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="i_idle_watch_02_seated.ma">
+    <SourceFile name="i_idle_watch_02_seated.ma">
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="sitTemplate" actor="sitTemplate" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="i_idle_watch_02_seatedHighChair.ma">
+    <SourceFile name="i_idle_watch_02_seatedHighChair.ma">
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="sitTemplate" actor="sitTemplate" />
+    </SourceFile>
+  </IkConfiguration>
   <PostureManifest actors="" />
   <PostureManifest actors="x">
     <Support family="stand" compatibility="FullBody" carry_left="*" carry_right="-" surface="*" />
@@ -120,6 +156,8 @@
     <Support name="sitInHighChair" family="none" compatibility="FullBody" carry_left="-" carry_right="-" surface="*" />
     <Support name="carried_sim" family="none" compatibility="FullBody" carry_left="-" carry_right="-" surface="*" />
     <Support name="pet_sitIntimate" family="none" compatibility="FullBody" carry_left="-" carry_right="-" surface="*" />
+    <Support name="layOnBack" family="none" compatibility="FullBody" carry_left="-" carry_right="-" surface="*" />
+    <Support name="LayOnBackObject" family="none" compatibility="FullBody" carry_left="-" carry_right="-" surface="*" />
   </PostureManifest>
   <PostureManifest actors="y" />
   <PostureManifest actors="z" />
@@ -129,7 +167,7 @@
   <State name="Watch_idle" type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" focus="full body" facialoverlays="false" tailoverlays="true">
     <description />
     <MakeController>
-      <PostureSelector parameter="x:posture" unique_id="31">
+      <PostureSelector parameter="x:posture" unique_id="40">
         <Choice value="carried_sim--FullBody" track="normal" mask="">
           <ParameterSelector parameter="x:age" unique_id="4">
             <Choice value="baby" />
@@ -158,36 +196,54 @@
             <Choice value="youngadult" />
             <Choice value="adult" />
             <Choice value="elder" />
+            <Choice value="infant" />
           </ParameterSelector>
         </Choice>
+        <Choice value="layOnBack--FullBody" track="normal" mask="">
+          <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="7">
+            <Choice weight="50" avoidRepeat="False">
+              <Controller target="x" controller="@ClipController(clip=i_idle_watch_01_layOnBack_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="i_idle_watch_01_layOnBack.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="5">
+                <TransitionClassList />
+              </Controller>
+            </Choice>
+            <Choice weight="50" avoidRepeat="False">
+              <Controller target="x" controller="@ClipController(clip=i_idle_watch_02_layOnBack_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="i_idle_watch_02_layOnBack.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="6">
+                <TransitionClassList />
+              </Controller>
+            </Choice>
+          </RandomSelector>
+        </Choice>
+        <Choice value="LayOnBackObject--FullBody" track="normal" mask="">
+          <Reference target="7" />
+        </Choice>
         <Choice value="-movingStand-UpperBody" track="normalplus" mask="Trackmask_UpperBody">
-          <ParameterSelector parameter="x:age" unique_id="14">
+          <ParameterSelector parameter="x:age" unique_id="20">
             <Choice value="baby" />
             <Choice value="toddler">
-              <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="9">
+              <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="12">
                 <Choice weight="100" avoidRepeat="True">
-                  <Controller target="x" controller="@ClipController(clip=p_idle_watch_ignore_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_idle_watch_lookClosely.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="5">
+                  <Controller target="x" controller="@ClipController(clip=p_idle_watch_ignore_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_idle_watch_lookClosely.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="8">
                     <TransitionClassList>
                       <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
                     </TransitionClassList>
                   </Controller>
                 </Choice>
                 <Choice weight="100" avoidRepeat="False">
-                  <Controller target="x" controller="@ClipController(clip=p_idle_watch_lookClosely_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_idle_watch_lookClosely.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="6">
+                  <Controller target="x" controller="@ClipController(clip=p_idle_watch_lookClosely_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_idle_watch_lookClosely.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="9">
                     <TransitionClassList>
                       <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
                     </TransitionClassList>
                   </Controller>
                 </Choice>
                 <Choice weight="50" avoidRepeat="False">
-                  <Controller target="x" controller="@ClipController(clip=p_idle_breathe_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_idle_breathe.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="7">
+                  <Controller target="x" controller="@ClipController(clip=p_idle_breathe_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_idle_breathe.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="10">
                     <TransitionClassList>
                       <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
                     </TransitionClassList>
                   </Controller>
                 </Choice>
                 <Choice weight="50" avoidRepeat="True">
-                  <Controller target="x" controller="@ClipController(clip=p_idle_weightShift_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_idle_weightShift.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="8">
+                  <Controller target="x" controller="@ClipController(clip=p_idle_weightShift_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_idle_weightShift.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="11">
                     <TransitionClassList>
                       <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
                     </TransitionClassList>
@@ -196,23 +252,23 @@
               </RandomSelector>
             </Choice>
             <Choice value="child">
-              <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="13">
+              <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="16">
                 <Choice weight="34" avoidRepeat="True">
-                  <Controller target="x" controller="@ClipController(clip=a_idle_watch_01_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_idle_watch_01_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="10">
+                  <Controller target="x" controller="@ClipController(clip=a_idle_watch_01_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_idle_watch_01_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="13">
                     <TransitionClassList>
                       <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
                     </TransitionClassList>
                   </Controller>
                 </Choice>
                 <Choice weight="34" avoidRepeat="True">
-                  <Controller target="x" controller="@ClipController(clip=a_idle_watch_02_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_idle_watch_02_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="11">
+                  <Controller target="x" controller="@ClipController(clip=a_idle_watch_02_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_idle_watch_02_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="14">
                     <TransitionClassList>
                       <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
                     </TransitionClassList>
                   </Controller>
                 </Choice>
                 <Choice weight="100" avoidRepeat="True">
-                  <Controller target="x" controller="@ClipController(clip=a_idle_watch_03_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_idle_watch_03_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="12">
+                  <Controller target="x" controller="@ClipController(clip=a_idle_watch_03_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_idle_watch_03_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="15">
                     <TransitionClassList>
                       <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
                     </TransitionClassList>
@@ -221,47 +277,61 @@
               </RandomSelector>
             </Choice>
             <Choice value="teen">
-              <Reference target="13" />
+              <Reference target="16" />
             </Choice>
             <Choice value="youngadult">
-              <Reference target="13" />
+              <Reference target="16" />
             </Choice>
             <Choice value="adult">
-              <Reference target="13" />
+              <Reference target="16" />
             </Choice>
             <Choice value="elder">
-              <Reference target="13" />
+              <Reference target="16" />
+            </Choice>
+            <Choice value="infant">
+              <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="19">
+                <Choice weight="50" avoidRepeat="False">
+                  <Controller target="x" controller="@ClipController(clip=i_idle_watch_01_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="i_idle_watch_01_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="17">
+                    <TransitionClassList />
+                  </Controller>
+                </Choice>
+                <Choice weight="50" avoidRepeat="False">
+                  <Controller target="x" controller="@ClipController(clip=i_idle_watch_02_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="i_idle_watch_02_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="18">
+                    <TransitionClassList />
+                  </Controller>
+                </Choice>
+              </RandomSelector>
             </Choice>
           </ParameterSelector>
         </Choice>
         <Choice value="pet_sitIntimate--FullBody" track="normal" mask="">
-          <ParameterSelector parameter="x:age" unique_id="24">
+          <ParameterSelector parameter="x:age" unique_id="30">
             <Choice value="baby" />
             <Choice value="toddler">
-              <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="19">
+              <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="25">
                 <Choice weight="100" avoidRepeat="True">
-                  <Controller target="x" controller="@ClipController(clip=p_idle_watch_ignore_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_idle_watch_lookClosely_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="15">
+                  <Controller target="x" controller="@ClipController(clip=p_idle_watch_ignore_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_idle_watch_lookClosely_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="21">
                     <TransitionClassList>
                       <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
                     </TransitionClassList>
                   </Controller>
                 </Choice>
                 <Choice weight="100" avoidRepeat="False">
-                  <Controller target="x" controller="@ClipController(clip=p_idle_watch_lookClosely_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_idle_watch_lookClosely_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="16">
+                  <Controller target="x" controller="@ClipController(clip=p_idle_watch_lookClosely_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_idle_watch_lookClosely_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="22">
                     <TransitionClassList>
                       <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
                     </TransitionClassList>
                   </Controller>
                 </Choice>
                 <Choice weight="50" avoidRepeat="True">
-                  <Controller target="x" controller="@ClipController(clip=p_idle_weightShift_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_idle_weightShift_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="17">
+                  <Controller target="x" controller="@ClipController(clip=p_idle_weightShift_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_idle_weightShift_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="23">
                     <TransitionClassList>
                       <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
                     </TransitionClassList>
                   </Controller>
                 </Choice>
                 <Choice weight="50" avoidRepeat="False">
-                  <Controller target="x" controller="@ClipController(clip=p_idle_breathe_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_idle_breathe_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="18">
+                  <Controller target="x" controller="@ClipController(clip=p_idle_breathe_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_idle_breathe_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="24">
                     <TransitionClassList>
                       <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
                     </TransitionClassList>
@@ -270,23 +340,23 @@
               </RandomSelector>
             </Choice>
             <Choice value="child">
-              <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="23">
+              <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="29">
                 <Choice weight="34" avoidRepeat="True">
-                  <Controller target="x" controller="@ClipController(clip=a_idle_watch_01_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_idle_watch_01_x_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="20">
+                  <Controller target="x" controller="@ClipController(clip=a_idle_watch_01_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_idle_watch_01_x_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="26">
                     <TransitionClassList>
                       <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
                     </TransitionClassList>
                   </Controller>
                 </Choice>
                 <Choice weight="34" avoidRepeat="True">
-                  <Controller target="x" controller="@ClipController(clip=a_idle_watch_02_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_idle_watch_02_x_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="21">
+                  <Controller target="x" controller="@ClipController(clip=a_idle_watch_02_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_idle_watch_02_x_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="27">
                     <TransitionClassList>
                       <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
                     </TransitionClassList>
                   </Controller>
                 </Choice>
                 <Choice weight="100" avoidRepeat="True">
-                  <Controller target="x" controller="@ClipController(clip=a_idle_watch_03_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_idle_watch_03_x_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="22">
+                  <Controller target="x" controller="@ClipController(clip=a_idle_watch_03_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_idle_watch_03_x_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="28">
                     <TransitionClassList>
                       <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
                     </TransitionClassList>
@@ -295,50 +365,53 @@
               </RandomSelector>
             </Choice>
             <Choice value="teen">
-              <Reference target="23" />
+              <Reference target="29" />
             </Choice>
             <Choice value="youngadult">
-              <Reference target="23" />
+              <Reference target="29" />
             </Choice>
             <Choice value="adult">
-              <Reference target="23" />
+              <Reference target="29" />
             </Choice>
             <Choice value="elder">
-              <Reference target="23" />
+              <Reference target="29" />
+            </Choice>
+            <Choice value="infant">
+              <Reference target="19" />
             </Choice>
           </ParameterSelector>
         </Choice>
         <Choice value="-sit-FullBody" track="normal" mask="">
-          <Reference target="24" />
+          <Reference target="30" />
         </Choice>
         <Choice value="sitInHighChair--FullBody" track="normal" mask="">
-          <ParameterSelector parameter="x:age" unique_id="30">
+          <ParameterSelector parameter="x:age" unique_id="39">
             <Choice value="baby" />
             <Choice value="toddler">
-              <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="29">
+              <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="35">
                 <Choice weight="100" avoidRepeat="True">
-                  <Controller target="x" controller="@ClipController(clip=p_idle_watch_ignore_seatedHighChair_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_idle_watch_lookClosely_seatedHighChair.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="25">
+                  <Controller target="x" controller="@ClipController(clip=p_idle_watch_ignore_seatedHighChair_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_idle_watch_lookClosely_seatedHighChair.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="31">
                     <TransitionClassList>
                       <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
                     </TransitionClassList>
                   </Controller>
                 </Choice>
                 <Choice weight="100" avoidRepeat="False">
-                  <Controller target="x" controller="@ClipController(clip=p_idle_watch_lookClosely_seatedHighChair_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_idle_watch_lookClosely_seatedHighChair.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="26">
+                  <Controller target="x" controller="@ClipController(clip=p_idle_watch_lookClosely_seatedHighChair_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_idle_watch_lookClosely_seatedHighChair.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="32">
                     <TransitionClassList>
                       <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
                     </TransitionClassList>
                   </Controller>
                 </Choice>
                 <Choice weight="50" avoidRepeat="False">
-                  <Controller target="x" controller="@ClipController(clip=p_idle_breath_seatedHighChair_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_idle_breath_seatedHighChair.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="27">
+                  <Controller target="x" controller="@ClipController(clip=p_idle_breath_seatedHighChair_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_idle_breath_seatedHighChair.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="33">
                     <TransitionClassList>
                       <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
                     </TransitionClassList>
                   </Controller>
                 </Choice>
                 <Choice weight="50" avoidRepeat="True">
-                  <Controller target="x" controller="@ClipController(clip=p_idle_weightShift_seatedHighChair_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_idle_weightShift_seatedHighChair.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="28">
+                  <Controller target="x" controller="@ClipController(clip=p_idle_weightShift_seatedHighChair_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_idle_weightShift_seatedHighChair.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="34">
                     <TransitionClassList>
                       <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
                     </TransitionClassList>
@@ -351,16 +424,30 @@
             <Choice value="youngadult" />
             <Choice value="adult" />
             <Choice value="elder" />
+            <Choice value="infant">
+              <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="38">
+                <Choice weight="50" avoidRepeat="False">
+                  <Controller target="x" controller="@ClipController(clip=i_idle_watch_01_seatedHighChair_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="i_idle_watch_01_seatedHighChair.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="36">
+                    <TransitionClassList />
+                  </Controller>
+                </Choice>
+                <Choice weight="50" avoidRepeat="False">
+                  <Controller target="x" controller="@ClipController(clip=i_idle_watch_02_seatedHighChair_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="i_idle_watch_02_seatedHighChair.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="37">
+                    <TransitionClassList />
+                  </Controller>
+                </Choice>
+              </RandomSelector>
+            </Choice>
           </ParameterSelector>
         </Choice>
         <Choice value="-sit-UpperBody" track="normal" mask="Trackmask_UpperBody">
-          <Reference target="24" />
+          <Reference target="30" />
         </Choice>
         <Choice value="-stand-FullBody" track="normal" mask="">
-          <Reference target="14" />
+          <Reference target="20" />
         </Choice>
         <Choice value="-stand-UpperBody" track="normal" mask="Trackmask_UpperBody">
-          <Reference target="14" />
+          <Reference target="20" />
         </Choice>
       </PostureSelector>
     </MakeController>

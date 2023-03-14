@@ -1,0 +1,130 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="BedSleepingBag_Sleep_InteractionIdle" dcc="sage">
+  <Actor name="x" type="Sim" master="true" virtual="false" />
+  <Actor name="sleepingBag" type="Object" virtual="false" />
+  <Actor name="sitTemplate" type="Object" virtual="true" />
+  <Actor name="bedIKRef" type="Object" virtual="true" />
+  <Parameter name="isMirrored" type="bool" labels="" default="False" />
+  <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder,infant" default="adult" />
+  <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
+  <Parameter name="x:species" type="enum" labels="human,dog,smalldog,cat,fox" default="human" />
+  <Parameter name="x:mood" type="enum" labels="happy,confident,angry,sad,bored,embarrassed,uncomfortable,playful,tense,focused,energized,flirty,fine,inspired,dazed,fashion,scared" default="happy" />
+  <Parameter name="sleepingBag:sleepingBagType" type="enum" labels="sleepingBag,toddlerSleepingBag" default="sleepingBag" />
+  <IkConfiguration name="a2o_sleepingBag_posturesIdles.ma">
+    <SourceFile name="a2o_sleepingBag_posturesIdles.ma">
+      <MapNamespace namespace="sleepingBag" actor="bedIKRef" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="p2o_sleepingBag_sleep_idlesPosture.ma">
+    <SourceFile name="p2o_sleepingBag_sleep_idlesPosture.ma">
+      <MapNamespace namespace="sleepingBag" actor="sleepingBag" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <PostureManifest actors="" />
+  <PostureManifest actors="x">
+    <Support name="bedSleepingBag_sleep" family="none" compatibility="FullBody" carry_left="-" carry_right="-" surface="-" />
+  </PostureManifest>
+  <State type="public" countlooptime="false" disableautostop="false" skippable="true" interrupt_this="true" name="BedSleepingBag_Sleep_InteractionIdle" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="mirror" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="mirror_0" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <Connection from="BedSleepingBag_Sleep_InteractionIdle" to="mirror_0" />
+  <Connection from="entry" to="mirror" />
+  <Connection from="mirror" to="BedSleepingBag_Sleep_InteractionIdle" />
+  <Connection from="mirror_0" to="exit" />
+  <State name="BedSleepingBag_Sleep_InteractionIdle" type="public" countlooptime="false" disableautostop="false" skippable="true" interrupt_this="true" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <MakeController>
+      <PostureSelector parameter="x:posture" unique_id="9">
+        <Choice value="bedSleepingBag_sleep--FullBody" track="normal" mask="">
+          <ParameterSelector parameter="x:age" unique_id="8">
+            <Choice value="baby" />
+            <Choice value="toddler">
+              <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="5">
+                <Choice weight="100" avoidRepeat="False">
+                  <Controller target="sleepingBag" controller="@ClipController(clip=p2o_sleepingBag_sleep_idle_breathe_sleepingBag, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p2o_sleepingBag_sleep_idlesPosture.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="1">
+                    <TransitionClassList>
+                      <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                    </TransitionClassList>
+                  </Controller>
+                  <Controller target="x" controller="@ClipController(clip=p2o_sleepingBag_sleep_idle_breathe_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p2o_sleepingBag_sleep_idlesPosture.ma" focus="none" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="2">
+                    <TransitionClassList>
+                      <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                    </TransitionClassList>
+                  </Controller>
+                </Choice>
+                <Choice weight="50" avoidRepeat="False">
+                  <Controller target="x" controller="@ClipController(clip=p2o_sleepingBag_sleep_idle_moveAround_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p2o_sleepingBag_sleep_idlesPosture.ma" focus="none" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="3">
+                    <TransitionClassList>
+                      <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                    </TransitionClassList>
+                  </Controller>
+                  <Controller target="sleepingBag" controller="@ClipController(clip=p2o_sleepingBag_sleep_idle_moveAround_sleepingBag, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p2o_sleepingBag_sleep_idlesPosture.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="4">
+                    <TransitionClassList>
+                      <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                    </TransitionClassList>
+                  </Controller>
+                </Choice>
+              </RandomSelector>
+            </Choice>
+            <Choice value="child">
+              <Controller target="sleepingBag" controller="@ClipController(clip=a2o_sleepingBag_sleep_idle_breathe_sleepingBag, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_sleepingBag_posturesIdles.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="6">
+                <TransitionClassList />
+              </Controller>
+              <Controller target="x" controller="@ClipController(clip=a2o_sleepingBag_sleep_idle_breathe_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_sleepingBag_posturesIdles.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="7">
+                <TransitionClassList />
+              </Controller>
+            </Choice>
+            <Choice value="teen">
+              <Reference target="6" />
+              <Reference target="7" />
+            </Choice>
+            <Choice value="youngadult">
+              <Reference target="6" />
+              <Reference target="7" />
+            </Choice>
+            <Choice value="adult">
+              <Reference target="6" />
+              <Reference target="7" />
+            </Choice>
+            <Choice value="elder">
+              <Reference target="6" />
+              <Reference target="7" />
+            </Choice>
+            <Choice value="infant" />
+          </ParameterSelector>
+        </Choice>
+      </PostureSelector>
+    </MakeController>
+  </State>
+  <State name="mirror" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <ParameterSelector parameter="sleepingBag:sleepingBagType" unique_id="15">
+      <Choice value="sleepingBag">
+        <ActorMask target="sleepingBag" mask="Trackmask_Bed" unique_id="14" />
+        <ParameterSelector parameter="isMirrored" unique_id="13">
+          <Choice value="false" />
+          <Choice value="true">
+            <TrackOffset target="sleepingBag" offset="5000" unique_id="12" />
+            <SetMirror target="sleepingBag" mirror="true" unique_id="11" />
+            <SetMirror target="x" mirror="true" unique_id="10" />
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+      <Choice value="toddlerSleepingBag">
+        <Reference target="13" />
+      </Choice>
+    </ParameterSelector>
+  </State>
+  <State name="mirror_0" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <ParameterSelector parameter="isMirrored" unique_id="18">
+      <Choice value="false">
+        <Stop target="sleepingBag" track="normal" blend_in="0.2666667" unique_id="16" />
+      </Choice>
+      <Choice value="true">
+        <Stop target="sleepingBag" track="normalplus" blend_in="0.2666667" unique_id="17" />
+      </Choice>
+    </ParameterSelector>
+  </State>
+</ASM>

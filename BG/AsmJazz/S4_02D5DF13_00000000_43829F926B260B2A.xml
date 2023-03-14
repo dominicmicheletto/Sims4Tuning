@@ -1,0 +1,194 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="Response_Infant_Clapping_Laugh" dcc="sage">
+  <Actor name="sitTemplate" type="Object" virtual="true" />
+  <Actor name="x" type="Sim" master="true" virtual="false" />
+  <Actor name="z" type="Sim" virtual="true" />
+  <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder,infant" default="baby" />
+  <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
+  <Parameter name="x:carryTrack" type="enum" labels="left,right,back" default="right" />
+  <IkConfiguration name="i_react_giggling_carried.ma">
+    <SourceFile name="i_react_giggling_carried.ma">
+      <MapNamespace namespace="y" actor="z" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="i_react_happy_giggle_01_seated.ma">
+    <SourceFile name="i_react_happy_giggle_01_seated.ma">
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="sitTemplate" actor="sitTemplate" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="i_react_happy_giggle_02_seated.ma">
+    <SourceFile name="i_react_happy_giggle_02_seated.ma">
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="sitTemplate" actor="sitTemplate" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="i_react_happy_giggle_01_layOnBack.ma">
+    <SourceFile name="i_react_happy_giggle_01_layOnBack.ma">
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="sitTemplate" actor="sitTemplate" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="i_react_happy_giggle_02_layOnBack.ma">
+    <SourceFile name="i_react_happy_giggle_02_layOnBack.ma">
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="sitTemplate" actor="sitTemplate" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="i_react_cheer_clap_01_layOnBack.ma">
+    <SourceFile name="i_react_cheer_clap_01_layOnBack.ma">
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="sitTemplate" actor="sitTemplate" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="i_react_cheer_clap_01_seated.ma">
+    <SourceFile name="i_react_cheer_clap_01_seated.ma">
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="sitTemplate" actor="sitTemplate" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="i_react_cheer_clap_01_seatedHighChair.ma">
+    <SourceFile name="i_react_cheer_clap_01_seatedHighChair.ma">
+      <MapNamespace namespace="sitTemplate" actor="sitTemplate" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="i_react_happy_giggle_01_seatedHighChair.ma">
+    <SourceFile name="i_react_happy_giggle_01_seatedHighChair.ma">
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="sitTemplate" actor="sitTemplate" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="i_react_happy_giggle_02_seatedHighChair.ma">
+    <SourceFile name="i_react_happy_giggle_02_seatedHighChair.ma">
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="sitTemplate" actor="sitTemplate" />
+    </SourceFile>
+  </IkConfiguration>
+  <PostureManifest actors="" />
+  <PostureManifest actors="x">
+    <Support family="sit" compatibility="FullBody" carry_left="-" carry_right="-" surface="*" />
+    <Support family="movingStand" compatibility="UpperBody" carry_left="-" carry_right="-" carry_back="-" surface="*" />
+    <Support name="sitInHighChair" family="none" compatibility="FullBody" carry_left="-" carry_right="-" surface="*" />
+    <Support name="layOnBack" family="none" compatibility="FullBody" carry_left="-" carry_right="-" surface="*" />
+    <Support name="carried_sim" family="none" compatibility="FullBody" carry_left="-" carry_right="-" surface="*" />
+    <Support name="LayOnBackObject" family="none" compatibility="FullBody" carry_left="-" carry_right="-" surface="*" />
+    <Support family="stand" compatibility="FullBody" carry_left="-" carry_right="-" carry_back="-" surface="*" />
+  </PostureManifest>
+  <PostureManifest actors="z" />
+  <State type="public" skippable="false" interrupt_this="false" name="Clapping" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="Laugh" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <Connection from="Clapping" to="exit" />
+  <Connection from="Laugh" to="exit" />
+  <Connection from="entry" to="Clapping" />
+  <Connection from="entry" to="Laugh" />
+  <State name="Clapping" type="public" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="4">
+      <Choice value="carried_sim--FullBody" track="normal" mask="" />
+      <Choice value="layOnBack--FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=i_react_cheer_clap_02_layOnBack_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="i_react_cheer_clap_01_layOnBack.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="1">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+      <Choice value="LayOnBackObject--FullBody" track="normal" mask="">
+        <Reference target="1" />
+      </Choice>
+      <Choice value="-movingStand-UpperBody" track="normalplus" mask="Trackmask_UpperBody">
+        <Controller target="x" controller="@ClipController(clip=i_react_cheer_clap_01_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="i_react_cheer_clap_01_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="2">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+      <Choice value="-sit-FullBody" track="normal" mask="">
+        <Reference target="2" />
+      </Choice>
+      <Choice value="sitInHighChair--FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=i_react_cheer_clap_01_seatedHighChair_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="i_react_cheer_clap_01_seatedHighChair.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="3">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <Reference target="2" />
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="Laugh" type="public" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="17">
+      <Choice value="carried_sim--FullBody" track="normal" mask="">
+        <ParameterSelector parameter="x:age" unique_id="7">
+          <Choice value="baby" />
+          <Choice value="toddler" />
+          <Choice value="child" />
+          <Choice value="teen" />
+          <Choice value="youngadult" />
+          <Choice value="adult" />
+          <Choice value="elder" />
+          <Choice value="infant">
+            <ParameterSelector parameter="x:carryTrack" unique_id="6">
+              <Choice value="left" />
+              <Choice value="right">
+                <Controller target="x" controller="@ClipController(clip=i_react_giggling_carried_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="i_react_giggling_carried.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="5">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+              <Choice value="back" />
+            </ParameterSelector>
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+      <Choice value="layOnBack--FullBody" track="normal" mask="">
+        <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="10">
+          <Choice weight="50" avoidRepeat="False">
+            <Controller target="x" controller="@ClipController(clip=i_react_happy_giggle_01_layOnBack_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="i_react_happy_giggle_01_layOnBack.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="8">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
+          <Choice weight="50" avoidRepeat="False">
+            <Controller target="x" controller="@ClipController(clip=i_react_happy_giggle_02_layOnBack_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="i_react_happy_giggle_02_layOnBack.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="9">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
+        </RandomSelector>
+      </Choice>
+      <Choice value="LayOnBackObject--FullBody" track="normal" mask="">
+        <Reference target="10" />
+      </Choice>
+      <Choice value="-movingStand-UpperBody" track="normalplus" mask="Trackmask_UpperBody">
+        <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="13">
+          <Choice weight="50" avoidRepeat="False">
+            <Controller target="x" controller="@ClipController(clip=i_react_happy_giggle_01_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="i_react_happy_giggle_01_seated.ma" focus="body only" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="11">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
+          <Choice weight="50" avoidRepeat="False">
+            <Controller target="x" controller="@ClipController(clip=i_react_happy_giggle_02_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="i_react_happy_giggle_02_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="12">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
+        </RandomSelector>
+      </Choice>
+      <Choice value="-sit-FullBody" track="normal" mask="">
+        <Reference target="13" />
+      </Choice>
+      <Choice value="sitInHighChair--FullBody" track="normal" mask="">
+        <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="16">
+          <Choice weight="50" avoidRepeat="False">
+            <Controller target="x" controller="@ClipController(clip=i_react_happy_giggle_01_seatedHighChair_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="i_react_happy_giggle_01_seatedHighChair.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="14">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
+          <Choice weight="50" avoidRepeat="False">
+            <Controller target="x" controller="@ClipController(clip=i_react_happy_giggle_02_seatedHighChair_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="i_react_happy_giggle_02_seatedHighChair.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="15">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
+        </RandomSelector>
+      </Choice>
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <Reference target="13" />
+      </Choice>
+    </PostureSelector>
+  </State>
+</ASM>

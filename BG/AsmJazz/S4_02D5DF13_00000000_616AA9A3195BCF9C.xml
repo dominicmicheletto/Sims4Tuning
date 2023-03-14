@@ -2,7 +2,7 @@
 <ASM name="Stand_Idle_Standard" dcc="sage">
   <Actor name="x" type="Sim" master="true" virtual="false" />
   <Actor name="sitTemplate" type="Object" virtual="false" />
-  <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder,infant" default="adult" />
   <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
   <IkConfiguration name="a_idle_neutral_loop_3.ma">
     <SourceFile name="a_idle_neutral_loop_3.ma">
@@ -34,6 +34,11 @@
       <MapNamespace namespace="x" actor="x" />
     </SourceFile>
   </IkConfiguration>
+  <IkConfiguration name="i_stand_posture.ma">
+    <SourceFile name="i_stand_posture.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
   <PostureManifest actors="" />
   <PostureManifest actors="x">
     <Support family="stand" compatibility="FullBody" carry_left="*" carry_right="*" surface="*" />
@@ -45,9 +50,9 @@
   <State name="Idle_Standard" type="public" countlooptime="false" disableautostop="false" skippable="true" interrupt_this="true" focus="full body" facialoverlays="true" tailoverlays="true">
     <description />
     <MakeController>
-      <PostureSelector parameter="x:posture" unique_id="13">
+      <PostureSelector parameter="x:posture" unique_id="14">
         <Choice value="-stand-FullBody" track="normal" mask="">
-          <ParameterSelector parameter="x:age" unique_id="12">
+          <ParameterSelector parameter="x:age" unique_id="13">
             <Choice value="baby" />
             <Choice value="toddler">
               <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="6">
@@ -119,10 +124,18 @@
             <Choice value="elder">
               <Reference target="11" />
             </Choice>
+            <Choice value="infant">
+              <Controller target="x" controller="@ClipController(clip=i_idle_breathe_stand_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="NoBlendLoop" transition_class_out="NoBlendLoop" ik_configuration="i_stand_posture.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="12">
+                <TransitionClassList>
+                  <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="false" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                  <Transition transition_class_name="NoBlendLoop" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+                </TransitionClassList>
+              </Controller>
+            </Choice>
           </ParameterSelector>
         </Choice>
         <Choice value="-stand-UpperBody" track="normal" mask="Trackmask_UpperBody">
-          <Reference target="12" />
+          <Reference target="13" />
         </Choice>
       </PostureSelector>
     </MakeController>

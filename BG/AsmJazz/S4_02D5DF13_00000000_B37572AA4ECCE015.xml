@@ -1,0 +1,163 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="LayOnStomachObject_Posture" dcc="sage">
+  <Actor name="x" type="Sim" master="true" virtual="false" />
+  <Actor name="sitTemplate" type="Object" virtual="true" />
+  <Parameter name="transitionPosture" type="enum" labels="layDown,pet_sitIntimate,sit,stand,standOnObject,layOnBackObject,sitOnGroundObject,layOnStomachObject" default="stand" />
+  <Parameter name="direction" type="enum" labels="fromSimLeft,fromSimRight" default="fromSimLeft" />
+  <Parameter name="distance" type="enum" labels="low,mid,high,zero" default="low" />
+  <Parameter name="x:age" type="enum" labels="baby,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
+  <Parameter name="x:TurnAngle" type="float" labels="" default="0" />
+  <Parameter name="x:TargetOrientation" type="quaternion" labels="" default="0,0,0,1" />
+  <Parameter name="x:TargetTranslation" type="vector3" labels="" default="0,0,0" />
+  <Parameter name="x:InitialOrientation" type="quaternion" labels="" default="0,0,0,1" />
+  <Parameter name="x:InitialTranslation" type="vector3" labels="" default="0,0,0" />
+  <Parameter name="x:walkstyle_override" type="uint" labels="" default="0" />
+  <Parameter name="sitTemplate:objectName" type="enum" labels="crib,playmat" />
+  <Parameter name="sitTemplate:isMirroredPart" type="bool" labels="" default="False" />
+  <Parameter name="sitTemplate:objectOrientation" type="quaternion" labels="" default="0,0,0,1" />
+  <Parameter name="sitTemplate:objectPosition" type="vector3" labels="" default="0,0,0" />
+  <IkConfiguration name="i2o_trans_crib_layOnStomach_to_layOnBack.ma">
+    <SourceFile name="i2o_trans_crib_layOnStomach_to_layOnBack.ma">
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="crib" actor="sitTemplate" />
+      <MapNamespace namespace="sitTemplate" actor="sitTemplate" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="i2o_crib_layOnStomachObject_posture.ma">
+    <SourceFile name="i2o_crib_layOnStomachObject_posture.ma">
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="crib" actor="sitTemplate" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="i2o_trans_crib_layOnStomach_to_sit.ma">
+    <SourceFile name="i2o_trans_crib_layOnStomach_to_sit.ma">
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="crib" actor="sitTemplate" />
+      <MapNamespace namespace="sitTemplate" actor="sitTemplate" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="i2o_trans_playmat_layOnBack_to_layOnStomach.ma">
+    <SourceFile name="i2o_trans_playmat_layOnBack_to_layOnStomach.ma">
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="sitTemplate" actor="sitTemplate" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="i2o_trans_playmat_layOnStomach_to_sit.ma">
+    <SourceFile name="i2o_trans_playmat_layOnStomach_to_sit.ma">
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="sitTemplate" actor="sitTemplate" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="i2o_playmat_layOnStomachObject_posture.ma">
+    <SourceFile name="i2o_playmat_layOnStomachObject_posture.ma">
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="sitTemplate" actor="sitTemplate" />
+    </SourceFile>
+  </IkConfiguration>
+  <PostureManifest>
+    <Provide name="LayOnStomachObject" family="none" compatibility="FullBody" carry_left="-" carry_right="-" carry_back="-" surface="*" />
+  </PostureManifest>
+  <State type="public" skippable="false" interrupt_this="false" name="GetIn" focus="none" facialoverlays="false" tailoverlays="false" />
+  <State type="private" skippable="false" interrupt_this="false" name="GetOut" focus="none" facialoverlays="false" tailoverlays="false" />
+  <State type="public" countlooptime="false" disableautostop="false" skippable="true" interrupt_this="true" name="LayOnStomachObject_Posture" focus="head" facialoverlays="false" tailoverlays="false" />
+  <State type="private" skippable="false" interrupt_this="false" name="mirror" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="mirror (2)" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <Connection from="GetIn" to="LayOnStomachObject_Posture" />
+  <Connection from="GetOut" to="exit" />
+  <Connection from="LayOnStomachObject_Posture" to="mirror (2)" />
+  <Connection from="entry" to="mirror" />
+  <Connection from="mirror" to="GetIn" />
+  <Connection from="mirror (2)" to="GetOut" />
+  <State name="GetIn" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="false">
+    <description />
+    <ParameterSelector parameter="transitionPosture" unique_id="7">
+      <Choice value="layDown" />
+      <Choice value="pet_sitIntimate" />
+      <Choice value="sit" />
+      <Choice value="stand" />
+      <Choice value="standOnObject" />
+      <Choice value="layOnBackObject">
+        <ParameterSelector parameter="sitTemplate:objectName" unique_id="3">
+          <Choice value="crib">
+            <Controller target="x" controller="@ClipController(clip=i2o_trans_crib_layOnBack_to_layOnStomach_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="i2o_trans_crib_layOnStomach_to_layOnBack.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="1">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
+          <Choice value="playmat">
+            <Controller target="x" controller="@ClipController(clip=i2o_trans_playmat_layOnBack_to_layOnStomach_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="i2o_trans_playmat_layOnBack_to_layOnStomach.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="2">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+      <Choice value="sitOnGroundObject">
+        <ParameterSelector parameter="sitTemplate:objectName" unique_id="6">
+          <Choice value="crib">
+            <Controller target="x" controller="@ClipController(clip=i2o_trans_crib_sit_to_layOnStomach_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="i2o_trans_crib_layOnStomach_to_sit.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="4">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
+          <Choice value="playmat">
+            <Controller target="x" controller="@ClipController(clip=i2o_trans_playmat_sit_to_layOnStomach_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="i2o_trans_playmat_layOnStomach_to_sit.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="5">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+      <Choice value="layOnStomachObject" />
+    </ParameterSelector>
+  </State>
+  <State name="GetOut" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="false">
+    <description />
+    <ParameterSelector parameter="transitionPosture" unique_id="9">
+      <Choice value="layDown" />
+      <Choice value="pet_sitIntimate" />
+      <Choice value="sit" />
+      <Choice value="stand" />
+      <Choice value="standOnObject" />
+      <Choice value="layOnBackObject">
+        <Stop target="sitTemplate" track="low" blend_in="0" unique_id="8" />
+      </Choice>
+      <Choice value="sitOnGroundObject">
+        <Reference target="8" />
+      </Choice>
+      <Choice value="layOnStomachObject" />
+    </ParameterSelector>
+  </State>
+  <State name="LayOnStomachObject_Posture" type="public" countlooptime="false" disableautostop="false" skippable="true" interrupt_this="true" focus="head" facialoverlays="false" tailoverlays="false">
+    <description />
+    <MakeController>
+      <ParameterSelector parameter="sitTemplate:objectName" unique_id="12">
+        <Choice value="crib">
+          <Controller target="x" controller="@ClipController(clip=i2o_crib_layOnStomachObject_posture_x, loop_count=#1)" overridePosture="false" mask="" track="low" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="i2o_crib_layOnStomachObject_posture.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="10">
+            <TransitionClassList />
+          </Controller>
+        </Choice>
+        <Choice value="playmat">
+          <Controller target="x" controller="@ClipController(clip=i2o_playmat_layOnStomachObject_posture_x, loop_count=#1)" overridePosture="false" mask="" track="low" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="i2o_playmat_layOnStomachObject_posture.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="11">
+            <TransitionClassList />
+          </Controller>
+        </Choice>
+      </ParameterSelector>
+    </MakeController>
+  </State>
+  <State name="mirror" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <ParameterSelector parameter="sitTemplate:isMirroredPart" unique_id="14">
+      <Choice value="false" />
+      <Choice value="true">
+        <SetMirror target="x" mirror="true" unique_id="13" />
+      </Choice>
+    </ParameterSelector>
+  </State>
+  <State name="mirror (2)" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <ParameterSelector parameter="sitTemplate:isMirroredPart" unique_id="16">
+      <Choice value="false" />
+      <Choice value="true">
+        <SetMirror target="x" mirror="true" unique_id="15" />
+      </Choice>
+    </ParameterSelector>
+  </State>
+</ASM>

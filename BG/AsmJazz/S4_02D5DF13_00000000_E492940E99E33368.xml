@@ -1,0 +1,121 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="KidsBicycle_RouteEvents_Locomotion" dcc="sage">
+  <Actor name="x" type="Sim" master="true" virtual="false" />
+  <Actor name="bicycle" type="Object" virtual="false" />
+  <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder,infant" default="adult" />
+  <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
+  <Parameter name="x:species" type="enum" labels="human,dog,smalldog,cat,fox" default="human" />
+  <IkConfiguration name="c2o_loco_bicycle_trick_01.ma">
+    <SourceFile name="c2o_loco_bicycle_trick_01.ma">
+      <MapNamespace namespace="bicycle" actor="bicycle" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="c2o_loco_bicycle_honkHorn.ma">
+    <SourceFile name="c2o_loco_bicycle_honkHorn.ma">
+      <MapNamespace namespace="bicycle" actor="bicycle" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="c2o_loco_bicycle_failToBalance.ma">
+    <SourceFile name="c2o_loco_bicycle_failToBalance.ma">
+      <MapNamespace namespace="bicycle" actor="bicycle" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="c2o_loco_bicycle_trick_02.ma">
+    <SourceFile name="c2o_loco_bicycle_trick_02.ma">
+      <MapNamespace namespace="bicycle" actor="bicycle" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="c2o_loco_bicycle_lowSkill_failToBalance.ma">
+    <SourceFile name="c2o_loco_bicycle_lowSkill_failToBalance.ma">
+      <MapNamespace namespace="bicycle" actor="bicycle" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <PostureManifest actors="">
+    <Support name="Bicycle" family="none" compatibility="FullBody" carry_left="-" carry_right="-" surface="*" />
+  </PostureManifest>
+  <State type="public" skippable="false" interrupt_this="false" name="BalanceFailure" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="BalanceFailure_NormalSkill" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="HonkHorn" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="Trick01" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="Trick02" focus="none" facialoverlays="false" tailoverlays="true" />
+  <Connection from="BalanceFailure" to="exit" />
+  <Connection from="BalanceFailure_NormalSkill" to="exit" />
+  <Connection from="HonkHorn" to="exit" />
+  <Connection from="Trick01" to="exit" />
+  <Connection from="Trick02" to="exit" />
+  <Connection from="entry" to="BalanceFailure" />
+  <Connection from="entry" to="BalanceFailure_NormalSkill" />
+  <Connection from="entry" to="HonkHorn" />
+  <Connection from="entry" to="Trick01" />
+  <Connection from="entry" to="Trick02" />
+  <State name="BalanceFailure" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="3">
+      <Choice value="Bicycle--FullBody" track="locomotionoverlay" mask="">
+        <Controller target="x" controller="@ClipController(clip=c2o_loco_bicycle_lowSkill_failToBalance_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c2o_loco_bicycle_lowSkill_failToBalance.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="1">
+          <TransitionClassList />
+        </Controller>
+        <Controller target="bicycle" controller="@ClipController(clip=c2o_loco_bicycle_lowSkill_failToBalance_bicycle, loop_count=#1)" overridePosture="false" mask="Bicycle_Loco" track="locomotionoverlay" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c2o_loco_bicycle_lowSkill_failToBalance.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="2">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="BalanceFailure_NormalSkill" type="public" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="6">
+      <Choice value="Bicycle--FullBody" track="normal" mask="">
+        <Controller target="bicycle" controller="@ClipController(clip=c2o_loco_bicycle_failToBalance_bicycle, loop_count=#1)" overridePosture="false" mask="Bicycle_Loco" track="locomotionoverlay" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c2o_loco_bicycle_failToBalance.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="4">
+          <TransitionClassList />
+        </Controller>
+        <Controller target="x" controller="@ClipController(clip=c2o_loco_bicycle_failToBalance_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c2o_loco_bicycle_failToBalance.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="5">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="HonkHorn" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="9">
+      <Choice value="Bicycle--FullBody" track="locomotionoverlay" mask="">
+        <Controller target="bicycle" controller="@ClipController(clip=c2o_loco_bicycle_honkHorn_bicycle, loop_count=#1)" overridePosture="false" mask="Bicycle_Loco" track="locomotionoverlay" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c2o_loco_bicycle_honkHorn.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="7">
+          <TransitionClassList />
+        </Controller>
+        <Controller target="x" controller="@ClipController(clip=c2o_loco_bicycle_honkHorn_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c2o_loco_bicycle_honkHorn.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="8">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="Trick01" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="12">
+      <Choice value="Bicycle--FullBody" track="locomotionoverlay" mask="">
+        <Controller target="bicycle" controller="@ClipController(clip=c2o_loco_bicycle_trick_01_bicycle, loop_count=#1)" overridePosture="false" mask="Bicycle_Loco" track="locomotionoverlay" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c2o_loco_bicycle_trick_01.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="10">
+          <TransitionClassList />
+        </Controller>
+        <Controller target="x" controller="@ClipController(clip=c2o_loco_bicycle_trick_01_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c2o_loco_bicycle_trick_01.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="11">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="Trick02" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="15">
+      <Choice value="Bicycle--FullBody" track="locomotionoverlay" mask="">
+        <Controller target="x" controller="@ClipController(clip=c2o_loco_bicycle_trick_02_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c2o_loco_bicycle_trick_02.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="13">
+          <TransitionClassList />
+        </Controller>
+        <Controller target="bicycle" controller="@ClipController(clip=c2o_loco_bicycle_trick_02_bicycle, loop_count=#1)" overridePosture="false" mask="Bicycle_Loco" track="locomotionoverlay" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c2o_loco_bicycle_trick_02.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="14">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+    </PostureSelector>
+  </State>
+</ASM>

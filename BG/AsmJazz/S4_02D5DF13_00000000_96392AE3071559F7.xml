@@ -3,11 +3,11 @@
   <Actor name="x" type="Sim" master="true" virtual="false" />
   <Actor name="z" type="Sim" virtual="true" />
   <Parameter name="isLaugh" type="enum" labels="false,true" default="false" />
-  <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder,infant" default="adult" />
   <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
   <Parameter name="x:species" type="enum" labels="human,dog,smalldog,cat" default="human" />
   <Parameter name="x:isMermaid" type="bool" labels="" default="False" />
-  <Parameter name="z:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="z:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder,infant" default="adult" />
   <Parameter name="z:sex" type="enum" labels="male,female" default="male" />
   <Parameter name="z:species" type="enum" labels="human,dog,smalldog,cat" default="human" />
   <IkConfiguration name="a_clothingChange.ma">
@@ -46,6 +46,12 @@
       <MapNamespace namespace="x" actor="x" />
     </SourceFile>
   </IkConfiguration>
+  <IkConfiguration name="i2a_motive_bladder_changeDiaper_carried.ma">
+    <SourceFile name="i2a_motive_bladder_changeDiaper_carried.ma">
+      <MapNamespace namespace="y" actor="z" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
   <PostureManifest actors="" />
   <PostureManifest actors="x">
     <Support family="stand" compatibility="FullBody" carry_left="*" carry_right="-" surface="*" />
@@ -57,84 +63,83 @@
     <Support family="stand" compatibility="FullBody" carry_left="*" carry_right="*" surface="*" />
     <Support family="stand" compatibility="UpperBody" carry_left="*" carry_right="*" surface="*" />
   </PostureManifest>
-  <State type="public" skippable="false" interrupt_this="false" name="ClothesChange" focus="full body" facialoverlays="true" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="ClothesChange" focus="none" facialoverlays="true" tailoverlays="true" />
   <Connection from="ClothesChange" to="exit" />
   <Connection from="entry" to="ClothesChange" />
-  <State name="ClothesChange" type="public" skippable="false" interrupt_this="false" focus="full body" facialoverlays="true" tailoverlays="true">
+  <State name="ClothesChange" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="true" tailoverlays="true">
     <description />
-    <PostureSelector parameter="x:posture" unique_id="15">
+    <PostureSelector parameter="x:posture" unique_id="18">
       <Choice value="carried_sim--FullBody" track="normal" mask="">
-        <Controller target="z" controller="@ClipController(clip=p2a_clothesChange_carry_y, loop_count=#1)" overridePosture="true" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p2a_clothingChange_carry.ma" focus="none" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="1">
-          <TransitionClassList>
-            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
-          </TransitionClassList>
-        </Controller>
-        <Controller target="x" controller="@ClipController(clip=p2a_clothesChange_carry_x, loop_count=#1)" overridePosture="true" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p2a_clothingChange_carry.ma" focus="none" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="2">
-          <TransitionClassList>
-            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
-          </TransitionClassList>
-        </Controller>
+        <ParameterSelector parameter="x:age" unique_id="5">
+          <Choice value="baby" />
+          <Choice value="toddler">
+            <Controller target="z" controller="@ClipController(clip=p2a_clothesChange_carry_y, loop_count=#1)" overridePosture="true" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p2a_clothingChange_carry.ma" focus="none" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="1">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+            <Controller target="x" controller="@ClipController(clip=p2a_clothesChange_carry_x, loop_count=#1)" overridePosture="true" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p2a_clothingChange_carry.ma" focus="none" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="2">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice value="child" />
+          <Choice value="teen" />
+          <Choice value="youngadult" />
+          <Choice value="adult" />
+          <Choice value="elder" />
+          <Choice value="infant">
+            <Controller target="x" controller="@ClipController(clip=i2a_clothesChange_carried_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="i2a_motive_bladder_changeDiaper_carried.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="3">
+              <TransitionClassList />
+            </Controller>
+            <Controller target="z" controller="@ClipController(clip=i2a_clothesChange_carried_y, loop_count=#1)" overridePosture="true" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="i2a_motive_bladder_changeDiaper_carried.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="4">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
+        </ParameterSelector>
       </Choice>
       <Choice value="-stand-FullBody" track="normal" mask="">
-        <ParameterSelector parameter="isLaugh" unique_id="5">
+        <ParameterSelector parameter="isLaugh" unique_id="8">
           <Choice value="false">
-            <Controller target="x" controller="@ClipController(clip=a_clothesChange_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_clothingChange.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="3">
+            <Controller target="x" controller="@ClipController(clip=a_clothesChange_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_clothingChange.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="6">
               <TransitionClassList>
                 <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
               </TransitionClassList>
             </Controller>
           </Choice>
           <Choice value="true">
-            <Controller target="x" controller="@ClipController(clip=a_swim_skinnydip_clothesChange_react_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_swim_skinnydip_clothesChange_react.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="4">
+            <Controller target="x" controller="@ClipController(clip=a_swim_skinnydip_clothesChange_react_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_swim_skinnydip_clothesChange_react.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="7">
               <TransitionClassList>
                 <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
               </TransitionClassList>
             </Controller>
-            <Reference target="3" />
+            <Reference target="6" />
           </Choice>
         </ParameterSelector>
       </Choice>
       <Choice value="swim--FullBody" track="normal" mask="">
-        <ParameterSelector parameter="x:age" unique_id="14">
+        <ParameterSelector parameter="x:age" unique_id="17">
           <Choice value="baby" />
           <Choice value="toddler" />
           <Choice value="child">
-            <Controller target="x" controller="@ClipController(clip=c_swim_clothesChange_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c_swim_clothesChange_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="6">
+            <Controller target="x" controller="@ClipController(clip=c_swim_clothesChange_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="c_swim_clothesChange_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="9">
               <TransitionClassList />
             </Controller>
           </Choice>
           <Choice value="teen">
-            <ParameterSelector parameter="x:isMermaid" unique_id="13">
+            <ParameterSelector parameter="x:isMermaid" unique_id="16">
               <Choice value="false">
-                <ParameterSelector parameter="isLaugh" unique_id="9">
-                  <Choice value="false">
-                    <Controller target="x" controller="@ClipController(clip=a_swim_skinnydip_clothesChange_x, loop_count=#1)" overridePosture="true" mask="" track="normalplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_swim_skinnydip_clothesChange.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="7">
-                      <TransitionClassList>
-                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
-                      </TransitionClassList>
-                    </Controller>
-                  </Choice>
-                  <Choice value="true">
-                    <Controller target="x" controller="@ClipController(clip=a_swim_skinnydip_clothesChange_swimmingReact_x, loop_count=#1)" overridePosture="true" mask="" track="normalplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_swim_skinnydip_clothesChange_swimmingReact.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="8">
-                      <TransitionClassList>
-                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
-                      </TransitionClassList>
-                    </Controller>
-                    <Reference target="7" />
-                  </Choice>
-                </ParameterSelector>
-              </Choice>
-              <Choice value="true">
                 <ParameterSelector parameter="isLaugh" unique_id="12">
                   <Choice value="false">
-                    <Controller target="x" controller="@ClipController(clip=a_mermaid_swim_skinnydip_clothesChange_x, loop_count=#1)" overridePosture="true" mask="" track="normalplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_mermaid_swim_skinnydip_clothesChange.ma" ik_override="disable_feet" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="10">
+                    <Controller target="x" controller="@ClipController(clip=a_swim_skinnydip_clothesChange_x, loop_count=#1)" overridePosture="true" mask="" track="normalplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_swim_skinnydip_clothesChange.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="10">
                       <TransitionClassList>
                         <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
                       </TransitionClassList>
                     </Controller>
                   </Choice>
                   <Choice value="true">
-                    <Controller target="x" controller="@ClipController(clip=a_swim_skinnydip_clothesChange_swimmingReact_x, loop_count=#1)" overridePosture="true" mask="Trackmask_UpperBody" track="normalplus" mirror_conditional="False" suppress_footsteps="True" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_swim_skinnydip_clothesChange_swimmingReact.ma" ik_override="disable_feet" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="11">
+                    <Controller target="x" controller="@ClipController(clip=a_swim_skinnydip_clothesChange_swimmingReact_x, loop_count=#1)" overridePosture="true" mask="" track="normalplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_swim_skinnydip_clothesChange_swimmingReact.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="11">
                       <TransitionClassList>
                         <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
                       </TransitionClassList>
@@ -143,17 +148,37 @@
                   </Choice>
                 </ParameterSelector>
               </Choice>
+              <Choice value="true">
+                <ParameterSelector parameter="isLaugh" unique_id="15">
+                  <Choice value="false">
+                    <Controller target="x" controller="@ClipController(clip=a_mermaid_swim_skinnydip_clothesChange_x, loop_count=#1)" overridePosture="true" mask="" track="normalplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_mermaid_swim_skinnydip_clothesChange.ma" ik_override="disable_feet" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="13">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                  </Choice>
+                  <Choice value="true">
+                    <Controller target="x" controller="@ClipController(clip=a_swim_skinnydip_clothesChange_swimmingReact_x, loop_count=#1)" overridePosture="true" mask="Trackmask_UpperBody" track="normalplus" mirror_conditional="False" suppress_footsteps="True" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_swim_skinnydip_clothesChange_swimmingReact.ma" ik_override="disable_feet" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="14">
+                      <TransitionClassList>
+                        <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+                      </TransitionClassList>
+                    </Controller>
+                    <Reference target="13" />
+                  </Choice>
+                </ParameterSelector>
+              </Choice>
             </ParameterSelector>
           </Choice>
           <Choice value="youngadult">
-            <Reference target="13" />
+            <Reference target="16" />
           </Choice>
           <Choice value="adult">
-            <Reference target="13" />
+            <Reference target="16" />
           </Choice>
           <Choice value="elder">
-            <Reference target="13" />
+            <Reference target="16" />
           </Choice>
+          <Choice value="infant" />
         </ParameterSelector>
       </Choice>
     </PostureSelector>

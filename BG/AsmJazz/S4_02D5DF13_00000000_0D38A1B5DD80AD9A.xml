@@ -1,0 +1,68 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="LayOnBack_Posture" dcc="sage">
+  <Actor name="x" type="Sim" master="true" virtual="false" />
+  <Actor name="sitTemplate" type="Object" virtual="true" />
+  <Parameter name="transitionPosture" type="enum" labels="stand,carried_sim,layOnStomach" default="stand" />
+  <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder,infant" default="adult" />
+  <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
+  <IkConfiguration name="i_layOnBack_posture_x.ma">
+    <SourceFile name="i_layOnBack_posture_x.ma">
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="sitTemplate" actor="sitTemplate" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="i_sitOnGround_getOut_sit2LayOnBack.ma">
+    <SourceFile name="i_sitOnGround_getOut_sit2LayOnBack.ma">
+      <MapNamespace namespace="sitTemplate" actor="sitTemplate" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="i_sitOnGround_getIn_LayOnBack2sit.ma">
+    <SourceFile name="i_sitOnGround_getIn_LayOnBack2sit.ma">
+      <MapNamespace namespace="sitTemplate" actor="sitTemplate" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <PostureManifest>
+    <Provide name="layOnBack" family="none" compatibility="FullBody" carry_left="-" carry_right="-" carry_back="-" surface="*" />
+  </PostureManifest>
+  <State type="private" skippable="false" interrupt_this="false" name="GetOut" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" name="Posture" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="get_in" focus="head" facialoverlays="false" tailoverlays="true" />
+  <Connection from="GetOut" to="exit" />
+  <Connection from="Posture" to="GetOut" />
+  <Connection from="entry" to="get_in" />
+  <Connection from="get_in" to="Posture" />
+  <State name="GetOut" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <ParameterSelector parameter="transitionPosture" unique_id="2">
+      <Choice value="stand">
+        <Controller target="x" controller="@ClipController(clip=i_sitOnGround_getIn_LayOnBack2sit_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="i_sitOnGround_getIn_LayOnBack2sit.ma" focus="none" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="1">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+      <Choice value="carried_sim" />
+      <Choice value="layOnStomach" />
+    </ParameterSelector>
+  </State>
+  <State name="Posture" type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <MakeController>
+      <Controller target="x" controller="@ClipController(clip=i_layOnBack_posture_x, loop_count=#1)" overridePosture="false" mask="" track="low" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="i_layOnBack_posture_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="3">
+        <TransitionClassList />
+      </Controller>
+    </MakeController>
+  </State>
+  <State name="get_in" type="public" skippable="false" interrupt_this="false" focus="head" facialoverlays="false" tailoverlays="true">
+    <description />
+    <ParameterSelector parameter="transitionPosture" unique_id="5">
+      <Choice value="stand">
+        <Controller target="x" controller="@ClipController(clip=i_sitOnGround_getOut_sit2LayOnBack_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="i_sitOnGround_getOut_sit2LayOnBack.ma" focus="none" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="4">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+      <Choice value="carried_sim" />
+      <Choice value="layOnStomach" />
+    </ParameterSelector>
+  </State>
+</ASM>

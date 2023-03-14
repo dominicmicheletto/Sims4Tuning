@@ -3,10 +3,12 @@
   <Actor name="x" type="Sim" master="true" virtual="false" />
   <Actor name="sitTemplate" type="Object" virtual="true" />
   <Actor name="z" type="Sim" virtual="true" />
-  <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="contextCarryHand" type="enum" labels="right,back" default="right" />
+  <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder,infant" default="adult" />
   <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
   <Parameter name="x:carryState" type="enum" labels="none,left,right,both" default="left" />
   <Parameter name="x:isMermaid" type="bool" labels="" default="False" />
+  <Parameter name="x:carryTrack" type="enum" labels="right,back" default="right" />
   <Parameter name="z:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
   <Parameter name="z:sex" type="enum" labels="male,female" default="male" />
   <IkConfiguration name="a_motive_hygiene_getAttention.ma">
@@ -97,6 +99,42 @@
       <MapNamespace namespace="x" actor="x" />
     </SourceFile>
   </IkConfiguration>
+  <IkConfiguration name="i_motive_genericDistress_carried.ma">
+    <SourceFile name="i_motive_genericDistress_carried.ma">
+      <MapNamespace namespace="y" actor="z" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="i_motive_genericDistress_carried_back.ma">
+    <SourceFile name="i_motive_genericDistress_carried_back.ma">
+      <MapNamespace namespace="y" actor="z" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="i_motive_genericDistress_layOnBack.ma">
+    <SourceFile name="i_motive_genericDistress_layOnBack.ma">
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="sitTemplate" actor="sitTemplate" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="i_motive_genericDistress_seated.ma">
+    <SourceFile name="i_motive_genericDistress_seated.ma">
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="sitTemplate" actor="sitTemplate" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="i_layOnStomach_motive_genericDistress.ma">
+    <SourceFile name="i_layOnStomach_motive_genericDistress.ma">
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="sitTemplate" actor="sitTemplate" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="i_motive_genericDistress_seatedHighChair.ma">
+    <SourceFile name="i_motive_genericDistress_seatedHighChair.ma">
+      <MapNamespace namespace="sitTemplate" actor="sitTemplate" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
   <PostureManifest actors="" />
   <PostureManifest actors="x">
     <Support family="stand" compatibility="FullBody" carry_left="*" carry_right="-" surface="*" />
@@ -110,6 +148,10 @@
     <Support name="swim" family="none" compatibility="FullBody" carry_left="-" carry_right="-" surface="*" />
     <Support name="sitInHighChair" family="none" compatibility="FullBody" carry_left="-" carry_right="-" surface="*" />
     <Support name="carried_sim" family="none" compatibility="FullBody" carry_left="-" carry_right="-" surface="*" />
+    <Support name="layOnBack" family="none" compatibility="FullBody" carry_left="-" carry_right="-" surface="*" />
+    <Support name="carried_sim" family="none" compatibility="FullBody" carry_left="-" carry_right="-" surface="*" />
+    <Support name="layOnStomach" family="none" compatibility="FullBody" carry_left="-" carry_right="-" surface="*" />
+    <Support name="LayOnBackObject" family="none" compatibility="FullBody" carry_left="-" carry_right="-" surface="*" />
   </PostureManifest>
   <PostureManifest actors="z" />
   <State type="public" skippable="false" interrupt_this="false" name="Bladder" focus="none" facialoverlays="false" tailoverlays="true" />
@@ -131,9 +173,9 @@
   <Connection from="mirror" to="Social" />
   <State name="Bladder" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
     <description />
-    <PostureSelector parameter="x:posture" unique_id="15">
+    <PostureSelector parameter="x:posture" unique_id="22">
       <Choice value="carried_sim--FullBody" track="normal" mask="">
-        <ParameterSelector parameter="x:age" unique_id="2">
+        <ParameterSelector parameter="x:age" unique_id="5">
           <Choice value="baby" />
           <Choice value="toddler">
             <Controller target="x" controller="@ClipController(clip=p_motive_genericDistress_carried_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_motive_getAttention_carried.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="1">
@@ -147,44 +189,76 @@
           <Choice value="youngadult" />
           <Choice value="adult" />
           <Choice value="elder" />
+          <Choice value="infant">
+            <ParameterSelector parameter="x:carryTrack" unique_id="4">
+              <Choice value="right">
+                <Controller target="x" controller="@ClipController(clip=i_motive_genericDistress_carried_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="i_motive_genericDistress_carried.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="2">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+              <Choice value="back">
+                <Controller target="x" controller="@ClipController(clip=i_motive_genericDistress_carried_back_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="i_motive_genericDistress_carried_back.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="3">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+            </ParameterSelector>
+          </Choice>
         </ParameterSelector>
       </Choice>
+      <Choice value="layOnBack--FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=i_motive_genericDistress_layOnBack_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="i_motive_genericDistress_layOnBack.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="6">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+      <Choice value="LayOnBackObject--FullBody" track="normal" mask="">
+        <Reference target="6" />
+      </Choice>
+      <Choice value="layOnStomach--FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=i_layOnStomach_motive_genericDistress_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="i_layOnStomach_motive_genericDistress.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="7">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
       <Choice value="-sit-FullBody" track="normal" mask="">
-        <ParameterSelector parameter="x:age" unique_id="5">
+        <ParameterSelector parameter="x:age" unique_id="11">
           <Choice value="baby" />
           <Choice value="toddler">
-            <Controller target="x" controller="@ClipController(clip=p_motive_genericDistress_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_motive_getAttention_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="3">
+            <Controller target="x" controller="@ClipController(clip=p_motive_genericDistress_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_motive_getAttention_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="8">
               <TransitionClassList>
                 <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
               </TransitionClassList>
             </Controller>
           </Choice>
           <Choice value="child">
-            <Controller target="x" controller="@ClipController(clip=a_motive_bladder_getAttention_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_motive_bladder_getAttention_seated.ma" focus="none" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="4">
+            <Controller target="x" controller="@ClipController(clip=a_motive_bladder_getAttention_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_motive_bladder_getAttention_seated.ma" focus="none" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="9">
               <TransitionClassList>
                 <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
               </TransitionClassList>
             </Controller>
           </Choice>
           <Choice value="teen">
-            <Reference target="4" />
+            <Reference target="9" />
           </Choice>
           <Choice value="youngadult">
-            <Reference target="4" />
+            <Reference target="9" />
           </Choice>
           <Choice value="adult">
-            <Reference target="4" />
+            <Reference target="9" />
           </Choice>
           <Choice value="elder">
-            <Reference target="4" />
+            <Reference target="9" />
+          </Choice>
+          <Choice value="infant">
+            <Controller target="x" controller="@ClipController(clip=i_motive_genericDistress_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="i_motive_genericDistress_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="10">
+              <TransitionClassList />
+            </Controller>
           </Choice>
         </ParameterSelector>
       </Choice>
       <Choice value="sitInHighChair--FullBody" track="normal" mask="">
-        <ParameterSelector parameter="x:age" unique_id="7">
+        <ParameterSelector parameter="x:age" unique_id="14">
           <Choice value="baby" />
           <Choice value="toddler">
-            <Controller target="x" controller="@ClipController(clip=p_motive_genericDistress_seatedHighChair_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_motive_getAttention_seatedHighChair.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="6">
+            <Controller target="x" controller="@ClipController(clip=p_motive_genericDistress_seatedHighChair_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_motive_getAttention_seatedHighChair.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="12">
               <TransitionClassList>
                 <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
               </TransitionClassList>
@@ -195,89 +269,98 @@
           <Choice value="youngadult" />
           <Choice value="adult" />
           <Choice value="elder" />
+          <Choice value="infant">
+            <Controller target="x" controller="@ClipController(clip=i_motive_genericDistress_seatedHighChair_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="i_motive_genericDistress_seatedHighChair.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="13">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
         </ParameterSelector>
       </Choice>
       <Choice value="-sit-UpperBody" track="normal" mask="Trackmask_UpperBody">
-        <Reference target="5" />
+        <Reference target="11" />
       </Choice>
       <Choice value="-stand-FullBody" track="normal" mask="">
-        <ParameterSelector parameter="x:age" unique_id="10">
+        <ParameterSelector parameter="x:age" unique_id="17">
           <Choice value="baby" />
           <Choice value="toddler">
-            <Controller target="x" controller="@ClipController(clip=p_motive_genericDistress_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_motive_getAttention.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="8">
+            <Controller target="x" controller="@ClipController(clip=p_motive_genericDistress_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_motive_getAttention.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="15">
               <TransitionClassList>
                 <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
               </TransitionClassList>
             </Controller>
           </Choice>
           <Choice value="child">
-            <Controller target="x" controller="@ClipController(clip=a_motive_bladder_getAttention_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_motive_bladder_getAttention.ma" focus="none" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="9">
+            <Controller target="x" controller="@ClipController(clip=a_motive_bladder_getAttention_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_motive_bladder_getAttention.ma" focus="none" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="16">
               <TransitionClassList>
                 <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
               </TransitionClassList>
             </Controller>
           </Choice>
           <Choice value="teen">
-            <Reference target="9" />
+            <Reference target="16" />
           </Choice>
           <Choice value="youngadult">
-            <Reference target="9" />
+            <Reference target="16" />
           </Choice>
           <Choice value="adult">
-            <Reference target="9" />
+            <Reference target="16" />
           </Choice>
           <Choice value="elder">
-            <Reference target="9" />
+            <Reference target="16" />
+          </Choice>
+          <Choice value="infant">
+            <Reference target="10" />
           </Choice>
         </ParameterSelector>
       </Choice>
       <Choice value="-stand-UpperBody" track="normal" mask="Trackmask_UpperBody">
-        <Reference target="10" />
+        <Reference target="17" />
       </Choice>
       <Choice value="swim--FullBody" track="normalplus" mask="">
-        <ParameterSelector parameter="x:age" unique_id="14">
+        <ParameterSelector parameter="x:age" unique_id="21">
           <Choice value="baby" />
           <Choice value="toddler" />
           <Choice value="child">
-            <Controller target="x" controller="@ClipController(clip=a_motive_swim_getAttention_x, loop_count=#1)" overridePosture="false" mask="" track="normalplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_motive_swim_getAttention.ma" focus="full body" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="11">
+            <Controller target="x" controller="@ClipController(clip=a_motive_swim_getAttention_x, loop_count=#1)" overridePosture="false" mask="" track="normalplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_motive_swim_getAttention.ma" focus="full body" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="18">
               <TransitionClassList>
                 <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
               </TransitionClassList>
             </Controller>
           </Choice>
           <Choice value="teen">
-            <ParameterSelector parameter="x:isMermaid" unique_id="13">
+            <ParameterSelector parameter="x:isMermaid" unique_id="20">
               <Choice value="false">
-                <Reference target="11" />
+                <Reference target="18" />
               </Choice>
               <Choice value="true">
-                <Controller target="x" controller="@ClipController(clip=a_mermaid_motive_swim_getAttention_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_mermaid_motive_swim_getAttention.ma" ik_override="disable_feet" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="12">
+                <Controller target="x" controller="@ClipController(clip=a_mermaid_motive_swim_getAttention_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_mermaid_motive_swim_getAttention.ma" ik_override="disable_feet" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="19">
                   <TransitionClassList />
                 </Controller>
               </Choice>
             </ParameterSelector>
           </Choice>
           <Choice value="youngadult">
-            <Reference target="13" />
+            <Reference target="20" />
           </Choice>
           <Choice value="adult">
-            <Reference target="13" />
+            <Reference target="20" />
           </Choice>
           <Choice value="elder">
-            <Reference target="13" />
+            <Reference target="20" />
           </Choice>
+          <Choice value="infant" />
         </ParameterSelector>
       </Choice>
     </PostureSelector>
   </State>
   <State name="Energy" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
     <description />
-    <PostureSelector parameter="x:posture" unique_id="30">
+    <PostureSelector parameter="x:posture" unique_id="44">
       <Choice value="carried_sim--FullBody" track="normal" mask="">
-        <ParameterSelector parameter="x:age" unique_id="17">
+        <ParameterSelector parameter="x:age" unique_id="27">
           <Choice value="baby" />
           <Choice value="toddler">
-            <Controller target="x" controller="@ClipController(clip=p_motive_genericDistress_carried_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_motive_getAttention_carried.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="16">
+            <Controller target="x" controller="@ClipController(clip=p_motive_genericDistress_carried_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_motive_getAttention_carried.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="23">
               <TransitionClassList>
                 <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
               </TransitionClassList>
@@ -288,44 +371,76 @@
           <Choice value="youngadult" />
           <Choice value="adult" />
           <Choice value="elder" />
+          <Choice value="infant">
+            <ParameterSelector parameter="x:carryTrack" unique_id="26">
+              <Choice value="right">
+                <Controller target="x" controller="@ClipController(clip=i_motive_genericDistress_carried_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="i_motive_genericDistress_carried.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="24">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+              <Choice value="back">
+                <Controller target="x" controller="@ClipController(clip=i_motive_genericDistress_carried_back_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="i_motive_genericDistress_carried_back.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="25">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+            </ParameterSelector>
+          </Choice>
         </ParameterSelector>
       </Choice>
+      <Choice value="layOnBack--FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=i_motive_genericDistress_layOnBack_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="i_motive_genericDistress_layOnBack.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="28">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+      <Choice value="LayOnBackObject--FullBody" track="normal" mask="">
+        <Reference target="28" />
+      </Choice>
+      <Choice value="layOnStomach--FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=i_layOnStomach_motive_genericDistress_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="i_layOnStomach_motive_genericDistress.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="29">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
       <Choice value="-sit-FullBody" track="normal" mask="">
-        <ParameterSelector parameter="x:age" unique_id="20">
+        <ParameterSelector parameter="x:age" unique_id="33">
           <Choice value="baby" />
           <Choice value="toddler">
-            <Controller target="x" controller="@ClipController(clip=p_motive_genericDistress_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_motive_getAttention_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="18">
+            <Controller target="x" controller="@ClipController(clip=p_motive_genericDistress_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_motive_getAttention_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="30">
               <TransitionClassList>
                 <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
               </TransitionClassList>
             </Controller>
           </Choice>
           <Choice value="child">
-            <Controller target="x" controller="@ClipController(clip=a_motive_energy_getAttention_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_motive_energy_getAttention_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="19">
+            <Controller target="x" controller="@ClipController(clip=a_motive_energy_getAttention_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_motive_energy_getAttention_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="31">
               <TransitionClassList>
                 <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
               </TransitionClassList>
             </Controller>
           </Choice>
           <Choice value="teen">
-            <Reference target="19" />
+            <Reference target="31" />
           </Choice>
           <Choice value="youngadult">
-            <Reference target="19" />
+            <Reference target="31" />
           </Choice>
           <Choice value="adult">
-            <Reference target="19" />
+            <Reference target="31" />
           </Choice>
           <Choice value="elder">
-            <Reference target="19" />
+            <Reference target="31" />
+          </Choice>
+          <Choice value="infant">
+            <Controller target="x" controller="@ClipController(clip=i_motive_genericDistress_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="i_motive_genericDistress_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="32">
+              <TransitionClassList />
+            </Controller>
           </Choice>
         </ParameterSelector>
       </Choice>
       <Choice value="sitInHighChair--FullBody" track="normal" mask="">
-        <ParameterSelector parameter="x:age" unique_id="22">
+        <ParameterSelector parameter="x:age" unique_id="36">
           <Choice value="baby" />
           <Choice value="toddler">
-            <Controller target="x" controller="@ClipController(clip=p_motive_genericDistress_seatedHighChair_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_motive_getAttention_seatedHighChair.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="21">
+            <Controller target="x" controller="@ClipController(clip=p_motive_genericDistress_seatedHighChair_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_motive_getAttention_seatedHighChair.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="34">
               <TransitionClassList>
                 <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
               </TransitionClassList>
@@ -336,89 +451,98 @@
           <Choice value="youngadult" />
           <Choice value="adult" />
           <Choice value="elder" />
+          <Choice value="infant">
+            <Controller target="x" controller="@ClipController(clip=i_motive_genericDistress_seatedHighChair_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="i_motive_genericDistress_seatedHighChair.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="35">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
         </ParameterSelector>
       </Choice>
       <Choice value="-sit-UpperBody" track="normal" mask="Trackmask_UpperBody">
-        <Reference target="20" />
+        <Reference target="33" />
       </Choice>
       <Choice value="-stand-FullBody" track="normal" mask="">
-        <ParameterSelector parameter="x:age" unique_id="25">
+        <ParameterSelector parameter="x:age" unique_id="39">
           <Choice value="baby" />
           <Choice value="toddler">
-            <Controller target="x" controller="@ClipController(clip=p_motive_genericDistress_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_motive_getAttention.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="23">
+            <Controller target="x" controller="@ClipController(clip=p_motive_genericDistress_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_motive_getAttention.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="37">
               <TransitionClassList>
                 <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
               </TransitionClassList>
             </Controller>
           </Choice>
           <Choice value="child">
-            <Controller target="x" controller="@ClipController(clip=a_motive_energy_getAttention_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_motive_energy_getAttention.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="24">
+            <Controller target="x" controller="@ClipController(clip=a_motive_energy_getAttention_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_motive_energy_getAttention.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="38">
               <TransitionClassList>
                 <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
               </TransitionClassList>
             </Controller>
           </Choice>
           <Choice value="teen">
-            <Reference target="24" />
+            <Reference target="38" />
           </Choice>
           <Choice value="youngadult">
-            <Reference target="24" />
+            <Reference target="38" />
           </Choice>
           <Choice value="adult">
-            <Reference target="24" />
+            <Reference target="38" />
           </Choice>
           <Choice value="elder">
-            <Reference target="24" />
+            <Reference target="38" />
+          </Choice>
+          <Choice value="infant">
+            <Reference target="32" />
           </Choice>
         </ParameterSelector>
       </Choice>
       <Choice value="-stand-UpperBody" track="normal" mask="Trackmask_UpperBody">
-        <Reference target="25" />
+        <Reference target="39" />
       </Choice>
       <Choice value="swim--FullBody" track="normalplus" mask="">
-        <ParameterSelector parameter="x:age" unique_id="29">
+        <ParameterSelector parameter="x:age" unique_id="43">
           <Choice value="baby" />
           <Choice value="toddler" />
           <Choice value="child">
-            <Controller target="x" controller="@ClipController(clip=a_motive_swim_getAttention_x, loop_count=#1)" overridePosture="false" mask="" track="normalplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_motive_swim_getAttention.ma" focus="full body" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="26">
+            <Controller target="x" controller="@ClipController(clip=a_motive_swim_getAttention_x, loop_count=#1)" overridePosture="false" mask="" track="normalplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_motive_swim_getAttention.ma" focus="full body" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="40">
               <TransitionClassList>
                 <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
               </TransitionClassList>
             </Controller>
           </Choice>
           <Choice value="teen">
-            <ParameterSelector parameter="x:isMermaid" unique_id="28">
+            <ParameterSelector parameter="x:isMermaid" unique_id="42">
               <Choice value="false">
-                <Reference target="26" />
+                <Reference target="40" />
               </Choice>
               <Choice value="true">
-                <Controller target="x" controller="@ClipController(clip=a_mermaid_motive_swim_getAttention_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_mermaid_motive_swim_getAttention.ma" ik_override="disable_feet" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="27">
+                <Controller target="x" controller="@ClipController(clip=a_mermaid_motive_swim_getAttention_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_mermaid_motive_swim_getAttention.ma" ik_override="disable_feet" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="41">
                   <TransitionClassList />
                 </Controller>
               </Choice>
             </ParameterSelector>
           </Choice>
           <Choice value="youngadult">
-            <Reference target="28" />
+            <Reference target="42" />
           </Choice>
           <Choice value="adult">
-            <Reference target="28" />
+            <Reference target="42" />
           </Choice>
           <Choice value="elder">
-            <Reference target="28" />
+            <Reference target="42" />
           </Choice>
+          <Choice value="infant" />
         </ParameterSelector>
       </Choice>
     </PostureSelector>
   </State>
   <State name="Hunger" type="public" skippable="false" interrupt_this="false" focus="body only" facialoverlays="false" tailoverlays="true">
     <description />
-    <PostureSelector parameter="x:posture" unique_id="45">
+    <PostureSelector parameter="x:posture" unique_id="66">
       <Choice value="carried_sim--FullBody" track="normal" mask="">
-        <ParameterSelector parameter="x:age" unique_id="32">
+        <ParameterSelector parameter="x:age" unique_id="49">
           <Choice value="baby" />
           <Choice value="toddler">
-            <Controller target="x" controller="@ClipController(clip=p_motive_genericDistress_carried_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_motive_getAttention_carried.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="31">
+            <Controller target="x" controller="@ClipController(clip=p_motive_genericDistress_carried_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_motive_getAttention_carried.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="45">
               <TransitionClassList>
                 <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
               </TransitionClassList>
@@ -429,44 +553,76 @@
           <Choice value="youngadult" />
           <Choice value="adult" />
           <Choice value="elder" />
+          <Choice value="infant">
+            <ParameterSelector parameter="x:carryTrack" unique_id="48">
+              <Choice value="right">
+                <Controller target="x" controller="@ClipController(clip=i_motive_genericDistress_carried_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="i_motive_genericDistress_carried.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="46">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+              <Choice value="back">
+                <Controller target="x" controller="@ClipController(clip=i_motive_genericDistress_carried_back_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="i_motive_genericDistress_carried_back.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="47">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+            </ParameterSelector>
+          </Choice>
         </ParameterSelector>
       </Choice>
+      <Choice value="layOnBack--FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=i_motive_genericDistress_layOnBack_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="i_motive_genericDistress_layOnBack.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="50">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+      <Choice value="LayOnBackObject--FullBody" track="normal" mask="">
+        <Reference target="50" />
+      </Choice>
+      <Choice value="layOnStomach--FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=i_layOnStomach_motive_genericDistress_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="i_layOnStomach_motive_genericDistress.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="51">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
       <Choice value="-sit-FullBody" track="normal" mask="">
-        <ParameterSelector parameter="x:age" unique_id="35">
+        <ParameterSelector parameter="x:age" unique_id="55">
           <Choice value="baby" />
           <Choice value="toddler">
-            <Controller target="x" controller="@ClipController(clip=p_motive_genericDistress_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_motive_getAttention_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="33">
+            <Controller target="x" controller="@ClipController(clip=p_motive_genericDistress_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_motive_getAttention_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="52">
               <TransitionClassList>
                 <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
               </TransitionClassList>
             </Controller>
           </Choice>
           <Choice value="child">
-            <Controller target="x" controller="@ClipController(clip=a_motive_hunger_getAttention_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_motive_hunger_getAttention_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="34">
+            <Controller target="x" controller="@ClipController(clip=a_motive_hunger_getAttention_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_motive_hunger_getAttention_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="53">
               <TransitionClassList>
                 <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
               </TransitionClassList>
             </Controller>
           </Choice>
           <Choice value="teen">
-            <Reference target="34" />
+            <Reference target="53" />
           </Choice>
           <Choice value="youngadult">
-            <Reference target="34" />
+            <Reference target="53" />
           </Choice>
           <Choice value="adult">
-            <Reference target="34" />
+            <Reference target="53" />
           </Choice>
           <Choice value="elder">
-            <Reference target="34" />
+            <Reference target="53" />
+          </Choice>
+          <Choice value="infant">
+            <Controller target="x" controller="@ClipController(clip=i_motive_genericDistress_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="i_motive_genericDistress_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="54">
+              <TransitionClassList />
+            </Controller>
           </Choice>
         </ParameterSelector>
       </Choice>
       <Choice value="sitInHighChair--FullBody" track="normal" mask="">
-        <ParameterSelector parameter="x:age" unique_id="37">
+        <ParameterSelector parameter="x:age" unique_id="58">
           <Choice value="baby" />
           <Choice value="toddler">
-            <Controller target="x" controller="@ClipController(clip=p_motive_genericDistress_seatedHighChair_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_motive_getAttention_seatedHighChair.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="36">
+            <Controller target="x" controller="@ClipController(clip=p_motive_genericDistress_seatedHighChair_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_motive_getAttention_seatedHighChair.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="56">
               <TransitionClassList>
                 <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
               </TransitionClassList>
@@ -477,89 +633,98 @@
           <Choice value="youngadult" />
           <Choice value="adult" />
           <Choice value="elder" />
+          <Choice value="infant">
+            <Controller target="x" controller="@ClipController(clip=i_motive_genericDistress_seatedHighChair_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="i_motive_genericDistress_seatedHighChair.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="57">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
         </ParameterSelector>
       </Choice>
       <Choice value="-sit-UpperBody" track="normal" mask="Trackmask_UpperBody">
-        <Reference target="35" />
+        <Reference target="55" />
       </Choice>
       <Choice value="-stand-FullBody" track="normal" mask="">
-        <ParameterSelector parameter="x:age" unique_id="40">
+        <ParameterSelector parameter="x:age" unique_id="61">
           <Choice value="baby" />
           <Choice value="toddler">
-            <Controller target="x" controller="@ClipController(clip=p_motive_genericDistress_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_motive_getAttention.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="38">
+            <Controller target="x" controller="@ClipController(clip=p_motive_genericDistress_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_motive_getAttention.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="59">
               <TransitionClassList>
                 <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
               </TransitionClassList>
             </Controller>
           </Choice>
           <Choice value="child">
-            <Controller target="x" controller="@ClipController(clip=a_motive_hunger_getAttention_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_motive_hunger_getAttention.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="39">
+            <Controller target="x" controller="@ClipController(clip=a_motive_hunger_getAttention_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_motive_hunger_getAttention.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="60">
               <TransitionClassList>
                 <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
               </TransitionClassList>
             </Controller>
           </Choice>
           <Choice value="teen">
-            <Reference target="39" />
+            <Reference target="60" />
           </Choice>
           <Choice value="youngadult">
-            <Reference target="39" />
+            <Reference target="60" />
           </Choice>
           <Choice value="adult">
-            <Reference target="39" />
+            <Reference target="60" />
           </Choice>
           <Choice value="elder">
-            <Reference target="39" />
+            <Reference target="60" />
+          </Choice>
+          <Choice value="infant">
+            <Reference target="54" />
           </Choice>
         </ParameterSelector>
       </Choice>
       <Choice value="-stand-UpperBody" track="normal" mask="Trackmask_UpperBody">
-        <Reference target="40" />
+        <Reference target="61" />
       </Choice>
       <Choice value="swim--FullBody" track="normalplus" mask="">
-        <ParameterSelector parameter="x:age" unique_id="44">
+        <ParameterSelector parameter="x:age" unique_id="65">
           <Choice value="baby" />
           <Choice value="toddler" />
           <Choice value="child">
-            <Controller target="x" controller="@ClipController(clip=a_motive_swim_getAttention_x, loop_count=#1)" overridePosture="false" mask="" track="normalplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_motive_swim_getAttention.ma" focus="full body" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="41">
+            <Controller target="x" controller="@ClipController(clip=a_motive_swim_getAttention_x, loop_count=#1)" overridePosture="false" mask="" track="normalplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_motive_swim_getAttention.ma" focus="full body" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="62">
               <TransitionClassList>
                 <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
               </TransitionClassList>
             </Controller>
           </Choice>
           <Choice value="teen">
-            <ParameterSelector parameter="x:isMermaid" unique_id="43">
+            <ParameterSelector parameter="x:isMermaid" unique_id="64">
               <Choice value="false">
-                <Reference target="41" />
+                <Reference target="62" />
               </Choice>
               <Choice value="true">
-                <Controller target="x" controller="@ClipController(clip=a_mermaid_motive_swim_getAttention_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_mermaid_motive_swim_getAttention.ma" ik_override="disable_feet" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="42">
+                <Controller target="x" controller="@ClipController(clip=a_mermaid_motive_swim_getAttention_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_mermaid_motive_swim_getAttention.ma" ik_override="disable_feet" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="63">
                   <TransitionClassList />
                 </Controller>
               </Choice>
             </ParameterSelector>
           </Choice>
           <Choice value="youngadult">
-            <Reference target="43" />
+            <Reference target="64" />
           </Choice>
           <Choice value="adult">
-            <Reference target="43" />
+            <Reference target="64" />
           </Choice>
           <Choice value="elder">
-            <Reference target="43" />
+            <Reference target="64" />
           </Choice>
+          <Choice value="infant" />
         </ParameterSelector>
       </Choice>
     </PostureSelector>
   </State>
   <State name="Hygiene" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
     <description />
-    <PostureSelector parameter="x:posture" unique_id="60">
+    <PostureSelector parameter="x:posture" unique_id="88">
       <Choice value="carried_sim--FullBody" track="normal" mask="">
-        <ParameterSelector parameter="x:age" unique_id="47">
+        <ParameterSelector parameter="x:age" unique_id="71">
           <Choice value="baby" />
           <Choice value="toddler">
-            <Controller target="x" controller="@ClipController(clip=p_motive_genericDistress_carried_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_motive_getAttention_carried.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="46">
+            <Controller target="x" controller="@ClipController(clip=p_motive_genericDistress_carried_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_motive_getAttention_carried.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="67">
               <TransitionClassList>
                 <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
               </TransitionClassList>
@@ -570,44 +735,76 @@
           <Choice value="youngadult" />
           <Choice value="adult" />
           <Choice value="elder" />
+          <Choice value="infant">
+            <ParameterSelector parameter="x:carryTrack" unique_id="70">
+              <Choice value="right">
+                <Controller target="x" controller="@ClipController(clip=i_motive_genericDistress_carried_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="i_motive_genericDistress_carried.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="68">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+              <Choice value="back">
+                <Controller target="x" controller="@ClipController(clip=i_motive_genericDistress_carried_back_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="i_motive_genericDistress_carried_back.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="69">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+            </ParameterSelector>
+          </Choice>
         </ParameterSelector>
       </Choice>
+      <Choice value="layOnBack--FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=i_motive_genericDistress_layOnBack_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="i_motive_genericDistress_layOnBack.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="72">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+      <Choice value="LayOnBackObject--FullBody" track="normal" mask="">
+        <Reference target="72" />
+      </Choice>
+      <Choice value="layOnStomach--FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=i_layOnStomach_motive_genericDistress_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="i_layOnStomach_motive_genericDistress.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="73">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
       <Choice value="-sit-FullBody" track="normal" mask="">
-        <ParameterSelector parameter="x:age" unique_id="50">
+        <ParameterSelector parameter="x:age" unique_id="77">
           <Choice value="baby" />
           <Choice value="toddler">
-            <Controller target="x" controller="@ClipController(clip=p_motive_genericDistress_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_motive_getAttention_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="48">
+            <Controller target="x" controller="@ClipController(clip=p_motive_genericDistress_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_motive_getAttention_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="74">
               <TransitionClassList>
                 <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
               </TransitionClassList>
             </Controller>
           </Choice>
           <Choice value="child">
-            <Controller target="x" controller="@ClipController(clip=a_motive_hygiene_getAttention_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_motive_hygiene_getAttention_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="49">
+            <Controller target="x" controller="@ClipController(clip=a_motive_hygiene_getAttention_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_motive_hygiene_getAttention_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="75">
               <TransitionClassList>
                 <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
               </TransitionClassList>
             </Controller>
           </Choice>
           <Choice value="teen">
-            <Reference target="49" />
+            <Reference target="75" />
           </Choice>
           <Choice value="youngadult">
-            <Reference target="49" />
+            <Reference target="75" />
           </Choice>
           <Choice value="adult">
-            <Reference target="49" />
+            <Reference target="75" />
           </Choice>
           <Choice value="elder">
-            <Reference target="49" />
+            <Reference target="75" />
+          </Choice>
+          <Choice value="infant">
+            <Controller target="x" controller="@ClipController(clip=i_motive_genericDistress_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="i_motive_genericDistress_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="76">
+              <TransitionClassList />
+            </Controller>
           </Choice>
         </ParameterSelector>
       </Choice>
       <Choice value="sitInHighChair--FullBody" track="normal" mask="">
-        <ParameterSelector parameter="x:age" unique_id="52">
+        <ParameterSelector parameter="x:age" unique_id="80">
           <Choice value="baby" />
           <Choice value="toddler">
-            <Controller target="x" controller="@ClipController(clip=p_motive_genericDistress_seatedHighChair_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_motive_getAttention_seatedHighChair.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="51">
+            <Controller target="x" controller="@ClipController(clip=p_motive_genericDistress_seatedHighChair_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_motive_getAttention_seatedHighChair.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="78">
               <TransitionClassList>
                 <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
               </TransitionClassList>
@@ -618,89 +815,98 @@
           <Choice value="youngadult" />
           <Choice value="adult" />
           <Choice value="elder" />
+          <Choice value="infant">
+            <Controller target="x" controller="@ClipController(clip=i_motive_genericDistress_seatedHighChair_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="i_motive_genericDistress_seatedHighChair.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="79">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
         </ParameterSelector>
       </Choice>
       <Choice value="-sit-UpperBody" track="normal" mask="Trackmask_UpperBody">
-        <Reference target="50" />
+        <Reference target="77" />
       </Choice>
       <Choice value="-stand-FullBody" track="normal" mask="">
-        <ParameterSelector parameter="x:age" unique_id="55">
+        <ParameterSelector parameter="x:age" unique_id="83">
           <Choice value="baby" />
           <Choice value="toddler">
-            <Controller target="x" controller="@ClipController(clip=p_motive_genericDistress_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_motive_getAttention.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="53">
+            <Controller target="x" controller="@ClipController(clip=p_motive_genericDistress_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_motive_getAttention.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="81">
               <TransitionClassList>
                 <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
               </TransitionClassList>
             </Controller>
           </Choice>
           <Choice value="child">
-            <Controller target="x" controller="@ClipController(clip=a_motive_hygiene_getAttention_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_motive_hygiene_getAttention.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="54">
+            <Controller target="x" controller="@ClipController(clip=a_motive_hygiene_getAttention_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_motive_hygiene_getAttention.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="82">
               <TransitionClassList>
                 <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
               </TransitionClassList>
             </Controller>
           </Choice>
           <Choice value="teen">
-            <Reference target="54" />
+            <Reference target="82" />
           </Choice>
           <Choice value="youngadult">
-            <Reference target="54" />
+            <Reference target="82" />
           </Choice>
           <Choice value="adult">
-            <Reference target="54" />
+            <Reference target="82" />
           </Choice>
           <Choice value="elder">
-            <Reference target="54" />
+            <Reference target="82" />
+          </Choice>
+          <Choice value="infant">
+            <Reference target="76" />
           </Choice>
         </ParameterSelector>
       </Choice>
       <Choice value="-stand-UpperBody" track="normal" mask="Trackmask_UpperBody">
-        <Reference target="55" />
+        <Reference target="83" />
       </Choice>
       <Choice value="swim--FullBody" track="normalplus" mask="">
-        <ParameterSelector parameter="x:age" unique_id="59">
+        <ParameterSelector parameter="x:age" unique_id="87">
           <Choice value="baby" />
           <Choice value="toddler" />
           <Choice value="child">
-            <Controller target="x" controller="@ClipController(clip=a_motive_swim_getAttention_x, loop_count=#1)" overridePosture="false" mask="" track="normalplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_motive_swim_getAttention.ma" focus="full body" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="56">
+            <Controller target="x" controller="@ClipController(clip=a_motive_swim_getAttention_x, loop_count=#1)" overridePosture="false" mask="" track="normalplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_motive_swim_getAttention.ma" focus="full body" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="84">
               <TransitionClassList>
                 <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
               </TransitionClassList>
             </Controller>
           </Choice>
           <Choice value="teen">
-            <ParameterSelector parameter="x:isMermaid" unique_id="58">
+            <ParameterSelector parameter="x:isMermaid" unique_id="86">
               <Choice value="false">
-                <Reference target="56" />
+                <Reference target="84" />
               </Choice>
               <Choice value="true">
-                <Controller target="x" controller="@ClipController(clip=a_mermaid_motive_swim_getAttention_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_mermaid_motive_swim_getAttention.ma" ik_override="disable_feet" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="57">
+                <Controller target="x" controller="@ClipController(clip=a_mermaid_motive_swim_getAttention_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_mermaid_motive_swim_getAttention.ma" ik_override="disable_feet" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="85">
                   <TransitionClassList />
                 </Controller>
               </Choice>
             </ParameterSelector>
           </Choice>
           <Choice value="youngadult">
-            <Reference target="58" />
+            <Reference target="86" />
           </Choice>
           <Choice value="adult">
-            <Reference target="58" />
+            <Reference target="86" />
           </Choice>
           <Choice value="elder">
-            <Reference target="58" />
+            <Reference target="86" />
           </Choice>
+          <Choice value="infant" />
         </ParameterSelector>
       </Choice>
     </PostureSelector>
   </State>
   <State name="Social" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
     <description />
-    <PostureSelector parameter="x:posture" unique_id="75">
+    <PostureSelector parameter="x:posture" unique_id="110">
       <Choice value="carried_sim--FullBody" track="normal" mask="">
-        <ParameterSelector parameter="x:age" unique_id="62">
+        <ParameterSelector parameter="x:age" unique_id="93">
           <Choice value="baby" />
           <Choice value="toddler">
-            <Controller target="x" controller="@ClipController(clip=p_motive_genericDistress_carried_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_motive_getAttention_carried.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="61">
+            <Controller target="x" controller="@ClipController(clip=p_motive_genericDistress_carried_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_motive_getAttention_carried.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="89">
               <TransitionClassList>
                 <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
               </TransitionClassList>
@@ -711,44 +917,76 @@
           <Choice value="youngadult" />
           <Choice value="adult" />
           <Choice value="elder" />
+          <Choice value="infant">
+            <ParameterSelector parameter="x:carryTrack" unique_id="92">
+              <Choice value="right">
+                <Controller target="x" controller="@ClipController(clip=i_motive_genericDistress_carried_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="i_motive_genericDistress_carried.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="90">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+              <Choice value="back">
+                <Controller target="x" controller="@ClipController(clip=i_motive_genericDistress_carried_back_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="i_motive_genericDistress_carried_back.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="91">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+            </ParameterSelector>
+          </Choice>
         </ParameterSelector>
       </Choice>
+      <Choice value="layOnBack--FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=i_motive_genericDistress_layOnBack_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="i_motive_genericDistress_layOnBack.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="94">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+      <Choice value="LayOnBackObject--FullBody" track="normal" mask="">
+        <Reference target="94" />
+      </Choice>
+      <Choice value="layOnStomach--FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=i_layOnStomach_motive_genericDistress_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="i_layOnStomach_motive_genericDistress.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="95">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
       <Choice value="-sit-FullBody" track="normal" mask="">
-        <ParameterSelector parameter="x:age" unique_id="65">
+        <ParameterSelector parameter="x:age" unique_id="99">
           <Choice value="baby" />
           <Choice value="toddler">
-            <Controller target="x" controller="@ClipController(clip=p_motive_genericDistress_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_motive_getAttention_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="63">
+            <Controller target="x" controller="@ClipController(clip=p_motive_genericDistress_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_motive_getAttention_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="96">
               <TransitionClassList>
                 <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
               </TransitionClassList>
             </Controller>
           </Choice>
           <Choice value="child">
-            <Controller target="x" controller="@ClipController(clip=a_motive_social_getAttention_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_motive_social_getAttention_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="64">
+            <Controller target="x" controller="@ClipController(clip=a_motive_social_getAttention_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_motive_social_getAttention_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="97">
               <TransitionClassList>
                 <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
               </TransitionClassList>
             </Controller>
           </Choice>
           <Choice value="teen">
-            <Reference target="64" />
+            <Reference target="97" />
           </Choice>
           <Choice value="youngadult">
-            <Reference target="64" />
+            <Reference target="97" />
           </Choice>
           <Choice value="adult">
-            <Reference target="64" />
+            <Reference target="97" />
           </Choice>
           <Choice value="elder">
-            <Reference target="64" />
+            <Reference target="97" />
+          </Choice>
+          <Choice value="infant">
+            <Controller target="x" controller="@ClipController(clip=i_motive_genericDistress_seated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="i_motive_genericDistress_seated.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="98">
+              <TransitionClassList />
+            </Controller>
           </Choice>
         </ParameterSelector>
       </Choice>
       <Choice value="sitInHighChair--FullBody" track="normal" mask="">
-        <ParameterSelector parameter="x:age" unique_id="67">
+        <ParameterSelector parameter="x:age" unique_id="102">
           <Choice value="baby" />
           <Choice value="toddler">
-            <Controller target="x" controller="@ClipController(clip=p_motive_genericDistress_seatedHighChair_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_motive_getAttention_seatedHighChair.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="66">
+            <Controller target="x" controller="@ClipController(clip=p_motive_genericDistress_seatedHighChair_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_motive_getAttention_seatedHighChair.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="100">
               <TransitionClassList>
                 <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
               </TransitionClassList>
@@ -759,87 +997,96 @@
           <Choice value="youngadult" />
           <Choice value="adult" />
           <Choice value="elder" />
+          <Choice value="infant">
+            <Controller target="x" controller="@ClipController(clip=i_motive_genericDistress_seatedHighChair_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="i_motive_genericDistress_seatedHighChair.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="101">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
         </ParameterSelector>
       </Choice>
       <Choice value="-sit-UpperBody" track="normal" mask="Trackmask_UpperBody">
-        <Reference target="65" />
+        <Reference target="99" />
       </Choice>
       <Choice value="-stand-FullBody" track="normal" mask="">
-        <ParameterSelector parameter="x:age" unique_id="70">
+        <ParameterSelector parameter="x:age" unique_id="105">
           <Choice value="baby" />
           <Choice value="toddler">
-            <Controller target="x" controller="@ClipController(clip=p_motive_genericDistress_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_motive_getAttention.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="68">
+            <Controller target="x" controller="@ClipController(clip=p_motive_genericDistress_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_motive_getAttention.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="103">
               <TransitionClassList>
                 <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
               </TransitionClassList>
             </Controller>
           </Choice>
           <Choice value="child">
-            <Controller target="x" controller="@ClipController(clip=a_motive_social_getAttention_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_motive_social_getAttention.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="69">
+            <Controller target="x" controller="@ClipController(clip=a_motive_social_getAttention_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_motive_social_getAttention.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="104">
               <TransitionClassList>
                 <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
               </TransitionClassList>
             </Controller>
           </Choice>
           <Choice value="teen">
-            <Reference target="69" />
+            <Reference target="104" />
           </Choice>
           <Choice value="youngadult">
-            <Reference target="69" />
+            <Reference target="104" />
           </Choice>
           <Choice value="adult">
-            <Reference target="69" />
+            <Reference target="104" />
           </Choice>
           <Choice value="elder">
-            <Reference target="69" />
+            <Reference target="104" />
+          </Choice>
+          <Choice value="infant">
+            <Reference target="98" />
           </Choice>
         </ParameterSelector>
       </Choice>
       <Choice value="-stand-UpperBody" track="normal" mask="Trackmask_UpperBody">
-        <Reference target="70" />
+        <Reference target="105" />
       </Choice>
       <Choice value="swim--FullBody" track="normalplus" mask="">
-        <ParameterSelector parameter="x:age" unique_id="74">
+        <ParameterSelector parameter="x:age" unique_id="109">
           <Choice value="baby" />
           <Choice value="toddler" />
           <Choice value="child">
-            <Controller target="x" controller="@ClipController(clip=a_motive_swim_getAttention_x, loop_count=#1)" overridePosture="false" mask="" track="normalplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_motive_swim_getAttention.ma" focus="full body" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="71">
+            <Controller target="x" controller="@ClipController(clip=a_motive_swim_getAttention_x, loop_count=#1)" overridePosture="false" mask="" track="normalplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_motive_swim_getAttention.ma" focus="full body" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="106">
               <TransitionClassList>
                 <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
               </TransitionClassList>
             </Controller>
           </Choice>
           <Choice value="teen">
-            <ParameterSelector parameter="x:isMermaid" unique_id="73">
+            <ParameterSelector parameter="x:isMermaid" unique_id="108">
               <Choice value="false">
-                <Reference target="71" />
+                <Reference target="106" />
               </Choice>
               <Choice value="true">
-                <Controller target="x" controller="@ClipController(clip=a_mermaid_motive_swim_getAttention_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_mermaid_motive_swim_getAttention.ma" ik_override="disable_feet" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="72">
+                <Controller target="x" controller="@ClipController(clip=a_mermaid_motive_swim_getAttention_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_mermaid_motive_swim_getAttention.ma" ik_override="disable_feet" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="107">
                   <TransitionClassList />
                 </Controller>
               </Choice>
             </ParameterSelector>
           </Choice>
           <Choice value="youngadult">
-            <Reference target="73" />
+            <Reference target="108" />
           </Choice>
           <Choice value="adult">
-            <Reference target="73" />
+            <Reference target="108" />
           </Choice>
           <Choice value="elder">
-            <Reference target="73" />
+            <Reference target="108" />
           </Choice>
+          <Choice value="infant" />
         </ParameterSelector>
       </Choice>
     </PostureSelector>
   </State>
   <State name="mirror" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
     <description />
-    <ParameterSelector parameter="x:carryState" unique_id="77">
+    <ParameterSelector parameter="x:carryState" unique_id="112">
       <Choice value="none" />
       <Choice value="left">
-        <SetMirror target="x" mirror="true" unique_id="76" />
+        <SetMirror target="x" mirror="true" unique_id="111" />
       </Choice>
       <Choice value="right" />
       <Choice value="both" />

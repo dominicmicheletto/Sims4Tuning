@@ -1,0 +1,110 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="Crib_Sleep_InteractionIdles" dcc="sage">
+  <Actor name="x" type="Sim" master="true" virtual="false" />
+  <Actor name="crib" type="Object" virtual="true" />
+  <Parameter name="isMirrored" type="bool" labels="" default="False" />
+  <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder,infant" default="infant" />
+  <IkConfiguration name="i2o_crib_sleep_sleepOnStomach_all.ma">
+    <SourceFile name="i2o_crib_sleep_sleepOnStomach_all.ma">
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="crib" actor="crib" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="i2o_crib_sleep_posture.ma">
+    <SourceFile name="i2o_crib_sleep_posture.ma">
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="crib" actor="crib" />
+    </SourceFile>
+  </IkConfiguration>
+  <PostureManifest actors="">
+    <Support name="Crib_Sleep" family="none" compatibility="FullBody" carry_left="-" carry_right="-" surface="-" />
+  </PostureManifest>
+  <State type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" name="SleepOnStomach" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="SleepOnStomach_Start" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="SleepOnStomach_Stop" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" name="Sleep_Idle" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="Stop" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="hub" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="mirror" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <Connection from="SleepOnStomach" to="SleepOnStomach_Stop" />
+  <Connection from="SleepOnStomach_Start" to="SleepOnStomach" />
+  <Connection from="SleepOnStomach_Stop" to="hub" />
+  <Connection from="Sleep_Idle" to="hub" />
+  <Connection from="Stop" to="exit" />
+  <Connection from="entry" to="mirror" />
+  <Connection from="hub" to="SleepOnStomach_Start" />
+  <Connection from="hub" to="Sleep_Idle" />
+  <Connection from="hub" to="Stop" />
+  <Connection from="mirror" to="hub" />
+  <State name="SleepOnStomach" type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <MakeController>
+      <PostureSelector parameter="x:posture" unique_id="4">
+        <Choice value="Crib_Sleep--FullBody" track="normal" mask="">
+          <Controller target="x" controller="@ClipController(clip=i2o_crib_sleep_sleepOnStomach_loop_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="i2o_crib_sleep_sleepOnStomach_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="3">
+            <TransitionClassList />
+          </Controller>
+          <MakeController unique_id="2">
+            <Controller target="x" controller="@ClipController(clip=i2o_crib_sleep_sleepOnStomach_softPosture_x, loop_count=#1)" overridePosture="true" mask="" track="lowplus" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="i2o_crib_sleep_sleepOnStomach_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="1">
+              <TransitionClassList />
+            </Controller>
+          </MakeController>
+        </Choice>
+      </PostureSelector>
+    </MakeController>
+  </State>
+  <State name="SleepOnStomach_Start" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="6">
+      <Choice value="Crib_Sleep--FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=i2o_trans_crib_sleep_to_sleepOnStomach_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="i2o_crib_sleep_sleepOnStomach_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="5">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="SleepOnStomach_Stop" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="9">
+      <Choice value="Crib_Sleep--FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=i2o_trans_crib_sleepOnStomach_to_sleep_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="i2o_crib_sleep_sleepOnStomach_all.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="8">
+          <TransitionClassList />
+        </Controller>
+        <Stop target="x" track="lowplus" blend_in="0" unique_id="7" />
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="Sleep_Idle" type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <MakeController>
+      <PostureSelector parameter="x:posture" unique_id="11">
+        <Choice value="Crib_Sleep--FullBody" track="normal" mask="">
+          <Controller target="x" controller="@ClipController(clip=i2o_crib_sleep_breathe_Idle_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="i2o_crib_sleep_posture.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="10">
+            <TransitionClassList />
+          </Controller>
+        </Choice>
+      </PostureSelector>
+    </MakeController>
+  </State>
+  <State name="Stop" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <ParameterSelector parameter="isMirrored" unique_id="13">
+      <Choice value="false" />
+      <Choice value="true">
+        <SetMirror target="x" mirror="true" unique_id="12" />
+      </Choice>
+    </ParameterSelector>
+  </State>
+  <State name="hub" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+  </State>
+  <State name="mirror" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <ParameterSelector parameter="isMirrored" unique_id="15">
+      <Choice value="false" />
+      <Choice value="true">
+        <SetMirror target="x" mirror="true" unique_id="14" />
+      </Choice>
+    </ParameterSelector>
+  </State>
+</ASM>

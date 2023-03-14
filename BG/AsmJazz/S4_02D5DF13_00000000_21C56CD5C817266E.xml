@@ -2,7 +2,7 @@
 <ASM name="FacialOverlays" dcc="sage">
   <Actor name="x" type="Sim" master="true" virtual="false" />
   <Actor name="surface" type="Object" virtual="false" />
-  <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder,infant" default="adult" />
   <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
   <Parameter name="x:mood" type="enum" labels="happy,confident,angry,sad,bored,embarrassed,uncomfortable,playful,tense,focused,energized,flirty,fine,inspired,dazed" default="bored" />
   <Parameter name="x:isPossessed" type="bool" labels="" default="False" />
@@ -50,6 +50,15 @@
   <IkConfiguration name="a_facialOverlay_possessed.ma">
     <SourceFile name="a_facialOverlay_possessed.ma" />
   </IkConfiguration>
+  <IkConfiguration name="i_facialOverlay_angry.ma">
+    <SourceFile name="i_facialOverlay_angry.ma" />
+  </IkConfiguration>
+  <IkConfiguration name="i_facialOverlay_happy.ma">
+    <SourceFile name="i_facialOverlay_happy.ma" />
+  </IkConfiguration>
+  <IkConfiguration name="i_facialOverlay_sad.ma">
+    <SourceFile name="i_facialOverlay_sad.ma" />
+  </IkConfiguration>
   <PostureManifest actors="" />
   <PostureManifest actors="x" />
   <State type="public" countlooptime="false" disableautostop="true" skippable="false" interrupt_this="true" name="FacialOverlay" focus="full body" facialoverlays="false" tailoverlays="true" />
@@ -58,9 +67,9 @@
   <State name="FacialOverlay" type="public" countlooptime="false" disableautostop="true" skippable="false" interrupt_this="true" focus="full body" facialoverlays="false" tailoverlays="true">
     <description />
     <MakeController>
-      <ParameterSelector parameter="x:species" unique_id="27">
+      <ParameterSelector parameter="x:species" unique_id="32">
         <Choice value="human">
-          <ParameterSelector parameter="x:age" unique_id="25">
+          <ParameterSelector parameter="x:age" unique_id="30">
             <Choice value="baby" />
             <Choice value="toddler">
               <ParameterSelector parameter="x:mood" unique_id="5">
@@ -275,19 +284,74 @@
             <Choice value="elder">
               <Reference target="24" />
             </Choice>
+            <Choice value="infant">
+              <ParameterSelector parameter="x:mood" unique_id="29">
+                <Choice value="happy">
+                  <Controller target="x" controller="@ClipController(clip=i_facialOverlay_happy_x, loop_count=#1)" overridePosture="false" mask="Trackmask_Face" track="facialoverlay" mirror_conditional="False" suppress_footsteps="True" transition_class_in="Default" transition_class_out="Default" ik_configuration="i_facialOverlay_happy.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="25">
+                    <TransitionClassList />
+                  </Controller>
+                </Choice>
+                <Choice value="confident">
+                  <Stop target="x" track="facialoverlay" blend_in="-1" unique_id="26" />
+                </Choice>
+                <Choice value="angry">
+                  <Controller target="x" controller="@ClipController(clip=i_facialOverlay_angry_x, loop_count=#1)" overridePosture="false" mask="Trackmask_Face" track="facialoverlay" mirror_conditional="False" suppress_footsteps="True" transition_class_in="Default" transition_class_out="Default" ik_configuration="i_facialOverlay_angry.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="27">
+                    <TransitionClassList />
+                  </Controller>
+                </Choice>
+                <Choice value="sad">
+                  <Controller target="x" controller="@ClipController(clip=i_facialOverlay_sad_x, loop_count=#1)" overridePosture="false" mask="Trackmask_Face" track="facialoverlay" mirror_conditional="False" suppress_footsteps="True" transition_class_in="Default" transition_class_out="Default" ik_configuration="i_facialOverlay_sad.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="28">
+                    <TransitionClassList />
+                  </Controller>
+                </Choice>
+                <Choice value="bored">
+                  <Reference target="26" />
+                </Choice>
+                <Choice value="embarrassed">
+                  <Reference target="26" />
+                </Choice>
+                <Choice value="uncomfortable">
+                  <Reference target="26" />
+                </Choice>
+                <Choice value="playful">
+                  <Reference target="25" />
+                </Choice>
+                <Choice value="tense">
+                  <Reference target="26" />
+                </Choice>
+                <Choice value="focused">
+                  <Reference target="26" />
+                </Choice>
+                <Choice value="energized">
+                  <Reference target="26" />
+                </Choice>
+                <Choice value="flirty">
+                  <Reference target="26" />
+                </Choice>
+                <Choice value="fine">
+                  <Reference target="26" />
+                </Choice>
+                <Choice value="inspired">
+                  <Reference target="26" />
+                </Choice>
+                <Choice value="dazed">
+                  <Reference target="26" />
+                </Choice>
+              </ParameterSelector>
+            </Choice>
           </ParameterSelector>
         </Choice>
         <Choice value="dog">
-          <Stop target="x" track="facialoverlay" blend_in="-1" unique_id="26" />
+          <Stop target="x" track="facialoverlay" blend_in="-1" unique_id="31" />
         </Choice>
         <Choice value="smalldog">
-          <Reference target="26" />
+          <Reference target="31" />
         </Choice>
         <Choice value="cat">
-          <Reference target="26" />
+          <Reference target="31" />
         </Choice>
         <Choice value="fox">
-          <Reference target="26" />
+          <Reference target="31" />
         </Choice>
       </ParameterSelector>
     </MakeController>

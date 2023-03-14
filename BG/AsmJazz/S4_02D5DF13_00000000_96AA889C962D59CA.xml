@@ -1,0 +1,103 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="Canonical_CarrySim_PostureObject" dcc="sage">
+  <Actor name="x" type="Sim" master="true" virtual="false" />
+  <Actor name="postureObject" type="Object" virtual="true" />
+  <Actor name="y" type="Sim" virtual="false" />
+  <Parameter name="routingSlot" type="enum" labels="0,1" default="0" />
+  <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
+  <Parameter name="postureObject:objectName" type="enum" labels="crib,playmat" default="crib" />
+  <Parameter name="y:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="y:sex" type="enum" labels="male,female" default="male" />
+  <IkConfiguration name="a2i_crib_pickUp_putDown_LayOnBack_to_carry.ma">
+    <SourceFile name="a2i_crib_pickUp_putDown_LayOnBack_to_carry.ma">
+      <MapNamespace namespace="y" actor="y" />
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="crib" actor="postureObject" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2i_crib_pickUp_putDown_LayOnBack_to_carry_mirror.ma">
+    <SourceFile name="a2i_crib_pickUp_putDown_LayOnBack_to_carry_mirror.ma">
+      <MapNamespace namespace="y" actor="y" />
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="crib" actor="postureObject" />
+    </SourceFile>
+  </IkConfiguration>
+  <PostureManifest actors="" />
+  <PostureManifest actors="x">
+    <Support family="stand" compatibility="FullBody" carry_left="-" carry_right="y" surface="-" />
+  </PostureManifest>
+  <PostureManifest actors="y">
+    <Support name="carried_sim" family="none" compatibility="FullBody" carry_left="-" carry_right="-" surface="-" />
+  </PostureManifest>
+  <State type="public" skippable="false" interrupt_this="false" name="PickUp" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="PutDown" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <Connection from="PickUp" to="exit" />
+  <Connection from="PutDown" to="exit" />
+  <Connection from="entry" to="PickUp" />
+  <Connection from="entry" to="PutDown" />
+  <State name="PickUp" type="public" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <ParameterSelector parameter="postureObject:objectName" unique_id="9">
+      <Choice value="crib">
+        <PostureSelector parameter="x:posture" unique_id="6">
+          <Choice value="-stand-FullBody" track="normal" mask="">
+            <ParameterSelector parameter="routingSlot" unique_id="5">
+              <Choice value="0">
+                <Controller target="y" controller="@ClipController(clip=a2i_crib_pickUp_fromLayOnBack_to_carry_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2i_crib_pickUp_putDown_LayOnBack_to_carry.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="1">
+                  <TransitionClassList />
+                </Controller>
+                <Controller target="x" controller="@ClipController(clip=a2i_crib_pickUp_fromLayOnBack_to_carry_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2i_crib_pickUp_putDown_LayOnBack_to_carry.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="2">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+              <Choice value="1">
+                <Controller target="x" controller="@ClipController(clip=a2i_crib_pickUp_fromLayOnBack_to_carry_mirror_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2i_crib_pickUp_putDown_LayOnBack_to_carry_mirror.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="3">
+                  <TransitionClassList />
+                </Controller>
+                <Controller target="y" controller="@ClipController(clip=a2i_crib_pickUp_fromLayOnBack_to_carry_mirror_y, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2i_crib_pickUp_putDown_LayOnBack_to_carry_mirror.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="4">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+            </ParameterSelector>
+          </Choice>
+        </PostureSelector>
+      </Choice>
+      <Choice value="playmat">
+        <PostureSelector parameter="x:posture" unique_id="8">
+          <Choice value="-stand-FullBody" track="normal" mask="">
+            <ParameterSelector parameter="routingSlot" unique_id="7">
+              <Choice value="0" />
+              <Choice value="1" />
+            </ParameterSelector>
+          </Choice>
+        </PostureSelector>
+      </Choice>
+    </ParameterSelector>
+  </State>
+  <State name="PutDown" type="public" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <ParameterSelector parameter="postureObject:objectName" unique_id="14">
+      <Choice value="crib">
+        <PostureSelector parameter="x:posture" unique_id="11">
+          <Choice value="-stand-FullBody" track="normal" mask="">
+            <ParameterSelector parameter="routingSlot" unique_id="10">
+              <Choice value="0" />
+              <Choice value="1" />
+            </ParameterSelector>
+          </Choice>
+        </PostureSelector>
+      </Choice>
+      <Choice value="playmat">
+        <PostureSelector parameter="x:posture" unique_id="13">
+          <Choice value="-stand-FullBody" track="normal" mask="">
+            <ParameterSelector parameter="routingSlot" unique_id="12">
+              <Choice value="0" />
+              <Choice value="1" />
+            </ParameterSelector>
+          </Choice>
+        </PostureSelector>
+      </Choice>
+    </ParameterSelector>
+  </State>
+</ASM>

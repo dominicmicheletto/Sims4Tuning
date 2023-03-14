@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ASM name="MoodUI_Thumbnails" dcc="sage">
   <Actor name="x" type="Sim" master="true" virtual="false" />
-  <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder,infant" default="adult" />
   <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
   <IkConfiguration name="a_UI_mood_thumbnail.ma">
     <SourceFile name="a_UI_mood_thumbnail.ma">
@@ -10,6 +10,11 @@
   </IkConfiguration>
   <IkConfiguration name="p_UI_mood_thumbnail.ma">
     <SourceFile name="p_UI_mood_thumbnail.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="i_UI_mood_thumbnail.ma">
+    <SourceFile name="i_UI_mood_thumbnail.ma">
       <MapNamespace namespace="x" actor="x" />
     </SourceFile>
   </IkConfiguration>
@@ -97,6 +102,7 @@
   <Connection from="mood_embarrassed" to="exit" />
   <Connection from="mood_energized" to="exit" />
   <Connection from="mood_enraged" to="exit" />
+  <Connection from="mood_enraged" to="mood_pumped" />
   <Connection from="mood_fearless" to="exit" />
   <Connection from="mood_flirty" to="exit" />
   <Connection from="mood_focused" to="exit" />
@@ -140,7 +146,7 @@
       <Choice value="stand--FullBody" track="normal" mask="">
         <Controller target="x" controller="@ClipController(clip=a_UI_mood_asleep_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_UI_mood_thumbnail.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="3">
           <TransitionClassList>
-            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
           </TransitionClassList>
         </Controller>
       </Choice>
@@ -148,9 +154,9 @@
   </State>
   <State name="mood_bored" type="public" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
     <description />
-    <PostureSelector parameter="x:posture" unique_id="7">
+    <PostureSelector parameter="x:posture" unique_id="8">
       <Choice value="stand--FullBody" track="normal" mask="">
-        <ParameterSelector parameter="x:age" unique_id="6">
+        <ParameterSelector parameter="x:age" unique_id="7">
           <Choice value="baby" />
           <Choice value="toddler" />
           <Choice value="child">
@@ -172,101 +178,113 @@
           <Choice value="elder">
             <Reference target="5" />
           </Choice>
+          <Choice value="infant">
+            <Controller target="x" controller="@ClipController(clip=i_UI_mood_sad_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="i_UI_mood_thumbnail.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="6">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
         </ParameterSelector>
       </Choice>
     </PostureSelector>
   </State>
   <State name="mood_confident" type="public" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
     <description />
-    <PostureSelector parameter="x:posture" unique_id="10">
+    <PostureSelector parameter="x:posture" unique_id="11">
       <Choice value="stand--FullBody" track="normal" mask="">
-        <ParameterSelector parameter="x:age" unique_id="9">
+        <ParameterSelector parameter="x:age" unique_id="10">
           <Choice value="baby" />
           <Choice value="toddler" />
           <Choice value="child">
-            <Controller target="x" controller="@ClipController(clip=a_UI_mood_confident_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_UI_mood_thumbnail.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="8">
+            <Controller target="x" controller="@ClipController(clip=a_UI_mood_confident_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_UI_mood_thumbnail.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="9">
               <TransitionClassList>
                 <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
               </TransitionClassList>
             </Controller>
           </Choice>
           <Choice value="teen">
-            <Reference target="8" />
+            <Reference target="9" />
           </Choice>
           <Choice value="youngadult">
-            <Reference target="8" />
+            <Reference target="9" />
           </Choice>
           <Choice value="adult">
-            <Reference target="8" />
+            <Reference target="9" />
           </Choice>
           <Choice value="elder">
-            <Reference target="8" />
+            <Reference target="9" />
           </Choice>
+          <Choice value="infant" />
         </ParameterSelector>
       </Choice>
     </PostureSelector>
   </State>
   <State name="mood_dazed" type="public" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
     <description />
-    <PostureSelector parameter="x:posture" unique_id="13">
+    <PostureSelector parameter="x:posture" unique_id="14">
       <Choice value="stand--FullBody" track="normal" mask="">
-        <ParameterSelector parameter="x:age" unique_id="12">
+        <ParameterSelector parameter="x:age" unique_id="13">
           <Choice value="baby" />
           <Choice value="toddler" />
           <Choice value="child">
-            <Controller target="x" controller="@ClipController(clip=a_UI_mood_dazed_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_UI_mood_thumbnail.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="11">
+            <Controller target="x" controller="@ClipController(clip=a_UI_mood_dazed_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_UI_mood_thumbnail.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="12">
               <TransitionClassList>
                 <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
               </TransitionClassList>
             </Controller>
           </Choice>
           <Choice value="teen">
-            <Reference target="11" />
+            <Reference target="12" />
           </Choice>
           <Choice value="youngadult">
-            <Reference target="11" />
+            <Reference target="12" />
           </Choice>
           <Choice value="adult">
-            <Reference target="11" />
+            <Reference target="12" />
           </Choice>
           <Choice value="elder">
-            <Reference target="11" />
+            <Reference target="12" />
           </Choice>
+          <Choice value="infant" />
         </ParameterSelector>
       </Choice>
     </PostureSelector>
   </State>
   <State name="mood_depression" type="public" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
     <description />
-    <PostureSelector parameter="x:posture" unique_id="17">
+    <PostureSelector parameter="x:posture" unique_id="19">
       <Choice value="stand--FullBody" track="normal" mask="">
-        <ParameterSelector parameter="x:age" unique_id="16">
+        <ParameterSelector parameter="x:age" unique_id="18">
           <Choice value="baby" />
           <Choice value="toddler">
-            <Controller target="x" controller="@ClipController(clip=p_UI_mood_sad_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_UI_mood_thumbnail.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="14">
+            <Controller target="x" controller="@ClipController(clip=p_UI_mood_sad_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_UI_mood_thumbnail.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="15">
               <TransitionClassList>
                 <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
               </TransitionClassList>
             </Controller>
           </Choice>
           <Choice value="child">
-            <Controller target="x" controller="@ClipController(clip=a_UI_mood_depression_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_UI_mood_thumbnail.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="15">
+            <Controller target="x" controller="@ClipController(clip=a_UI_mood_depression_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_UI_mood_thumbnail.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="16">
               <TransitionClassList>
                 <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
               </TransitionClassList>
             </Controller>
           </Choice>
           <Choice value="teen">
-            <Reference target="15" />
+            <Reference target="16" />
           </Choice>
           <Choice value="youngadult">
-            <Reference target="15" />
+            <Reference target="16" />
           </Choice>
           <Choice value="adult">
-            <Reference target="15" />
+            <Reference target="16" />
           </Choice>
           <Choice value="elder">
-            <Reference target="15" />
+            <Reference target="16" />
+          </Choice>
+          <Choice value="infant">
+            <Controller target="x" controller="@ClipController(clip=i_UI_mood_sad_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="i_UI_mood_thumbnail.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="17">
+              <TransitionClassList />
+            </Controller>
           </Choice>
         </ParameterSelector>
       </Choice>
@@ -274,35 +292,38 @@
   </State>
   <State name="mood_elated" type="public" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
     <description />
-    <PostureSelector parameter="x:posture" unique_id="21">
+    <PostureSelector parameter="x:posture" unique_id="23">
       <Choice value="stand--FullBody" track="normal" mask="">
-        <ParameterSelector parameter="x:age" unique_id="20">
+        <ParameterSelector parameter="x:age" unique_id="22">
           <Choice value="baby" />
           <Choice value="toddler">
-            <Controller target="x" controller="@ClipController(clip=p_UI_mood_happy_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_UI_mood_thumbnail.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="18">
+            <Controller target="x" controller="@ClipController(clip=p_UI_mood_happy_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_UI_mood_thumbnail.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="20">
               <TransitionClassList>
                 <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
               </TransitionClassList>
             </Controller>
           </Choice>
           <Choice value="child">
-            <Controller target="x" controller="@ClipController(clip=a_UI_mood_elated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_UI_mood_thumbnail.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="19">
+            <Controller target="x" controller="@ClipController(clip=a_UI_mood_elated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_UI_mood_thumbnail.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="21">
               <TransitionClassList>
                 <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
               </TransitionClassList>
             </Controller>
           </Choice>
           <Choice value="teen">
-            <Reference target="19" />
+            <Reference target="21" />
           </Choice>
           <Choice value="youngadult">
-            <Reference target="19" />
+            <Reference target="21" />
           </Choice>
           <Choice value="adult">
-            <Reference target="19" />
+            <Reference target="21" />
           </Choice>
           <Choice value="elder">
-            <Reference target="19" />
+            <Reference target="21" />
+          </Choice>
+          <Choice value="infant">
+            <Reference target="20" />
           </Choice>
         </ParameterSelector>
       </Choice>
@@ -310,77 +331,106 @@
   </State>
   <State name="mood_embarrassed" type="public" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
     <description />
-    <PostureSelector parameter="x:posture" unique_id="24">
+    <PostureSelector parameter="x:posture" unique_id="26">
       <Choice value="stand--FullBody" track="normal" mask="">
-        <ParameterSelector parameter="x:age" unique_id="23">
+        <ParameterSelector parameter="x:age" unique_id="25">
           <Choice value="baby" />
           <Choice value="toddler" />
           <Choice value="child">
-            <Controller target="x" controller="@ClipController(clip=a_UI_mood_embarrassed_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_UI_mood_thumbnail.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="22">
+            <Controller target="x" controller="@ClipController(clip=a_UI_mood_embarrassed_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_UI_mood_thumbnail.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="24">
               <TransitionClassList>
                 <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
               </TransitionClassList>
             </Controller>
           </Choice>
           <Choice value="teen">
-            <Reference target="22" />
+            <Reference target="24" />
           </Choice>
           <Choice value="youngadult">
-            <Reference target="22" />
+            <Reference target="24" />
           </Choice>
           <Choice value="adult">
-            <Reference target="22" />
+            <Reference target="24" />
           </Choice>
           <Choice value="elder">
-            <Reference target="22" />
+            <Reference target="24" />
           </Choice>
+          <Choice value="infant" />
         </ParameterSelector>
       </Choice>
     </PostureSelector>
   </State>
   <State name="mood_energized" type="public" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
     <description />
-    <PostureSelector parameter="x:posture" unique_id="26">
-      <Choice value="stand--FullBody" track="normal" mask="">
-        <Controller target="x" controller="@ClipController(clip=a_UI_mood_energized_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_UI_mood_thumbnail.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="25">
-          <TransitionClassList>
-            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
-          </TransitionClassList>
-        </Controller>
-      </Choice>
-    </PostureSelector>
-  </State>
-  <State name="mood_enraged" type="public" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
-    <description />
     <PostureSelector parameter="x:posture" unique_id="30">
       <Choice value="stand--FullBody" track="normal" mask="">
         <ParameterSelector parameter="x:age" unique_id="29">
           <Choice value="baby" />
           <Choice value="toddler">
-            <Controller target="x" controller="@ClipController(clip=p_UI_mood_angry_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_UI_mood_thumbnail.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="27">
+            <Controller target="x" controller="@ClipController(clip=a_UI_mood_energized_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_UI_mood_thumbnail.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="27">
               <TransitionClassList>
                 <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
               </TransitionClassList>
             </Controller>
           </Choice>
           <Choice value="child">
-            <Controller target="x" controller="@ClipController(clip=a_UI_mood_enraged_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_UI_mood_thumbnail.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="28">
+            <Reference target="27" />
+          </Choice>
+          <Choice value="teen">
+            <Reference target="27" />
+          </Choice>
+          <Choice value="youngadult">
+            <Reference target="27" />
+          </Choice>
+          <Choice value="adult">
+            <Reference target="27" />
+          </Choice>
+          <Choice value="elder">
+            <Reference target="27" />
+          </Choice>
+          <Choice value="infant">
+            <Controller target="x" controller="@ClipController(clip=i_UI_mood_playful_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="i_UI_mood_thumbnail.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="28">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="mood_enraged" type="public" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="34">
+      <Choice value="stand--FullBody" track="normal" mask="">
+        <ParameterSelector parameter="x:age" unique_id="33">
+          <Choice value="baby" />
+          <Choice value="toddler">
+            <Controller target="x" controller="@ClipController(clip=p_UI_mood_angry_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_UI_mood_thumbnail.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="31">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice value="child">
+            <Controller target="x" controller="@ClipController(clip=a_UI_mood_enraged_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_UI_mood_thumbnail.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="32">
               <TransitionClassList>
                 <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
               </TransitionClassList>
             </Controller>
           </Choice>
           <Choice value="teen">
-            <Reference target="28" />
+            <Reference target="32" />
           </Choice>
           <Choice value="youngadult">
-            <Reference target="28" />
+            <Reference target="32" />
           </Choice>
           <Choice value="adult">
-            <Reference target="28" />
+            <Reference target="32" />
           </Choice>
           <Choice value="elder">
-            <Reference target="28" />
+            <Reference target="32" />
+          </Choice>
+          <Choice value="infant">
+            <Reference target="31" />
           </Choice>
         </ParameterSelector>
       </Choice>
@@ -388,52 +438,53 @@
   </State>
   <State name="mood_fearless" type="public" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
     <description />
-    <PostureSelector parameter="x:posture" unique_id="33">
+    <PostureSelector parameter="x:posture" unique_id="37">
       <Choice value="stand--FullBody" track="normal" mask="">
-        <ParameterSelector parameter="x:age" unique_id="32">
+        <ParameterSelector parameter="x:age" unique_id="36">
           <Choice value="baby" />
           <Choice value="toddler" />
           <Choice value="child">
-            <Controller target="x" controller="@ClipController(clip=a_UI_mood_fearless_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_UI_mood_thumbnail.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="31">
+            <Controller target="x" controller="@ClipController(clip=a_UI_mood_fearless_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_UI_mood_thumbnail.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="35">
               <TransitionClassList>
                 <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
               </TransitionClassList>
             </Controller>
           </Choice>
           <Choice value="teen">
-            <Reference target="31" />
+            <Reference target="35" />
           </Choice>
           <Choice value="youngadult">
-            <Reference target="31" />
+            <Reference target="35" />
           </Choice>
           <Choice value="adult">
-            <Reference target="31" />
+            <Reference target="35" />
           </Choice>
           <Choice value="elder">
-            <Reference target="31" />
+            <Reference target="35" />
           </Choice>
+          <Choice value="infant" />
         </ParameterSelector>
       </Choice>
     </PostureSelector>
   </State>
   <State name="mood_flirty" type="public" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
     <description />
-    <PostureSelector parameter="x:posture" unique_id="38">
+    <PostureSelector parameter="x:posture" unique_id="42">
       <Choice value="stand--FullBody" track="normal" mask="">
-        <ParameterSelector parameter="x:age" unique_id="37">
+        <ParameterSelector parameter="x:age" unique_id="41">
           <Choice value="baby" />
           <Choice value="toddler" />
           <Choice value="child">
-            <ParameterSelector parameter="x:sex" unique_id="36">
+            <ParameterSelector parameter="x:sex" unique_id="40">
               <Choice value="male">
-                <Controller target="x" controller="@ClipController(clip=a_UI_mood_flirty_male_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_UI_mood_thumbnail.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="34">
+                <Controller target="x" controller="@ClipController(clip=a_UI_mood_flirty_male_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_UI_mood_thumbnail.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="38">
                   <TransitionClassList>
                     <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
                   </TransitionClassList>
                 </Controller>
               </Choice>
               <Choice value="female">
-                <Controller target="x" controller="@ClipController(clip=a_UI_mood_flirty_female_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_UI_mood_thumbnail.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="35">
+                <Controller target="x" controller="@ClipController(clip=a_UI_mood_flirty_female_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_UI_mood_thumbnail.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="39">
                   <TransitionClassList>
                     <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
                   </TransitionClassList>
@@ -442,124 +493,93 @@
             </ParameterSelector>
           </Choice>
           <Choice value="teen">
-            <Reference target="36" />
+            <Reference target="40" />
           </Choice>
           <Choice value="youngadult">
-            <Reference target="36" />
+            <Reference target="40" />
           </Choice>
           <Choice value="adult">
-            <Reference target="36" />
+            <Reference target="40" />
           </Choice>
           <Choice value="elder">
-            <Reference target="36" />
+            <Reference target="40" />
           </Choice>
+          <Choice value="infant" />
         </ParameterSelector>
       </Choice>
     </PostureSelector>
   </State>
   <State name="mood_focused" type="public" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
     <description />
-    <PostureSelector parameter="x:posture" unique_id="41">
+    <PostureSelector parameter="x:posture" unique_id="45">
       <Choice value="stand--FullBody" track="normal" mask="">
-        <ParameterSelector parameter="x:age" unique_id="40">
+        <ParameterSelector parameter="x:age" unique_id="44">
           <Choice value="baby" />
           <Choice value="toddler" />
           <Choice value="child">
-            <Controller target="x" controller="@ClipController(clip=a_UI_mood_focused_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_UI_mood_thumbnail.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="39">
+            <Controller target="x" controller="@ClipController(clip=a_UI_mood_focused_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_UI_mood_thumbnail.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="43">
               <TransitionClassList>
                 <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
               </TransitionClassList>
             </Controller>
           </Choice>
           <Choice value="teen">
-            <Reference target="39" />
+            <Reference target="43" />
           </Choice>
           <Choice value="youngadult">
-            <Reference target="39" />
+            <Reference target="43" />
           </Choice>
           <Choice value="adult">
-            <Reference target="39" />
+            <Reference target="43" />
           </Choice>
           <Choice value="elder">
-            <Reference target="39" />
+            <Reference target="43" />
           </Choice>
+          <Choice value="infant" />
         </ParameterSelector>
       </Choice>
     </PostureSelector>
   </State>
   <State name="mood_friendly" type="public" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
     <description />
-    <PostureSelector parameter="x:posture" unique_id="45">
+    <PostureSelector parameter="x:posture" unique_id="49">
       <Choice value="stand--FullBody" track="normal" mask="">
-        <ParameterSelector parameter="x:age" unique_id="44">
+        <ParameterSelector parameter="x:age" unique_id="48">
           <Choice value="baby" />
           <Choice value="toddler">
-            <Controller target="x" controller="@ClipController(clip=p_UI_mood_happy_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_UI_mood_thumbnail.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="42">
+            <Controller target="x" controller="@ClipController(clip=p_UI_mood_happy_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_UI_mood_thumbnail.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="46">
               <TransitionClassList>
                 <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
               </TransitionClassList>
             </Controller>
           </Choice>
           <Choice value="child">
-            <Controller target="x" controller="@ClipController(clip=a_UI_mood_friendly_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_UI_mood_thumbnail.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="43">
+            <Controller target="x" controller="@ClipController(clip=a_UI_mood_friendly_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_UI_mood_thumbnail.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="47">
               <TransitionClassList>
                 <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
               </TransitionClassList>
             </Controller>
           </Choice>
           <Choice value="teen">
-            <Reference target="43" />
+            <Reference target="47" />
           </Choice>
           <Choice value="youngadult">
-            <Reference target="43" />
+            <Reference target="47" />
           </Choice>
           <Choice value="adult">
-            <Reference target="43" />
+            <Reference target="47" />
           </Choice>
           <Choice value="elder">
-            <Reference target="43" />
+            <Reference target="47" />
+          </Choice>
+          <Choice value="infant">
+            <Reference target="46" />
           </Choice>
         </ParameterSelector>
       </Choice>
     </PostureSelector>
   </State>
   <State name="mood_frustrated" type="public" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
-    <description />
-    <PostureSelector parameter="x:posture" unique_id="49">
-      <Choice value="stand--FullBody" track="normal" mask="">
-        <ParameterSelector parameter="x:age" unique_id="48">
-          <Choice value="baby" />
-          <Choice value="toddler">
-            <Controller target="x" controller="@ClipController(clip=p_UI_mood_angry_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_UI_mood_thumbnail.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="46">
-              <TransitionClassList>
-                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
-              </TransitionClassList>
-            </Controller>
-          </Choice>
-          <Choice value="child">
-            <Controller target="x" controller="@ClipController(clip=a_UI_mood_frustrated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_UI_mood_thumbnail.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="47">
-              <TransitionClassList>
-                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
-              </TransitionClassList>
-            </Controller>
-          </Choice>
-          <Choice value="teen">
-            <Reference target="47" />
-          </Choice>
-          <Choice value="youngadult">
-            <Reference target="47" />
-          </Choice>
-          <Choice value="adult">
-            <Reference target="47" />
-          </Choice>
-          <Choice value="elder">
-            <Reference target="47" />
-          </Choice>
-        </ParameterSelector>
-      </Choice>
-    </PostureSelector>
-  </State>
-  <State name="mood_furious" type="public" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
     <description />
     <PostureSelector parameter="x:posture" unique_id="53">
       <Choice value="stand--FullBody" track="normal" mask="">
@@ -573,7 +593,7 @@
             </Controller>
           </Choice>
           <Choice value="child">
-            <Controller target="x" controller="@ClipController(clip=a_UI_mood_furious_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_UI_mood_thumbnail.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="51">
+            <Controller target="x" controller="@ClipController(clip=a_UI_mood_frustrated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_UI_mood_thumbnail.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="51">
               <TransitionClassList>
                 <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
               </TransitionClassList>
@@ -591,15 +611,57 @@
           <Choice value="elder">
             <Reference target="51" />
           </Choice>
+          <Choice value="infant">
+            <Reference target="50" />
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="mood_furious" type="public" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="57">
+      <Choice value="stand--FullBody" track="normal" mask="">
+        <ParameterSelector parameter="x:age" unique_id="56">
+          <Choice value="baby" />
+          <Choice value="toddler">
+            <Controller target="x" controller="@ClipController(clip=p_UI_mood_angry_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_UI_mood_thumbnail.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="54">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice value="child">
+            <Controller target="x" controller="@ClipController(clip=a_UI_mood_furious_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_UI_mood_thumbnail.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="55">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice value="teen">
+            <Reference target="55" />
+          </Choice>
+          <Choice value="youngadult">
+            <Reference target="55" />
+          </Choice>
+          <Choice value="adult">
+            <Reference target="55" />
+          </Choice>
+          <Choice value="elder">
+            <Reference target="55" />
+          </Choice>
+          <Choice value="infant">
+            <Reference target="54" />
+          </Choice>
         </ParameterSelector>
       </Choice>
     </PostureSelector>
   </State>
   <State name="mood_happy" type="public" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
     <description />
-    <PostureSelector parameter="x:posture" unique_id="55">
+    <PostureSelector parameter="x:posture" unique_id="59">
       <Choice value="stand--FullBody" track="normal" mask="">
-        <Controller target="x" controller="@ClipController(clip=a_UI_mood_happy_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_UI_mood_thumbnail.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="54">
+        <Controller target="x" controller="@ClipController(clip=a_UI_mood_happy_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_UI_mood_thumbnail.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="58">
           <TransitionClassList>
             <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
           </TransitionClassList>
@@ -609,65 +671,69 @@
   </State>
   <State name="mood_humiliated" type="public" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
     <description />
-    <PostureSelector parameter="x:posture" unique_id="58">
+    <PostureSelector parameter="x:posture" unique_id="62">
       <Choice value="stand--FullBody" track="normal" mask="">
-        <ParameterSelector parameter="x:age" unique_id="57">
+        <ParameterSelector parameter="x:age" unique_id="61">
           <Choice value="baby" />
           <Choice value="toddler" />
           <Choice value="child">
-            <Controller target="x" controller="@ClipController(clip=a_UI_mood_humiliated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_UI_mood_thumbnail.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="56">
+            <Controller target="x" controller="@ClipController(clip=a_UI_mood_humiliated_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_UI_mood_thumbnail.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="60">
               <TransitionClassList>
                 <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
               </TransitionClassList>
             </Controller>
           </Choice>
           <Choice value="teen">
-            <Reference target="56" />
+            <Reference target="60" />
           </Choice>
           <Choice value="youngadult">
-            <Reference target="56" />
+            <Reference target="60" />
           </Choice>
           <Choice value="adult">
-            <Reference target="56" />
+            <Reference target="60" />
           </Choice>
           <Choice value="elder">
-            <Reference target="56" />
+            <Reference target="60" />
           </Choice>
+          <Choice value="infant" />
         </ParameterSelector>
       </Choice>
     </PostureSelector>
   </State>
   <State name="mood_hysterical" type="public" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
     <description />
-    <PostureSelector parameter="x:posture" unique_id="62">
+    <PostureSelector parameter="x:posture" unique_id="66">
       <Choice value="stand--FullBody" track="normal" mask="">
-        <ParameterSelector parameter="x:age" unique_id="61">
+        <ParameterSelector parameter="x:age" unique_id="65">
           <Choice value="baby" />
           <Choice value="toddler">
-            <Controller target="x" controller="@ClipController(clip=p_UI_mood_playful_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_UI_mood_thumbnail.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="59">
+            <Controller target="x" controller="@ClipController(clip=p_UI_mood_playful_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_UI_mood_thumbnail.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="63">
               <TransitionClassList>
                 <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
               </TransitionClassList>
             </Controller>
           </Choice>
           <Choice value="child">
-            <Controller target="x" controller="@ClipController(clip=a_UI_mood_hysterical_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_UI_mood_thumbnail.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="60">
+            <Controller target="x" controller="@ClipController(clip=a_UI_mood_hysterical_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_UI_mood_thumbnail.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="64">
               <TransitionClassList>
                 <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
               </TransitionClassList>
             </Controller>
           </Choice>
           <Choice value="teen">
-            <Reference target="60" />
+            <Reference target="64" />
           </Choice>
           <Choice value="youngadult">
-            <Reference target="60" />
+            <Reference target="64" />
           </Choice>
           <Choice value="adult">
-            <Reference target="60" />
+            <Reference target="64" />
           </Choice>
           <Choice value="elder">
-            <Reference target="60" />
+            <Reference target="64" />
+          </Choice>
+          <Choice value="infant">
+            <Reference target="63" />
           </Choice>
         </ParameterSelector>
       </Choice>
@@ -675,125 +741,131 @@
   </State>
   <State name="mood_imaginative" type="public" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
     <description />
-    <PostureSelector parameter="x:posture" unique_id="65">
+    <PostureSelector parameter="x:posture" unique_id="69">
       <Choice value="stand--FullBody" track="normal" mask="">
-        <ParameterSelector parameter="x:age" unique_id="64">
+        <ParameterSelector parameter="x:age" unique_id="68">
           <Choice value="baby" />
           <Choice value="toddler" />
           <Choice value="child">
-            <Controller target="x" controller="@ClipController(clip=a_UI_mood_imaginative_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_UI_mood_thumbnail.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="63">
+            <Controller target="x" controller="@ClipController(clip=a_UI_mood_imaginative_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_UI_mood_thumbnail.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="67">
               <TransitionClassList>
                 <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
               </TransitionClassList>
             </Controller>
           </Choice>
           <Choice value="teen">
-            <Reference target="63" />
+            <Reference target="67" />
           </Choice>
           <Choice value="youngadult">
-            <Reference target="63" />
+            <Reference target="67" />
           </Choice>
           <Choice value="adult">
-            <Reference target="63" />
+            <Reference target="67" />
           </Choice>
           <Choice value="elder">
-            <Reference target="63" />
+            <Reference target="67" />
           </Choice>
+          <Choice value="infant" />
         </ParameterSelector>
       </Choice>
     </PostureSelector>
   </State>
   <State name="mood_inTheZone" type="public" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
     <description />
-    <PostureSelector parameter="x:posture" unique_id="68">
+    <PostureSelector parameter="x:posture" unique_id="72">
       <Choice value="stand--FullBody" track="normal" mask="">
-        <ParameterSelector parameter="x:age" unique_id="67">
+        <ParameterSelector parameter="x:age" unique_id="71">
           <Choice value="baby" />
           <Choice value="toddler" />
           <Choice value="child">
-            <Controller target="x" controller="@ClipController(clip=a_UI_mood_inTheZone_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_UI_mood_thumbnail.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="66">
+            <Controller target="x" controller="@ClipController(clip=a_UI_mood_inTheZone_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_UI_mood_thumbnail.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="70">
               <TransitionClassList>
                 <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
               </TransitionClassList>
             </Controller>
           </Choice>
           <Choice value="teen">
-            <Reference target="66" />
+            <Reference target="70" />
           </Choice>
           <Choice value="youngadult">
-            <Reference target="66" />
+            <Reference target="70" />
           </Choice>
           <Choice value="adult">
-            <Reference target="66" />
+            <Reference target="70" />
           </Choice>
           <Choice value="elder">
-            <Reference target="66" />
+            <Reference target="70" />
           </Choice>
+          <Choice value="infant" />
         </ParameterSelector>
       </Choice>
     </PostureSelector>
   </State>
   <State name="mood_inspired" type="public" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
     <description />
-    <PostureSelector parameter="x:posture" unique_id="71">
+    <PostureSelector parameter="x:posture" unique_id="75">
       <Choice value="stand--FullBody" track="normal" mask="">
-        <ParameterSelector parameter="x:age" unique_id="70">
+        <ParameterSelector parameter="x:age" unique_id="74">
           <Choice value="baby" />
           <Choice value="toddler" />
           <Choice value="child">
-            <Controller target="x" controller="@ClipController(clip=a_UI_mood_inspired_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_UI_mood_thumbnail.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="69">
+            <Controller target="x" controller="@ClipController(clip=a_UI_mood_inspired_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_UI_mood_thumbnail.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="73">
               <TransitionClassList>
                 <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
               </TransitionClassList>
             </Controller>
           </Choice>
           <Choice value="teen">
-            <Reference target="69" />
+            <Reference target="73" />
           </Choice>
           <Choice value="youngadult">
-            <Reference target="69" />
+            <Reference target="73" />
           </Choice>
           <Choice value="adult">
-            <Reference target="69" />
+            <Reference target="73" />
           </Choice>
           <Choice value="elder">
-            <Reference target="69" />
+            <Reference target="73" />
           </Choice>
+          <Choice value="infant" />
         </ParameterSelector>
       </Choice>
     </PostureSelector>
   </State>
   <State name="mood_miserable" type="public" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
     <description />
-    <PostureSelector parameter="x:posture" unique_id="75">
+    <PostureSelector parameter="x:posture" unique_id="79">
       <Choice value="stand--FullBody" track="normal" mask="">
-        <ParameterSelector parameter="x:age" unique_id="74">
+        <ParameterSelector parameter="x:age" unique_id="78">
           <Choice value="baby" />
           <Choice value="toddler">
-            <Controller target="x" controller="@ClipController(clip=p_UI_mood_angry_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_UI_mood_thumbnail.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="72">
+            <Controller target="x" controller="@ClipController(clip=p_UI_mood_angry_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_UI_mood_thumbnail.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="76">
               <TransitionClassList>
                 <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
               </TransitionClassList>
             </Controller>
           </Choice>
           <Choice value="child">
-            <Controller target="x" controller="@ClipController(clip=a_UI_mood_miserable_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_UI_mood_thumbnail.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="73">
+            <Controller target="x" controller="@ClipController(clip=a_UI_mood_miserable_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_UI_mood_thumbnail.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="77">
               <TransitionClassList>
                 <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
               </TransitionClassList>
             </Controller>
           </Choice>
           <Choice value="teen">
-            <Reference target="73" />
+            <Reference target="77" />
           </Choice>
           <Choice value="youngadult">
-            <Reference target="73" />
+            <Reference target="77" />
           </Choice>
           <Choice value="adult">
-            <Reference target="73" />
+            <Reference target="77" />
           </Choice>
           <Choice value="elder">
-            <Reference target="73" />
+            <Reference target="77" />
+          </Choice>
+          <Choice value="infant">
+            <Reference target="76" />
           </Choice>
         </ParameterSelector>
       </Choice>
@@ -801,39 +873,40 @@
   </State>
   <State name="mood_mortified" type="public" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
     <description />
-    <PostureSelector parameter="x:posture" unique_id="78">
+    <PostureSelector parameter="x:posture" unique_id="82">
       <Choice value="stand--FullBody" track="normal" mask="">
-        <ParameterSelector parameter="x:age" unique_id="77">
+        <ParameterSelector parameter="x:age" unique_id="81">
           <Choice value="baby" />
           <Choice value="toddler" />
           <Choice value="child">
-            <Controller target="x" controller="@ClipController(clip=a_UI_mood_mortified_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_UI_mood_thumbnail.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="76">
+            <Controller target="x" controller="@ClipController(clip=a_UI_mood_mortified_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_UI_mood_thumbnail.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="80">
               <TransitionClassList>
                 <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
               </TransitionClassList>
             </Controller>
           </Choice>
           <Choice value="teen">
-            <Reference target="76" />
+            <Reference target="80" />
           </Choice>
           <Choice value="youngadult">
-            <Reference target="76" />
+            <Reference target="80" />
           </Choice>
           <Choice value="adult">
-            <Reference target="76" />
+            <Reference target="80" />
           </Choice>
           <Choice value="elder">
-            <Reference target="76" />
+            <Reference target="80" />
           </Choice>
+          <Choice value="infant" />
         </ParameterSelector>
       </Choice>
     </PostureSelector>
   </State>
   <State name="mood_ok" type="public" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
     <description />
-    <PostureSelector parameter="x:posture" unique_id="80">
+    <PostureSelector parameter="x:posture" unique_id="84">
       <Choice value="stand--FullBody" track="normal" mask="">
-        <Controller target="x" controller="@ClipController(clip=a_UI_mood_fine_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_UI_mood_thumbnail.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="79">
+        <Controller target="x" controller="@ClipController(clip=a_UI_mood_fine_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_UI_mood_thumbnail.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="83">
           <TransitionClassList>
             <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
           </TransitionClassList>
@@ -843,22 +916,22 @@
   </State>
   <State name="mood_passionate" type="public" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
     <description />
-    <PostureSelector parameter="x:posture" unique_id="85">
+    <PostureSelector parameter="x:posture" unique_id="89">
       <Choice value="stand--FullBody" track="normal" mask="">
-        <ParameterSelector parameter="x:age" unique_id="84">
+        <ParameterSelector parameter="x:age" unique_id="88">
           <Choice value="baby" />
           <Choice value="toddler" />
           <Choice value="child">
-            <ParameterSelector parameter="x:sex" unique_id="83">
+            <ParameterSelector parameter="x:sex" unique_id="87">
               <Choice value="male">
-                <Controller target="x" controller="@ClipController(clip=a_UI_mood_passionate_male_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_UI_mood_thumbnail.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="81">
+                <Controller target="x" controller="@ClipController(clip=a_UI_mood_passionate_male_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_UI_mood_thumbnail.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="85">
                   <TransitionClassList>
                     <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
                   </TransitionClassList>
                 </Controller>
               </Choice>
               <Choice value="female">
-                <Controller target="x" controller="@ClipController(clip=a_UI_mood_passionate_female_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_UI_mood_thumbnail.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="82">
+                <Controller target="x" controller="@ClipController(clip=a_UI_mood_passionate_female_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_UI_mood_thumbnail.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="86">
                   <TransitionClassList>
                     <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
                   </TransitionClassList>
@@ -867,26 +940,27 @@
             </ParameterSelector>
           </Choice>
           <Choice value="teen">
-            <Reference target="83" />
+            <Reference target="87" />
           </Choice>
           <Choice value="youngadult">
-            <Reference target="83" />
+            <Reference target="87" />
           </Choice>
           <Choice value="adult">
-            <Reference target="83" />
+            <Reference target="87" />
           </Choice>
           <Choice value="elder">
-            <Reference target="83" />
+            <Reference target="87" />
           </Choice>
+          <Choice value="infant" />
         </ParameterSelector>
       </Choice>
     </PostureSelector>
   </State>
   <State name="mood_playful" type="public" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
     <description />
-    <PostureSelector parameter="x:posture" unique_id="87">
+    <PostureSelector parameter="x:posture" unique_id="91">
       <Choice value="stand--FullBody" track="normal" mask="">
-        <Controller target="x" controller="@ClipController(clip=a_UI_mood_playful_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_UI_mood_thumbnail.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="86">
+        <Controller target="x" controller="@ClipController(clip=a_UI_mood_playful_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_UI_mood_thumbnail.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="90">
           <TransitionClassList>
             <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
           </TransitionClassList>
@@ -896,9 +970,9 @@
   </State>
   <State name="mood_possessed" type="public" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
     <description />
-    <PostureSelector parameter="x:posture" unique_id="89">
+    <PostureSelector parameter="x:posture" unique_id="93">
       <Choice value="stand--FullBody" track="normal" mask="">
-        <Controller target="x" controller="@ClipController(clip=a_UI_mood_possessed_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_UI_mood_thumbnail.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="88">
+        <Controller target="x" controller="@ClipController(clip=a_UI_mood_possessed_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_UI_mood_thumbnail.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="92">
           <TransitionClassList>
             <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
           </TransitionClassList>
@@ -908,35 +982,40 @@
   </State>
   <State name="mood_pumped" type="public" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
     <description />
-    <PostureSelector parameter="x:posture" unique_id="93">
+    <PostureSelector parameter="x:posture" unique_id="98">
       <Choice value="stand--FullBody" track="normal" mask="">
-        <ParameterSelector parameter="x:age" unique_id="92">
+        <ParameterSelector parameter="x:age" unique_id="97">
           <Choice value="baby" />
           <Choice value="toddler">
-            <Controller target="x" controller="@ClipController(clip=p_UI_mood_energized_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_UI_mood_thumbnail.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="90">
+            <Controller target="x" controller="@ClipController(clip=p_UI_mood_energized_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_UI_mood_thumbnail.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="94">
               <TransitionClassList>
                 <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
               </TransitionClassList>
             </Controller>
           </Choice>
           <Choice value="child">
-            <Controller target="x" controller="@ClipController(clip=a_UI_mood_pumped_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_UI_mood_thumbnail.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="91">
+            <Controller target="x" controller="@ClipController(clip=a_UI_mood_pumped_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_UI_mood_thumbnail.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="95">
               <TransitionClassList>
                 <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
               </TransitionClassList>
             </Controller>
           </Choice>
           <Choice value="teen">
-            <Reference target="91" />
+            <Reference target="95" />
           </Choice>
           <Choice value="youngadult">
-            <Reference target="91" />
+            <Reference target="95" />
           </Choice>
           <Choice value="adult">
-            <Reference target="91" />
+            <Reference target="95" />
           </Choice>
           <Choice value="elder">
-            <Reference target="91" />
+            <Reference target="95" />
+          </Choice>
+          <Choice value="infant">
+            <Controller target="x" controller="@ClipController(clip=i_UI_mood_playful_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="i_UI_mood_thumbnail.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="96">
+              <TransitionClassList />
+            </Controller>
           </Choice>
         </ParameterSelector>
       </Choice>
@@ -944,9 +1023,9 @@
   </State>
   <State name="mood_sad" type="public" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
     <description />
-    <PostureSelector parameter="x:posture" unique_id="95">
+    <PostureSelector parameter="x:posture" unique_id="100">
       <Choice value="stand--FullBody" track="normal" mask="">
-        <Controller target="x" controller="@ClipController(clip=a_UI_mood_sad_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_UI_mood_thumbnail.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="94">
+        <Controller target="x" controller="@ClipController(clip=a_UI_mood_sad_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_UI_mood_thumbnail.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="99">
           <TransitionClassList>
             <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
           </TransitionClassList>
@@ -956,9 +1035,9 @@
   </State>
   <State name="mood_scared" type="public" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
     <description />
-    <PostureSelector parameter="x:posture" unique_id="97">
+    <PostureSelector parameter="x:posture" unique_id="102">
       <Choice value="stand--FullBody" track="normal" mask="">
-        <Controller target="x" controller="@ClipController(clip=a_UI_mood_scared_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_UI_mood_thumbnail.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="96">
+        <Controller target="x" controller="@ClipController(clip=a_UI_mood_scared_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_UI_mood_thumbnail.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="101">
           <TransitionClassList>
             <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
           </TransitionClassList>
@@ -968,35 +1047,38 @@
   </State>
   <State name="mood_silly" type="public" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
     <description />
-    <PostureSelector parameter="x:posture" unique_id="101">
+    <PostureSelector parameter="x:posture" unique_id="106">
       <Choice value="stand--FullBody" track="normal" mask="">
-        <ParameterSelector parameter="x:age" unique_id="100">
+        <ParameterSelector parameter="x:age" unique_id="105">
           <Choice value="baby" />
           <Choice value="toddler">
-            <Controller target="x" controller="@ClipController(clip=p_UI_mood_playful_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_UI_mood_thumbnail.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="98">
+            <Controller target="x" controller="@ClipController(clip=p_UI_mood_playful_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_UI_mood_thumbnail.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="103">
               <TransitionClassList>
                 <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
               </TransitionClassList>
             </Controller>
           </Choice>
           <Choice value="child">
-            <Controller target="x" controller="@ClipController(clip=a_UI_mood_silly_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_UI_mood_thumbnail.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="99">
+            <Controller target="x" controller="@ClipController(clip=a_UI_mood_silly_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_UI_mood_thumbnail.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="104">
               <TransitionClassList>
                 <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
               </TransitionClassList>
             </Controller>
           </Choice>
           <Choice value="teen">
-            <Reference target="99" />
+            <Reference target="104" />
           </Choice>
           <Choice value="youngadult">
-            <Reference target="99" />
+            <Reference target="104" />
           </Choice>
           <Choice value="adult">
-            <Reference target="99" />
+            <Reference target="104" />
           </Choice>
           <Choice value="elder">
-            <Reference target="99" />
+            <Reference target="104" />
+          </Choice>
+          <Choice value="infant">
+            <Reference target="103" />
           </Choice>
         </ParameterSelector>
       </Choice>
@@ -1004,35 +1086,38 @@
   </State>
   <State name="mood_tense" type="public" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
     <description />
-    <PostureSelector parameter="x:posture" unique_id="105">
+    <PostureSelector parameter="x:posture" unique_id="110">
       <Choice value="stand--FullBody" track="normal" mask="">
-        <ParameterSelector parameter="x:age" unique_id="104">
+        <ParameterSelector parameter="x:age" unique_id="109">
           <Choice value="baby" />
           <Choice value="toddler">
-            <Controller target="x" controller="@ClipController(clip=p_UI_mood_angry_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_UI_mood_thumbnail.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="102">
+            <Controller target="x" controller="@ClipController(clip=p_UI_mood_angry_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_UI_mood_thumbnail.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="107">
               <TransitionClassList>
                 <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
               </TransitionClassList>
             </Controller>
           </Choice>
           <Choice value="child">
-            <Controller target="x" controller="@ClipController(clip=a_UI_mood_tense_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_UI_mood_thumbnail.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="103">
+            <Controller target="x" controller="@ClipController(clip=a_UI_mood_tense_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_UI_mood_thumbnail.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="108">
               <TransitionClassList>
                 <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
               </TransitionClassList>
             </Controller>
           </Choice>
           <Choice value="teen">
-            <Reference target="103" />
+            <Reference target="108" />
           </Choice>
           <Choice value="youngadult">
-            <Reference target="103" />
+            <Reference target="108" />
           </Choice>
           <Choice value="adult">
-            <Reference target="103" />
+            <Reference target="108" />
           </Choice>
           <Choice value="elder">
-            <Reference target="103" />
+            <Reference target="108" />
+          </Choice>
+          <Choice value="infant">
+            <Reference target="107" />
           </Choice>
         </ParameterSelector>
       </Choice>
@@ -1040,9 +1125,9 @@
   </State>
   <State name="mood_terrified" type="public" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
     <description />
-    <PostureSelector parameter="x:posture" unique_id="107">
+    <PostureSelector parameter="x:posture" unique_id="112">
       <Choice value="stand--FullBody" track="normal" mask="">
-        <Controller target="x" controller="@ClipController(clip=a_UI_mood_terrified_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_UI_mood_thumbnail.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="106">
+        <Controller target="x" controller="@ClipController(clip=a_UI_mood_terrified_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_UI_mood_thumbnail.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="111">
           <TransitionClassList>
             <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
           </TransitionClassList>
@@ -1052,30 +1137,31 @@
   </State>
   <State name="mood_uncomfortable" type="public" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
     <description />
-    <PostureSelector parameter="x:posture" unique_id="110">
+    <PostureSelector parameter="x:posture" unique_id="115">
       <Choice value="stand--FullBody" track="normal" mask="">
-        <ParameterSelector parameter="x:age" unique_id="109">
+        <ParameterSelector parameter="x:age" unique_id="114">
           <Choice value="baby" />
           <Choice value="toddler" />
           <Choice value="child">
-            <Controller target="x" controller="@ClipController(clip=a_UI_mood_uncomfortable_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_UI_mood_thumbnail.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="108">
+            <Controller target="x" controller="@ClipController(clip=a_UI_mood_uncomfortable_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a_UI_mood_thumbnail.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="113">
               <TransitionClassList>
                 <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
               </TransitionClassList>
             </Controller>
           </Choice>
           <Choice value="teen">
-            <Reference target="108" />
+            <Reference target="113" />
           </Choice>
           <Choice value="youngadult">
-            <Reference target="108" />
+            <Reference target="113" />
           </Choice>
           <Choice value="adult">
-            <Reference target="108" />
+            <Reference target="113" />
           </Choice>
           <Choice value="elder">
-            <Reference target="108" />
+            <Reference target="113" />
           </Choice>
+          <Choice value="infant" />
         </ParameterSelector>
       </Choice>
     </PostureSelector>

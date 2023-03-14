@@ -23,6 +23,13 @@
       <MapNamespace namespace="xcarryObjectRig" actor="xcarryObjectRig" />
     </SourceFile>
   </IkConfiguration>
+  <IkConfiguration name="a2o_trashCanIndoor_PutGet.ma">
+    <SourceFile name="a2o_trashCanIndoor_PutGet.ma">
+      <MapNamespace namespace="surface" actor="surface" />
+      <MapNamespace namespace="carryObject" actor="carryObject" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
   <PostureManifest actors="" />
   <PostureManifest actors="x">
     <Support family="stand" compatibility="FullBody" carry_left="-" carry_right="carryObject" surface="surface" />
@@ -30,10 +37,13 @@
   </PostureManifest>
   <State type="private" skippable="false" interrupt_this="false" name="Mirror" focus="full body" facialoverlays="false" tailoverlays="true" />
   <State type="public" skippable="false" interrupt_this="false" name="Put_HighTech" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="Put_Indoor" focus="none" facialoverlays="false" tailoverlays="true" />
   <State type="public" skippable="false" interrupt_this="false" name="Put_Outdoor" focus="none" facialoverlays="false" tailoverlays="true" />
   <Connection from="Mirror" to="Put_HighTech" />
+  <Connection from="Mirror" to="Put_Indoor" />
   <Connection from="Mirror" to="Put_Outdoor" />
   <Connection from="Put_HighTech" to="exit" />
+  <Connection from="Put_Indoor" to="exit" />
   <Connection from="Put_Outdoor" to="exit" />
   <Connection from="entry" to="Mirror" />
   <State name="Mirror" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
@@ -62,35 +72,59 @@
       </Choice>
     </PostureSelector>
   </State>
+  <State name="Put_Indoor" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="10">
+      <Choice value="-stand-FullBody" track="carryinteraction" mask="">
+        <ParameterSelector parameter="surface:lid" unique_id="9">
+          <Choice value="false">
+            <Controller target="carryObject" controller="@ClipController(clip=a2o_trash_carry_putDown_trashCanIndoor_trash, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_trashCanIndoor_PutGet.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="6">
+              <TransitionClassList />
+            </Controller>
+            <Controller target="x" controller="@ClipController(clip=a2o_trash_carry_putDown_trashCanIndoor_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_trashCanIndoor_PutGet.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="7">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
+          <Choice value="true">
+            <Controller target="surface" controller="@ClipController(clip=a2o_trash_carry_putDown_trashCanIndoor_surface, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_trashCanIndoor_PutGet.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="8">
+              <TransitionClassList />
+            </Controller>
+            <Reference target="6" />
+            <Reference target="7" />
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+    </PostureSelector>
+  </State>
   <State name="Put_Outdoor" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
     <description />
-    <PostureSelector parameter="x:posture" unique_id="12">
+    <PostureSelector parameter="x:posture" unique_id="17">
       <Choice value="-stand-FullBody" track="carryinteraction" mask="">
-        <ParameterSelector parameter="surface:lid" unique_id="11">
+        <ParameterSelector parameter="surface:lid" unique_id="16">
           <Choice value="false">
-            <Controller target="x" controller="@ClipController(clip=a2o_trash_carry_putDown_trashCanOutdoor_noLid_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_trashCanOutdoor_PutGet.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="6">
+            <Controller target="x" controller="@ClipController(clip=a2o_trash_carry_putDown_trashCanOutdoor_noLid_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_trashCanOutdoor_PutGet.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="11">
               <TransitionClassList>
                 <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
               </TransitionClassList>
             </Controller>
-            <Controller target="carryObject" controller="@ClipController(clip=a2o_trash_carry_putDown_trashCanOutdoor_noLid_trash, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_trashCanOutdoor_PutGet.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="7">
+            <Controller target="carryObject" controller="@ClipController(clip=a2o_trash_carry_putDown_trashCanOutdoor_noLid_trash, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_trashCanOutdoor_PutGet.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="12">
               <TransitionClassList>
                 <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
               </TransitionClassList>
             </Controller>
           </Choice>
           <Choice value="true">
-            <Controller target="surface" controller="@ClipController(clip=a2o_trash_carry_putDown_trashCanOutdoor_surface, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_trashCanOutdoor_PutGet.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="8">
+            <Controller target="surface" controller="@ClipController(clip=a2o_trash_carry_putDown_trashCanOutdoor_surface, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_trashCanOutdoor_PutGet.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="13">
               <TransitionClassList>
                 <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
               </TransitionClassList>
             </Controller>
-            <Controller target="carryObject" controller="@ClipController(clip=a2o_trash_carry_putDown_trashCanOutdoor_trash, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_trashCanOutdoor_PutGet.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="9">
+            <Controller target="carryObject" controller="@ClipController(clip=a2o_trash_carry_putDown_trashCanOutdoor_trash, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_trashCanOutdoor_PutGet.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="14">
               <TransitionClassList>
                 <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
               </TransitionClassList>
             </Controller>
-            <Controller target="x" controller="@ClipController(clip=a2o_trash_carry_putDown_trashCanOutdoor_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_trashCanOutdoor_PutGet.ma" focus="none" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="10">
+            <Controller target="x" controller="@ClipController(clip=a2o_trash_carry_putDown_trashCanOutdoor_x, loop_count=#1)" overridePosture="false" mask="" track="carryinteraction" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2o_trashCanOutdoor_PutGet.ma" focus="none" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="15">
               <TransitionClassList>
                 <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
               </TransitionClassList>

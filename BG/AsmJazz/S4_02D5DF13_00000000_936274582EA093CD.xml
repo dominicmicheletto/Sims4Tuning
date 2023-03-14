@@ -1,0 +1,92 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="PickUp_PutDown_toy_Infant" dcc="sage">
+  <Actor name="x" type="Sim" master="true" virtual="false" />
+  <Actor name="sitTemplate" type="Object" virtual="true" />
+  <Actor name="toy" type="Object" virtual="false" />
+  <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
+  <Parameter name="x:carryState" type="enum" labels="none,left,right,both" default="right" />
+  <IkConfiguration name="i2o_toyBox_toy_pickUp_putDown_layOnBack.ma">
+    <SourceFile name="i2o_toyBox_toy_pickUp_putDown_layOnBack.ma">
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="toy" actor="toy" />
+      <MapNamespace namespace="sitTemplate" actor="sitTemplate" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="i2o_toyBox_toy_pickUp_putDown_sitOnGround.ma">
+    <SourceFile name="i2o_toyBox_toy_pickUp_putDown_sitOnGround.ma">
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="toy" actor="toy" />
+      <MapNamespace namespace="sitTemplate" actor="sitTemplate" />
+    </SourceFile>
+  </IkConfiguration>
+  <PostureManifest actors="" />
+  <PostureManifest actors="x">
+    <Support name="layOnBack" family="none" compatibility="FullBody" carry_left="-" carry_right="-" surface="*" />
+    <Support name="stand" family="none" compatibility="UpperBody" carry_left="-" carry_right="-" carry_back="-" surface="*" />
+  </PostureManifest>
+  <State type="private" skippable="false" interrupt_this="false" name="Mirror" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="Mirror (2)" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="pickUp" focus="none" facialoverlays="true" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="putDown" focus="none" facialoverlays="true" tailoverlays="true" />
+  <Connection from="Mirror" to="pickUp" />
+  <Connection from="Mirror (2)" to="putDown" />
+  <Connection from="entry" to="Mirror" />
+  <Connection from="entry" to="Mirror (2)" />
+  <Connection from="pickUp" to="exit" />
+  <Connection from="putDown" to="exit" />
+  <State name="Mirror" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <ParameterSelector parameter="x:age" unique_id="1">
+      <Choice value="baby" />
+      <Choice value="toddler" />
+      <Choice value="child" />
+      <Choice value="teen" />
+      <Choice value="youngadult" />
+      <Choice value="adult" />
+      <Choice value="elder" />
+    </ParameterSelector>
+  </State>
+  <State name="Mirror (2)" type="private" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <ParameterSelector parameter="x:age" unique_id="2">
+      <Choice value="baby" />
+      <Choice value="toddler" />
+      <Choice value="child" />
+      <Choice value="teen" />
+      <Choice value="youngadult" />
+      <Choice value="adult" />
+      <Choice value="elder" />
+    </ParameterSelector>
+  </State>
+  <State name="pickUp" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="true" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="5">
+      <Choice value="layOnBack--FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=i2o_toyBox_toy_pickUp_layOnBack_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="i2o_toyBox_toy_pickUp_putDown_layOnBack.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="3">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+      <Choice value="stand--UpperBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=i2o_toyBox_toy_pickUp_sitOnGround_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="i2o_toyBox_toy_pickUp_putDown_sitOnGround.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="4">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="putDown" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="true" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="8">
+      <Choice value="layOnBack--FullBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=i2o_toyBox_toy_putDown_layOnBack_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="i2o_toyBox_toy_pickUp_putDown_layOnBack.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="6">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+      <Choice value="stand--UpperBody" track="normal" mask="">
+        <Controller target="x" controller="@ClipController(clip=i2o_toyBox_toy_putDown_sitOnGround_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="i2o_toyBox_toy_pickUp_putDown_sitOnGround.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="7">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
+    </PostureSelector>
+  </State>
+</ASM>

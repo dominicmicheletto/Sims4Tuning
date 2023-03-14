@@ -2,8 +2,8 @@
 <ASM name="SitOnGround_Posture" dcc="sage">
   <Actor name="x" type="Sim" master="true" virtual="false" />
   <Actor name="sitTemplate" type="Object" virtual="true" />
-  <Parameter name="transitionPosture" type="enum" labels="stand,sit,sitIntimate,bed_Sleep,bed_Intimate,bed_Woohoo,bed_Relax,bed_Nap,bed_Undercovers,monkeyBar_play,monkeyBar_hangOut,shower,shower_wooHoo,computer,Bathtub_Bubblebath,bathTub_TakeBath,stargaze,hotTub_sit,hotTub_stand,meditation,levitate,massageChair_Reclined,massageChair_MassageFoot_L,massageChair_MassageFoot_R,foosballTable,sitOnGround,layDown,sitInHighChair" default="stand" />
-  <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="transitionPosture" type="enum" labels="sit,sitInHighChair,sitOnGround,stand,stargaze,layOnStomach,layOnBack" default="layOnBack" />
+  <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder,infant" default="adult" />
   <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
   <IkConfiguration name="p_sitOnGround_posture_x.ma">
     <SourceFile name="p_sitOnGround_posture_x.ma">
@@ -15,6 +15,30 @@
     <SourceFile name="p_sitOnGround_getOut.ma">
       <MapNamespace namespace="sitTemplate" actor="sitTemplate" />
       <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="i_sitOnGround_getOut_sit2LayOnBack.ma">
+    <SourceFile name="i_sitOnGround_getOut_sit2LayOnBack.ma">
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="sitTemplate" actor="sitTemplate" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="i_sitOnGround_getOut_sit2LayOnStomach.ma">
+    <SourceFile name="i_sitOnGround_getOut_sit2LayOnStomach.ma">
+      <MapNamespace namespace="sitTemplate" actor="sitTemplate" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="i_sitOnGround_getIn_LayOnBack2sit.ma">
+    <SourceFile name="i_sitOnGround_getIn_LayOnBack2sit.ma">
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="sitTemplate" actor="sitTemplate" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="i_sitOnGround_getIn_LayOnStomach2sit.ma">
+    <SourceFile name="i_sitOnGround_getIn_LayOnStomach2sit.ma">
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="sitTemplate" actor="sitTemplate" />
     </SourceFile>
   </IkConfiguration>
   <PostureManifest>
@@ -30,89 +54,86 @@
   <State name="Posture" type="public" countlooptime="false" disableautostop="false" skippable="false" interrupt_this="true" focus="full body" facialoverlays="false" tailoverlays="true">
     <description />
     <MakeController>
-      <Controller target="x" controller="@ClipController(clip=p_sitOnGround_posture_x, loop_count=#1)" overridePosture="false" mask="" track="low" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_sitOnGround_posture_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="1">
+      <Controller target="x" controller="@ClipController(clip=p_sitOnGround_posture_x, loop_count=#1)" overridePosture="false" mask="" track="low" mirror_conditional="False" suppress_footsteps="False" transition_class_in="NoBlendLoop" transition_class_out="NoBlendLoop" ik_configuration="p_sitOnGround_posture_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="1">
         <TransitionClassList>
-          <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+          <Transition transition_class_name="NoBlendLoop" transition_duration_in="0" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0" use_custom_transition_out="true" transition_type_out="linear" transition_mask_out="" />
+          <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="false" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
         </TransitionClassList>
       </Controller>
     </MakeController>
   </State>
   <State name="get_in" type="public" skippable="false" interrupt_this="false" focus="head" facialoverlays="false" tailoverlays="true">
     <description />
-    <ParameterSelector parameter="transitionPosture" unique_id="3">
+    <ParameterSelector parameter="transitionPosture" unique_id="6">
+      <Choice value="sit" />
+      <Choice value="sitInHighChair" />
+      <Choice value="sitOnGround" />
       <Choice value="stand">
-        <Controller target="x" controller="@ClipController(clip=p_sitOnGround_getIn_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_sitOnGround_posture_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="2">
-          <TransitionClassList>
-            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
-          </TransitionClassList>
+        <ParameterSelector parameter="x:age" unique_id="3">
+          <Choice value="baby" />
+          <Choice value="toddler">
+            <Controller target="x" controller="@ClipController(clip=p_sitOnGround_getIn_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_sitOnGround_posture_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="2">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice value="child" />
+          <Choice value="teen" />
+          <Choice value="youngadult" />
+          <Choice value="adult" />
+          <Choice value="elder" />
+          <Choice value="infant" />
+        </ParameterSelector>
+      </Choice>
+      <Choice value="stargaze" />
+      <Choice value="layOnStomach">
+        <Controller target="x" controller="@ClipController(clip=i_sitOnGround_getIn_LayOnStomach2sit_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="i_sitOnGround_getIn_LayOnStomach2sit.ma" focus="none" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="4">
+          <TransitionClassList />
         </Controller>
       </Choice>
-      <Choice value="sit" />
-      <Choice value="sitIntimate" />
-      <Choice value="bed_Sleep" />
-      <Choice value="bed_Intimate" />
-      <Choice value="bed_Woohoo" />
-      <Choice value="bed_Relax" />
-      <Choice value="bed_Nap" />
-      <Choice value="bed_Undercovers" />
-      <Choice value="monkeyBar_play" />
-      <Choice value="monkeyBar_hangOut" />
-      <Choice value="shower" />
-      <Choice value="shower_wooHoo" />
-      <Choice value="computer" />
-      <Choice value="Bathtub_Bubblebath" />
-      <Choice value="bathTub_TakeBath" />
-      <Choice value="stargaze" />
-      <Choice value="hotTub_sit" />
-      <Choice value="hotTub_stand" />
-      <Choice value="meditation" />
-      <Choice value="levitate" />
-      <Choice value="massageChair_Reclined" />
-      <Choice value="massageChair_MassageFoot_L" />
-      <Choice value="massageChair_MassageFoot_R" />
-      <Choice value="foosballTable" />
-      <Choice value="sitOnGround" />
-      <Choice value="layDown" />
-      <Choice value="sitInHighChair" />
+      <Choice value="layOnBack">
+        <Controller target="x" controller="@ClipController(clip=i_sitOnGround_getIn_LayOnBack2sit_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="i_sitOnGround_getIn_LayOnBack2sit.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="5">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
     </ParameterSelector>
   </State>
   <State name="get_out" type="private" skippable="false" interrupt_this="false" focus="head" facialoverlays="false" tailoverlays="true">
     <description />
-    <ParameterSelector parameter="transitionPosture" unique_id="5">
+    <ParameterSelector parameter="transitionPosture" unique_id="11">
+      <Choice value="sit" />
+      <Choice value="sitInHighChair" />
+      <Choice value="sitOnGround" />
       <Choice value="stand">
-        <Controller target="x" controller="@ClipController(clip=p_sitOnGround_getOut_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_sitOnGround_getOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="4">
-          <TransitionClassList>
-            <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
-          </TransitionClassList>
+        <ParameterSelector parameter="x:age" unique_id="8">
+          <Choice value="baby" />
+          <Choice value="toddler">
+            <Controller target="x" controller="@ClipController(clip=p_sitOnGround_getOut_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="p_sitOnGround_getOut.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="7">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice value="child" />
+          <Choice value="teen" />
+          <Choice value="youngadult" />
+          <Choice value="adult" />
+          <Choice value="elder" />
+          <Choice value="infant" />
+        </ParameterSelector>
+      </Choice>
+      <Choice value="stargaze" />
+      <Choice value="layOnStomach">
+        <Controller target="x" controller="@ClipController(clip=i_sitOnGround_getOut_sit2LayOnStomach_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="i_sitOnGround_getOut_sit2LayOnStomach.ma" focus="none" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="9">
+          <TransitionClassList />
         </Controller>
       </Choice>
-      <Choice value="sit" />
-      <Choice value="sitIntimate" />
-      <Choice value="bed_Sleep" />
-      <Choice value="bed_Intimate" />
-      <Choice value="bed_Woohoo" />
-      <Choice value="bed_Relax" />
-      <Choice value="bed_Nap" />
-      <Choice value="bed_Undercovers" />
-      <Choice value="monkeyBar_play" />
-      <Choice value="monkeyBar_hangOut" />
-      <Choice value="shower" />
-      <Choice value="shower_wooHoo" />
-      <Choice value="computer" />
-      <Choice value="Bathtub_Bubblebath" />
-      <Choice value="bathTub_TakeBath" />
-      <Choice value="stargaze" />
-      <Choice value="hotTub_sit" />
-      <Choice value="hotTub_stand" />
-      <Choice value="meditation" />
-      <Choice value="levitate" />
-      <Choice value="massageChair_Reclined" />
-      <Choice value="massageChair_MassageFoot_L" />
-      <Choice value="massageChair_MassageFoot_R" />
-      <Choice value="foosballTable" />
-      <Choice value="sitOnGround" />
-      <Choice value="layDown" />
-      <Choice value="sitInHighChair" />
+      <Choice value="layOnBack">
+        <Controller target="x" controller="@ClipController(clip=i_sitOnGround_getOut_sit2LayOnBack_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="i_sitOnGround_getOut_sit2LayOnBack.ma" focus="none" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="10">
+          <TransitionClassList />
+        </Controller>
+      </Choice>
     </ParameterSelector>
   </State>
 </ASM>

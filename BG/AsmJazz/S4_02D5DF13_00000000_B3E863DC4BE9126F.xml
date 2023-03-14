@@ -1,0 +1,124 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="Crib_TuckIn_Soothe_Interaction_Infant" dcc="sage">
+  <Actor name="x" type="Sim" master="true" virtual="false" />
+  <Actor name="crib" type="Object" virtual="true" />
+  <Actor name="y" type="Sim" virtual="false" />
+  <Actor name="sitTemplate" type="Object" virtual="true" />
+  <Parameter name="routingSlot" type="enum" labels="0,1" default="0" />
+  <Parameter name="isMirrored" type="bool" labels="" default="False" />
+  <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder" default="adult" />
+  <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
+  <Parameter name="y:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder,infant" default="adult" />
+  <Parameter name="y:sex" type="enum" labels="male,female" default="male" />
+  <Parameter name="y:species" type="enum" labels="human,dog,smalldog,cat,fox" default="human" />
+  <IkConfiguration name="a2i_crib_tuckIn.ma">
+    <SourceFile name="a2i_crib_tuckIn.ma">
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="crib" actor="crib" />
+      <MapNamespace namespace="y" actor="y" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="a2i_crib_sootheToSleep.ma">
+    <SourceFile name="a2i_crib_sootheToSleep.ma">
+      <MapNamespace namespace="x" actor="x" />
+      <MapNamespace namespace="crib" actor="crib" />
+      <MapNamespace namespace="y" actor="y" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="i_idle_lookAround_01_layOnBack.ma">
+    <SourceFile name="i_idle_lookAround_01_layOnBack.ma">
+      <MapNamespace namespace="sitTemplate" actor="sitTemplate" />
+      <MapNamespace namespace="x" actor="y" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="i_layOnBack_posture_x.ma">
+    <SourceFile name="i_layOnBack_posture_x.ma">
+      <MapNamespace namespace="sitTemplate" actor="sitTemplate" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <PostureManifest actors="" />
+  <PostureManifest actors="x">
+    <Support family="stand" compatibility="FullBody" carry_left="-" carry_right="-" surface="*" />
+  </PostureManifest>
+  <PostureManifest actors="y">
+    <Support name="LayOnBackObject" family="none" compatibility="FullBody" carry_left="-" carry_right="-" carry_back="*" surface="*" />
+    <Support name="Crib_Sleep" family="none" compatibility="FullBody" carry_left="-" carry_right="-" surface="*" />
+  </PostureManifest>
+  <State type="public" skippable="false" interrupt_this="false" name="Soothe" focus="none" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="tuckIn" focus="none" facialoverlays="false" tailoverlays="true" />
+  <Connection from="Soothe" to="exit" />
+  <Connection from="entry" to="Soothe" />
+  <Connection from="entry" to="tuckIn" />
+  <Connection from="tuckIn" to="exit" />
+  <State name="Soothe" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="9">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <ParameterSelector parameter="routingSlot" unique_id="8">
+          <Choice value="0">
+            <SetMirror target="y" mirror="true" unique_id="5" />
+            <PostureSelector parameter="y:posture" unique_id="4">
+              <Choice value="Crib_Sleep--FullBody" track="normal" mask="" />
+              <Choice value="LayOnBackObject--FullBody" track="normal" mask="">
+                <Controller target="y" controller="@ClipController(clip=i_idle_breathe_layOnBack_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="i_layOnBack_posture_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="3">
+                  <TransitionClassList />
+                </Controller>
+                <Controller target="y" controller="@ClipController(clip=i_idle_lookAround_01_layOnBack_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="i_idle_lookAround_01_layOnBack.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="2">
+                  <TransitionClassList />
+                </Controller>
+                <Controller target="y" controller="@ClipController(clip=i_idle_breathe_layOnBack_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="i_layOnBack_posture_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="1">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+            </PostureSelector>
+            <Controller target="x" controller="@ClipController(clip=a2i_crib_sootheToSleep_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2i_crib_sootheToSleep.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="6">
+              <TransitionClassList />
+            </Controller>
+          </Choice>
+          <Choice value="1">
+            <SetMirror target="x" mirror="true" unique_id="7" />
+            <Reference target="6" />
+            <Reference target="4" />
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+    </PostureSelector>
+  </State>
+  <State name="tuckIn" type="public" skippable="false" interrupt_this="false" focus="none" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="x:posture" unique_id="18">
+      <Choice value="-stand-FullBody" track="normal" mask="">
+        <ParameterSelector parameter="routingSlot" unique_id="17">
+          <Choice value="0">
+            <SetMirror target="y" mirror="true" unique_id="14" />
+            <PostureSelector parameter="y:posture" unique_id="13">
+              <Choice value="Crib_Sleep--FullBody" track="normal" mask="" />
+              <Choice value="LayOnBackObject--FullBody" track="normal" mask="">
+                <Controller target="y" controller="@ClipController(clip=i_idle_breathe_layOnBack_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="i_layOnBack_posture_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="12">
+                  <TransitionClassList />
+                </Controller>
+                <Controller target="y" controller="@ClipController(clip=i_idle_lookAround_01_layOnBack_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="i_idle_lookAround_01_layOnBack.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="11">
+                  <TransitionClassList />
+                </Controller>
+                <Controller target="y" controller="@ClipController(clip=i_idle_breathe_layOnBack_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="i_layOnBack_posture_x.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="10">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+            </PostureSelector>
+            <Controller target="x" controller="@ClipController(clip=a2i_crib_tuckIn_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="a2i_crib_tuckIn.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="15">
+              <TransitionClassList>
+                <Transition transition_class_name="Default" transition_duration_in="0.2666667" use_custom_transition_in="true" transition_type_in="linear" transition_mask_in="" transition_duration_out="0.2666667" use_custom_transition_out="false" transition_type_out="linear" transition_mask_out="" />
+              </TransitionClassList>
+            </Controller>
+          </Choice>
+          <Choice value="1">
+            <SetMirror target="x" mirror="true" unique_id="16" />
+            <Reference target="15" />
+            <Reference target="13" />
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+    </PostureSelector>
+  </State>
+</ASM>

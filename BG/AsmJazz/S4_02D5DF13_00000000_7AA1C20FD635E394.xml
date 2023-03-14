@@ -1,0 +1,328 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ASM name="Carried_Sim_Reactions" dcc="sage">
+  <Actor name="x" type="Sim" master="true" virtual="false" />
+  <Actor name="z" type="Sim" virtual="true" />
+  <Parameter name="contextCarryHand" type="enum" labels="right,back" default="right" />
+  <Parameter name="x:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder,infant" default="adult" />
+  <Parameter name="x:sex" type="enum" labels="male,female" default="male" />
+  <Parameter name="x:species" type="enum" labels="dog,smalldog,human,cat" default="dog" />
+  <Parameter name="x:carryState" type="enum" labels="left,right,back" default="right" />
+  <Parameter name="z:age" type="enum" labels="baby,toddler,child,teen,youngadult,adult,elder,infant" default="adult" />
+  <Parameter name="z:sex" type="enum" labels="male,female" default="male" />
+  <Parameter name="z:species" type="enum" labels="human,dog,smalldog,cat" default="human" />
+  <Parameter name="z:carryState" type="enum" labels="none,left,right,both,back" default="right" />
+  <IkConfiguration name="i_idle_carry_Back.ma">
+    <SourceFile name="i_idle_carry_Back.ma">
+      <MapNamespace namespace="y" actor="z" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="i_idle_carry.ma">
+    <SourceFile name="i_idle_carry.ma">
+      <MapNamespace namespace="y" actor="z" />
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="i_reaction_sad_carried.ma">
+    <SourceFile name="i_reaction_sad_carried.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="i_reaction_sad_carried_back.ma">
+    <SourceFile name="i_reaction_sad_carried_back.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="i_reaction_angry_carried.ma">
+    <SourceFile name="i_reaction_angry_carried.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="i_reaction_happy_carried.ma">
+    <SourceFile name="i_reaction_happy_carried.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="i_react_shocked_carried.ma">
+    <SourceFile name="i_react_shocked_carried.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <IkConfiguration name="i_react_giggling_carried.ma">
+    <SourceFile name="i_react_giggling_carried.ma">
+      <MapNamespace namespace="x" actor="x" />
+    </SourceFile>
+  </IkConfiguration>
+  <PostureManifest actors="" />
+  <PostureManifest actors="x">
+    <Support name="carried_sim" family="none" compatibility="FullBody" carry_left="*" carry_right="*" surface="-" />
+  </PostureManifest>
+  <PostureManifest actors="z" />
+  <State type="public" skippable="false" interrupt_this="false" name="Angry" focus="upper body" facialoverlays="true" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="Distress" focus="upper body" facialoverlays="true" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="Giggle" focus="upper body" facialoverlays="true" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="Happy" focus="upper body" facialoverlays="true" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="Neutral" focus="upper body" facialoverlays="true" tailoverlays="true" />
+  <State type="private" skippable="false" interrupt_this="false" name="NewState" focus="full body" facialoverlays="false" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="Sad" focus="upper body" facialoverlays="true" tailoverlays="true" />
+  <State type="public" skippable="false" interrupt_this="false" name="Shocked_Startle" focus="upper body" facialoverlays="true" tailoverlays="true" />
+  <Connection from="Angry" to="exit" />
+  <Connection from="Distress" to="exit" />
+  <Connection from="Giggle" to="exit" />
+  <Connection from="Happy" to="exit" />
+  <Connection from="Neutral" to="exit" />
+  <Connection from="Sad" to="exit" />
+  <Connection from="Shocked_Startle" to="exit" />
+  <Connection from="entry" to="Angry" />
+  <Connection from="entry" to="Distress" />
+  <Connection from="entry" to="Giggle" />
+  <Connection from="entry" to="Happy" />
+  <Connection from="entry" to="Neutral" />
+  <Connection from="entry" to="Sad" />
+  <Connection from="entry" to="Shocked_Startle" />
+  <State name="Angry" type="public" skippable="false" interrupt_this="false" focus="upper body" facialoverlays="true" tailoverlays="true">
+    <description />
+    <ParameterSelector parameter="x:age" unique_id="6">
+      <Choice value="baby" />
+      <Choice value="toddler" />
+      <Choice value="child" />
+      <Choice value="teen" />
+      <Choice value="youngadult" />
+      <Choice value="adult" />
+      <Choice value="elder" />
+      <Choice value="infant">
+        <ParameterSelector parameter="contextCarryHand" unique_id="5">
+          <Choice value="right">
+            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="2">
+              <Choice weight="50" avoidRepeat="False">
+                <Controller target="x" controller="@ClipController(clip=i_reaction_angry_carried_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="i_reaction_angry_carried.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="1">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+            </RandomSelector>
+          </Choice>
+          <Choice value="back">
+            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="4">
+              <Choice weight="50" avoidRepeat="False">
+                <Controller target="x" controller="@ClipController(clip=i_idle_breathe_carried_back_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="i_idle_carry_Back.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="3">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+            </RandomSelector>
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+    </ParameterSelector>
+  </State>
+  <State name="Distress" type="public" skippable="false" interrupt_this="false" focus="upper body" facialoverlays="true" tailoverlays="true">
+    <description />
+    <ParameterSelector parameter="x:age" unique_id="12">
+      <Choice value="baby" />
+      <Choice value="toddler" />
+      <Choice value="child" />
+      <Choice value="teen" />
+      <Choice value="youngadult" />
+      <Choice value="adult" />
+      <Choice value="elder" />
+      <Choice value="infant">
+        <ParameterSelector parameter="contextCarryHand" unique_id="11">
+          <Choice value="right">
+            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="8">
+              <Choice weight="50" avoidRepeat="False">
+                <Controller target="x" controller="@ClipController(clip=i_idle_carry_breathe_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="i_idle_carry.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="7">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+            </RandomSelector>
+          </Choice>
+          <Choice value="back">
+            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="10">
+              <Choice weight="50" avoidRepeat="False">
+                <Controller target="x" controller="@ClipController(clip=i_idle_breathe_carried_back_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="i_idle_carry_Back.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="9">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+            </RandomSelector>
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+    </ParameterSelector>
+  </State>
+  <State name="Giggle" type="public" skippable="false" interrupt_this="false" focus="upper body" facialoverlays="true" tailoverlays="true">
+    <description />
+    <ParameterSelector parameter="x:age" unique_id="18">
+      <Choice value="baby" />
+      <Choice value="toddler" />
+      <Choice value="child" />
+      <Choice value="teen" />
+      <Choice value="youngadult" />
+      <Choice value="adult" />
+      <Choice value="elder" />
+      <Choice value="infant">
+        <ParameterSelector parameter="contextCarryHand" unique_id="17">
+          <Choice value="right">
+            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="14">
+              <Choice weight="50" avoidRepeat="False">
+                <Controller target="x" controller="@ClipController(clip=i_react_giggling_carried_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="i_react_giggling_carried.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="13">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+            </RandomSelector>
+          </Choice>
+          <Choice value="back">
+            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="16">
+              <Choice weight="50" avoidRepeat="False">
+                <Controller target="x" controller="@ClipController(clip=i_idle_breathe_carried_back_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="i_idle_carry_Back.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="15">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+            </RandomSelector>
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+    </ParameterSelector>
+  </State>
+  <State name="Happy" type="public" skippable="false" interrupt_this="false" focus="upper body" facialoverlays="true" tailoverlays="true">
+    <description />
+    <ParameterSelector parameter="x:age" unique_id="24">
+      <Choice value="baby" />
+      <Choice value="toddler" />
+      <Choice value="child" />
+      <Choice value="teen" />
+      <Choice value="youngadult" />
+      <Choice value="adult" />
+      <Choice value="elder" />
+      <Choice value="infant">
+        <ParameterSelector parameter="contextCarryHand" unique_id="23">
+          <Choice value="right">
+            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="20">
+              <Choice weight="50" avoidRepeat="False">
+                <Controller target="x" controller="@ClipController(clip=i_reaction_happy_carried_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="i_reaction_happy_carried.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="19">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+            </RandomSelector>
+          </Choice>
+          <Choice value="back">
+            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="22">
+              <Choice weight="50" avoidRepeat="False">
+                <Controller target="x" controller="@ClipController(clip=i_idle_breathe_carried_back_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="i_idle_carry_Back.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="21">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+            </RandomSelector>
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+    </ParameterSelector>
+  </State>
+  <State name="Neutral" type="public" skippable="false" interrupt_this="false" focus="upper body" facialoverlays="true" tailoverlays="true">
+    <description />
+    <ParameterSelector parameter="x:age" unique_id="30">
+      <Choice value="baby" />
+      <Choice value="toddler" />
+      <Choice value="child" />
+      <Choice value="teen" />
+      <Choice value="youngadult" />
+      <Choice value="adult" />
+      <Choice value="elder" />
+      <Choice value="infant">
+        <ParameterSelector parameter="contextCarryHand" unique_id="29">
+          <Choice value="right">
+            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="26">
+              <Choice weight="50" avoidRepeat="False">
+                <Controller target="x" controller="@ClipController(clip=i_idle_carry_breathe_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="i_idle_carry.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="25">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+            </RandomSelector>
+          </Choice>
+          <Choice value="back">
+            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="28">
+              <Choice weight="50" avoidRepeat="False">
+                <Controller target="x" controller="@ClipController(clip=i_idle_breathe_carried_back_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="i_idle_carry_Back.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="27">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+            </RandomSelector>
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+    </ParameterSelector>
+  </State>
+  <State name="NewState" type="private" skippable="false" interrupt_this="false" focus="full body" facialoverlays="false" tailoverlays="true">
+    <description />
+    <PostureSelector parameter="z:posture" unique_id="31" />
+    <PostureSelector parameter="x:posture" unique_id="32">
+      <Choice value="carried_sim--FullBody" track="normal" mask="" />
+    </PostureSelector>
+  </State>
+  <State name="Sad" type="public" skippable="false" interrupt_this="false" focus="upper body" facialoverlays="true" tailoverlays="true">
+    <description />
+    <ParameterSelector parameter="x:age" unique_id="38">
+      <Choice value="baby" />
+      <Choice value="toddler" />
+      <Choice value="child" />
+      <Choice value="teen" />
+      <Choice value="youngadult" />
+      <Choice value="adult" />
+      <Choice value="elder" />
+      <Choice value="infant">
+        <ParameterSelector parameter="contextCarryHand" unique_id="37">
+          <Choice value="right">
+            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="34">
+              <Choice weight="50" avoidRepeat="False">
+                <Controller target="x" controller="@ClipController(clip=i_reaction_sad_carried_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="i_reaction_sad_carried.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="33">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+            </RandomSelector>
+          </Choice>
+          <Choice value="back">
+            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="36">
+              <Choice weight="50" avoidRepeat="False">
+                <Controller target="x" controller="@ClipController(clip=i_reaction_sad_carried_back_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="i_reaction_sad_carried_back.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="35">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+            </RandomSelector>
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+    </ParameterSelector>
+  </State>
+  <State name="Shocked_Startle" type="public" skippable="false" interrupt_this="false" focus="upper body" facialoverlays="true" tailoverlays="true">
+    <description />
+    <ParameterSelector parameter="x:age" unique_id="44">
+      <Choice value="baby" />
+      <Choice value="toddler" />
+      <Choice value="child" />
+      <Choice value="teen" />
+      <Choice value="youngadult" />
+      <Choice value="adult" />
+      <Choice value="elder" />
+      <Choice value="infant">
+        <ParameterSelector parameter="contextCarryHand" unique_id="43">
+          <Choice value="right">
+            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="40">
+              <Choice weight="50" avoidRepeat="False">
+                <Controller target="x" controller="@ClipController(clip=i_react_shocked_carried_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="i_react_shocked_carried.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="39">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+            </RandomSelector>
+          </Choice>
+          <Choice value="back">
+            <RandomSelector repeatweight="1" allow_empty_choices="False" unique_id="42">
+              <Choice weight="50" avoidRepeat="False">
+                <Controller target="x" controller="@ClipController(clip=i_idle_breathe_carried_back_x, loop_count=#1)" overridePosture="false" mask="" track="normal" mirror_conditional="False" suppress_footsteps="False" transition_class_in="Default" transition_class_out="Default" ik_configuration="i_idle_carry_Back.ma" focus="undefined" start_frame_offset="0" end_frame_offset="0" timescale="1" unique_id="41">
+                  <TransitionClassList />
+                </Controller>
+              </Choice>
+            </RandomSelector>
+          </Choice>
+        </ParameterSelector>
+      </Choice>
+    </ParameterSelector>
+  </State>
+</ASM>
